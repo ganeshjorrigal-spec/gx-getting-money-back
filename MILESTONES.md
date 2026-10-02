@@ -4,8 +4,8 @@ Status values: PROPOSED, ACTIVE, READY FOR REVIEW, DONE (after independent revie
 Order follows the sprint guidance: landing page, then onboarding, then value, then communication.
 All milestones below are PROPOSED until Ganesh confirms them and answers Q-001 to Q-004 in DECISIONS.md.
 
-## M0. Project skeleton | PROPOSED
-Goal: the chosen stack runs locally and deploys a blank page to a public URL.
+## M0. Project skeleton | ACTIVE
+Goal: Next.js + Convex (D-006) runs locally and deploys a blank page to a public URL.
 Acceptance checks:
 - [ ] `npm run dev` (or equivalent) starts with no errors
 - [ ] A preview URL loads on a phone
