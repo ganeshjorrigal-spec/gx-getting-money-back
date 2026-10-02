@@ -10,9 +10,12 @@ Format: ID | date | decision | why | status (ACTIVE / SUPERSEDED by D-x)
 - D-005 | 2026-10-03 | Ganesh's global Codex AGENTS.md is not touched. The repo AGENTS.md only adds project rules and defers to the global file on conflict. | The global file holds his GrowthX-guided preferences and guardrails. | ACTIVE
 
 - D-006 | 2026-10-03 | Stack: web (Next.js) + Convex. Convex is already connected to Ganesh's GitHub account. Keys only in .env. | Sprint guidance recommends it; logic and database in one; works well with coding agents. | ACTIVE
+- D-007 | 2026-10-03 | Platforms: user story 1 is Swiggy and Zomato (food and quick commerce); user story 2 is subscriptions charged after cancelling (from Tuesday); rides only if time allows. Other apps use the generic flow without a custom playbook. | Food gives fast, filmable wins and acquisition; subscriptions carry the bigger, slower cases where persistence and payment matter. Swap the order if DMs show food refunds are not a struggle. | ACTIVE
+- D-008 | 2026-10-03 | Interface: mobile-first web app for v1. Reminders by email or a pre-filled WhatsApp link (wa.me), no WhatsApp Business API. WhatsApp bot only if week-1 users ask for it. | Shippable this weekend, native to Convex, cheap to reverse because case logic stays in Convex. | ACTIVE
+- D-009 | 2026-10-03 | Pricing to test: free under Rs 300; Rs 49 upfront with a 14-day money-back guarantee for cases of Rs 300 and above; collected by UPI for the sprint. Test via DMs: pass if at least 3 of 10 have a live case and at least 2 with Rs 300+ cases pay by Day 5. If they have cases but will not pay upfront, switch to pay-after-success (Rs 29 to 99). If almost nobody has a live case, that is a named pivot reason. | Small refunds cannot carry a fee; upfront plus guarantee moves money inside the sprint while removing risk. | ACTIVE
 
 ## Open (needs Ganesh)
 - Q-001 | RESOLVED by D-006
-- Q-002 | Interface for v1: web app only, or WhatsApp as the main channel?
-- Q-003 | Pricing to test: flat fee per case (Rs 29 to 99) vs monthly plan vs success fee. Waiting on DM test results.
-- Q-004 | Which platforms first: Swiggy, Zomato, Rapido, Uber, Blinkit, subscriptions? Pick 2 to 3 for v1 playbooks.
+- Q-002 | RESOLVED by D-008
+- Q-003 | RESOLVED by D-009 (test result pending)
+- Q-004 | RESOLVED by D-007

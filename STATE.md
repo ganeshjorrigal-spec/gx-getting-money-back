@@ -7,7 +7,7 @@ Last updated: 2026-10-03 by Claude HQ (setup)
 - Codex skills in .agents/skills/
 
 ## In flight
-- Nothing. Waiting for Ganesh to confirm milestones and answer Q-001 to Q-004.
+- M0 ACTIVE; T1 validation test running (Ganesh)
 
 ## Not started
 - M0 to M4
@@ -20,4 +20,4 @@ Last updated: 2026-10-03 by Claude HQ (setup)
 - Prototype quality is fine for M0 to M2; production polish only after real users try it
 
 ## Next single action
-Ganesh confirms the stack (Q-001) and milestone list in Claude HQ; then Codex starts M0.
+Codex starts M0 (Next.js + Convex skeleton). Ganesh runs T1 (DM test) in parallel.
