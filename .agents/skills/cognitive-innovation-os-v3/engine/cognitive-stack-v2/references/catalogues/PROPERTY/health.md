@@ -1,0 +1,12 @@
+# Catalogue — PROPERTY › domain: health
+> quality/property models · 1 record(s) · Chat slice (derived from the Code `PROPERTY.md`).
+> Reached from `library-index.md` (role PROPERTY × domain health).
+
+### Number Needed to Treat (NNT) · #527 · `llm-high` · health · CLAIM
+- **What it is:** The number of patients who need to receive a treatment for one to benefit—the most intuitive measure of treatment effectiveness. An NNT of 1 means every patient benefits; an NNT of 50 means you treat 50 for one to benefit (the other 49 received treatment with no benefit and only side-effect risk). NNT converts abstract statistics (relative risk reduction, p-values) into a concrete question: how many people must undergo this intervention for one to benefit?
+- **How it helps:** Apply NNT thinking to any intervention. When evaluating a training program: how many employees must attend for one to meaningfully change behavior? When evaluating marketing: how many see the ad for one to convert? NNT forces you to weigh total cost (applied to ALL recipients) against benefit (received by a fraction). This often reveals that impressive relative improvements ('50% reduction!') translate to disappointing absolute effects.
+- **When to use:** When evaluating cost-effectiveness of any intervention applied at scale; when impressive-sounding relative statistics need conversion to absolute impact; when deciding between interventions with different efficacy profiles; when total cost of treating non-beneficiaries matters.
+- **Unique value:** Converts statistical significance into practical significance. A treatment achieving p<0.001 but NNT of 500 is statistically significant but practically useless. NNT asks the question p-values don't: how much effort per unit of benefit?
+- **Limits:** NNT doesn't capture benefit magnitude—NNT 10 for preventing death differs from NNT 10 for reducing headaches. NNT varies across populations. Very effective treatments for rare conditions can have misleadingly high NNTs. The model assumes binary outcomes.
+- **Foundations:** Founded in clinical epidemiology (Laupacis, Sackett), evidence-based medicine, and decision theory. NNT translates abstract relative risk statistics into clinically intuitive denominators. Draws on Bayesian absolute risk framing and Gigerenzer's research on improving statistical literacy in medical decision-making.
+- *Secondary roles:* OPERATION · *Collection:* statistical-concept

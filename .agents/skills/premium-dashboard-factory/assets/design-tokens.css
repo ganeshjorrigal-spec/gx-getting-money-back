@@ -1,0 +1,100 @@
+/* =============================================================================
+   PREMIUM DASHBOARD — STARTER TOKEN LAYER
+   Import this in every module. Extend it; do not redefine tokens locally.
+
+   Two kinds of tokens, opposite rules:
+     SEMANTIC — locked. The value IS information (a channel, a state, a delta sign).
+                Never recolor for looks. Changing it changes what the data says.
+     cosmetic — global. Appearance only. Change once, every module updates.
+
+   Replace --brand-* with the real brand values. Derive the ambient canvas washes
+   from the brand hue, not a generic cream default.
+   ============================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* ---- cosmetic: brand accent (also semantically "primary action") ---------- */
+  --brand:            #e5202a;  /* set to the canonical brand hex; ONE source of truth */
+  --brand-hover:      #c41b1d;
+  --brand-soft:       #fff0f0;  /* tint for brand-on-light surfaces */
+
+  /* ---- cosmetic: canvas + ambient wash ------------------------------------- */
+  --canvas:           #f7f5f1;  /* warm off-white, never flat #fff */
+  /* apply --ambient as a fixed, z-index:-1 layer behind everything */
+  --ambient:
+    radial-gradient(60vw 55vh at 8% -5%,  rgba(255,195,175,0.10), transparent 60%),
+    radial-gradient(55vw 50vh at 105% 10%, rgba(255,175,195,0.08), transparent 55%),
+    radial-gradient(60vw 60vh at 75% 110%, rgba(245,215,175,0.09), transparent 60%);
+
+  /* ---- cosmetic: surfaces + elevation ladder ------------------------------- */
+  --surface:          #ffffff;
+  --surface-soft:     #fafafa;
+  --chrome:           rgba(255,255,255,0.72); /* sticky bars/headers (pair w/ blur) */
+  --pop:              rgba(255,255,255,0.85);  /* modals/dropdowns */
+  --line:             #e5e7eb;                 /* hairline borders */
+  --line-strong:      #d6d7dd;
+
+  /* ---- cosmetic: shadow ladder (soft, diffuse, ink-tinted) ----------------- */
+  --shadow-1:         0 1px 4px  rgba(17,17,26,0.05);
+  --shadow-2:         0 4px 16px rgba(17,17,26,0.06);
+  --shadow-3:         0 12px 36px rgba(17,17,26,0.11);
+
+  /* ---- cosmetic: text ------------------------------------------------------ */
+  --ink:              #15161a;
+  --muted:            #6a6b73;
+  --faint:            #9a9ba3;
+
+  /* ---- cosmetic: radius + motion ------------------------------------------- */
+  --r-pill:           999px;
+  --r-card:           16px;
+  --r-chip:           8px;
+  --ease:             cubic-bezier(.2,.8,.2,1);
+  --dur:              .18s;
+
+  /* ---- SEMANTIC — locked: states (a color that MEANS good/bad/watch) ------- */
+  --good:             #1b7d3a;
+  --bad:              #c4291c;   /* keep a visible gap from --brand to avoid collision */
+  --watch:            #c87e0a;
+  --neutral:          #8a8d96;
+
+  /* ---- SEMANTIC — locked: delta pos/neg pairs (background + ink for pills) -- */
+  --delta-pos-bg:     #e8f5ec;
+  --delta-pos-ink:    #1b7d3a;
+  --delta-neg-bg:     #fdecea;
+  --delta-neg-ink:    #c4291c;
+
+  /* ---- SEMANTIC — locked: channel example (one hue per channel; never red) -- */
+  /* --ch-whatsapp:   #25d366;  --ch-email: #4a90d9;  --ch-push: #7c3aed;  ...  */
+}
+
+.dark {
+  color-scheme: dark;
+  --canvas:       #0f1014;
+  --surface:      #1b1d23;
+  --surface-soft: #17191e;
+  --chrome:       rgba(22,24,30,0.72);
+  --pop:          rgba(34,37,46,0.85);
+  --line:         #2a2d35;
+  --line-strong:  #383b45;
+  --ink:          #e8e9ed;
+  --muted:        #9a9da6;
+  --faint:        #696c76;
+  --shadow-2:     0 4px 16px rgba(0,0,0,0.30);
+  --shadow-3:     0 12px 36px rgba(0,0,0,0.50);
+  /* SEMANTIC tokens keep their meaning across themes — adjust lightness, not hue */
+  --delta-pos-bg: #16321f; --delta-pos-ink: #58d496;
+  --delta-neg-bg: #3a1c17; --delta-neg-ink: #f08a72;
+}
+
+/* tabular numbers — apply to every figure that changes or sits in a column */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* accessibility fallback — solid surfaces when transparency is reduced */
+@media (prefers-reduced-transparency: reduce) {
+  :root { --chrome: #ffffff; --pop: #ffffff; }
+  .dark { --chrome: #16181d; --pop: #22252e; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 0s; }
+}

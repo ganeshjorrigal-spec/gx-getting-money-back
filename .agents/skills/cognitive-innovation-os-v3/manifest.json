@@ -1,0 +1,22 @@
+{
+  "name": "cognitive-innovation-os-v3",
+  "version": "3.0.0",
+  "build_type": "chat-compatible-agent-ready",
+  "preserved_engine": "Cognitive Stack V2 Chat edition",
+  "engine_models": 561,
+  "engine_recipes": 61,
+  "modes": [
+    "QUICK",
+    "DEEP",
+    "LOOP",
+    "AUDIT"
+  ],
+  "domain_packs": [
+    "management-consulting",
+    "product-innovation",
+    "marketing-strategy",
+    "campaign-planning",
+    "consumer-behavior"
+  ],
+  "generated_files_excluding_preserved_engine": 40
+}

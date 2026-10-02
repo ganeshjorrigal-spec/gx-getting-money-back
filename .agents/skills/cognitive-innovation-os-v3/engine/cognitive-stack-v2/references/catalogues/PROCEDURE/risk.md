@@ -1,0 +1,12 @@
+# Catalogue — PROCEDURE › domain: risk
+> named routines · 1 record(s) · Chat slice (derived from the Code `PROCEDURE.md`).
+> Reached from `library-index.md` (role PROCEDURE × domain risk).
+
+### Risk Assessment · #1301 · `llm-high` · risk · INSTRUCTION
+- **What it is:** Systematic evaluation of downside scenarios through four questions: (1) What's the worst case? (2) How likely is it? (3) Can I survive it? (4) Is the upside worth the risk? The critical insight from Munger and Bevelin is that the order matters—start with survivability. An opportunity with unlimited upside is worthless if the downside is fatal. Risk assessment isn't about avoiding risk; it's about ensuring that when you take risks, you survive being wrong.
+- **How it helps:** Before any major bet—investment, hire, launch, partnership—run the four questions explicitly. Most entrepreneurs instinctively evaluate upside but skip the survivability question. The discipline is asking 'if this goes completely wrong, am I still in the game?' If the answer is no, either reduce exposure, buy insurance (literal or metaphorical), or walk away regardless of upside. Survival is the prerequisite for all future opportunity.
+- **When to use:** Before any decision with significant downside potential; when evaluating opportunities that feel exciting but haven't been stress-tested; when the cost of failure is not just financial but reputational, relational, or existential; when designing business models or strategies with embedded risk.
+- **Unique value:** The survivability-first ordering inverts how most people assess risk. Instead of 'is the expected value positive?' the question becomes 'can I survive the worst case?' This simple reordering prevents the most catastrophic class of errors: ruin.
+- **Limits:** Worst-case scenarios are often worse than imagined (fat tails). Probability estimation for rare events is notoriously unreliable. Over-applying risk assessment to every decision creates paralysis. Some opportunities require accepting non-survivable risk at small scale to learn.
+- **Foundations:** Rooted in decision theory (expected utility theory, von Neumann-Morgenstern), financial economics (modern portfolio theory, Markowitz), and actuarial science. Draws on behavioral economics on risk perception (Slovic), prospect theory on losses, and engineering reliability theory. Related to precautionary principle.
+- *Secondary roles:* OPERATION · *Collection:* risk-management

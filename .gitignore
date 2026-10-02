@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+dist/
+build/
+.convex/
+*.log
+.DS_Store
+Thumbs.db
