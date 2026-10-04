@@ -7,21 +7,31 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "convex:dev": "convex dev"
+    "convex:dev": "convex dev",
+    "test": "vitest run",
+    "eval": "node --env-file=.env --import tsx scripts/eval.mts",
+    "smoke:routes": "node --env-file=.env.local --import tsx scripts/smoke-routes.mts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.87",
+    "ai": "^7.0.127",
     "convex": "^1.17.0",
     "next": "^15.5.0",
+    "qrcode": "^1.5.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.0.0"
+    "tsx": "^4.23.15",
+    "typescript": "^5.0.0",
+    "vitest": "^5.0.3"
   }
 }

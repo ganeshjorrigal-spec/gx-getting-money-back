@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700">
+  <rect width="1000" height="700" fill="#f6f4ee"/>
+  <rect x="100" y="60" width="800" height="580" rx="24" fill="#ffffff"/>
+  <text x="145" y="125" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="38" font-weight="700">BookMyShow</text>
+  <text x="145" y="185" fill="#555" font-family="Arial, sans-serif" font-size="27">9 Oct 2026, 6:42 PM</text>
+  <text x="145" y="260" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="29">Your booking BKMY12345 for Monsoon Live</text>
+  <text x="145" y="310" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="29">on 18 Oct has been cancelled by the organiser.</text>
+  <text x="145" y="380" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="29">A full refund of Rs 3,500 will be credited to</text>
+  <text x="145" y="430" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="29">your original payment method within 7-10</text>
+  <text x="145" y="480" fill="#1b1b1b" font-family="Arial, sans-serif" font-size="29">working days.</text>
+</svg>

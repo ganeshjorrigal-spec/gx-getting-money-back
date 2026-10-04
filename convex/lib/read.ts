@@ -1,0 +1,42 @@
+import { z } from "zod";
+
+export const caseReadSchema = z.object({
+  isEventTicket: z.boolean(),
+  outOfScopeCategory: z.enum(["flight", "train_bus", "hotel", "food", "cab", "shopping", "subscription", "other"]).nullable(),
+  platform: z.enum(["bookmyshow", "district", "skillbox", "ticketgenie", "organiser_site", "other", "unknown"]),
+  platformNameAsWritten: z.string().nullable(),
+  eventName: z.string().nullable(),
+  eventDate: z.string().nullable(),
+  newEventDate: z.string().nullable(),
+  city: z.string().nullable(),
+  bookingId: z.string().nullable(),
+  ticketCount: z.number().int().nullable(),
+  ticketFormat: z.enum(["e_ticket", "physical", "unknown"]),
+  amountPaid: z.number().nullable(),
+  paymentMethod: z.enum(["upi", "card", "netbanking", "wallet", "unknown"]),
+  paymentDate: z.string().nullable(),
+  paymentStatusShown: z.enum(["failed", "pending", "success", "unknown"]),
+  situation: z.enum(["cancelled", "postponed", "venue_changed", "failed_payment", "refund_claimed_not_received", "cant_attend", "other", "unclear"]),
+  promise: z.object({
+    text: z.string().nullable(), date: z.string().nullable(), workingDaysMax: z.number().int().nullable(),
+    calendarDaysMax: z.number().int().nullable(), anchorDate: z.string().nullable(),
+  }),
+  refundStatusClaimed: z.enum(["initiated", "processed", "none", "unknown"]),
+  refundProcessedDate: z.string().nullable(),
+  references: z.object({ arn: z.string().nullable(), rrnOrUtr: z.string().nullable() }),
+  actionsRequired: z.array(z.object({ action: z.string(), deadline: z.string().nullable(), link: z.string().nullable() })),
+  refundOptionDeadline: z.string().nullable(),
+  messageDate: z.string().nullable(),
+  contactsInText: z.array(z.object({ kind: z.enum(["email", "phone", "url"]), value: z.string() })),
+  userSaysLate: z.boolean(),
+  dateAssumptions: z.array(z.string()),
+  evidence: z.array(z.object({ field: z.string(), quote: z.string() })),
+  route: z.enum(["WAIT", "OVERDUE", "ACTION_NEEDED", "TRACE", "FAILED_PAYMENT", "NO_ROUTE", "NEED_INFO", "OUT_OF_SCOPE"]),
+  routeConfidence: z.number().min(0).max(1),
+  routeReasons: z.array(z.object({ quote: z.string(), why: z.string() })),
+  questions: z.array(z.object({ id: z.string(), text: z.string(), options: z.array(z.string()) })).max(3),
+  safety: z.object({ containsInstructionsToAI: z.boolean(), containsSensitiveNumbers: z.boolean() }),
+  summaryForUser: z.string(),
+});
+
+export type CaseRead = z.infer<typeof caseReadSchema>;

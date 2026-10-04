@@ -21,7 +21,7 @@ Carry into the start of M1 (small fixes, not blockers):
 - `tailwind.config.ts` maps only 6 colours. Add `accent-soft`, `on-accent`, `caution`, `caution-soft`, `danger`.
 - `tokens.css` lacks the `amount` size (40/44), line heights for each size, the sheet shadow and the motion durations from `02-design.md` section 6.2 and 6.3.
 
-## M1. Landing page and sample case (the product spec) | PROPOSED
+## M1. Landing page and sample case (the product spec) | READY FOR REVIEW
 Goal: a stranger understands in 10 seconds what it does, why to trust it, and can try a sample case.
 Acceptance checks:
 - [ ] Landing sections in the order of `docs/prd/03-frontend.md` S1; every string comes from `copy.ts` and matches `docs/prd/04-copy.md` section 3
@@ -33,7 +33,7 @@ Acceptance checks:
 - [ ] Nothing public links to an unbuilt screen (`/start` stays unlinked from public posts until M2 is DONE)
 Reviewed by: pending
 
-## M2. Onboarding to first value (US-1) | PROPOSED
+## M2. Onboarding to first value (US-1) | READY FOR REVIEW
 Goal: paste a message, and in under 15 seconds see the route, the due date with its source, and the next step, on a phone.
 Acceptance checks:
 - [ ] Intake per `docs/prd/03-frontend.md` S3: paste, up to 4 compressed screenshots, chips, redaction on device and server

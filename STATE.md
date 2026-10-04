@@ -1,26 +1,28 @@
-# Current state (overwritten each milestone, owned by Codex)
+# Current state (owned by Codex)
 
-Last updated: 2026-10-05 by Codex (overnight build in progress)
+Last updated: 2026-10-05, overnight build. M1 and M2 are READY FOR REVIEW by HQ; M0 is DONE. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
 
-## Built
-- Repo memory system: AGENTS.md, IDEA_SCOPE.md, DECISIONS.md, MILESTONES.md, STATE.md, SCRATCHPAD.md, docs/
-- Codex skills in .agents/skills/
-- M0 is DONE after HQ review. Its three carry notes are fixed in code.
-- M1 landing, sample, taste and privacy screens are built locally; the production build and type check pass, and the sample message preview opens.
+## Live product
 
-## In flight
-- M1 is in progress. Phone layout and remaining acceptance checks are being verified.
-- T1 validation test running (Ganesh).
+- Website: https://gx-getting-money-back.vercel.app/
+- Vercel Hobby hosts the Next.js website; Convex development deployment `harmless-lyrebird-924` holds the backend and data. GitHub is the code source. This is tonight's explicit exception to the older Convex-only hosting rule.
+- The live site is reachable without Vercel sign-in. Production alias tested in the in-app browser after deployment.
 
-## Not started
-- M2 to M4
+## Built and verified
 
-## Known bugs
-- The landing's Start link needs M2 intake before the public site can serve it.
+- Fixed all three M0 carry notes: exact 14-day guarantee wording, Tailwind colours, and missing type/shadow/motion tokens.
+- M1 landing, sample, taste, privacy: checked at 360 and 390 px. Lighthouse mobile score 96; the last audit transferred about 114 KB of JavaScript. Evidence: `docs/qa/lighthouse-2026-10-05.json` and today's log.
+- M2 paste and screenshot intake, redaction, private fragment link, date question, route/date/source/next-step card, save and calendar links. The deployed site completed a synthetic paste case and screenshot-only case. Wrong-token and saved-case reopen checks passed. Ten logged triages had p50 2.37 seconds.
+- M3 Friday path: verified email draft/send sheet, mark sent, scheduled check-in, Not yet to Grievance Officer draft, reply re-triage, action checklist and completion, no-route options, out-of-scope waitlist, close and feedback. A disposable synthetic case was deleted and was no longer readable. No real email or payment was sent.
+- `npm run build`, `npx tsc --noEmit`, and 17 unit tests pass. `npm run eval` passed all 12 synthetic fixtures, with exact asserted dates and zero invented contacts. Evidence: `docs/qa/eval-2026-10-05.md`.
 
-## Assumptions in force
-- Web first, phone-first layout
-- Prototype quality is fine for M0 to M2; production polish only after real users try it
+## Still open
 
-## Next single action
-Finish M1 verification, then build M2 without waiting for HQ review. Ganesh continues T1 in parallel.
+- The pay card is intentionally hidden because `NEXT_PUBLIC_UPI_VPA` is empty. The UPI link and QR code builder have unit coverage, but a real pay sheet and claim cannot be checked until Ganesh supplies a VPA and a safe payment test is arranged. No purchases or bank/UPI apps were used.
+- Android Chrome and iPhone Safari tests in `docs/prd/07-build-plan.md` section 4 were not run on physical phones. Calendar app handoff, mail app handoff, UPI chooser, 200% text zoom, offline mode, and saved regression screenshots remain unverified. The in-app browser covered the main web flow at phone widths.
+- Before accepting real paid cases, complete the PRD launch checks: Vercel Pro, Gemini billing and budget alert, domain, working support contact, BookMyShow manual check, payment reconciliation, and phone tests. Nothing was purchased tonight.
+- M3 full milestone also has later-week work: L2, payment verification, analytics funnel, and remaining phone tests. M4 email is untouched. T1 validation is Ganesh's parallel task.
+
+## First morning action
+
+Open the live URL on your own phone and run one made-up event refund through to its case card. Then review the M1/M2 evidence with HQ before sharing the site with real users.

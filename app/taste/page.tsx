@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { landingCopy as l, productName, sampleCopy as s } from "../copy";
+import { landingCopy as l, productName } from "../copy";
 import "./taste.css";
 
 const directions = [
@@ -32,8 +32,8 @@ export default function TastePage() {
             <p className="taste-screen-label">US-1 case card</p>
             <div className="taste-phone-content">
               <span className="wordmark">{productName}<span className="wordmark-dot">.</span></span>
-              <p className="eyebrow">{s.platform}</p>
-              <h2>{s.event}</h2>
+              <p className="eyebrow">{l.example.platform}</p>
+              <h2>{l.example.event}</h2>
               <div className="taste-case-card">
                 <span className="route-chip">{l.example.route}</span>
                 <p className="case-amount">{l.example.amount}</p>

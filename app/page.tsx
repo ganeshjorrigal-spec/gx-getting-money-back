@@ -11,7 +11,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link>
-        <Link className="text-link" href="/sample">{c.headerLink} <span aria-hidden="true">↗</span></Link>
+        <Link prefetch={false} className="text-link" href="/sample">{c.headerLink} <span aria-hidden="true">↗</span></Link>
       </header>
 
       <LandingEnhancements />
@@ -22,8 +22,8 @@ export default function Home() {
           <h1>{c.headline}</h1>
           <p className="hero-sub">{c.sub}</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/start">{c.primary} <span aria-hidden="true">→</span></Link>
-            <Link className="button button-secondary" href="/sample">{c.secondary}</Link>
+            <Link prefetch={false} className="button button-primary" href="/start">{c.primary} <span aria-hidden="true">→</span></Link>
+            <Link prefetch={false} className="button button-secondary" href="/sample">{c.secondary}</Link>
           </div>
           <p className="trust-line">{c.trust}</p>
         </div>
@@ -105,7 +105,7 @@ export default function Home() {
         <div className="section-wrap footer-inner">
           <Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link>
           <p>{c.footer}</p>
-          <div><Link href="/privacy">{c.privacyLink}</Link>{contact && <a href={`mailto:${contact}`}>{c.contactLink}</a>}</div>
+          <div><Link prefetch={false} href="/privacy">{c.privacyLink}</Link>{contact && <a href={`mailto:${contact}`}>{c.contactLink}</a>}</div>
         </div>
       </footer>
     </main>

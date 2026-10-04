@@ -1,5 +1,8 @@
-# Scratchpad (Ganesh's live instructions; purge checked items at each milestone)
+# Scratchpad
 
-- [ ] Overnight 2026-10-05: M0 is DONE. Fix its three carry notes, then build M1, M2 and the Friday must list in M3 in order. Do not wait for HQ reviews between milestones; record evidence and push working checkpoints.
-- [ ] Tonight's authorised choices: no accounts; private case links; manual UPI hidden when VPA is absent; Tickback in one constant; Direction A; Gemini models from env; exact D-009 guarantee line; Vercel Hobby website with Convex backend. No paid plans or new sign-ups.
-- [ ] Current best: M0 carry notes fixed. Landing, sample, taste and privacy screens built. Next: finish M1 phone checks, build M2 intake and real case.
+- [x] Pulled GitHub; M0 was DONE; fixed its three carry notes.
+- [x] Built and deployed M1, M2 and the available M3 Friday path. M1 and M2 await HQ review; do not wait for that review to continue future work.
+- [x] Tonight's authorised choices: private links, no accounts, hidden pay card without VPA, Tickback constant, Direction A, Gemini models from env, exact 14-day guarantee, Vercel Hobby website plus Convex backend. No paid plans or new sign-ups.
+- Current best: live public URL in `STATE.md`; production build and 17 unit tests pass; 12/12 eval routes pass; Lighthouse 96; synthetic paste/screenshot/close/feedback/delete paths verified.
+- What failed and why: initial Convex and eval commands lacked sandbox network permission; rerunning with approved network access worked. An older synthetic case retained a wrong model date from before the date-grounding fix; a fresh case and all 12 eval fixtures passed after the fix. Local `next dev` fell back to fonts when network was denied, so the final production build was run with approved network access.
+- Next test: physical Android/iPhone handoffs and a real payment flow after a UPI VPA is supplied and the paid-launch checks are met.

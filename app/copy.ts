@@ -15,6 +15,7 @@ export const landingCopy = {
   secondary: "See a real case first",
   trust: "Free to check · No sign-up · Nothing is sent without you",
   example: {
+    platform: "BookMyShow",
     label: "Example",
     event: "Monsoon Live, Bengaluru · 2 tickets",
     amount: "₹3,500",
@@ -97,4 +98,55 @@ export const sampleCopy = {
   checkin: "The refund landed about 20 days after the venue change. This is a past case, not a promised date for yours.",
   saveTitle: "Your case stays at one private link",
   saveBody: "In your own case, you can add a check-in to your calendar and return through that link.",
+};
+
+export const intakeCopy = {
+  title: "What did they tell you?",
+  helper: "Paste the message from BookMyShow, District or the organiser. Or describe what happened in a line or two.",
+  placeholder: "e.g. \"Your booking BKMY12345 for Monsoon Live on 18 Oct has been cancelled. Refund of Rs 3,500 in 7-10 working days.\"",
+  paste: "Paste",
+  screenshot: "Add screenshot",
+  pasteRefused: "Long-press in the box and tap Paste.",
+  chipsLabel: "Or start with what happened",
+  chips: [
+    ["Event cancelled", "My event was cancelled."],
+    ["Postponed", "My event was postponed."],
+    ["Venue changed", "The venue was changed."],
+    ["Money gone, no ticket", "Money was debited but I didn't get a ticket."],
+    ["\"Refunded\" but not received", "They say it's refunded but it's not in my account."],
+    ["I can't go", "I can't attend and want my money back."],
+  ],
+  safety: "Don't include OTPs or card numbers. We remove them if you do. Crop them out of screenshots.",
+  submit: "Check my refund",
+  disabled: "Add a message, a screenshot or pick what happened.",
+};
+
+export const caseCopy = {
+  badLink: "We can't open this case. Check you copied the whole link, including the part after the # sign.",
+  progress: ["Reading your message", "Finding your refund route", "Working out your date", "Writing your next step"],
+  working: "Still working. Your message is saved.",
+  error: "Something went wrong on our side. Your case is safe.",
+  retry: "Try again",
+  needInfo: "Need a bit more",
+  questionTitle: "A couple of quick questions",
+  continue: "Continue",
+  routeLabels: {
+    WAIT: "On its way", OVERDUE: "Overdue", ACTION_NEEDED: "You need to act",
+    TRACE: "Refunded, not received", FAILED_PAYMENT: "Payment failed",
+    NO_ROUTE: "No refund route", NEED_INFO: "Need a bit more", OUT_OF_SCOPE: "Not tickets (yet)",
+  },
+  waitNext: "Nothing to send yet.",
+  saveTitle: "Don't lose this case",
+  calendar: "Add check-in to calendar",
+  copyLink: "Copy my case link",
+  share: "Send to my WhatsApp",
+  linkNote: "This link is your key. Anyone with it can see this case.",
+  copied: "Copied",
+  addDate: "Your dates changed. Add the new check-in.",
+  openEmail: "Open in my email",
+  draftTitle: "Your message to support",
+  emailHelp: "We couldn't confirm this address. Look for \"Contact us\" or \"Grievance Officer\" in the app's Help section, then paste it here.",
+  emailNote: "This opens your own email app. Nothing is sent until you press send there.",
+  calendarTitle: (amount: string, eventName: string) => `Check your ${amount}${amount === "refund" ? "" : " refund"} (${eventName})`,
+  calendarDescription: (amount: string, eventName: string, caseLink: string) => `Has your ${amount}${amount === "refund" ? "" : " refund"} for ${eventName} landed? Open your case to update it or get your next step: ${caseLink}\n\nTickback. Nothing is sent without you.`,
 };
