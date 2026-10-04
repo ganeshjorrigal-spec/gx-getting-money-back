@@ -276,7 +276,7 @@ export default function CasePage() {
   const isIOS = ready && /iPhone|iPad|iPod/.test(navigator.userAgent);
   const isAndroid = ready && /Android/.test(navigator.userAgent);
   const messageSteps = ["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_bank", "NO_ROUTE_ask", "ACTION_form"];
-  const locked = !!caseData?.paymentsEnabled && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && caseData.draftsShown >= 1 && messageSteps.includes(caseData.nextStep ?? "") && drafts?.[0]?.step !== caseData.nextStep;
+  const locked = !!caseData?.paymentsEnabled && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && caseData.draftsShown >= 1 && messageSteps.includes(caseData.nextStep ?? "") && (drafts?.[0]?.step !== caseData.nextStep || !drafts?.[0]?.body);
 
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><span className="case-code">{code}</span></header>
