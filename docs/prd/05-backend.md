@@ -32,7 +32,7 @@ flowchart LR
     DB[("tables")]
     FS[("file storage<br/>screenshots")]
   end
-  OAI["OpenAI API<br/>Responses, JSON schema"]
+  OAI["Gemini API<br/>structured JSON output"]
   UI <--> Q
   UI --> M
   UI --> FS
@@ -55,19 +55,19 @@ flowchart LR
 
 UD's rule: use an open-source harness, don't build one.
 
-- **v1 uses the Vercel AI SDK** (`ai` plus `@ai-sdk/openai`) inside Convex actions:
+- **v1 uses the Vercel AI SDK** (`ai` plus `@ai-sdk/google`) inside Convex actions (D-016):
   - `generateObject` with Zod schemas for structured outputs.
-  - The OpenAI Responses API.
-  - Our own `OPENAI_API_KEY` stored as a Convex env var.
+  - The Gemini API through the AI SDK Google provider.
+  - Ganesh's own key stored as the Convex env var `GOOGLE_GENERATIVE_AI_API_KEY` (the name the AI SDK Google provider reads by default; Codex confirms against the installed version).
   - The Convex AI Gateway is for paid teams only, so we don't use it.
 - Our own code is only the thin case state machine and `planCase()`.
 - **Upgrade path:** the official Convex Agent component (`@convex-dev/agent`) gives threads, history and usage tracking. Adopt it when we add free-form chat inside a case (post-sprint). It is not needed for a structured pipeline.
 
 **Model settings** (env vars, never hard-coded):
-- `OPENAI_MODEL=gpt-6-luna`: small, fast, takes images, supports structured outputs. The price is UNSURE between two OpenAI pages; check it before launch.
-- `OPENAI_MODEL_FALLBACK=gpt-5.4-mini`: used if the primary model errors.
-- `OPENAI_REASONING_EFFORT=low`.
-- `store: false` on every call. API data is not used for training by default; abuse logs are kept up to 30 days.
+- `GEMINI_MODEL`: the current stable Gemini **Flash** model that takes image input and supports structured JSON output. Model IDs change often, so Codex reads https://ai.google.dev/gemini-api/docs/models at build time, picks it, and writes the ID and date in the log. Never hard-code it.
+- `GEMINI_MODEL_FALLBACK`: a second stable Flash or Flash-Lite model, used if the primary errors.
+- Keep thinking or reasoning to the lowest setting the model allows, for speed.
+- **Data:** on the Gemini API free (unpaid) tier, Google may use submitted content to improve its products. On the paid tier it does not. Real user cases need **billing turned on** (paid tier) before launch, and the privacy copy depends on it (`04-copy.md` section 18). Sources: https://ai.google.dev/gemini-api/docs/logs-policy and the Gemini API additional terms; re-check before launch.
 
 ---
 
@@ -237,7 +237,7 @@ sequenceDiagram
   participant M as Mutation
   participant S as Scheduler
   participant A as Action: triage
-  participant O as OpenAI
+  participant O as Gemini
   participant P as planCase (code)
   U->>M: cases.create(text, screenshots, tokenHash)
   M->>M: redact, cap, insert case + input, stage TRIAGING
@@ -468,9 +468,9 @@ A pure function in `convex/lib/plan.ts`. It is fully unit-tested (section 16).
 
 ## 10. Reliability
 
-- **OpenAI calls:**
+- **Gemini calls:**
   - Timeout of 20 s each.
-  - Up to 2 attempts with a 1 s backoff, so a triage run ends within about 45 s. The second attempt uses `OPENAI_MODEL_FALLBACK` if the first failed with a model or 5xx error.
+  - Up to 2 attempts with a 1 s backoff, so a triage run ends within about 45 s. The second attempt uses `GEMINI_MODEL_FALLBACK` if the first failed with a model or 5xx error.
   - The client shows its error state at 50 s, after the run has ended.
 - **Actions are never retried by Convex.** Our loop is the retry. After the final failure:
   1. `agent.fail` sets stage `ERROR` with a friendly message.
@@ -520,7 +520,7 @@ Cases are short, so no summarisation layer is needed. If a case passes 30 events
   - Agent runs: 20 per case.
   - `analytics.track`: 200 per hour per session; case-linked events need the case token.
   - `waitlist.join`: 10 per hour per `deviceId`.
-  - **The real cost cap** is the monthly spend limit set in the OpenAI dashboard.
+  - **The real cost cap** is a budget alert or spend cap on the Google Cloud billing account behind the Gemini key.
 - **Caps:** text up to 8,000 characters. Up to 4 screenshots per input, each 2 MB or less after compression.
 - **Secrets:** only in Convex env and Vercel env. Never in the repo, logs or markdown.
 - **Delete:**
@@ -528,10 +528,10 @@ Cases are short, so no summarisation layer is needed. If a case passes 30 events
   2. Delete files from storage, then the inputs, drafts, check-ins, events and feedback.
   3. Keep `agentRuns` (no content) and a payment row reduced to code, amount and date for accounting.
   4. Delete the case row.
-  - OpenAI may keep request logs for up to 30 days for abuse monitoring. The privacy page says so.
+  - Google may keep request logs for abuse monitoring under the Gemini API terms. The privacy page says so.
 - **Retention:** a daily cron removes screenshots from cases closed more than 180 days ago, and deletes open cases with no activity for 12 months.
 - **Calendar:** if the user adds a check-in with the Google Calendar link, the case link (with its secret) is stored in their own calendar. The privacy page says so.
-- **Model provider:** OpenAI with `store: false`. API data is not used for training by default (OpenAI's API data policy, checked 4 Oct 2026).
+- **Model provider:** Gemini API on the paid tier for real users (see section 3). The free tier is fine for building and the eval set only.
 
 ---
 
@@ -546,7 +546,7 @@ Cases are short, so no summarisation layer is needed. If a case passes 30 events
 
 ## 15. Cost (sprint scale)
 
-- **Per case:** 2 to 6 model calls of about 3,000 to 6,000 input and up to 1,500 output tokens each, plus about 1,000 tokens per screenshot. At the higher of the two quoted `gpt-6-luna` prices (USD 0.10 input and 0.50 output per million tokens), that is about USD 0.01, roughly ₹1 per case or less.
+- **Per case:** 2 to 6 model calls of about 3,000 to 6,000 input and up to 1,500 output tokens each, plus image tokens per screenshot. Flash models are priced in cents per million tokens, so a case should cost well under ₹1. Codex checks the current price of the chosen model and notes it in the log.
 - **Fixed:**
 
   | Item | Cost |
@@ -592,10 +592,10 @@ Run it before every deploy that touches prompts, schemas or `planCase()`.
 
 | Where | Name | Notes |
 |---|---|---|
-| Convex | `OPENAI_API_KEY` | Secret |
-| Convex | `OPENAI_MODEL` | `gpt-6-luna` |
-| Convex | `OPENAI_MODEL_FALLBACK` | `gpt-5.4-mini` |
-| Convex | `OPENAI_REASONING_EFFORT` | `low` |
+| Convex | `GOOGLE_GENERATIVE_AI_API_KEY` | Secret (Gemini key) |
+| Convex | `GEMINI_MODEL` | Current stable Flash model ID, chosen at build time |
+| Convex | `GEMINI_MODEL_FALLBACK` | A second Flash or Flash-Lite model ID |
+| Convex | `GEMINI_PAID_TIER` | `false` while building; `true` once billing is on (drives the privacy copy) |
 | Convex | `APP_URL` | Public site URL, used in calendar links |
 | Convex | `EMAIL_ENABLED` | `false` until the domain is verified |
 | Convex | `RESEND_API_KEY`, `EMAIL_FROM` | v1.1 only |

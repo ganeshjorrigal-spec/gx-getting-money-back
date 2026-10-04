@@ -90,7 +90,7 @@ Guarantee constant: `guaranteeLine`. Until P-2 is accepted it follows D-009: `If
 3. **Is this legal advice?** No. We help you use the routes that already exist: support, the platform's grievance officer, and the National Consumer Helpline.
 4. **Which platforms?** BookMyShow, District, and organisers' own ticket sites in India. Flights are next.
 5. **My refund isn't for an event ticket.** We're starting with event tickets. Tell us what it is and we'll let you know when we cover it.
-6. **What happens to my data?** Your case lives at a private link only you have. We use OpenAI to read your messages and write drafts; it doesn't train on them. Delete your case and it's gone.
+6. **What happens to my data?** Your case lives at a private link only you have. We use Google's Gemini to read your messages and write drafts, on a paid plan where Google doesn't use them to improve its products. Delete your case and it's gone.
 7. **Who's behind this?** (optional, Ganesh decides) I'm Ganesh. I'm building Tickback in public. Write to me at {contact}.
 
 **Sticky bar (mobile):** Start my case
@@ -319,12 +319,12 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 
 - **What we store:** what you paste or upload, the facts we read from it, the drafts we write, your dates and your answers. If you choose, an email or phone for check-ins or the founder.
 - **Why:** to work out your refund route and dates, write your messages and remind you.
-- **Who handles it:** Convex stores it. OpenAI reads your messages and writes drafts; under OpenAI's API terms it isn't used to train their models. Vercel hosts the website.
+- **Who handles it:** Convex stores it. Google's Gemini reads your messages and writes drafts. We use Gemini's paid tier, under which Google doesn't use your content to improve its products. (Show this only when `GEMINI_PAID_TIER=true`. Otherwise show: "Google's Gemini reads your messages and writes drafts. During testing we use Gemini's free tier, under which Google may use content to improve its products." The FAQ line follows the same flag.) Vercel hosts the website.
 - **What we never collect:** OTPs, passwords, card numbers, bank logins. We remove card numbers and codes from text automatically.
 - **Who can see a case:** anyone with its private link. Keep it to yourself. In our first weeks, the founder may look at cases to fix mistakes in the product. We never contact you unless you ask us to.
 - **How long we keep it:** until you delete it. We remove screenshots from closed cases after 180 days, and delete cases with no activity for 12 months.
 - **Calendar:** if you add a check-in to Google Calendar, your case link is saved in your calendar.
-- **Delete:** open your case and tap Delete this case. Your messages, screenshots and drafts are removed at once. We keep only the case code, amount and date of any payment, for our accounts. OpenAI may keep request logs for up to 30 days for abuse monitoring.
+- **Delete:** open your case and tap Delete this case. Your messages, screenshots and drafts are removed at once. We keep only the case code, amount and date of any payment, for our accounts. Google may keep request logs for abuse monitoring under the Gemini API terms.
 - **Contact:** {contact}
 
 ---

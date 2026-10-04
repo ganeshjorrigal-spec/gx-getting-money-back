@@ -35,7 +35,7 @@ The pain is not sending one message. It is the days of not knowing what to do, w
 | D-010 | v1 = event-ticket refunds only; flights next; EPF v2 |
 | D-011 | The agent prepares; the user's own email or chat sends. Nothing is sent from our domain |
 | D-012 | Web is the real v1 interface. Reminders by calendar now, email after the domain is verified. No WhatsApp interface in v1 |
-| D-013 | AI provider: OpenAI API; model set by env var |
+| D-016 | AI provider: Gemini API (replaces D-013); model set by env var |
 | D-014 | Ganesh asked Claude HQ to write the JTBD, user stories and user flows (4 Oct) |
 
 ## Defaults this PRD proposes (Ganesh confirms or changes each)
@@ -48,7 +48,7 @@ The pain is not sending one message. It is the days of not knowing what to do, w
 | P-4 | Build on Vercel Hobby; move to Vercel Pro (USD 20 a month) before the first paid case | Hobby forbids commercial use |
 | P-5 | Name: Tickback. As of 4 Oct, `gettickback.com` and `tickback.co` were available (`tickback.app` was not). Check `.in` at an Indian registrar | Tickets now (events) and next (flights); short; says the outcome |
 | P-6 | Design Direction A (Calm Ledger) is the build default until the taste-lock picks one by Mon 5 Oct, 12:00 | Building can't wait; tokens make switching a one-file change |
-| P-7 | Model `gpt-6-luna`, fallback `gpt-5.4-mini`, low reasoning effort, `store: false` | Small, fast, takes images, structured outputs; about ₹1 or less per case |
+| P-7 | Current stable Gemini Flash model, chosen at build time, with a Flash fallback; lowest thinking setting; paid tier before real users | Fast, takes images, structured output; well under ₹1 per case; the paid tier keeps user content out of Google's product improvement |
 
 Other names checked and available on 4 Oct: `chasekar.app`, `haqdaar.app`, `paisaphir.com`, `lautao.app`. Not available: `dueback.app`, `getdueback.com`.
 
