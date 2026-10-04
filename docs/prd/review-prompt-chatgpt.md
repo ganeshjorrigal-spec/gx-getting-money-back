@@ -1,6 +1,6 @@
 # Red-team prompt for ChatGPT Pro
 
-How to use: in ChatGPT, attach the single bundle file `tickback-prd-bundle.md` (Claude HQ sends it; it contains every file listed below), or attach the files one by one, or connect the GitHub repo `ganeshjorrigal-spec/gx-getting-money-back` if your ChatGPT has the GitHub connector. Choose the strongest reasoning model, then paste everything between the lines. Bring the report back to Claude HQ; HQ decides what to change. ChatGPT's report is input, not a decision.
+How to use: in ChatGPT, attach the single bundle file `tickback-prd-bundle.md` (it contains every file listed below), or attach the files one by one, or connect the GitHub repo `ganeshjorrigal-spec/gx-getting-money-back` if your ChatGPT has the GitHub connector. Choose the strongest reasoning model, then paste everything between the lines. Bring the report back for a decision on what to change. ChatGPT's report is input, not a decision.
 
 Files to attach: `docs/prd/README.md`, `docs/prd/01-product.md` to `docs/prd/07-build-plan.md`, `DECISIONS.md`, `IDEA_SCOPE.md`, `docs/archive/2026-10-04_research-event-refund-routes.md`, `docs/archive/2026-10-04_research-tech-facts.md`.
 
