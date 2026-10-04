@@ -15,11 +15,19 @@
   --font-interface: var(--font-geist);
 
   --text-hero: 2.125rem;
+  --leading-hero: 2.5rem;
+  --text-amount: 2.5rem;
+  --leading-amount: 2.75rem;
   --text-title: 1.375rem;
+  --leading-title: 1.75rem;
   --text-heading: 1.125rem;
+  --leading-heading: 1.5rem;
   --text-body: 1rem;
+  --leading-body: 1.5rem;
   --text-small: 0.875rem;
+  --leading-small: 1.25rem;
   --text-micro: 0.75rem;
+  --leading-micro: 1rem;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -35,4 +43,55 @@
   --radius-control: 0.625rem;
   --radius-card: 0.875rem;
   --radius-chip: 999px;
+  --shadow-sheet: 0 -8px 24px rgba(28, 27, 25, 0.08);
+  --motion-tap: 150ms;
+  --motion-sheet: 220ms;
+  --motion-progress: 180ms;
+  --width-app: 560px;
+  --width-page: 1040px;
+  --page-gutter: 16px;
+  --control-height: 48px;
+  --touch-height: 44px;
+  --border-width: 1px;
+  --hero-desktop: 3rem;
+  --leading-hero-desktop: 3.375rem;
+}
+
+.taste-b {
+  --bg: #fff8ee;
+  --surface: #ffffff;
+  --ink: #22201c;
+  --muted: #5e584e;
+  --line: #efe3cf;
+  --accent: #0f5f63;
+  --accent-soft: #ddf0ef;
+  --on-accent: #ffffff;
+  --caution: #8f4b00;
+  --caution-soft: #ffe9c7;
+  --danger: #a3271b;
+  --highlight: #f2b33d;
+  --font-display: var(--font-bricolage);
+  --font-interface: var(--font-manrope);
+  --radius-control: 0.875rem;
+  --radius-card: 1.25rem;
+}
+
+.taste-c {
+  --bg: #f5f0e3;
+  --surface: #fffdf7;
+  --ink: #1f2328;
+  --muted: #565b63;
+  --line: #ddd3bc;
+  --accent: #1d5e3b;
+  --accent-soft: #dfede3;
+  --on-accent: #ffffff;
+  --caution: #8c4a0b;
+  --caution-soft: #f8e5cc;
+  --danger: #a4301f;
+  --stamp: #b4381f;
+  --font-display: var(--font-source-serif);
+  --font-interface: var(--font-source-serif);
+  --radius-control: 0.25rem;
+  --radius-card: 0.375rem;
+  --radius-chip: 0.25rem;
 }

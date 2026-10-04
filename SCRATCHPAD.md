@@ -1,3 +1,5 @@
 # Scratchpad (Ganesh's live instructions; purge checked items at each milestone)
 
-- [ ] Ganesh overrides the no-Vercel rule: Vercel Hobby hosts only the Next.js website. Convex remains the backend and database under D-006. Use the Vercel CLI to deploy a preview and set the Convex URL and Gemini key in Vercel. No domain or paid plan. Do not start M1 until M0 has an independent review and is marked DONE.
+- [ ] Overnight 2026-10-05: M0 is DONE. Fix its three carry notes, then build M1, M2 and the Friday must list in M3 in order. Do not wait for HQ reviews between milestones; record evidence and push working checkpoints.
+- [ ] Tonight's authorised choices: no accounts; private case links; manual UPI hidden when VPA is absent; Tickback in one constant; Direction A; Gemini models from env; exact D-009 guarantee line; Vercel Hobby website with Convex backend. No paid plans or new sign-ups.
+- [ ] Current best: M0 carry notes fixed. Landing, sample, taste and privacy screens built. Next: finish M1 phone checks, build M2 intake and real case.

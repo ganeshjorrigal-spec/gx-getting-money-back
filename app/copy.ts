@@ -1,4 +1,100 @@
 export const productName = "Tickback";
+export const guaranteeLine = "If you're not happy within 14 days, you get the ₹49 back.";
 
-export const guaranteeLine =
-  "For refunds of ₹300 and above, the current test price is ₹49 with a money-back guarantee.";
+export const metaCopy = {
+  title: "Tickback: get your stuck ticket refund back",
+  description: "Event cancelled or moved? Paste what the organiser told you. See your refund date and the exact next step, ready to send. Check in on the date and get the next step if it hasn't come.",
+};
+
+export const landingCopy = {
+  headerLink: "See a real case",
+  eyebrow: "For event tickets bought in India",
+  headline: "Stuck ticket refund? We'll stay on it till the money lands.",
+  sub: "Paste what the organiser told you. In under a minute you'll know where your refund stands, the date it's due, and the exact message to send. Add the check-in to your calendar. If the money hasn't come by then, your next step is ready.",
+  primary: "Start my case",
+  secondary: "See a real case first",
+  trust: "Free to check · No sign-up · Nothing is sent without you",
+  example: {
+    label: "Example",
+    event: "Monsoon Live, Bengaluru · 2 tickets",
+    amount: "₹3,500",
+    route: "On its way",
+    due: "Due by Fri, 23 Oct",
+    source: "They said \"within 7-10 working days\" on 9 Oct.",
+    next: "Nothing to send yet. Your check-in: Sat, 24 Oct.",
+  },
+  familiarTitle: "Sound familiar?",
+  familiar: [
+    "The match got moved to another city.",
+    "Support said \"we don't know yet\". For four days.",
+    "Then a form. Then a courier, at your cost. Then two weeks of silence.",
+  ],
+  familiarNote: "Based on a real case. ₹2,400. About 20 days.",
+  howTitle: "How it works",
+  how: [
+    ["Paste the message.", "SMS, email, WhatsApp or a screenshot. Or just tell us what happened."],
+    ["Know where you stand.", "Your refund route, the date it's due, and why that date."],
+    ["Send the right message.", "Written for you. It opens in your own email, ready to send. Edit anything."],
+    ["Check in on the date.", "It goes on your calendar with your case link. Not there yet? Your next step is ready."],
+  ],
+  whyTitle: "Why not just ask ChatGPT?",
+  why: [
+    ["It remembers your case.", "Every message, every date, every proof. One link."],
+    ["It knows the route.", "Cancelled, postponed, moved, failed payment, \"refunded\" but missing. Each one has a different path."],
+    ["It's ready when you come back.", "On your check-in date, the next step is already written."],
+  ],
+  neverTitle: "What we never do",
+  never: [
+    "Ask for OTPs, passwords, card numbers or bank logins.",
+    "Send anything without you. Messages go from your own email.",
+    "Sell or share your data.",
+    "Keep your case after you delete it.",
+  ],
+  handleTitle: "What we handle",
+  handles: ["Event cancelled", "Postponed", "Venue changed", "Money gone, no ticket", "\"Refunded\" but not received", "Can't attend (we'll tell you honestly)"],
+  handleLine: "BookMyShow, District and organisers' own ticket sites. Concerts, comedy, cricket, festivals.",
+  pricingTitle: "Pricing",
+  freeTitle: "Free to check.",
+  freeBody: "Your route, your date and your first step. Always free.",
+  paidTitle: "₹49 to stay on it.",
+  paidBody: "For refunds of ₹300 or more. Every message after the first, written for you: follow-ups, the grievance officer email, the helpline complaint.",
+  under300: "Refunds under ₹300 are free, start to finish.",
+  questionsTitle: "Questions",
+  questions: [
+    ["Do you contact the organiser for me?", "No. You send every message, from your own email or the app's chat. We write it and tell you where to send it. That keeps it real, and it keeps you in control."],
+    ["How do you know the dates?", "From what the organiser promised, the platform's own refund policy, or the rules, like the RBI's rule for failed payments. Every date shows where it came from. When we have to estimate, we say so."],
+    ["Is this legal advice?", "No. We help you use the routes that already exist: support, the platform's grievance officer, and the National Consumer Helpline."],
+    ["Which platforms?", "BookMyShow, District, and organisers' own ticket sites in India. Flights are next."],
+    ["My refund isn't for an event ticket.", "We're starting with event tickets. Tell us what it is and we'll let you know when we cover it."],
+  ],
+  privacyQuestion: "What happens to my data?",
+  privacyPaid: "Your case lives at a private link only you have. We use Google's Gemini to read your messages and write drafts, on a paid plan where Google doesn't use them to improve its products. Delete your case and it's gone.",
+  privacyFree: "Your case lives at a private link only you have. We use Google's Gemini to read your messages and write drafts. During testing we use Gemini's free tier, under which Google may use content to improve its products. Delete your case and it's gone.",
+  footer: "Tickback helps you follow the refund routes that already exist. Not legal advice.",
+  privacyLink: "Privacy",
+  contactLink: "Contact",
+};
+
+export const sampleCopy = {
+  banner: "This is a sample based on a real case. Nothing here is live.",
+  start: "Start my own case",
+  sendNote: "In your case, this opens your own email app.",
+  timeline: "Timeline",
+  showAll: "Show all",
+  showLess: "Show less",
+  message: "See the message we'd prepare",
+  messageTitle: "Your message to support",
+  messageBody: "Hello BookMyShow team,\n\nMy match was moved from Ahmedabad to Chennai. I chose the refund option and sent the physical tickets for scanning. Please confirm that you received them and tell me when my ₹2,400 refund will reach my original payment method. Please also share the refund reference number when it is processed.\n\nThank you,\n{name}",
+  close: "Close",
+  status: "You need to act",
+  event: "IPL match moved to another city",
+  platform: "BookMyShow · 2 tickets",
+  amount: "₹2,400",
+  statusTitle: "A form and physical tickets were needed for this refund.",
+  source: "Based on the organiser's instructions in the original case.",
+  stepTitle: "Keep proof of each step",
+  steps: ["Fill in the refund form.", "Photograph the tickets before sending them.", "Keep the courier receipt and tracking number.", "Screenshot the form after submitting it."],
+  checkin: "The refund landed about 20 days after the venue change. This is a past case, not a promised date for yours.",
+  saveTitle: "Your case stays at one private link",
+  saveBody: "In your own case, you can add a check-in to your calendar and return through that link.",
+};

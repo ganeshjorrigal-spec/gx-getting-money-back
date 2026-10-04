@@ -1,0 +1,22 @@
+.taste-page { background: var(--bg); }
+.taste-intro { padding-block: var(--space-10); }
+.taste-intro h1 { font-family: var(--font-display), serif; font-size: var(--text-hero); line-height: var(--leading-hero); margin: 0; }
+.taste-intro p { color: var(--muted); }
+.taste-direction { color: var(--ink); background: var(--bg); padding-block: var(--space-10); border-top: var(--border-width) solid var(--line); }
+.taste-label { font-family: var(--font-interface), sans-serif; font-weight: 600; margin: 0 0 var(--space-5); }
+.taste-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 390px)); gap: var(--space-5); }
+.taste-phone { border: var(--border-width) solid var(--line); border-radius: var(--radius-card); background: var(--surface); overflow: hidden; }
+.taste-screen-label { font-size: var(--text-small); border-bottom: var(--border-width) solid var(--line); padding: var(--space-3) var(--space-4); margin: 0; }
+.taste-phone-content { padding: var(--space-6); min-height: 620px; font-family: var(--font-interface), sans-serif; }
+.taste-phone-content .eyebrow { margin-top: var(--space-10); }
+.taste-phone-content h2 { margin: var(--space-4) 0; }
+.taste-phone-content > p:not(.eyebrow) { color: var(--muted); line-height: var(--leading-body); }
+.taste-phone-content .button { display: flex; margin-top: var(--space-3); }
+.taste-phone-content small { display: block; color: var(--muted); margin-top: var(--space-4); }
+.taste-case-card { border: var(--border-width) solid var(--line); border-radius: var(--radius-card); padding: var(--space-5); margin-top: var(--space-8); }
+.taste-case-card .case-amount { margin-top: var(--space-8); }
+.taste-case-card > p:not(.case-amount) { color: var(--muted); line-height: var(--leading-small); font-size: var(--text-small); }
+.taste-b .taste-phone-content h2 { font-family: var(--font-bricolage), sans-serif; }
+.taste-c .taste-phone-content .eyebrow { font-family: var(--font-ibm-mono), monospace; }
+.taste-c .taste-phone-content h2 { font-family: var(--font-source-serif), serif; }
+@media (max-width: 760px) { .taste-pair { grid-template-columns: 1fr; } .taste-phone-content { min-height: 0; } }
