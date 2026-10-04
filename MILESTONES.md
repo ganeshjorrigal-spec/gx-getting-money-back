@@ -4,16 +4,16 @@ Status values: PROPOSED, ACTIVE, READY FOR REVIEW, DONE (after independent revie
 Order follows the sprint guidance: landing page, then onboarding, then value, then communication.
 Rewritten on 2026-10-04 to match the PRD in `docs/prd/` (D-010 to D-015). Build in order; one milestone ACTIVE at a time. Which PRD files each milestone needs: `docs/prd/07-build-plan.md` section 1.
 
-## M0. Project skeleton | ACTIVE
+## M0. Project skeleton | READY FOR REVIEW
 Goal: Next.js + Convex (D-006) runs locally and deploys a blank page to a public URL.
 Acceptance checks:
-- [ ] `npm run dev` (or equivalent) starts with no errors
-- [ ] A preview URL loads on a phone
-- [ ] `.env.example` lists every key in `docs/prd/05-backend.md` section 17; `.env` is git-ignored
-- [ ] `app/styles/tokens.css` holds Direction A tokens (`docs/prd/02-design.md` section 6) and Tailwind reads them
-- [ ] Fonts load with `latin` and `latin-ext` subsets; a test line shows the ₹ sign in both fonts
-- [ ] `app/copy.ts` exists with the product name and `guaranteeLine` constants
-- [ ] Confirm `crypto.subtle.digest` works inside a Convex query (needed for token checks); if not, note the fallback in the log
+- [x] `npm run dev` (or equivalent) starts with no errors
+- [x] A preview URL loads on a phone
+- [x] `.env.example` lists every key in `docs/prd/05-backend.md` section 17; `.env` is git-ignored
+- [x] `app/styles/tokens.css` holds Direction A tokens (`docs/prd/02-design.md` section 6) and Tailwind reads them
+- [x] Fonts load with `latin` and `latin-ext` subsets; a test line shows the ₹ sign in both fonts
+- [x] `app/copy.ts` exists with the product name and `guaranteeLine` constants
+- [x] Confirm `crypto.subtle.digest` works inside a Convex query (needed for token checks); if not, note the fallback in the log
 - Note: M0 uses the working name (P-5) and Direction A (P-6). Both live in one constant or one file, so they swap cheaply if Ganesh changes them (Q-007).
 Reviewed by: pending
 
