@@ -36,7 +36,7 @@ With my product (4 steps):
 Job solved better: ChatGPT writes one message and forgets. The agent knows the route for this platform and case, computes the date from the promise or the rule, keeps the case and proof at one link, and comes back on the right day with the next step.
 
 **The sin it rides (optional):**
-Wrath (they kept my money, I made them pay it back), with Greed as the share hook: "Got Rs 2,400 back from a cancelled show. Tickback chased it."
+Wrath (they kept my money, I made them pay it back), with Greed as the share hook: "Got my Rs 2,400 ticket refund back. Tickback told me the date and wrote every message."
 
 ## USER
 

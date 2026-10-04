@@ -12,7 +12,9 @@ Acceptance checks:
 - [ ] `.env.example` lists every key in `docs/prd/05-backend.md` section 17; `.env` is git-ignored
 - [ ] `app/styles/tokens.css` holds Direction A tokens (`docs/prd/02-design.md` section 6) and Tailwind reads them
 - [ ] Fonts load with `latin` and `latin-ext` subsets; a test line shows the ₹ sign in both fonts
-- [ ] `app/copy.ts` exists with the product name constant
+- [ ] `app/copy.ts` exists with the product name and `guaranteeLine` constants
+- [ ] Confirm `crypto.subtle.digest` works inside a Convex query (needed for token checks); if not, note the fallback in the log
+- Note: M0 uses the working name (P-5) and Direction A (P-6). Both live in one constant or one file, so they swap cheaply if Ganesh changes them (Q-007).
 Reviewed by: pending
 
 ## M1. Landing page and sample case (the product spec) | PROPOSED
@@ -21,7 +23,7 @@ Acceptance checks:
 - [ ] Landing sections in the order of `docs/prd/03-frontend.md` S1; every string comes from `copy.ts` and matches `docs/prd/04-copy.md` section 3
 - [ ] Example card is labelled "Example"; the date examples show correct weekdays
 - [ ] `/sample` renders the IPL sample case with the banner; send buttons show the note and open nothing
-- [ ] `/taste` renders the landing hero and the US-1 case page in Directions A, B and C for the taste-lock
+- [ ] `/taste` renders static mock-ups (no backend) of the landing hero and the US-1 case card in Directions A, B and C for the taste-lock
 - [ ] Lighthouse mobile performance score of 90 or more; landing JavaScript 120 KB gzipped or less
 - [ ] Readable at 360 px; AA contrast; light theme even when the phone is in dark mode
 - [ ] Nothing public links to an unbuilt screen (`/start` stays unlinked from public posts until M2 is DONE)
@@ -34,7 +36,8 @@ Acceptance checks:
 - [ ] Case link uses the secret in the URL fragment; only its hash is stored; a wrong token shows the bad-link message
 - [ ] Live progress steps from Convex; inputs survive an AI failure; Try again works
 - [ ] `planCase()` unit tests pass for WAIT and OVERDUE dates, working days, and the paywall tiers
-- [ ] Eval fixtures F1, F2, F8, F9 and F10 give the expected route and dates (`docs/prd/07-build-plan.md` section 3)
+- [ ] Eval fixtures F1, F2, F8, F9, F10 and F12 give the expected route and dates (`docs/prd/07-build-plan.md` section 3; drafts and the waitlist are M3)
+- [ ] A message with no date asks "When did they send this?" instead of assuming today
 - [ ] Status card and save card per S5: calendar via Google link on Android and .ics on iPhone; copy link; share
 - [ ] Route on screen at p50 of 8 s or less over 10 logged runs
 - [ ] No sign-up; nothing locked at this stage
@@ -42,6 +45,7 @@ Reviewed by: pending
 
 ## M3. Value loop (US-2 to US-9) | PROPOSED
 Goal: the case stays alive until the money lands, with every step ready to send from the user's own email or chat.
+Friday scope is the "must" list in `docs/prd/07-build-plan.md` section 3b; the rest of M3 follows in week 2.
 Acceptance checks:
 - [ ] Drafts per `docs/prd/05-backend.md` section 7; `to` is filled by code from VERIFIED contacts or the user's own text, never by the model
 - [ ] Send sheet: mailto with the ₹ sign and line breaks intact; long-body copy-first fallback; chat and helpline variants
@@ -49,7 +53,7 @@ Acceptance checks:
 - [ ] ACTION_NEEDED checklist (US-2), TRACE (US-5), FAILED_PAYMENT with compensation (US-6), NO_ROUTE options (US-7), OUT_OF_SCOPE waitlist (US-9)
 - [ ] Paywall per `docs/prd/05-backend.md` section 8.4; pay sheet with UPI on Android and QR on iPhone; claim unlocks; not_found re-locks
 - [ ] Money landed closes the case with share and feedback (US-8); delete removes everything
-- [ ] Full eval set F1 to F10 meets the pass bar; phone tests in `docs/prd/07-build-plan.md` section 4 pass on Android and iPhone
+- [ ] Full eval set F1 to F12 meets the pass bar; phone tests in `docs/prd/07-build-plan.md` section 4 pass on Android and iPhone
 - [ ] Analytics events fire; the funnel query runs
 Reviewed by: pending
 

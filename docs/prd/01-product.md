@@ -103,12 +103,12 @@ Rules behind each date and contact are in `06-routes-kb.md`. Dates are always co
 
 | Route | When it applies | User sees | Due date rule | Next step |
 |---|---|---|---|---|
-| `WAIT` | Refund promised and still inside its window | **On its way** | Promised date; else promised working days from the message date; else platform default (District: 10 working days, VERIFIED; BookMyShow: 10 working days, REPORTED); else 10 working days, labelled an estimate | Nothing to send. Save the check-in. Keep the proof listed. |
+| `WAIT` | Refund promised and still inside its window | **On its way** | Promised date; else promised working days from the message date; else platform default (District: 10 working days, VERIFIED; BookMyShow: 10 working days, REPORTED); else 10 working days, labelled an estimate. **If the message date is unknown, the agent asks "When did they send this?" (one tap) and never assumes today.** | Nothing to send. Save the check-in. Keep the proof listed. |
 | `OVERDUE` | The window has passed and nothing landed | **Overdue** | Next check-in 2 working days after the user sends | The next ladder step (below) |
-| `ACTION_NEEDED` | The refund needs the buyer to act: a form, choosing refund before a window closes, returning physical tickets | **You need to act** | Deadline from the message; if none, check in after 2 days | Checklist, proof list and the message or form text. When done, switch to `WAIT` with the platform timeline. |
+| `ACTION_NEEDED` | The refund needs the buyer to act: a form, choosing refund before a window closes, returning physical tickets | **You need to act** | Deadline from the message. Check in 3 days before a physical-ticket deadline (time to post), 1 day before a form deadline, or after 2 days if there is no deadline | Checklist, proof list and the message or form text. When done, switch to `WAIT`, with the clock starting from the day the user did it. |
 | `TRACE` | Platform says "refunded"; the bank shows nothing | **Refunded, not received** | 3 working days for the platform to send the reference | Ask the platform for the ARN (card) or RRN/UTR (UPI), then give it to your bank |
-| `FAILED_PAYMENT` | Money debited, no ticket issued | **Payment failed** | T+5 calendar days from the payment date (RBI, VERIFIED). After that, Rs 100 per day is owed automatically | Inside T+5: wait. Past T+5: write to your bank and the platform, citing the RBI rule |
-| `NO_ROUTE` | Buyer can't attend; or the event was postponed and no refund is offered | **No refund route (yet)** | None | Honest answer with the policy and its source. Options: ask whether a refund will be offered (postponed), transfer or resale if the platform allows it, watch for an announcement. No charge. |
+| `FAILED_PAYMENT` | Money debited, no ticket issued, **and the app showed the payment as failed or pending**. If unclear, the agent asks one question first. If the app showed success, it is a merchant refund: treat it as `WAIT` with the platform's timeline (District: 3 to 5 days, then up to 7 to 10 working days at the bank, VERIFIED) | **Payment failed** | T+5 calendar days from the payment date (RBI 2019 rule, VERIFIED; not re-checked for later changes). After that, Rs 100 per day **may be owed**, paid without a claim | Inside T+5: wait. Past T+5: write to your bank and the platform, citing the RBI rule |
+| `NO_ROUTE` | Buyer can't attend; or the event was postponed and no refund is offered | **No refund route (yet)** | None. Postponed cases stay open and check in after 7 days. Can't-attend cases close, and reopen if the user pastes a new message | Honest answer with the policy and its source. Options: ask whether a refund will be offered (postponed), transfer or resale only if the platform's policy doesn't forbid it, watch for an announcement. No charge. |
 | `NEED_INFO` | The agent can't tell | **Need a bit more** | None | Up to 3 one-tap or one-line questions |
 | `OUT_OF_SCOPE` | Not an event ticket (flights, food, cabs, shopping, subscriptions) | **Not tickets (yet)** | None | Honest note. Optional waitlist for that category (flights are next). |
 
@@ -117,7 +117,7 @@ Rules behind each date and contact are in `06-routes-kb.md`. Dates are always co
 | Level | Name | Channel | Who sends | Clock |
 |---|---|---|---|---|
 | L0 | **Ask** | Platform support: in-app chat, support email, or web form | User (email opens pre-filled; chat text is copied) | Promised window, or 2 working days for a reply |
-| L1 | **Escalate** | Platform Grievance Officer, by email | User, from their own email | Acknowledge in 48 hours, resolve within one month (E-Commerce Rules 2020; shown as "under the rules") |
+| L1 | **Escalate** | Platform Grievance Officer, by email | User, from their own email | Acknowledge in 48 hours, resolve within one month (E-Commerce Rules 2020; shown as "under the rules"). Check-ins at +2 working days (acknowledged?) and +30 days (resolved?). No acknowledgement by the first check-in lets the user go to L2 early |
 | L2 | **Go official** | National Consumer Helpline: consumerhelpline.gov.in, 1915, WhatsApp 8800001915 | User files; we prepare the complaint text and the checklist | Partner companies are expected to reply within 30 days |
 | Beyond v1 | Consumer Commission (e-Daakhil), chargeback, legal notice | n/a | We say these exist. We don't do them. | n/a |
 
@@ -153,7 +153,7 @@ As someone who sent the follow-up and got a reply, I want to paste the reply and
 As someone whose due date has passed, I want the agent to take the next step up the ladder, so that someone with the power to fix it sees my case.
 
 - On or after the due date, opening the case shows the check-in: **It's in** / **Not yet** / **They replied**.
-- **Not yet** produces the next ladder step: the grievance officer email with the rule cited, or the National Consumer Helpline complaint text and checklist.
+- **Not yet** produces the next ladder step: the grievance officer email with the rule cited, or the National Consumer Helpline complaint text and checklist. After L1, the first check-in asks whether they acknowledged; if not, L2 opens early. Otherwise the case waits for the one-month resolution check-in.
 - New check-ins are scheduled for that step's clock.
 
 ### US-5: "Refunded, but it's not in my account."
@@ -161,8 +161,10 @@ As someone whose due date has passed, I want the agent to take the next step up 
 - When the user pastes the reference, a ready message to their bank appears.
 
 ### US-6: "Money went, no ticket came."
-- Route `FAILED_PAYMENT`. The due date is the payment date plus 5 calendar days.
-- If past it, the screen shows the Rs 100-per-day compensation owed (days late x Rs 100) and a ready message to the user's bank.
+- If it's unclear whether the app showed the payment as failed, the agent asks one question: Failed · Pending · Successful · Not sure.
+- Failed or pending: route `FAILED_PAYMENT`. The due date is the payment date plus 5 calendar days.
+- If past it, the screen shows the compensation that **may be owed** under the RBI's 2019 rule (days late x Rs 100) and a ready message to the user's bank.
+- Successful: it's a merchant refund on the platform's own timeline (route `WAIT` or `OVERDUE`).
 
 ### US-7: "I can't go. Can I get my money back?"
 - Route `NO_ROUTE`, with the policy sentence and its source.
@@ -187,24 +189,29 @@ As someone whose due date has passed, I want the agent to take the next step up 
 ```mermaid
 stateDiagram-v2
     [*] --> TRIAGING: user submits text or screenshots
-    TRIAGING --> NEED_INFO: can't tell
+    TRIAGING --> NEED_INFO: can't tell, or a date is missing
     NEED_INFO --> TRIAGING: user answers
     TRIAGING --> READY: route, date and next step found
+    TRIAGING --> WAITING: WAIT, or postponed NO_ROUTE
     TRIAGING --> CLOSED_OUT_OF_SCOPE: not an event ticket
-    TRIAGING --> CLOSED_NO_ROUTE: no refund route
-    READY --> ACTED: user taps "I've sent it" or "I've done this"
-    READY --> WAITING: route is WAIT (nothing to send)
+    TRIAGING --> CLOSED_NO_ROUTE: can't attend
+    TRIAGING --> ERROR: AI failed after retries
+    ERROR --> TRIAGING: Try again (or the automatic retry)
+    READY --> ACTED: "I've sent it" or "I've done this"
     ACTED --> WAITING
+    READY --> DUE: check-in date reached (e.g. 3 days before an action deadline)
     WAITING --> DUE: check-in date reached
-    DUE --> CLOSED_LANDED: "It's in"
     DUE --> READY: "Not yet" (next ladder step)
-    WAITING --> TRIAGING: "They replied" (paste reply)
     DUE --> TRIAGING: "They replied"
+    WAITING --> TRIAGING: "They replied"
     READY --> TRIAGING: "They replied"
+    CLOSED_NO_ROUTE --> TRIAGING: user pastes a new message
+    CLOSED_OUT_OF_SCOPE --> TRIAGING: user pastes a new message
     CLOSED_LANDED --> [*]
 ```
 
-Any state can go to `DELETED` when the user deletes the case.
+- **"It's in"** is allowed from any open stage (`READY`, `ACTED`, `WAITING`, `DUE`) and goes to `CLOSED_LANDED`.
+- **Delete** removes the case entirely. It is an action, not a stage.
 
 ### 8.2 Flow F1: landing to first value
 
@@ -236,10 +243,10 @@ Any state can go to `DELETED` when the user deletes the case.
 
 ### 8.6 Flow F5: paying (cases of Rs 300 and above)
 
-1. After the first next step is shown, the pay card appears: "Want us to stay on it till the money lands? Rs 49."
-2. **Pay Rs 49 by UPI** opens the UPI app on Android. iPhone shows the UPI ID and a QR code to copy or scan. The note carries the case code.
+1. After the first message has been written, the pay card appears: "Want us to stay on it till the money lands? Rs 49."
+2. **Pay Rs 49 by UPI** opens the UPI app on Android. iPhone gets the same button plus **Save QR to Photos** (UPI apps can scan from the gallery) and copy buttons for the UPI ID and amount. The note carries the case code.
 3. **I've paid** unlocks the case at once (sprint honour system). Ganesh reconciles daily.
-4. If the user doesn't pay, the case stays usable for the free parts. Later ladder steps show a locked preview of what comes next.
+4. If the user doesn't pay, the case stays usable for the free parts: routes, dates, reading replies, check-ins. Later messages show a locked preview of what comes next.
 
 ### 8.7 Flow F6: out of scope
 
@@ -287,7 +294,7 @@ UD's rule: find the one or two biggest frictions and solve them in onboarding an
 
 **Founder touch (manual, sprint only):** an optional field, "Can the founder check in with you about this case?" (email or phone). Ganesh personally follows up with the first users who say yes.
 
-**Share loop (Greed, from the lock sheet):** the money-landed card reads "Got Rs 2,400 back from a cancelled show. Tickback chased it." with a link to the landing page.
+**Share loop (Greed, from the lock sheet):** the money-landed card reads "Got my Rs 2,400 ticket refund back. Tickback told me the date and wrote every message." with a link to the landing page. (The user sends; Tickback writes. The share line must not claim Tickback sent anything.)
 
 **Never:** marketing blasts, or anything sent to an organiser on the user's behalf.
 
@@ -300,11 +307,14 @@ Builds on D-009.
 | Case amount | What's free | What Rs 49 adds |
 |---|---|---|
 | Under Rs 300 | Everything | n/a |
-| Rs 300 and above | Route, due date, first next step, calendar check-in | "Stay on it till the money lands": every later follow-up and escalation step, reading replies, re-planned check-ins, proof checklist per step |
+| Rs 300 and above | Route, due date, reading every reply, re-planned check-ins, calendar, and the **first** message written for you | **Every message after the first:** follow-ups, the grievance officer email, the helpline complaint, bank letters |
+| Amount unknown | Same as Rs 300 and above | The pay card first asks "How much did you pay?" and sets the tier from the answer |
 
-- **When we ask:** right after the user has seen the first next step. Never before value.
-- **Guarantee (P-2, needs Ganesh's OK):** D-009 says a 14-day money-back guarantee. Proposal: an outcome guarantee instead, "If your refund doesn't land, we refund your Rs 49." Reason: refunds commonly take 10 or more working days (District says 7 to 10; the IPL case took about 20 days), so a 14-day window would trigger before most refunds land.
-- **Collection in the sprint (P-3):** a UPI link to Ganesh's UPI ID with the case code in the note. **I've paid** unlocks at once. Ganesh reconciles daily. If a payment can't be found, the case shows a polite note and re-locks. iPhone shows the UPI ID and a QR code because iOS has no UPI app chooser.
+- **What counts as "a message":** any step the agent writes words for (emails, chat text, form answers, complaint text). Steps with nothing to send (`WAIT`), options (`NO_ROUTE`), questions (`NEED_INFO`) and the waitlist never count and are never locked.
+
+- **When we ask:** right after the first message has been written. Never before value.
+- **Guarantee (P-2, needs Ganesh's OK):** D-009 says a 14-day money-back guarantee, and the copy uses that wording (`{guaranteeLine}`) until P-2 is accepted. Proposal: an outcome guarantee instead, "If your refund doesn't land, we refund your Rs 49." Reason: refunds commonly take 10 or more working days (District says 7 to 10; the IPL case took about 20 days), so a 14-day window would trigger before most refunds land.
+- **Collection in the sprint (P-3):** a UPI link to Ganesh's UPI ID with the case code in the note. **I've paid** unlocks at once. Ganesh reconciles daily. If a payment can't be found, the case shows a polite note and re-locks. iPhone also gets **Save QR to Photos** and copy buttons, because iOS has no UPI app chooser and a QR on the same screen can't be scanned. Someone could lie about the amount to stay free; at Rs 49 we accept that risk.
 - **After the sprint:** a payment gateway with automatic verification.
 - The T1 DM test still runs with an open price (Q-006). This paywall is the in-product version of the same test.
 
@@ -324,7 +334,7 @@ visit → started case → aha seen → acted (opened email or copied) → saved
 - At least 1 refund landed and shared.
 
 **Quality bars:**
-- Route accuracy on the eval set: at least 9 of 10.
+- Route accuracy on the eval set: at least 11 of 12.
 - Zero invented contacts.
 - Time to aha: p50 8 s or less.
 

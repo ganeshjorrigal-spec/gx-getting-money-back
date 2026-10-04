@@ -4,6 +4,8 @@ Owner: Claude HQ. Status: DRAFT v1, 4 Oct 2026. Codex uses these strings as writ
 
 Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 
+Guarantee constant: `guaranteeLine`. Until P-2 is accepted it follows D-009: `If you're not happy within 14 days, you get the ₹49 back.` If P-2 is accepted: `If your refund doesn't land, you get the ₹49 back.` Never hard-code either line anywhere else.
+
 ---
 
 ## 1. Voice
@@ -20,8 +22,8 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 ## 2. Meta
 
 - Title: `Tickback: get your stuck ticket refund back`
-- Description: `Event cancelled or moved? Paste what the organiser told you. See your refund date and the exact next step. We come back on that date and help you push if it hasn't come.`
-- OG title: `Stuck ticket refund? We'll chase it till the money lands.`
+- Description: `Event cancelled or moved? Paste what the organiser told you. See your refund date and the exact next step, ready to send. Check in on the date and get the next step if it hasn't come.`
+- OG title: `Stuck ticket refund? We'll stay on it till the money lands.`
 
 ---
 
@@ -33,9 +35,9 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 
 **Eyebrow:** For event tickets bought in India
 
-**H1:** Stuck ticket refund? We'll chase it till the money lands.
+**H1:** Stuck ticket refund? We'll stay on it till the money lands.
 
-**Sub:** Paste what the organiser told you. In under a minute you'll know where your refund stands, the date it's due, and the exact message to send. Then we come back on that date, and push further if it hasn't come.
+**Sub:** Paste what the organiser told you. In under a minute you'll know where your refund stands, the date it's due, and the exact message to send. Add the check-in to your calendar. If the money hasn't come by then, your next step is ready.
 
 **Primary button:** Start my case
 **Secondary button:** See a real case first
@@ -48,7 +50,7 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 - Chip: On its way
 - `Due by Fri, 23 Oct`
 - Source: `They said "within 7-10 working days" on 9 Oct.`
-- `Nothing to send yet. We'll check in on Sat, 24 Oct.`
+- `Nothing to send yet. Your check-in: Sat, 24 Oct.`
 
 **Section: Sound familiar?**
 - The match got moved to another city.
@@ -60,12 +62,12 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 1. **Paste the message.** SMS, email, WhatsApp or a screenshot. Or just tell us what happened.
 2. **Know where you stand.** Your refund route, the date it's due, and why that date.
 3. **Send the right message.** Written for you. It opens in your own email, ready to send. Edit anything.
-4. **We come back on the date.** It's on your calendar. Not there yet? Your next step is ready.
+4. **Check in on the date.** It goes on your calendar with your case link. Not there yet? Your next step is ready.
 
 **Section: Why not just ask ChatGPT?**
 - **It remembers your case.** Every message, every date, every proof. One link.
 - **It knows the route.** Cancelled, postponed, moved, failed payment, "refunded" but missing. Each one has a different path.
-- **It comes back.** On the right day, with the next step already written.
+- **It's ready when you come back.** On your check-in date, the next step is already written.
 
 **Section: What we never do**
 - Ask for OTPs, passwords, card numbers or bank logins.
@@ -79,12 +81,12 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 
 **Section: Pricing**
 - **Free to check.** Your route, your date and your first step. Always free.
-- **₹49 to stay on it.** For refunds of ₹300 or more. Every follow-up and escalation written for you, replies read, check-ins re-planned. If your refund doesn't land, you get the ₹49 back.
+- **₹49 to stay on it.** For refunds of ₹300 or more. Every message after the first, written for you: follow-ups, the grievance officer email, the helpline complaint. {guaranteeLine}
 - Line: Refunds under ₹300 are free, start to finish.
 
 **Section: Questions**
 1. **Do you contact the organiser for me?** No. You send every message, from your own email or the app's chat. We write it and tell you where to send it. That keeps it real, and it keeps you in control.
-2. **How do you know the dates?** From what the organiser promised, the platform's own refund policy, or the rules, like the RBI's 5-day rule for failed payments. Every date shows where it came from. When we have to estimate, we say so.
+2. **How do you know the dates?** From what the organiser promised, the platform's own refund policy, or the rules, like the RBI's rule for failed payments. Every date shows where it came from. When we have to estimate, we say so.
 3. **Is this legal advice?** No. We help you use the routes that already exist: support, the platform's grievance officer, and the National Consumer Helpline.
 4. **Which platforms?** BookMyShow, District, and organisers' own ticket sites in India. Flights are next.
 5. **My refund isn't for an event ticket.** We're starting with event tickets. Tell us what it is and we'll let you know when we cover it.
@@ -144,15 +146,23 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 
 | Route | Chip | Headline | Source line | Next |
 |---|---|---|---|---|
-| WAIT | On its way | Your ₹{amount} should land by {due} | `{platform} said "{quote}" on {messageDate}.` or `{platform}'s policy says {n} working days.` or `No date was given. Most platforms say 7 to 10 working days, so this is an estimate.` | Nothing to send yet. We'll check in on {checkin}. |
-| OVERDUE | Overdue | Your ₹{amount} was due by {due}. It's {daysLate} days late. | (same as WAIT) | Time to ask {platform} in writing. |
+| WAIT | On its way | Your ₹{amount} should land by {due} | From the message: `{platform} said "{quote}" on {messageDate}.` From a VERIFIED policy: `{platform}'s policy says {n} working days.` From a REPORTED policy: `{platform} has said {n} working days in recent cancellations (reported).` Estimate: `No date was given. Most platforms say 7 to 10 working days, so this is an estimate.` | Nothing to send yet. Your check-in: {checkin}. |
+| OVERDUE | Overdue | Your ₹{amount} was due by {due}. It's {daysLateText} late. | (same as WAIT) | Time to ask {platform} in writing. |
 | ACTION_NEEDED | You need to act | Do this by {deadline} to get your ₹{amount} back | `From {platform}'s message on {messageDate}.` | (checklist) |
-| TRACE | Refunded, not received | {platform} says your ₹{amount} was refunded on {date}. Let's find it. | `Banks trace refunds with a reference number from the platform.` | Ask them for the refund reference number. |
-| FAILED_PAYMENT | Payment failed | Your ₹{amount} should be back by {due} | `RBI rule: a failed online payment must be reversed within 5 days of the payment date.` | Inside the window: Nothing to send yet. We'll check in on {checkin}. Past it: It's {daysLate} days late. Your bank owes you ₹{compensation} on top, under the same rule. |
-| NO_ROUTE (can't attend) | No refund route | {platform}'s policy doesn't refund tickets when you can't attend. | `From {platform}'s booking terms.` | Here's what you can still try: |
-| NO_ROUTE (postponed, no refund offered) | No refund offered (yet) | Your ticket is still valid for {newDate}. No refund has been offered yet. | `From {platform}'s message on {messageDate}.` | Here's what you can still try: |
+| TRACE | Refunded, not received | {platform} says your ₹{amount} was refunded on {date}. Let's find it. (If no date: `{platform} says your ₹{amount} was refunded. Let's find it.`) | `Banks trace refunds with a reference number from the platform.` | Ask them for the refund reference number. |
+| FAILED_PAYMENT | Payment failed | Your ₹{amount} should be back by {due} | `Under the RBI's 2019 rule, a failed online payment should be reversed within 5 days of the payment date.` | Inside the window: Nothing to send yet. Your check-in: {checkin}. Past it: It's {daysLateText} late. Under the same rule, your bank may owe you ₹{compensation} on top. |
+| NO_ROUTE (can't attend) | No refund route | {platform}'s policy doesn't refund tickets when you can't attend. | VERIFIED: `From {platform}'s booking terms.` REPORTED: `Reported for {platform}. Check its terms in the app.` | Here's what you can still try: |
+| NO_ROUTE (postponed, no refund offered) | No refund offered (yet) | Your ticket is still valid for {newDate}. No refund has been offered yet. (If no date: `Your ticket is still valid for the new date. No refund has been offered yet.`) | `From {platform}'s message on {messageDate}.` | Here's what you can still try: |
 | NEED_INFO | Need a bit more | A couple of quick questions | n/a | (questions) |
 | OUT_OF_SCOPE | Not tickets (yet) | This looks like a {category} refund. We're starting with event tickets. | n/a | (see section 13) |
+
+- `{daysLateText}`: `1 day` or `{n} days`.
+- Standard questions:
+  - Message date: `When did they send this?` · Today · Yesterday · Earlier (date picker)
+  - Payment date: `When did you pay?` · Today · Yesterday · Earlier (date picker)
+  - Payment status: `Did the app show your payment as failed, pending or successful?` · Failed · Pending · Successful · Not sure
+  - Platform: `Where did you buy the tickets?` · BookMyShow · District · The organiser's site · Somewhere else
+  - Situation: `What happened?` · Event cancelled · Postponed · Venue changed · Money gone, no ticket · Says refunded, not received · I can't go
 
 - Estimate tag: estimate
 - Low confidence: We think this is "{chip}". Is that right? · Yes · Not quite
@@ -175,12 +185,12 @@ Product name constant: `PRODUCT_NAME = "Tickback"` (working name, P-5).
 | NO_ROUTE ask | Ask if a refund will be offered | Organisers sometimes add refunds later. Asking puts you on record. |
 
 Buttons: Open in my email · Copy for the chat · Copy message · I've sent it · I've done this
-WAIT: Nothing to send yet. We'll check in on {checkin}.
+WAIT: Nothing to send yet. Your check-in: {checkin}. Add it to your calendar so you don't miss it.
 Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 
 **NO_ROUTE options (show only the ones that apply):**
 - Ask {platform} if a refund will be offered. (draft ready)
-- If you can't attend: check whether {platform} lets you transfer or resell the ticket. We couldn't confirm this for {platform}, so check in the app.
+- If you can't attend: check whether {platform} lets you transfer or resell the ticket. We couldn't confirm this for {platform}, so check in the app. (Hide this line when the platform's VERIFIED policy forbids transfer, as District's does.)
 - Keep this case open. If they announce refunds, paste the message here.
 
 **ACTION_NEEDED checklist proof lines:**
@@ -200,7 +210,10 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 - Primary: Open in my email
 - Secondary: Copy message · Copy address
 - Fine print: This opens your own email app. Nothing is sent until you press send there.
-- Long message toast: Your message is copied. If it's not in the email, long-press and tap Paste.
+- Long message: the email body says `Your message is copied. Long-press here and tap Paste.` and a toast says `Message copied. Paste it into the email.`
+- Reported address hint: Reported address. Check it on their website before you send.
+- Bank variant title: Your message for your bank
+- Bank variant steps: Send this from your bank app's help or support section, or to the customer care email on your statement. Keep the reference number they give you.
 - Return prompt: Did you send it? · Yes, I've sent it · Not yet
 - Chat variant title: Your message for {platform}'s chat
 - Chat variant fine print: Paste this in the chat. Screenshot their reply and add it here.
@@ -235,22 +248,24 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 
 ## 12. Pay sheet
 
+- Pay card button: Stay on it for ₹49
+- Amount unknown first: How much did you pay? `₹` (number) · Continue
 - Title: Stay on it till the money lands
 - Price: ₹49 for this case
 - Lines:
-  - Every follow-up and escalation, written for you
-  - We read their replies and tell you what's next
-  - Check-ins re-planned at each step
-  - If your refund doesn't land, you get the ₹49 back
+  - Every message after the first, written for you
+  - Each one built from their last reply and your case
+  - Grievance officer and helpline steps, with the right rule cited
+  - {guaranteeLine}
 - Android button: Pay ₹49 by UPI
-- iPhone and desktop: Scan this QR in any UPI app, or copy the UPI ID
+- iPhone button: Pay ₹49 by UPI (opens your UPI app if one is set up)
+- iPhone and desktop extras: Save QR to Photos · Copy UPI ID · Copy amount
+- QR help (iPhone): Can't open the app? Save the QR, then scan it from your gallery in any UPI app.
 - UPI ID row: {vpa} · Copy
 - Note: Add {code} in the payment note so we can match it.
 - Confirm: I've paid
 - Fine print: We confirm payments by hand in our first weeks. If we can't find yours, we'll tell you here.
 - Not found banner: We couldn't find your payment. If you paid, send us the UPI reference at {contact} and we'll fix it.
-
----
 
 ## 13. Out of scope
 
@@ -259,7 +274,7 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 - Waitlist: Tell me when {category} refunds are ready
 - Field: Email or phone
 - Thanks: Thanks. We'll tell you once, when it's ready.
-- Categories: flight · food delivery · cab · shopping · subscription · something else
+- Categories (match `outOfScopeCategory`): flight · train or bus · hotel · food delivery · cab · shopping · subscription · something else
 
 ---
 
@@ -268,7 +283,7 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 - Headline: ₹{recovered} back.
 - Line: Case closed, {days} days after you started.
 - Share button: Tell a friend who's waiting on a refund
-- Share text: `Got my ₹{recovered} ticket refund back. Tickback told me the date and the next step: {landingLink}`
+- Share text: `Got my ₹{recovered} ticket refund back. Tickback told me the date and wrote every message: {landingLink}`
 - Feedback: Was this worth it? · Yes · Not really
 - Feedback follow-up: Anything we should fix? (optional) · Send
 
@@ -307,8 +322,9 @@ Locked step (unpaid, ₹300+): Next step ready: {title}. Unlock for ₹49.
 - **Who handles it:** Convex stores it. OpenAI reads your messages and writes drafts; under OpenAI's API terms it isn't used to train their models. Vercel hosts the website.
 - **What we never collect:** OTPs, passwords, card numbers, bank logins. We remove card numbers and codes from text automatically.
 - **Who can see a case:** anyone with its private link. Keep it to yourself. In our first weeks, the founder may look at cases to fix mistakes in the product. We never contact you unless you ask us to.
-- **How long we keep it:** until you delete it. We remove screenshots from closed cases after 180 days.
-- **Delete:** open your case and tap Delete this case. It's gone at once.
+- **How long we keep it:** until you delete it. We remove screenshots from closed cases after 180 days, and delete cases with no activity for 12 months.
+- **Calendar:** if you add a check-in to Google Calendar, your case link is saved in your calendar.
+- **Delete:** open your case and tap Delete this case. Your messages, screenshots and drafts are removed at once. We keep only the case code, amount and date of any payment, for our accounts. OpenAI may keep request logs for up to 30 days for abuse monitoring.
 - **Contact:** {contact}
 
 ---
@@ -320,7 +336,7 @@ These rules go into the drafting prompt (`05-backend.md`, section 7.3).
 - Written as the user, first person. Polite, firm, specific.
 - Always include, when known: booking ID, event name and date, ticket count, amount, what was promised and when, what happened, the exact ask, and a reply-by date.
 - One clear ask per message: refund to the original payment method plus the refund reference number.
-- Cite a rule only at the grievance-officer and helpline steps, and only the rules listed in `06-routes-kb.md`.
+- Cite a rule only where allowed: the E-Commerce Rules at the grievance-officer and helpline steps; the RBI rule at the failed-payment bank step. Only rules listed in `06-routes-kb.md`.
 - No threats, no legal claims beyond the cited rule, no "or else".
 - Length: chat 80 words or fewer; email 160 words or fewer; helpline complaint 200 words or fewer.
 - Plain English. No "Dear Sir/Madam". Use "Hello {platform} team" or "Hello Grievance Officer".
@@ -369,3 +385,12 @@ Subject: `Grievance: refund for booking {bookingId} ({eventName}, {eventDate}) n
 > Hello {platform} team,
 > {eventName} (booking {bookingId}, ₹{amount}) has moved to {newDate}. I can't attend on the new date. Will you offer a refund option, and by when should I request it?
 > Thank you, {name}
+
+---
+
+## 20. Strings used by screens (not listed above)
+
+- Case page: Show all · Continue · It's in, close this case · Delete this case
+- Locked preview: Next step ready: {title}. Unlock for ₹49.
+- Beyond the ladder (`beyond` step): You've tried every step we cover. The next option is a formal complaint at a Consumer Commission, through the government's e-Daakhil portal. That's a legal process we don't handle, but your case history here has everything you'd need. Keep this case open; if they reply, paste it here.
+- Reopen a closed case: Got a new message? Paste it here.

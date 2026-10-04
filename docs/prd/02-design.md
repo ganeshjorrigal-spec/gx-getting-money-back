@@ -80,7 +80,7 @@ Same copy, same layout. Only the taste changes. Direction A is the build default
 1. The landing hero on a phone.
 2. The case page for the US-1 example (route, date, next step).
 
-**How to make them:** Codex builds a temporary `/taste` page that renders both screens with each token set. Tokens are CSS variables, so this costs little. Take screenshots on a real phone. Delete `/taste` after the lock.
+**How to make them:** Codex builds a temporary `/taste` page with **static mock-ups** of both screens (hard-coded markup, no backend; the real case page comes in M2), rendered with each token set. Tokens are CSS variables, so this costs little. Take screenshots on a real phone. Delete `/taste` after the lock.
 
 **Who to ask:** 5 to 10 people who bought event tickets online in the last 12 months. Not GrowthX builders, not designers. The T1 DM list is ideal.
 

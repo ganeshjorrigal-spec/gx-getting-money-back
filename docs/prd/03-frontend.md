@@ -90,7 +90,7 @@ Each spec lists the layout from top to bottom, then states and events. Event nam
 ### S4. Agent progress (a state of the case page)
 
 - The case header shows a skeleton. Below it, 4 progress steps tick live from Convex: Reading your message, Finding your refund route, Working out your date, Writing your next step.
-- After 12 s, show the "still working" line. After 45 s, show the error state with **Try again** (the input is safe).
+- After 12 s, show the "still working" line. After 50 s, show the error state with **Try again** (the input is safe). The backend run ends by about 45 s, so the error never shows while a run is still going.
 - `aria-live="polite"` announces each finished step.
 
 ### S5. Case page `/c/[code]`
@@ -113,7 +113,7 @@ Cards appear by stage. Top to bottom:
    - For `NO_ROUTE`: the options list.
    - For `NEED_INFO`: the questions inline (choice chips or a one-line input) and **Continue**.
 5. **Save card** (until the user has saved once): **Add check-in to calendar**, **Copy my case link**, **Send to my WhatsApp**, and the note "This link is your key."
-6. **Pay card** (amount Rs 300 or more, not paid, after the first next step is shown): summary and **Stay on it for Rs 49** (opens S9). After the first step, locked later steps show a preview line with a lock icon and the same button.
+6. **Pay card** (amount Rs 300 or more or unknown, not paid, after the first written message): summary and **Stay on it for ₹49** (opens S9). Locked later messages show a preview line with a lock icon and the same button. Rules: `05-backend.md` section 8.4.
 7. **"They replied?"** row: opens the reply sheet (S7).
 8. **Timeline:** newest first, collapsed to the last 5 with **Show all**.
 9. **Proof locker:** the screenshots and inputs so far, plus the checklist of what to keep for this route.
@@ -134,6 +134,8 @@ Cards appear by stage. Top to bottom:
 - `mailto` rules are in section 5.2.
 - Chat channel variant: no To or Subject. The body is copied, with "Where to paste it" steps shown only if verified in the KB.
 - Helpline variant: "File it at consumerhelpline.gov.in or WhatsApp 8800001915", the complaint text to copy, and the checklist.
+- Bank variant (`TRACE_bank`, `FAILED_bank`): no To field; the message to copy; steps to send it from the bank app's help section or the customer care email on the statement; then **I've sent it**.
+- A REPORTED address (never auto-filled) shows as a hint under the empty To field with "check it on their website".
 
 ### S7. Reply sheet
 
@@ -142,7 +144,7 @@ Cards appear by stage. Top to bottom:
 
 ### S8. Check-in banner
 
-- Shows when stage is `DUE`, and on any visit after the check-in date.
+- Shows when stage is `DUE` (the check-in sets it at 10:00 IST on the date).
 - **It's in** opens a confirm step with the amount pre-filled (editable, for partial refunds), then S10.
 - **Not yet** triggers re-planning (next ladder step).
 - **They replied** opens S7.
@@ -151,8 +153,10 @@ Cards appear by stage. Top to bottom:
 
 1. Title, what Rs 49 adds (4 lines), and the guarantee line.
 2. The payment action, by device:
-   - **Android:** **Pay Rs 49 by UPI** opens the `upi://` link, with the UPI ID and a copy button below it.
-   - **iPhone and desktop:** a QR code (generated on the device), the UPI ID with a copy button, and the note to include.
+   - **Android:** **Pay ₹49 by UPI** opens the `upi://` link, with the UPI ID and a copy button below it.
+   - **iPhone:** the same `upi://` button (it opens whichever UPI app is set up, or nothing), plus **Save QR to Photos** (UPI apps can scan from the gallery), and copy buttons for the UPI ID and amount. A QR on the same phone's screen can't be scanned, so never rely on it alone.
+   - **Desktop:** the QR to scan with a phone, plus the UPI ID with a copy button.
+   - Always show the note to include (the case code).
 3. **I've paid**: sets `paidState = claimed` and unlocks at once.
 4. Fine print about manual confirmation.
 
@@ -219,8 +223,11 @@ Cards appear by stage. Top to bottom:
 - One calendar entry per scheduled check-in. When check-ins change after a re-plan, the save card reappears: "Your dates changed. Add the new check-in."
 
 ### 5.4 UPI
-- **Android:** `upi://pay?pa=<VPA>&pn=<payee name>&am=49.00&tn=<case code>&cu=INR`.
-- **iPhone and desktop:** a QR code of the same string (use the `qrcode` npm package on the device), plus the VPA with a copy button.
+- **Link:** `upi://pay?pa=<VPA>&pn=<payee name>&am=49.00&tn=<case code>&cu=INR`.
+- **Android:** the link button.
+- **iPhone:** the link button, plus **Save QR to Photos** (a PNG of the QR made on the device with the `qrcode` npm package, downloaded so the user can scan it from the gallery), plus copy buttons for the VPA and amount.
+- **Desktop:** the QR on screen, plus the VPA with a copy button.
+- Some UPI apps reportedly block person-to-person links with a preset amount. Before Friday, test Google Pay, PhonePe and Paytm on both phones. If one blocks it, drop `am` for that path and show the amount to type.
 - Always show the case code: "Add [code] in the payment note."
 
 ### 5.5 Share and clipboard
@@ -228,8 +235,8 @@ Cards appear by stage. Top to bottom:
 - **Paste** uses `navigator.clipboard.readText()` where allowed. If refused, focus the textarea and show "Long-press and tap Paste".
 
 ### 5.6 Redaction on the device (repeated on the server)
-- Replace card numbers (13 to 19 digits, spaces or dashes allowed, passing the Luhn check) with `[card number removed]`.
-- Replace OTP-like codes (4 to 8 digits within 30 characters of "OTP", "one time", "verification code" or "PIN") with `[code removed]`.
+- Replace card numbers with `[card number removed]`: 13 to 19 digits, spaces or dashes allowed between groups, passing the Luhn check, and **not part of a longer run of digits** (so a 23-digit ARN or a UTR is left alone).
+- Replace OTP-like codes with `[code removed]`: 4 to 8 digits within 30 characters of the whole words "OTP", "one time password", "verification code" or "PIN" (word boundaries, so "pincode" doesn't match).
 - Images cannot be redacted in v1. The intake line asks users to crop them out.
 
 ### 5.7 Screenshots
