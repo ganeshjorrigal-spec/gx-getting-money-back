@@ -4,7 +4,7 @@ Status values: PROPOSED, ACTIVE, READY FOR REVIEW, DONE (after independent revie
 Order follows the sprint guidance: landing page, then onboarding, then value, then communication.
 Rewritten on 2026-10-04 to match the PRD in `docs/prd/` (D-010 to D-015). Build in order; one milestone ACTIVE at a time. Which PRD files each milestone needs: `docs/prd/07-build-plan.md` section 1.
 
-## M0. Project skeleton | READY FOR REVIEW
+## M0. Project skeleton | DONE (HQ review 2026-10-05)
 Goal: Next.js + Convex (D-006) runs locally and deploys a blank page to a public URL.
 Acceptance checks:
 - [x] `npm run dev` (or equivalent) starts with no errors
@@ -15,7 +15,11 @@ Acceptance checks:
 - [x] `app/copy.ts` exists with the product name and `guaranteeLine` constants
 - [x] Confirm `crypto.subtle.digest` works inside a Convex query (needed for token checks); if not, note the fallback in the log
 - Note: M0 uses the working name (P-5) and Direction A (P-6). Both live in one constant or one file, so they swap cheaply if Ganesh changes them (Q-007).
-Reviewed by: pending
+Reviewed by: Claude HQ, 2026-10-05. Checked: Direction A colour, radius and spacing tokens match `02-design.md` section 6.1 to 6.3; all 13 env names match `05-backend.md` section 17 and `.env*` is git-ignored; both fonts load `latin` and `latin-ext`; type check passes; no colour values outside `tokens.css`; Vercel deployments for the M0 commits are READY. Not re-run by HQ: the Convex digest query and the phone check (taken from the log and Ganesh's confirmation).
+Carry into the start of M1 (small fixes, not blockers):
+- `guaranteeLine` in `app/copy.ts` must be the exact D-009 line from `04-copy.md` top: `If you're not happy within 14 days, you get the ₹49 back.` The current text repeats the price sentence and drops the 14 days.
+- `tailwind.config.ts` maps only 6 colours. Add `accent-soft`, `on-accent`, `caution`, `caution-soft`, `danger`.
+- `tokens.css` lacks the `amount` size (40/44), line heights for each size, the sheet shadow and the motion durations from `02-design.md` section 6.2 and 6.3.
 
 ## M1. Landing page and sample case (the product spec) | PROPOSED
 Goal: a stranger understands in 10 seconds what it does, why to trust it, and can try a sample case.

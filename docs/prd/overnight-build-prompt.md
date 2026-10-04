@@ -29,7 +29,9 @@ Work M0, then M1, then M2, then M3 (the Friday "must" items). One user story at 
 - **P-5:** the name is "Tickback", kept in one constant.
 - **P-6:** Direction A tokens.
 - **P-7:** models come from env vars.
-- **Guarantee wording:** follow D-009 through the `guaranteeLine` constant.
+- **Guarantee wording:** follow D-009 through the `guaranteeLine` constant. The exact line is at the top of `docs/prd/04-copy.md`.
+- **Hosting:** Vercel serves the Next.js site, on the free Hobby plan (D-017). Convex is the backend and database only.
+- **Start of M1:** first fix the three small M0 notes listed under M0 in `MILESTONES.md`.
 
 If you hit anything not covered by `DECISIONS.md` or the PRD:
 1. Pick the most reversible option.
@@ -53,6 +55,7 @@ After each milestone:
 2. Write the evidence in the log.
 3. Mark it READY FOR REVIEW, never DONE.
 4. Commit and push.
+5. Do not wait for review. Ganesh is asleep. Start the next milestone straight away and note which milestones are waiting for HQ review at the top of `STATE.md`. HQ reviews them in the morning.
 
 ## How to work
 
