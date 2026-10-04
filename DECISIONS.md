@@ -27,6 +27,9 @@ Format: ID | date | decision | why | status (ACTIVE / SUPERSEDED by D-x)
 - D-014 | 2026-10-04 | Process: Ganesh asked Claude HQ to write the JTBD, user stories and user flows in full for the PRD, replacing his earlier plan to write them by hand with HQ as reviewer. | Time; his call on 4 Oct. | ACTIVE
 - D-015 | 2026-10-04 | PRD v1 written in docs/prd/ (DRAFT). It becomes the build spec once Ganesh accepts it; proposals P-1 to P-7 in docs/prd/README.md need his yes or change. | One spec for Codex across product, design and tech. | PROPOSED
 
+- D-016 | 2026-10-04 | AI provider changed to the Gemini API (Ganesh's own key), via the Vercel AI SDK Google provider inside Convex actions. Model: current stable Gemini Flash chosen at build time, env-configured. Free tier for building; paid tier (billing on) before real users, because on the free tier Google may use content to improve its products. Supersedes D-013. | Ganesh chose Gemini on 4 Oct. | ACTIVE
+- D-013 | 2026-10-04 | SUPERSEDED by D-016.
+
 ## Open (needs Ganesh)
 - Q-001 | RESOLVED by D-006
 - Q-002 | RESOLVED by D-008

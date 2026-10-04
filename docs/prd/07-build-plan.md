@@ -104,7 +104,7 @@ Add one screenshot fixture (an SMS screenshot of F1) once intake handles images.
 
 - [ ] Name chosen (P-5) and domain bought and attached.
 - [ ] Vercel Pro active before the first paid case (P-4).
-- [ ] OpenAI API key has a monthly spend limit set in the OpenAI dashboard.
+- [ ] Gemini billing turned on (paid tier) with a budget alert, and `GEMINI_PAID_TIER=true` set, before the first real user.
 - [ ] UPI env vars set; a ₹1 test payment from a friend reconciled.
 - [ ] BookMyShow manual check done and the KB updated (`06-routes-kb.md` section 6).
 - [ ] Privacy page live; contact email works.

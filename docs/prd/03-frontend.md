@@ -177,7 +177,7 @@ Cards appear by stage. Top to bottom:
 
 ### S12. Privacy `/privacy`
 
-- Plain sections: what we store, why, who processes it (Convex stores it, OpenAI reads and writes it, Vercel hosts the site), how long we keep it, how to delete it, and a contact.
+- Plain sections: what we store, why, who processes it (Convex stores it, Google's Gemini reads and writes it, Vercel hosts the site), how long we keep it, how to delete it, and a contact.
 
 ### S13. Delete confirm (bottom sheet)
 

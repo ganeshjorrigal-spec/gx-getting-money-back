@@ -65,11 +65,12 @@ Build, test, find the biggest gap, fix it, retest.
 
 - Secrets stay in `.env` and Convex env only. Never commit, log or print them.
 - No purchases: no domain, no Vercel Pro, no paid plans.
-- Send nothing to anyone: no emails, messages or posts. No new sign-ups beyond the GitHub, Convex, Vercel and OpenAI accounts already logged in.
+- Send nothing to anyone: no emails, messages or posts. No new sign-ups beyond the GitHub, Convex, Vercel and Google AI Studio accounts already logged in.
 - Do not log into or use the email account ganesh.jorrigal@gmail.com, or any bank, UPI or payment app or site.
 - Do not edit `IDEA_SCOPE.md`, `DECISIONS.md` or `docs/prd/`. In `MILESTONES.md`, only set READY FOR REVIEW. Propose other changes under "For HQ".
 - No force push and no history rewrite.
-- Keep real OpenAI calls to about 300 tonight, eval runs included.
+- The AI provider is Gemini (D-016), not OpenAI. The key is `GOOGLE_GENERATIVE_AI_API_KEY` in `.env`; set it in Convex env too. Pick the model as `docs/prd/05-backend.md` section 3 says.
+- Keep real Gemini calls to about 300 tonight, eval runs included. If you hit free-tier rate limits, slow down and retry rather than switching provider.
 
 ## When to stop
 
