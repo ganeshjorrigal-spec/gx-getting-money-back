@@ -19,10 +19,19 @@ Format: ID | date | decision | why | status (ACTIVE / SUPERSEDED by D-x)
 - D-002 | 2026-10-04 | SUPERSEDED in part by D-010 (platform refunds and post-cancellation charges are out of v1; the exclusions for legal notices, chargebacks, insurance, voice and confidential data still apply).
 - D-007 | 2026-10-04 | SUPERSEDED by D-010 (platform order replaced by event-ticket refunds first).
 
+- D-011 | 2026-10-04 | Sending: the agent prepares every message; the user sends it from their own email (mailto opens pre-filled) or pastes it into the platform's chat. Nothing is sent from our domain. Supersedes D-003 (same principle, now explicit for events) and resolves Q-005. | Authentic and verifiable sender (the user), no sender-domain dependency, matches Ganesh's Round 2 design ("from the customer's own email"). Ganesh chose this on 4 Oct. | ACTIVE
+- D-003 | 2026-10-04 | SUPERSEDED by D-011.
+- D-012 | 2026-10-04 | Interface and reminders: mobile web is the real v1 interface, built and tested on phones (UD: test only where the interface lives). Check-in reminders by calendar now (Google Calendar link on Android, .ics on iPhone); email reminders after the domain is verified (v1.1, behind a flag). No WhatsApp interface in v1; the phone's share sheet is allowed. Supersedes the reminder part of D-008. | Ganesh chose "calendar now, email later" on 4 Oct. UD's tech map warns against building on web and moving to WhatsApp later. | ACTIVE
+- D-008 | 2026-10-04 | SUPERSEDED in part by D-012 (reminders and WhatsApp); mobile-first web stands.
+- D-013 | 2026-10-04 | AI provider: OpenAI API with Ganesh's own key, called through the Vercel AI SDK inside Convex actions. Model set by env var (proposed default gpt-6-luna, fallback gpt-5.4-mini, store false). | Ganesh has an OpenAI API key (ChatGPT Pro does not include API credits). | ACTIVE
+- D-014 | 2026-10-04 | Process: Ganesh asked Claude HQ to write the JTBD, user stories and user flows in full for the PRD, replacing his earlier plan to write them by hand with HQ as reviewer. | Time; his call on 4 Oct. | ACTIVE
+- D-015 | 2026-10-04 | PRD v1 written in docs/prd/ (DRAFT). It becomes the build spec once Ganesh accepts it; proposals P-1 to P-7 in docs/prd/README.md need his yes or change. | One spec for Codex across product, design and tech. | PROPOSED
+
 ## Open (needs Ganesh)
 - Q-001 | RESOLVED by D-006
 - Q-002 | RESOLVED by D-008
 - Q-003 | RESOLVED by D-009 (test result pending)
 - Q-004 | RESOLVED by D-007
-- Q-005 | 2026-10-04 | OPEN. Should the agent send the first email itself after one tap from the user (Shaktimaan's proposal), replacing D-003 (the agent drafts, the user sends)? HQ recommendation: yes, narrowly. Send from a per-case address with the user copied, after explicit approval; no access to the user's inbox. Where the only route is a chat or a form, the agent still drafts and the user pastes. Build blockers to settle: a verified sending domain, and whether organisers accept an email from a case address instead of the registered one. D-003 stays ACTIVE until Ganesh decides.
+- Q-005 | 2026-10-04 | RESOLVED by D-011. Was: Should the agent send the first email itself after one tap from the user (Shaktimaan's proposal), replacing D-003 (the agent drafts, the user sends)? HQ recommendation: yes, narrowly. Send from a per-case address with the user copied, after explicit approval; no access to the user's inbox. Where the only route is a chat or a form, the agent still drafts and the user pastes. Build blockers to settle: a verified sending domain, and whether organisers accept an email from a case address instead of the registered one. D-003 stays ACTIVE until Ganesh decides.
 - Q-006 | 2026-10-04 | OPEN. T1 wording changes to ask about live or recent ticket refunds (last 60 days), the route they tried (chat, email, form), and what they would pay as an open price, not an anchored Rs 49. D-009 amounts are a starting hypothesis only.
+- Q-007 | 2026-10-04 | OPEN. PRD proposals P-1 to P-7 (docs/prd/README.md): no accounts, outcome guarantee, manual UPI, Vercel Pro before charging, name Tickback, design default A until the taste-lock, model choice.

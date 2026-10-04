@@ -2,62 +2,76 @@
 
 Status values: PROPOSED, ACTIVE, READY FOR REVIEW, DONE (after independent review), CUT (with reason).
 Order follows the sprint guidance: landing page, then onboarding, then value, then communication.
-Confirmed by Ganesh on 2026-10-03 (D-006 to D-009). Build in order; one milestone ACTIVE at a time.
+Rewritten on 2026-10-04 to match the PRD in `docs/prd/` (D-010 to D-015). Build in order; one milestone ACTIVE at a time. Which PRD files each milestone needs: `docs/prd/07-build-plan.md` section 1.
 
 ## M0. Project skeleton | ACTIVE
 Goal: Next.js + Convex (D-006) runs locally and deploys a blank page to a public URL.
 Acceptance checks:
 - [ ] `npm run dev` (or equivalent) starts with no errors
 - [ ] A preview URL loads on a phone
-- [ ] `.env.example` lists every key needed; `.env` is git-ignored
-Reviewed by: —
+- [ ] `.env.example` lists every key in `docs/prd/05-backend.md` section 17; `.env` is git-ignored
+- [ ] `app/styles/tokens.css` holds Direction A tokens (`docs/prd/02-design.md` section 6) and Tailwind reads them
+- [ ] Fonts load with `latin` and `latin-ext` subsets; a test line shows the ₹ sign in both fonts
+- [ ] `app/copy.ts` exists with the product name constant
+Reviewed by: pending
 
-## M1. Landing page (the product spec) | CONFIRMED
-Goal: a stranger understands in 10 seconds what it does and starts a case.
+## M1. Landing page and sample case (the product spec) | PROPOSED
+Goal: a stranger understands in 10 seconds what it does, why to trust it, and can try a sample case.
 Acceptance checks:
-- [ ] Headline and sub-copy match IDEA_SCOPE.md (money back from everyday apps); hero example is a Swiggy or Zomato refund (D-007)
-- [ ] Pricing line matches D-009: free under Rs 300, Rs 49 with a 14-day money-back guarantee above
-- [ ] Shows the 4 steps (share two screenshots, approve, send, money lands)
-- [ ] One call to action that opens onboarding, no sign-up wall before value
-- [ ] Readable on a 360 px phone screen
-Reviewed by: —
+- [ ] Landing sections in the order of `docs/prd/03-frontend.md` S1; every string comes from `copy.ts` and matches `docs/prd/04-copy.md` section 3
+- [ ] Example card is labelled "Example"; the date examples show correct weekdays
+- [ ] `/sample` renders the IPL sample case with the banner; send buttons show the note and open nothing
+- [ ] `/taste` renders the landing hero and the US-1 case page in Directions A, B and C for the taste-lock
+- [ ] Lighthouse mobile performance score of 90 or more; landing JavaScript 120 KB gzipped or less
+- [ ] Readable at 360 px; AA contrast; light theme even when the phone is in dark mode
+- [ ] Nothing public links to an unbuilt screen (`/start` stays unlinked from public posts until M2 is DONE)
+Reviewed by: pending
 
-## M2. Onboarding: two screenshots to a case | CONFIRMED
-Goal: first value in under a minute.
+## M2. Onboarding to first value (US-1) | PROPOSED
+Goal: paste a message, and in under 15 seconds see the route, the due date with its source, and the next step, on a phone.
 Acceptance checks:
-- [ ] User uploads the booked value and the payment screenshots
-- [ ] AI extracts platform, amount, date and what is owed; user can correct any field
-- [ ] Works on real samples: two Swiggy or Zomato orders (missing/late/wrong item) and one subscription charge after cancelling; any other app falls back to the generic flow
-- [ ] Mobile web, no sign-up before the case summary is shown (D-008)
-- [ ] Case amount decides the price shown (D-009): free under Rs 300, Rs 49 with guarantee at Rs 300+
-- [ ] Shows the first message to send in the app's support chat
-Reviewed by: —
+- [ ] Intake per `docs/prd/03-frontend.md` S3: paste, up to 4 compressed screenshots, chips, redaction on device and server
+- [ ] Case link uses the secret in the URL fragment; only its hash is stored; a wrong token shows the bad-link message
+- [ ] Live progress steps from Convex; inputs survive an AI failure; Try again works
+- [ ] `planCase()` unit tests pass for WAIT and OVERDUE dates, working days, and the paywall tiers
+- [ ] Eval fixtures F1, F2, F8, F9 and F10 give the expected route and dates (`docs/prd/07-build-plan.md` section 3)
+- [ ] Status card and save card per S5: calendar via Google link on Android and .ics on iPhone; copy link; share
+- [ ] Route on screen at p50 of 8 s or less over 10 logged runs
+- [ ] No sign-up; nothing locked at this stage
+Reviewed by: pending
 
-## M3. Core loop: coach the chat, then escalate | CONFIRMED
-Goal: the case stays alive until money lands or is formally rejected.
+## M3. Value loop (US-2 to US-9) | PROPOSED
+Goal: the case stays alive until the money lands, with every step ready to send from the user's own email or chat.
 Acceptance checks:
-- [ ] User pastes the support bot's reply; agent classifies it (refund, stall, rejection) and gives the next line
-- [ ] If stalled, agent drafts the grievance-officer email with the evidence attached; user sends it themselves
-- [ ] Case has visible states: open, waiting, stalled, escalated, resolved, rejected
-- [ ] Case and evidence are saved and survive a page reload
-Reviewed by: —
+- [ ] Drafts per `docs/prd/05-backend.md` section 7; `to` is filled by code from VERIFIED contacts or the user's own text, never by the model
+- [ ] Send sheet: mailto with the ₹ sign and line breaks intact; long-body copy-first fallback; chat and helpline variants
+- [ ] Mark sent schedules check-ins; the check-in banner works; "Not yet" moves L0 to L1 to L2; replies re-triage
+- [ ] ACTION_NEEDED checklist (US-2), TRACE (US-5), FAILED_PAYMENT with compensation (US-6), NO_ROUTE options (US-7), OUT_OF_SCOPE waitlist (US-9)
+- [ ] Paywall per `docs/prd/05-backend.md` section 8.4; pay sheet with UPI on Android and QR on iPhone; claim unlocks; not_found re-locks
+- [ ] Money landed closes the case with share and feedback (US-8); delete removes everything
+- [ ] Full eval set F1 to F10 meets the pass bar; phone tests in `docs/prd/07-build-plan.md` section 4 pass on Android and iPhone
+- [ ] Analytics events fire; the funnel query runs
+Reviewed by: pending
 
-## M4. Communication (bonus) | CONFIRMED
-Goal: the agent remembers to chase so the user does not have to.
+## M4. Communication (bonus) | PROPOSED
+Goal: the agent reminds people even if they never open their calendar.
 Acceptance checks:
-- [ ] Day-3 and day-7 nudges for open cases by email or a pre-filled wa.me link (D-008)
-- [ ] "Money landed" confirmation closes the case and shows the amount recovered
-Reviewed by: —
+- [ ] Domain verified in Resend; `EMAIL_ENABLED` turns email on
+- [ ] Optional "Email me on my check-in dates" after value; check-in, overdue and money-landed emails; unsubscribe link in each
+- [ ] Founder contact opt-in stored; OG image and share card polished
+Reviewed by: pending
 
-## T1. Validation test: live cases and willingness to pay | ACTIVE (Ganesh, runs in parallel to M0 to M2)
-Goal: settle D-009 with real behaviour before payment features are built.
+## T1. Validation test: live cases and willingness to pay | ACTIVE (Ganesh, runs in parallel to M0 to M3)
+Goal: settle D-009 and test A1 (enough live event-refund cases) with real behaviour.
 Steps:
-- [ ] DM 10 people: "Are you waiting on any refund or a charge you didn't expect right now? How much?"
-- [ ] Offer the Rs 49 guarantee price to everyone with a live case of Rs 300+
-- [ ] Record each reply as one line in docs/research/validation/ (who type, platform, amount, paid yes/no)
-Decision rules (from D-009):
-- Pass: at least 3 of 10 have a live case AND at least 2 with Rs 300+ cases pay by Day 5
-- Cases but no upfront payment: switch to pay-after-success (Rs 29 to 99)
-- Almost no live cases: named pivot reason; take it to Claude HQ
-- If food refunds turn out not to be a struggle: swap D-007 story order
-Reviewed by: —
+- [ ] DM 10 people: "Have you waited on a refund for an event or ticket in the last 60 days, or are you waiting on one now? What happened, how much, and what did you try (chat, email, form)?"
+- [ ] For anyone with a live case of ₹300 or more: "If I chase it to the end for you, what would that be worth to you?" (open price first), then offer ₹49 with the guarantee
+- [ ] Record each reply as one line in `docs/research/validation/` (who type, platform, amount, route tried, price said, paid yes or no)
+Decision rules (from D-009 and D-010):
+- Pass: at least 3 of 10 have a live or recent case AND at least 2 with ₹300+ cases pay by Day 5
+- Cases but no upfront payment: switch to pay-after-success (₹29 to ₹99)
+- Fewer than 3 of 10 with a live case: switch v1 to flights; take it to Claude HQ
+Reviewed by: pending
+
+## Cut
+- Old M1 to M4 (Swiggy, Zomato, two-screenshot onboarding, agent coaching the in-app chat) | CUT 2026-10-04 | Superseded by the PRD: v1 is event tickets (D-010), the user's own email sends (D-011), calendar then email reminders (D-012).

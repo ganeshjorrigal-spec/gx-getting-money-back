@@ -1,96 +1,98 @@
-<!-- Charter, owned by Claude HQ. If the text you sent to Shaktimaan differs, replace this file with that exact text. -->
-# IDEA LOCK · Build Sprint
+<!-- Charter, owned by Claude HQ. Re-locked with Shaktimaan on 2026-10-04 (D-010). If the text you send to Shaktimaan differs, replace this file with that exact text. Full detail: docs/prd/. -->
+# IDEA LOCK · Build Sprint (re-locked 4 Oct 2026)
 
 **The idea, in one line:**
-An AI agent that gets your money back from the apps and subscriptions you pay every day. You share two screenshots (what you paid, what was promised), it builds the case, tells you what to say in the app's support chat, and if the chat stalls it keeps the case alive with follow-ups and a grievance-officer email until the money lands. I draft and you press send. v1 here means the version I build and sell to real users in the two-week sprint: everyday platform refunds and post-cancellation charges only, no legal notices, no bank chargebacks, no company-confidential data. Insurance, voice calls and everything else wait until after the sprint.
+An AI agent that takes over a stuck event-ticket refund and stays on it until the money lands. You paste what the organiser told you (or a screenshot). It works out which refund route you are on (automatic, form, proof needed, credit only, or no route), tells you the date your money should land and why, and gives you the next message ready to send from your own email. When the refund is straightforward, it says so and sets a check date. When it isn't, it comes back on that date and moves you up the ladder: support, then the platform's grievance officer, then the National Consumer Helpline. v1 means the version I build and sell in the two-week sprint: event tickets in India only. Flights are next; EPF and other government forms are v2. Out of v1: Swiggy, Zomato, Rapido, chargebacks, legal notices, voice calls, logging in for the user, and any company-confidential data.
 
 **Why me (at least 1 of 3: an audience that trusts me, years inside the workflow, data nobody else has):**
-- Data nobody else has (partial): I lived this twice myself. Rapido overcharged me Rs 100 and needed two screenshots (booked fare and payment) before refunding. A very late Swiggy order of about Rs 210 took roughly 10 minutes of negotiating with the support bot before it detected I was serious about cancelling and refunding. Both refunds were promised within 24 hours.
-- I also have five customer conversations on stuck money. In all five no company said no; people gave up because chasing cost more than the refund. Examples: one person blocked her card after emails went nowhere; one quit after a single draining call; one abandons Rs 2,000 to 4,000 a year; one recovered money only through a personal bank contact; one was billed after a free trial silently turned paid.
-- Years inside the workflow: no. Audience that trusts me: weak (ex-Performics friends, Isha meditator friends, my cohort, which is budget sensitive).
+- Data nobody else has (partial): an interview with a buyer whose IPL refund took about 20 days on Rs 2,400. The venue moved, support "didn't know" for 4 days, then a Google form, then he couriered physical tickets at his own cost, then two weeks of silence. He would hand the whole chase to an app. My evidence rests on him, not on my own refund: my own cases (Rapido, Swiggy) were small and cleared in a day.
+- Five earlier customer conversations on stuck money: no company said no; people gave up because chasing cost more than the refund.
+- Years inside the workflow: no. Audience that trusts me: weak (ex-Performics friends, Isha meditator friends, my cohort).
 
 ## GOAL
 
 **The one goal they hire it for (money, time, status or life):**
-Money. Get my own money back.
+Money. Get my ticket money back, without weeks of not knowing.
 
 **Delta 4 (the steps today → the steps with my product):**
 Today (about 10 steps):
-1. Notice the overcharge, the late order or the post-cancellation charge
-2. Find the booking or payment details
-3. Take screenshots of what I booked and what I paid
-4. Open the app's support chat
-5. Argue with the bot until it believes I am serious
-6. If it stalls: find the support email
-7. Draft and send it, often with ChatGPT
-8. Remember to check back and chase again
-9. Find the grievance officer or the bank dispute route
-10. Keep tracking it, or give up
+1. Find out what's going on (ask support, wait days)
+2. Find the refund policy
+3. Work out what I'm owed and how
+4. Find the right channel
+5. Write the message
+6. Attach the right proof
+7. Remember the date
+8. Check the bank
+9. Chase again
+10. Find the next level (grievance officer, helpline), or give up
 
 With my product (4 steps):
-1. Share the two screenshots
-2. Approve the case and the first message
-3. Send the next line in the chat as the agent suggests it
-4. If it stalls, approve the escalation; money lands
+1. Paste the message or a screenshot
+2. See my route, my date and my next step
+3. Tap to send it from my own email
+4. On the date, tap "It's in" or "Not yet"; if not yet, the next step is ready
 
-Job solved better: a single ChatGPT draft forgets the case. The agent keeps the evidence, knows what each platform responds to and stays on the case until the company pays or formally rejects.
+Job solved better: ChatGPT writes one message and forgets. The agent knows the route for this platform and case, computes the date from the promise or the rule, keeps the case and proof at one link, and comes back on the right day with the next step.
 
 **The sin it rides (optional):**
-Wrath (they wronged me, I made them pay), with Greed as the share hook: "Got Rs 1,840 back. Four messages I did not write."
+Wrath (they kept my money, I made them pay it back), with Greed as the share hook: "Got Rs 2,400 back from a cancelled show. Tickback chased it."
 
 ## USER
 
+**Who exactly:**
+Someone in India, roughly 20 to 35, who bought tickets online for a live event (concert, comedy, cricket, festival) on BookMyShow, District or an organiser's site, often for friends too, and whose refund is unclear, late, or tied to steps they don't understand.
+
 **The trigger (when the pain hits):**
-A refund was promised and has not landed, an app overcharged me or delivered badly and its support will not budge, or a charge appeared after I cancelled.
+The event is cancelled, postponed or moved; money was debited but no ticket came; or the platform says "refunded" and the bank shows nothing.
 
 **Today's path, step by step (including not solving it at all):**
-Most people do nothing or send one message and stop. People who persist go through the steps above. Some win only through a personal contact at the bank. A common outcome is abandoning Rs 2,000 to 4,000 a year because chasing costs more than the refund.
+Ask support chat and wait; get "we don't know yet" or "7 to 10 working days"; sometimes fill a form or courier tickets back; keep checking the bank; ask again; complain on X; or give up.
 
 **Who they trust on this decision:**
-MISSING
+MISSING (my guess, to check in T1: friends who went through the same refund, and the platform's own messages; not lawyers).
 
 **Would they pay? (what exists today that people pay for):**
-Paid today (to verify): Rocket Money takes a share of what it saves users; US apps such as Pine AI and Chargeback chase refunds and cancellations for fees. India-specific paid equivalent: MISSING (not yet checked). Open risk: my own two cases were Rs 100 and Rs 210 and cleared within about a day, so for small tickets the pain is the effort, not the money. The payment case rests on the larger stalled cases from my research. Fee model not decided; I will test tonight in my DMs with a small flat fee per case (Rs 29 to Rs 99) against a monthly plan.
+Paid today (to verify): Rocket Money takes a share of what it saves users; US apps such as Pine AI and Chargeback chase refunds and cancellations for fees. India paid equivalent: MISSING (not yet checked). My offer to test: free to check (route, date, first step); Rs 49 to stay on it for refunds of Rs 300 and more, with the Rs 49 back if the refund doesn't land. Testing it in DMs this week (T1) and in the product.
 
 ## PRODUCT
 
 **Onboarding (how a first-time user feels the value fastest):**
-Share two screenshots, the booked value and the payment. Within a minute the agent returns the platform, the amount, what is owed, what to say first and which escalation step comes next. No sign-up form. No inbox connection on day one: the agent drafts and the user sends.
+No sign-up. Paste the message or a screenshot, or tap what happened. In under a minute: the route, the date the money should land with its source, and the next step ready to send. A sample case to try first for anyone without a live case.
 
-**The core loop (user stories, written by me):**
-Example (one only, drafted):
-- As someone whose Swiggy order arrived very late, I share the two screenshots, send the line the agent gives me in the chat, and get the refund confirmed without 10 minutes of arguing.
-
-MISSING: story 2, the chat stalls and I see what the agent does next.
-MISSING: story 3, the company rejects my claim.
-MISSING: story 4, the refund lands and I see proof.
+**The core loop (user stories):**
+1. My event was cancelled and they said a refund is coming: I paste the message and see the date it's due and that there's nothing to send yet; it's on my calendar.
+2. They want me to do something (a form, return physical tickets, choose refund before a deadline): I get the exact checklist, deadline and proof to keep.
+3. They replied: I paste the reply and it tells me what it means and what's next.
+4. The date passed and nothing landed: it gives me the next step up the ladder (grievance officer, then the National Consumer Helpline), written and ready to send from my own email.
+5. The money landed: I close the case, see what I recovered, and share it.
 
 **Coming back (optional):**
-Each new stuck case, plus a "still chasing" update on open cases.
+Calendar check-ins on the dates that matter, then email once the domain is verified.
 
 **The AI-first part (onboarding, engagement or the core loop):**
-Onboarding and the core loop. AI reads messy screenshots to build the case, reads the platform's replies (real refund, stall or rejection) and decides the next message and escalation. Without AI it is a reminder app.
+The core loop. AI reads messy messages and screenshots, picks the refund route, reads every reply and decides the next step. Code computes dates and rules so nothing is made up. Without AI it is a reminder app.
 
 ## MARKET
 
 **Tailwinds (where funding is going, what Google Trends shows, timing):**
-- Regulation: RBI e-mandate framework (April 2026) gives customers withdrawal rights, a 24-hour pre-debit alert and issuer-side revocation.
-- Agent infrastructure for payments is going live in India (Pine Labs agent payments from June 2026).
-- Google Trends for "refund not received" and "subscription charged after cancellation" in India: MISSING (not yet run).
-- Funding news for AI consumer-dispute and refund agents: MISSING (not yet searched).
+- 2026 had a run of big cancellations and postponements in India (Bandland 2026 cancelled; Shakira's India tour postponed; a Delhi concert moved by two months with no refund route), and IPL 2025 needed a different refund process for each disrupted match.
+- A Hyderabad consumer commission fined BookMyShow in 2026 for not telling a buyer a (movie) show was cancelled (reported).
+- From 1 Jan 2027, every e-commerce platform must join the National Consumer Helpline's convergence process (amendment notified Sep 2026, reported).
+- Google Trends for "refund not received" in India: MISSING (not yet run).
+- Funding news for AI consumer-dispute agents: MISSING (not yet searched).
 
 **Competitors (and the flows I liked, with screenshots and why):**
-Alternatives by bucket:
-- Doing nothing, or one message then giving up (the biggest competitor)
-- Doing it myself: the app's own support chat plus ChatGPT drafts (the one to beat)
-- A person: a bank contact, a relative, a lawyer
-- Official routes: bank dispute desk, National Consumer Helpline, company grievance officers
-- Products: Subee and Fleek (India, subscription tracking, not chasing), Rocket Money, Pine AI, Chargeback (US)
+- Doing nothing, or one message and giving up (the biggest competitor)
+- Doing it myself: the platform's chat plus ChatGPT drafts (the one to beat)
+- A person: a friend who knows the system
+- Official routes: grievance officers, the National Consumer Helpline (free, but people don't know them)
+- Products: Rocket Money, Pine AI, Chargeback (US); Indian equivalents for event tickets not yet searched
 Flows I liked, with screenshots and why: MISSING (teardown not yet done).
 
 **Size and fit (how many people in my extended network fit):**
-MISSING (not yet counted). Counting only people who had a stuck refund or post-cancellation charge in the last 60 days. Tonight's test: DM 10 people "Are you waiting on a refund right now?". If fewer than 3 say yes, I flag it and name that as the pivot reason.
+MISSING (not yet counted). Counting people with an event or ticket refund in the last 60 days. Test (T1): DM 10 people; if fewer than 3 have a live or recent case, I switch v1 to flights and say so.
 
 ---
 
-Shaktimaan, this is what I have thought about user, product and market. Lock it in.
+Shaktimaan, this is the re-locked version with events as the one v1 case. Lock it in.
