@@ -8,7 +8,7 @@ export default function Home() {
   const faqs = [...c.questions, [c.privacyQuestion, paidTier ? c.privacyPaid : c.privacyFree]];
 
   return (
-    <main>
+    <main className="home-shell">
       <header className="site-header">
         <Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link>
         <Link prefetch={false} className="text-link" href="/sample">{c.headerLink} <span aria-hidden="true">↗</span></Link>

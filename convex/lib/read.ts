@@ -25,6 +25,7 @@ export const caseReadSchema = z.object({
   refundProcessedDate: z.string().nullable(),
   references: z.object({ arn: z.string().nullable(), rrnOrUtr: z.string().nullable() }),
   actionsRequired: z.array(z.object({ action: z.string(), deadline: z.string().nullable(), link: z.string().nullable() })),
+  completedActions: z.array(z.object({ action: z.string(), date: z.string().nullable() })),
   refundOptionDeadline: z.string().nullable(),
   messageDate: z.string().nullable(),
   contactsInText: z.array(z.object({ kind: z.enum(["email", "phone", "url"]), value: z.string() })),

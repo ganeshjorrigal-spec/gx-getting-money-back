@@ -70,7 +70,7 @@ Acceptance checks:
 Blocked until Ganesh finishes the Google Cloud steps in `09` (OAuth client and a test Gmail). Build everything else meanwhile.
 Reviewed by: pending
 
-## M2.1. Red-team and tester fixes (after M2.2) | ACTIVE
+## M2.1. Red-team and tester fixes (after M2.2) | READY FOR REVIEW
 Goal: apply `docs/prd/08-red-team-changes.md` (C1 to C11; C12 is done in M2.0) and `docs/prd/10-tester-fixes.md` (T-1 to T-7, test F16).
 - [ ] T-1 to T-7 from `10` (T-1 now means: remove the "we never share your data" promise; no separate heads-up yet), each with its check; F16 added to the eval and passing Do this before more M3 work.
 Acceptance checks:

@@ -106,7 +106,8 @@ h3 { font-size: var(--text-heading); line-height: var(--leading-heading); margin
   .three-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .footer-inner div { justify-content: flex-start; }
-  .sticky-cta { display: block; position: fixed; bottom: 0; left: 0; right: 0; padding: var(--space-3) var(--page-gutter); background: var(--bg); border-top: var(--border-width) solid var(--line); transform: translateY(110%); transition: transform var(--motion-sheet) ease-out; z-index: 10; }
+  .sticky-cta { display: block; position: fixed; bottom: 0; left: 0; right: 0; padding: var(--space-3) var(--page-gutter) calc(var(--space-3) + env(safe-area-inset-bottom)); background: var(--bg); border-top: var(--border-width) solid var(--line); transform: translateY(110%); transition: transform var(--motion-sheet) ease-out; z-index: 10; }
+  .home-shell { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
   .sticky-cta.is-visible { transform: translateY(0); }
   .sticky-cta .button { width: 100%; }
 }

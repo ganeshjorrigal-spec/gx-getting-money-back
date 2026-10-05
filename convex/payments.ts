@@ -24,7 +24,7 @@ export const markNotFound = internalMutation({
   handler: async (ctx, { code }) => {
     const item = await ctx.db.query("cases").withIndex("by_code", (q) => q.eq("code", code)).unique();
     if (!item) return null;
-    await ctx.db.patch(item._id, { paidState: "not_found", updatedAt: Date.now() });
+    await ctx.db.patch(item._id, { paidState: "not_found", paymentGraceUntil: Date.now() + 2 * 86_400_000, updatedAt: Date.now() });
     const payment = await ctx.db.query("payments").withIndex("by_code", (q) => q.eq("code", code)).order("desc").first();
     if (payment) await ctx.db.patch(payment._id, { status: "not_found" });
     return null;

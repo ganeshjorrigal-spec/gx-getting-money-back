@@ -22,6 +22,7 @@ import type * as googleData from "../googleData.js";
 import type * as http from "../http.js";
 import type * as lib_access from "../lib/access.js";
 import type * as lib_delete from "../lib/delete.js";
+import type * as lib_draft from "../lib/draft.js";
 import type * as lib_ground from "../lib/ground.js";
 import type * as lib_plan from "../lib/plan.js";
 import type * as lib_prompts from "../lib/prompts.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/access": typeof lib_access;
   "lib/delete": typeof lib_delete;
+  "lib/draft": typeof lib_draft;
   "lib/ground": typeof lib_ground;
   "lib/plan": typeof lib_plan;
   "lib/prompts": typeof lib_prompts;

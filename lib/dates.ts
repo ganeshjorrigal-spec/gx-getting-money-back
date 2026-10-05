@@ -36,11 +36,10 @@ export function todayIST(now = new Date()): string {
 
 export function displayDate(value: string): string {
   const date = dateValue(value);
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${days[date.getUTCDay()]}, ${date.getUTCDate()} ${months[date.getUTCMonth()]}`;
+  return `${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
 
 export function shortDate(value: string): string {
-  return displayDate(value).replace(/^\w+, /, "");
+  return displayDate(value);
 }

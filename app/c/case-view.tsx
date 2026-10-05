@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { caseCopy as c, productName } from "../copy";
+import { caseCopy as c, guaranteeLine, productName } from "../copy";
 import { forgetCase, getDeviceId, saveCase } from "../../lib/case-link";
-import { displayDate } from "../../lib/dates";
+import { addWorkingDays, displayDate, todayIST } from "../../lib/dates";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate } from "../../lib/outbound";
 import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
@@ -22,6 +22,8 @@ type CaseView = {
   createdAt: number; recoveredPaise: number | null; ladderLevel: number; draftsShown: number;
   actionsRequired: { action: string; deadline: string | null; link: string | null }[];
   outOfScopeCategory: string | null; situation: string | null;
+  facts: { bookingId?: string | null; eventDate?: string | null; messageDate?: string | null; promise?: { text?: string | null }; completedActions?: { action: string; date: string | null }[]; ticketFormat?: string } | null;
+  factsConfirmedAt: number | null; oldCheckinDate: string | null; paymentGraceUntil: number | null;
   checkin: { date: string; reason: string; status: string } | null; paymentsEnabled: boolean;
   upiVpa: string | null; upiName: string;
   feedbackGiven: boolean;
@@ -43,6 +45,7 @@ export default function CaseView({ code }: { code: string }) {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+  const [grievanceSource, setGrievanceSource] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
   const [reply, setReply] = useState("");
   const [replyImage, setReplyImage] = useState<File | null>(null);
@@ -62,6 +65,11 @@ export default function CaseView({ code }: { code: string }) {
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [includeCaseInbox, setIncludeCaseInbox] = useState(true);
   const [pendingGoogle, setPendingGoogle] = useState<"calendar" | "gmail" | null>(null);
+  const [factCorrection, setFactCorrection] = useState("");
+  const [correctingFacts, setCorrectingFacts] = useState(false);
+  const [actionDate, setActionDate] = useState("");
+  const [checkAgainDays, setCheckAgainDays] = useState<2 | 3 | 5>(2);
+  const [channelPrompt, setChannelPrompt] = useState(false);
   const caseData = useQuery(api.cases.get, token ? { code, token } : "skip") as CaseView | null | undefined;
   const tracking = useQuery(api.googleConnect.status, token && caseData ? { code, token } : "skip") as Tracking | undefined;
   const drafts = useQuery(api.cases.drafts, token && caseData ? { code, token } : "skip") as Draft[] | undefined;
@@ -71,6 +79,8 @@ export default function CaseView({ code }: { code: string }) {
   const addReply = useMutation(api.cases.addReply);
   const uploadUrl = useMutation(api.files.generateUploadUrl);
   const markSent = useMutation(api.cases.markSent);
+  const recordSendChannel = useMutation(api.cases.recordSendChannel);
+  const confirmFacts = useMutation(api.cases.confirmFacts);
   const markActionDone = useMutation(api.cases.markActionDone);
   const answerCheckin = useMutation(api.cases.answerCheckin);
   const removeCase = useMutation(api.cases.remove);
@@ -136,7 +146,7 @@ export default function CaseView({ code }: { code: string }) {
   }
 
   function checkinDetails(data: CaseView) {
-    const date = checkinDate(data.dueDate!);
+    const date = data.route === "OVERDUE" || (data.dueDate && data.dueDate < todayIST()) ? addWorkingDays(todayIST(), checkAgainDays) : data.checkin?.date && data.checkin.date > todayIST() ? data.checkin.date : data.dueDate ? checkinDate(data.dueDate) : addWorkingDays(todayIST(), 2);
     const amount = money(data.amountPaise);
     const eventName = data.eventName ?? "your event";
     const link = window.location.href;
@@ -144,7 +154,7 @@ export default function CaseView({ code }: { code: string }) {
   }
 
   function addCalendar(kind: "google" | "ics") {
-    if (!caseData?.dueDate) return;
+    if (!caseData) return;
     const details = checkinDetails(caseData);
     if (kind === "google") { window.open(buildGoogleCalendar(details.date, details.title, details.description), "_blank", "noopener,noreferrer"); return; }
     const ics = buildIcs({ code, date: details.date, title: details.title, description: details.description, domain: location.hostname, checkinId: details.date });
@@ -182,13 +192,18 @@ export default function CaseView({ code }: { code: string }) {
     finally { setBusy(false); }
   }
 
+  function outboundBody() {
+    return drafts?.[0]?.step === "L1" && grievanceSource.trim() ? body.replace("Dear Grievance Officer,", `Dear Grievance Officer,\n\nI could not find the Grievance Officer's address on your site, so I am sending this to the address in ${grievanceSource.trim()}.`) : body;
+  }
+
   async function openEmail() {
     if (!body.trim()) return;
-    if (drafts?.[0]?.channel !== "email") { await copy(body); setSentPrompt(true); return; }
+    const message = outboundBody();
+    if (drafts?.[0]?.channel !== "email") { await copy(message); setSentPrompt(true); return; }
     if (!to.trim() || !subject.trim()) return;
     const cc = includeCaseInbox && tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : undefined;
-    const result = buildMailto(to, codedSubject(subject, code), body, cc);
-    if (result.copyFirst) { await copy(body); setNotice("Message copied. Paste it into the email."); }
+    const result = buildMailto(to, codedSubject(subject, code), message, cc);
+    if (result.copyFirst) { await copy(message); setNotice("Message copied. Paste it into the email."); }
     window.location.href = result.url;
     setSentPrompt(true);
   }
@@ -214,15 +229,15 @@ export default function CaseView({ code }: { code: string }) {
   async function markDraftSent() {
     if (!token || !drafts?.[0]) return;
     setBusy(true);
-    try { await markSent({ code, token, draftId: drafts[0]._id }); setSentPrompt(false); setSendOpen(false); setNotice("Marked as sent. We'll check back with you."); }
+    try { await markSent({ code, token, draftId: drafts[0]._id }); setSentPrompt(false); setSendOpen(false); setChannelPrompt(true); setNotice("Marked as sent. We'll check back with you."); }
     catch { setNotice(c.error); }
     finally { setBusy(false); }
   }
 
   async function actionDone() {
-    if (!token) return;
+    if (!token || !actionDate) return;
     setBusy(true);
-    try { await markActionDone({ code, token }); setNotice("Saved. Working out your new check-in date…"); }
+    try { await markActionDone({ code, token, completedDate: actionDate }); setNotice("Saved. Working out your new check-in date…"); }
     catch { setNotice(c.error); }
     finally { setBusy(false); }
   }
@@ -302,15 +317,17 @@ export default function CaseView({ code }: { code: string }) {
 
   const invalid = ready && !token;
   const route = caseData?.route;
-  const title = route === "WAIT" && caseData?.dueDate ? `Your ${money(caseData.amountPaise)} should land by ${displayDate(caseData.dueDate)}.`
-    : route === "OVERDUE" && caseData?.dueDate ? `Your ${money(caseData.amountPaise)} was due by ${displayDate(caseData.dueDate)}.`
+  const estimated = caseData?.dueSource === "estimate" || caseData?.dueSource === "platform_policy_reported" || caseData?.dueSource === "platform_policy";
+  const needsConfirm = !!caseData && !caseData.factsConfirmedAt && (route === "ACTION_NEEDED" || (caseData.draftsShown >= 1 && !!caseData.nextStep && !["none", "questions", "options", "waitlist"].includes(caseData.nextStep)));
+  const title = route === "WAIT" && caseData?.dueDate ? estimated ? `Our check-in for your ${money(caseData.amountPaise)} refund is ${displayDate(caseData.dueDate)}.` : `Your ${money(caseData.amountPaise)} should land by ${displayDate(caseData.dueDate)}.`
+    : route === "OVERDUE" && caseData?.dueDate ? estimated ? `Time to check your ${money(caseData.amountPaise)} refund.` : `Your ${money(caseData.amountPaise)} was due by ${displayDate(caseData.dueDate)}.`
     : route ? c.routeLabels[route] : "";
   const question = caseData?.questions?.[0];
   const stepIndex = { reading: 0, route: 1, date: 2, writing: 3, done: 4, failed: 0 }[caseData?.progress?.step ?? "reading"] ?? 0;
   const isIOS = ready && /iPhone|iPad|iPod/.test(navigator.userAgent);
   const isAndroid = ready && /Android/.test(navigator.userAgent);
-  const messageSteps = ["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_bank", "NO_ROUTE_ask", "ACTION_form"];
-  const locked = !!caseData?.paymentsEnabled && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && caseData.draftsShown >= 1 && messageSteps.includes(caseData.nextStep ?? "") && (drafts?.[0]?.step !== caseData.nextStep || !drafts?.[0]?.body);
+  const messageSteps = ["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_platform", "NO_ROUTE_ask", "ACTION_form"];
+  const locked = !!caseData?.paymentsEnabled && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && !(caseData.paymentGraceUntil && caseData.paymentGraceUntil > Date.now()) && caseData.draftsShown >= 1 && messageSteps.includes(caseData.nextStep ?? "") && (drafts?.[0]?.step !== caseData.nextStep || !drafts?.[0]?.body);
 
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><span className="case-code">{code}</span></header>
@@ -331,13 +348,14 @@ export default function CaseView({ code }: { code: string }) {
             {elapsed >= 12 && <p>{c.working}</p>}
           </article>}
           {caseData.stage === "ERROR" && <article className="case-card" role="alert"><h2>{c.error}</h2><button className="button button-primary" onClick={() => token && retry({ code, token })}>{c.retry}</button></article>}
+           {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><h2>Check these details</h2><p>{caseData.platform ?? "Platform unknown"} · {caseData.eventName ?? "Event unknown"} · {money(caseData.amountPaise)}</p><p>Refund date: {caseData.dueDate ? displayDate(caseData.dueDate) : "not given"}. {caseData.facts?.promise?.text ? `They said: ${caseData.facts.promise.text}` : "No refund promise found."}</p><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => token && confirmFacts({ code, token, looksRight: true })}>Looks right</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={async () => { if (!token) return; setBusy(true); try { await confirmFacts({ code, token, looksRight: false, correction: factCorrection }); setCorrectingFacts(false); setFactCorrection(""); } catch { setNotice(c.error); } finally { setBusy(false); } }}>Save correction</button></div>}</article>}
           {route && !["ERROR", "CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card status-card">
-            <span className={`route-chip ${route === "OVERDUE" || route === "ACTION_NEEDED" ? "caution-chip" : ""}`}>{c.routeLabels[route]}</span>
+             <span className={`route-chip ${route === "OVERDUE" || route === "ACTION_NEEDED" ? "caution-chip" : ""}`}>{route === "OVERDUE" && estimated ? "Time to check" : route === "WAIT" && (estimated || !caseData.dueDate) ? "Waiting for a refund" : c.routeLabels[route]}</span>
             {caseData.amountPaise != null && <p className="case-amount">{money(caseData.amountPaise)}</p>}
-            <h2>{title}</h2>
-            {caseData.dueDate && <div className="due-block"><span>Due date</span><strong>{displayDate(caseData.dueDate)}</strong></div>}
-            {caseData.dueSourceText && <p className="example-source">{caseData.dueSourceText}</p>}
-            {route === "FAILED_PAYMENT" && caseData.compensationRupees != null && <p className="input-hint">Your bank may owe ₹{caseData.compensationRupees.toLocaleString("en-IN")} on top under the failed-payment rule.</p>}
+             <h2>{needsConfirm ? "Check what we understood above first." : title}</h2>
+             {caseData.dueDate && !needsConfirm && <div className="due-block"><span>{route === "ACTION_NEEDED" && caseData.facts?.ticketFormat === "physical" ? "Must reach them by" : estimated ? "Estimated check date" : "Due date"}</span><strong>{displayDate(caseData.dueDate)}</strong></div>}
+             {caseData.dueSourceText && <p className="example-source">{caseData.facts?.messageDate ? caseData.dueSourceText.replace(/\bon\s+\d{1,2}\s+[A-Z][a-z]{2}(?!\s+\d{4})/, `on ${displayDate(caseData.facts.messageDate)}`) : caseData.dueSourceText}</p>}
+             {estimated && <p className="input-hint">This is our estimate from the platform&apos;s usual timing, not a date they promised.</p>}
             {caseData.routeConfidence != null && caseData.routeConfidence < 0.6 && <p className="input-hint">We think this is {c.routeLabels[route]}. Is that right?</p>}
           </article>}
           {caseData.stage === "NEED_INFO" && question && <article className="case-card">
@@ -345,23 +363,25 @@ export default function CaseView({ code }: { code: string }) {
             <div className="answer-options">{question.options.map((option) => <button className="situation-chip" key={option} onClick={() => option === "Earlier" ? setEarlier(true) : submitAnswer(option)} disabled={busy}>{option}</button>)}</div>
             {(earlier || question.options.length === 0) && <div className="answer-form"><label htmlFor="case-answer">{earlier ? "Choose the date" : "Your answer"}</label><input id="case-answer" type={earlier ? "date" : "text"} value={answer} onChange={(event) => setAnswer(event.target.value)} /><button className="button button-primary" onClick={() => submitAnswer()} disabled={!answer || busy}>{c.continue}</button></div>}
           </article>}
-          {route === "WAIT" && caseData.dueDate && !["CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card">
-            <p className="section-kicker">THE NEXT STEP</p><h2>{c.waitNext}</h2><p>Your check-in: {displayDate(checkinDate(caseData.dueDate))}. Add it to your calendar so you don&apos;t miss it.</p>
+           {route === "WAIT" && !["CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card">
+             <p className="section-kicker">THE NEXT STEP</p><h2>{c.waitNext}</h2><p>{caseData.dueDate && !estimated ? `Their promised date: ${displayDate(caseData.dueDate)}.` : "They have not promised a refund date."} Our check-in date: {displayDate(caseData.checkin?.date ?? addWorkingDays(todayIST(), 2))}. Add it to your calendar so you don&apos;t miss it.</p>
           </article>}
           {route === "OVERDUE" && !["CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card">
-            <p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "L1" ? `Escalate to ${caseData.platform ?? "the organiser"}'s Grievance Officer` : `Ask ${caseData.platform ?? "the organiser"} support in writing`}</h2><p>{caseData.nextStep === "L1" ? "Under the rules, they must acknowledge within 48 hours and resolve within a month." : "Email leaves a dated record. That matters if you need to go higher."}</p>
-            {locked ? <p className="input-hint">Your next message is ready after you unlock this case.</p> : drafts?.[0]?.body && drafts[0].status !== "sent" ? <button className="button button-primary" onClick={() => setSendOpen(true)}>{drafts[0].channel === "email" ? c.openEmail : "Open my next step"}</button> : caseData.stage === "WAITING" ? <p className="input-hint">Waiting for their reply. We&apos;ll check in with you.</p> : <p className="input-hint">Writing your next step…</p>}
+             <p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "L1" ? `Escalate to ${caseData.platform ?? "the organiser"}'s Grievance Officer` : `Ask ${caseData.platform ?? "the organiser"} support in writing`}</h2><p>{caseData.nextStep === "L1" ? "The Consumer Protection (E-Commerce) Rules, 2020 say they should acknowledge within 48 hours. Check this at the source before citing it." : estimated && caseData.dueDate ? `As of ${displayDate(caseData.dueDate)}, I have not received the refund. Ask for a status update.` : "Email leaves a dated record. That matters if you need to go higher."}</p>
+             {needsConfirm ? <p className="input-hint">Check the facts above to see your message.</p> : locked ? <p className="input-hint">Your next message is ready after you unlock this case.</p> : drafts?.[0]?.body && drafts[0].status !== "sent" ? <button className="button button-primary" onClick={() => setSendOpen(true)}>{drafts[0].channel === "email" ? c.openEmail : "Open my next step"}</button> : caseData.stage === "WAITING" ? <p className="input-hint">Waiting for their reply. We&apos;ll check in with you.</p> : <p className="input-hint">Writing your next step…</p>}
           </article>}
-          {route === "ACTION_NEEDED" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>Do these before the deadline</h2><ul className="checklist">{caseData.actionsRequired.map((action, index) => <li key={index}>{action.action}{action.deadline ? ` — by ${displayDate(action.deadline)}` : ""}{action.link && <a className="text-link" href={action.link} target="_blank" rel="noreferrer"> Open form</a>}</li>)}</ul><p>Keep a photo or screenshot of every step you complete.</p>{drafts?.[0]?.body && <button className="button button-secondary" onClick={() => setSendOpen(true)}>Open form message</button>}<button className="button button-primary" onClick={actionDone} disabled={busy}>I&apos;ve done this</button></article>}
-          {route === "TRACE" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "TRACE_bank" ? "Ask your bank to trace it" : "Ask for the refund reference"}</h2><p>{caseData.nextStep === "TRACE_bank" ? "The company gave a reference. Use it in your bank's help section." : "Get the ARN or UTR, then your bank can trace it."}</p>{drafts?.[0]?.body && drafts[0].status !== "sent" && <button className="button button-primary" onClick={() => setSendOpen(true)}>{caseData.nextStep === "TRACE_bank" ? "Open bank message" : c.openEmail}</button>}</article>}
-          {route === "FAILED_PAYMENT" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "none" ? "Wait for the reversal" : "Ask your bank to reverse it"}</h2><p>Keep the payment debit and the failed-payment screen.</p>{drafts?.[0]?.body && drafts[0].status !== "sent" && <button className="button button-primary" onClick={() => setSendOpen(true)}>Open bank message</button>}</article>}
+           {route === "ACTION_NEEDED" && caseData.stage !== "TRIAGING" && !needsConfirm && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>Do these before the deadline</h2><ul className="checklist">{caseData.actionsRequired.map((action, index) => <li key={index}>{action.action}{action.deadline ? ` — ${caseData.facts?.ticketFormat === "physical" ? "must reach them by" : "by"} ${displayDate(action.deadline)}` : ""}{action.link && <a className="text-link" href={action.link} target="_blank" rel="noreferrer"> Open form</a>}</li>)}</ul><p>Keep a photo or screenshot of every step you complete.</p>{drafts?.[0]?.body && <button className="button button-secondary" onClick={() => setSendOpen(true)}>Open form message</button>}<label>When did you finish these steps?<input type="date" max={todayIST()} value={actionDate} onChange={(event) => setActionDate(event.target.value)} /></label><button className="button button-primary" onClick={actionDone} disabled={busy || !actionDate}>I&apos;ve done this</button></article>}
+           {route === "TRACE" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "TRACE_bank" ? "Ask your bank to trace it" : "Ask for the refund reference"}</h2><p>{caseData.nextStep === "TRACE_bank" ? "The company gave a reference. Use it in your bank's help section." : "Platforms usually share a reference number when asked. There is no fixed rule for how fast."}</p>{caseData.nextStep === "TRACE_ask" && <p>Our follow-up date: {displayDate(addWorkingDays(todayIST(), 3))}</p>}{drafts?.[0]?.body && drafts[0].status !== "sent" && !needsConfirm && <button className="button button-primary" onClick={() => setSendOpen(true)}>{caseData.nextStep === "TRACE_bank" ? "Open bank message" : c.openEmail}</button>}</article>}
+           {route === "FAILED_PAYMENT" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">THE NEXT STEP</p><h2>{caseData.nextStep === "none" ? "Wait for the reversal" : "Ask the platform for a payment reference and status"}</h2><p>RBI&apos;s rule for failed payments may apply. Keep the payment debit and the failed-payment screen. Once you have the reference, ask your bank to trace it.</p>{drafts?.[0]?.body && drafts[0].status !== "sent" && !needsConfirm && <button className="button button-primary" onClick={() => setSendOpen(true)}>Open platform message</button>}</article>}
           {route === "NO_ROUTE" && caseData.stage !== "TRIAGING" && <article className="case-card"><p className="section-kicker">YOUR OPTIONS</p>{caseData.situation === "cant_attend" ? <><h2>You can&apos;t go</h2><p>{caseData.platform?.toLowerCase().includes("district") ? "District's ticket terms do not allow cancellation, transfer or refund just because you cannot attend." : "A refund just because you cannot attend may not be available. Check your booking terms and ask the organiser about any exception."}</p></> : <><h2>Ask about the new date</h2><p>The organiser has not offered a refund yet. Ask whether you can request one and by when.</p>{drafts?.[0]?.body && drafts[0].status !== "sent" && <button className="button button-primary" onClick={() => setSendOpen(true)}>{c.openEmail}</button>}</>}</article>}
           {route === "OUT_OF_SCOPE" && <article className="case-card"><p>We&apos;re starting with event tickets. The National Consumer Helpline handles complaints about any company: <a className="text-link" href="https://consumerhelpline.gov.in" target="_blank" rel="noreferrer">consumerhelpline.gov.in</a> or 1915.</p>{waitlistDone ? <p role="status">Thanks. We&apos;ll tell you once, when it&apos;s ready.</p> : <div className="answer-form"><label htmlFor="waitlist">Tell me when {caseData.outOfScopeCategory ?? "this"} refunds are ready</label><input id="waitlist" type="text" value={waitlistContact} onChange={(event) => setWaitlistContact(event.target.value)} placeholder="Email or phone" /><button className="button button-secondary" onClick={waitlist} disabled={busy || !waitlistContact.trim()}>Join the waitlist</button></div>}</article>}
           {caseData.stage !== "TRIAGING" && <article className="case-card">
             <h2>{c.saveTitle}</h2>
+             {route === "OVERDUE" && <div className="answer-form"><label htmlFor="check-again">When should we check again?</label><select id="check-again" value={checkAgainDays} onChange={(event) => setCheckAgainDays(Number(event.target.value) as 2 | 3 | 5)}><option value={2}>2 working days</option><option value={3}>3 working days</option><option value={5}>5 working days</option></select><p>Your next check-in: {displayDate(addWorkingDays(todayIST(), checkAgainDays))}</p></div>}
+             {caseData.oldCheckinDate && caseData.checkin?.date && <p className="input-hint">Your calendar still has the old reminder for {displayDate(caseData.oldCheckinDate)}. Add the new one for {displayDate(caseData.checkin.date)} and delete the old one.</p>}
             <div className="save-actions">
-              {caseData.dueDate && !isIOS && <button className="button button-secondary" onClick={() => addCalendar("google")}>{c.calendar}{!isAndroid ? " (Google)" : ""}</button>}
-              {caseData.dueDate && !isAndroid && <button className="button button-secondary" onClick={() => addCalendar("ics")}>{c.calendar}{!isIOS ? " (.ics)" : ""}</button>}
+               {!isIOS && <button className="button button-secondary" onClick={() => addCalendar("google")}>{c.calendar}{!isAndroid ? " (Google)" : ""}</button>}
+               {!isAndroid && <button className="button button-secondary" onClick={() => addCalendar("ics")}>{c.calendar}{!isIOS ? " (.ics)" : ""}</button>}
               <button className="button button-secondary" onClick={() => copy(window.location.href)}>{c.copyLink}</button>
               <button className="button button-secondary" onClick={share}>{c.share}</button>
             </div>
@@ -369,25 +389,29 @@ export default function CaseView({ code }: { code: string }) {
           </article>}
           {tracking?.firstSent && !caseData.stage.startsWith("CLOSED") && (tracking.calendar || tracking.gmail ? <article className="case-card" aria-live="polite"><p className="section-kicker">REPLY TRACKING</p><h2>{tracking.gmail ? `Watching for ${caseData.platform ?? "the organiser"}'s reply` : "Calendar alerts connected"}</h2><p>{tracking.inboxAddress ? "We'll watch for replies copied to the Tickback case inbox." : "If they replied to you only, paste it here or connect Gmail."}</p>{tracking.lastReplyAt && <p>Their reply arrived. Your case has been updated.</p>}{tracking.noSentFound && <p>We couldn&apos;t find your sent email in Gmail. Did you send it from another address?</p>}{!tracking.gmail && tracking.configured && tracking.gmailReady && <button className="button button-secondary" disabled={busy} onClick={() => setPendingGoogle("gmail")}>Catch every reply: connect Gmail</button>}<button className="text-button" disabled={busy} onClick={disconnectTracking}>Disconnect Google</button></article> : !tracking.dismissed && <article className="case-card"><p className="section-kicker">OPTIONAL</p><h2>Want us to watch for their reply?</h2><p>When {caseData.platform ?? "the organiser"} replies to this email, we&apos;ll read that reply, get your next step ready, and put an alert on your Google Calendar so you don&apos;t miss it.</p><p>With Calendar permission, we can alert you if our case inbox receives a reply-all message. If they reply only to you, connect Gmail or paste it here.</p>{tracking.configured ? <><button className="button button-primary" disabled={busy} onClick={() => setPendingGoogle("calendar")}>Connect Google Calendar</button>{tracking.gmailReady && <button className="button button-secondary" disabled={busy} onClick={() => setPendingGoogle("gmail")}>Catch every reply: connect Gmail</button>}</> : <p className="input-hint">Google connection is being set up. You can still paste replies and add a check-in yourself.</p>}<button className="text-button" onClick={() => token && dismissTracking({ code, token })}>No thanks, I&apos;ll check myself</button></article>)}
           {pendingGoogle && <article className="case-card" role="status"><h2>Before you go to Google</h2><p>Google may show “Google hasn&apos;t verified this app” while Tickback is new. If you choose to continue, use Advanced, then Go to Tickback. You can disconnect any time.</p>{pendingGoogle === "gmail" && <p>Google grants read-only access to your Gmail. Tickback searches only for replies to this refund email; matching replies go to Gemini to prepare your next step.</p>}<button className="button button-primary" disabled={busy} onClick={() => connectGoogle(pendingGoogle)}>Continue to Google</button><button className="text-button" onClick={() => setPendingGoogle(null)}>Not now</button></article>}
-          {caseData.paymentsEnabled && caseData.draftsShown >= 1 && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && <article className="case-card pay-card"><p className="section-kicker">STAY ON IT</p>{caseData.tier === "unknown_amount" ? <><h2>How much did you pay?</h2><p>Refunds under ₹300 stay free.</p><div className="answer-form"><label htmlFor="paid-amount">Amount paid in ₹</label><input id="paid-amount" type="number" min="0" step="0.01" value={unknownAmount} onChange={(event) => setUnknownAmount(event.target.value)} /><button className="button button-primary" disabled={busy || !unknownAmount} onClick={saveAmount}>Continue</button></div></> : <><h2>Every message after the first, written for you.</h2><p>₹49 for this case, until the money lands.</p><button className="button button-primary" onClick={() => setPayOpen(true)}>Stay on it for ₹49</button></>}</article>}
-          {caseData.paidState === "not_found" && <p className="error-banner">We couldn&apos;t find your payment. If you paid, send us the UPI reference through the contact address on the privacy page and we&apos;ll fix it.</p>}
+           {caseData.paymentsEnabled && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && !["TRIAGING", "NEED_INFO", "ERROR"].includes(caseData.stage) && <article className="case-card pay-card"><p className="section-kicker">STAY ON IT</p>{caseData.tier === "unknown_amount" ? <><h2>How much did you pay?</h2><p>Refunds under ₹300 stay free.</p><div className="answer-form"><label htmlFor="paid-amount">Amount paid in ₹</label><input id="paid-amount" type="number" min="0" step="0.01" value={unknownAmount} onChange={(event) => setUnknownAmount(event.target.value)} /><button className="button button-primary" disabled={busy || !unknownAmount} onClick={saveAmount}>Continue</button></div></> : <><h2>₹49 to stay on it.</h2><p>We check on the due date, tell you when to chase, and write every next message.</p><p>{guaranteeLine}</p><button className="button button-primary" onClick={() => setPayOpen(true)}>Stay on it for ₹49</button></>}</article>}
+           {caseData.paidState === "not_found" && <p className="error-banner">We could not match your payment yet. Reply here and we&apos;ll check by hand. Your case stays unlocked for two days.</p>}
            {caseData.stage !== "CLOSED_LANDED" && caseData.stage !== "TRIAGING" && <article className="case-card"><h2>They replied?</h2><p>If they replied to you only, paste it here or connect Gmail. We&apos;ll update the next step.</p><button className="button button-secondary" onClick={() => setReplyOpen(true)}>Read their reply</button></article>}
-          {events && events.length > 0 && <section className="case-timeline"><h2>Timeline</h2><ol>{(allEvents ? events : events.slice(0, 5)).map((event) => <li key={event._id}>{event.summary} <small>{new Date(event.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short" })}</small></li>)}</ol>{events.length > 5 && <button className="text-button" onClick={() => setAllEvents(!allEvents)}>{allEvents ? "Show less" : "Show all"}</button>}</section>}
+           {events && events.length > 0 && <section className="case-timeline"><h2>Timeline</h2><ol>{(allEvents ? events : events.slice(0, 5)).map((event) => <li key={event._id}>{event.summary} <small>{new Date(event.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" })}</small></li>)}</ol>{events.length > 5 && <button className="text-button" onClick={() => setAllEvents(!allEvents)}>{allEvents ? "Show less" : "Show all"}</button>}</section>}
           <div className="case-footer-actions">{!["CLOSED_LANDED", "CLOSED_NO_ROUTE", "CLOSED_OUT_OF_SCOPE", "TRIAGING", "NEED_INFO", "ERROR"].includes(caseData.stage) && <button className="text-button" onClick={() => checkin("landed")}>It&apos;s in, close this case</button>}<button className="text-button danger-text" onClick={() => setDeleteOpen(true)}>Delete this case</button></div>
           {notice && <p className="toast" role="status">{notice}</p>}
         </>}
     </div>
+    {channelPrompt && <div className="sheet-backdrop" role="presentation"><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="How you sent it"><h2>Which did you use?</h2><div className="answer-options">{(["email", "chat", "form", "phone"] as const).map((channel) => <button className="situation-chip" key={channel} onClick={async () => { if (!token) return; await recordSendChannel({ code, token, channel }); setChannelPrompt(false); }}>{channel[0].toUpperCase() + channel.slice(1)}</button>)}</div></div></div>}
     {sendOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setSendOpen(false)}>
       <div className="sample-sheet" role="dialog" aria-modal="true" aria-label={c.draftTitle} onClick={(event) => event.stopPropagation()}>
         <div className="sheet-handle" />
         <div className="sheet-heading"><h2>{drafts?.[0]?.channel === "bank" ? "Your message for your bank" : drafts?.[0]?.channel === "form" ? "Your form message" : drafts?.[0]?.step === "L1" ? "Your message to the Grievance Officer" : c.draftTitle}</h2><button className="text-button" onClick={() => setSendOpen(false)}>Close</button></div>
-        <p className="example-source">Edit anything before you send.</p>
-         {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{!drafts?.[0]?.to && <p className="input-hint">{c.emailHelp}</p>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. You can remove it.</label>}</>}
+        <p className="example-source">Edit anything before you send. Send from the email you booked with, and attach your proof.</p>
+        {caseData?.facts?.bookingId && <p>Booking ID: <strong>{caseData.facts.bookingId}</strong></p>}
+        {caseData?.dueDate && <p>{caseData.facts?.ticketFormat === "physical" && caseData.route === "ACTION_NEEDED" ? "Tickets must reach them by" : "Relevant date"}: {displayDate(caseData.dueDate)}</p>}
+         {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{drafts?.[0]?.to ? <p className="input-hint">{to === "support@district.in" ? <>Verified District support address. Source: <a href="https://www.district.in/contact" target="_blank" rel="noreferrer">District contact page</a>.</> : "Address from the organiser's message. Check it before sending."}</p> : <p className="input-hint">{drafts?.[0]?.step === "L1" ? "Find the Grievance Officer address in the platform's Help section. If you use an address they gave you, say where you found it." : c.emailHelp}</p>}{drafts?.[0]?.step === "L1" && <label>Where did they give you this address?<input value={grievanceSource} onChange={(event) => setGrievanceSource(event.target.value)} placeholder="Their message or Help page" /></label>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. You can remove it.</label>}</>}
         <label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} rows={9} /></label>
         {drafts?.[0]?.attachChecklist?.length ? <><p className="section-kicker">ATTACH THESE FROM YOUR PHONE</p><ul className="checklist">{drafts[0].attachChecklist.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
+        {drafts?.[0]?.step === "L1" && grievanceSource.trim() && <p className="input-hint">The message will say: I could not find the Grievance Officer&apos;s address on your site, so I am sending this to the address in {grievanceSource.trim()}.</p>}
         {drafts?.[0]?.channel === "bank" && <p className="input-hint">Send this from your bank app&apos;s help section, or to the customer care email on your statement. Keep the reference they give you.</p>}
         <button className="button button-primary" onClick={openEmail} disabled={!body.trim() || (drafts?.[0]?.channel === "email" && (!to.trim() || !subject.trim()))}>{drafts?.[0]?.channel === "email" ? c.openEmail : "Copy my message"}</button>
-        <button className="button button-secondary" onClick={async () => { await copy(body); setSentPrompt(true); }}>Copy message</button>
+        {drafts?.[0]?.channel === "email" && <button className="button button-secondary" onClick={async () => { await copy(outboundBody()); setSentPrompt(true); }}>Copy message</button>}
         {to && <button className="text-button" onClick={() => copy(to)}>Copy address</button>}
         <p className="example-source">{drafts?.[0]?.channel === "email" ? c.emailNote : "You send this yourself. Nothing is sent from Tickback."}</p>
         {sentPrompt && <div className="send-confirm"><p>Did you send it?</p><button className="button button-primary" onClick={markDraftSent} disabled={busy}>Yes, I&apos;ve sent it</button><button className="button button-secondary" onClick={() => setSentPrompt(false)}>Not yet</button></div>}
@@ -396,6 +420,6 @@ export default function CaseView({ code }: { code: string }) {
     {replyOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setReplyOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Their reply" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>What did they say?</h2><button className="text-button" onClick={() => setReplyOpen(false)}>Close</button></div><label>Their reply<textarea value={reply} onChange={(event) => setReply(event.target.value)} rows={8} placeholder="Paste their reply here" /></label><label>Add screenshot<input type="file" accept="image/*" onChange={(event) => setReplyImage(event.target.files?.[0] ?? null)} /></label>{replyImage && <p className="input-hint">{replyImage.name}</p>}<button className="button button-primary" onClick={submitReply} disabled={busy || (!reply.trim() && !replyImage)}>Read their reply</button></div></div>}
     {landedOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setLandedOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Money landed" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>It&apos;s in?</h2><button className="text-button" onClick={() => setLandedOpen(false)}>Close</button></div><label>How much came back? ₹<input type="number" min="0" step="0.01" value={landedAmount} onChange={(event) => setLandedAmount(event.target.value)} /></label><button className="button button-primary" disabled={busy || !landedAmount} onClick={confirmLanded}>Confirm and close case</button></div></div>}
     {deleteOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setDeleteOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Delete case" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><h2>Delete this case?</h2><p>We&apos;ll remove your messages, screenshots and drafts. This can&apos;t be undone.</p><button className="button button-primary" disabled={busy} onClick={deleteCase}>Delete case</button><button className="button button-secondary" onClick={() => setDeleteOpen(false)}>Keep it</button></div></div>}
-    {payOpen && caseData?.upiVpa && <div className="sheet-backdrop" role="presentation" onClick={() => setPayOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Stay on it" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>Stay on it till the money lands</h2><button className="text-button" onClick={() => setPayOpen(false)}>Close</button></div><p className="case-amount">₹49 for this case</p><ul className="checklist"><li>Every message after the first, written for you</li><li>Each one built from their last reply and your case</li><li>Grievance officer and helpline steps, with the right rule cited</li><li>If you&apos;re not happy within 14 days, you get the ₹49 back.</li></ul>{!isAndroid && qrImage && <img className="upi-qr" src={qrImage} alt="UPI payment QR for ₹49" />}{(isAndroid || isIOS) && <a className="button button-primary" href={buildUpiLink(caseData.upiVpa, caseData.upiName, code)}>Pay ₹49 by UPI</a>}{isIOS && qrImage && <a className="button button-secondary" href={qrImage} download={`tickback-${code}-upi.png`}>Save QR to Photos</a>}<p>UPI ID: {caseData.upiVpa} <button className="text-button" onClick={() => copy(caseData.upiVpa!)}>Copy</button></p><button className="text-button" onClick={() => copy("49.00")}>Copy amount</button><p className="input-hint">Add {code} in the payment note so we can match it.</p><button className="button button-secondary" disabled={busy} onClick={paid}>I&apos;ve paid</button><p className="example-source">We confirm payments by hand in our first weeks. If we can&apos;t find yours, we&apos;ll tell you here.</p></div></div>}
+    {payOpen && caseData?.upiVpa && <div className="sheet-backdrop" role="presentation" onClick={() => setPayOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Stay on it" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>Stay on it till the money lands</h2><button className="text-button" onClick={() => setPayOpen(false)}>Close</button></div><p className="case-amount">₹49 for this case</p><ul className="checklist"><li>We check on the due date and tell you when to chase</li><li>Every next message is written from your case facts</li><li>Grievance officer and helpline steps, with the right rule cited</li><li>{guaranteeLine}</li></ul>{!isAndroid && qrImage && <img className="upi-qr" src={qrImage} alt="UPI payment QR for ₹49" />}{(isAndroid || isIOS) && <a className="button button-primary" href={buildUpiLink(caseData.upiVpa, caseData.upiName, code)}>Pay ₹49 by UPI</a>}{isIOS && qrImage && <a className="button button-secondary" href={qrImage} download={`tickback-${code}-upi.png`}>Save QR to Photos</a>}<p>UPI ID: {caseData.upiVpa} <button className="text-button" onClick={() => copy(caseData.upiVpa!)}>Copy</button></p><button className="text-button" onClick={() => copy("49.00")}>Copy amount</button><p className="input-hint">Add {code} in the payment note so we can match it.</p><button className="button button-secondary" disabled={busy} onClick={paid}>I&apos;ve paid</button><p className="example-source">We confirm payments by hand in our first weeks. If we can&apos;t find yours, we&apos;ll tell you here.</p></div></div>}
   </main>;
 }

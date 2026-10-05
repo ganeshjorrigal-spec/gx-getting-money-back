@@ -11,4 +11,4 @@
 
 - [x] M2.0: Convex static hosting at the existing development `.convex.site` address; the saved case and phone-width screens work, the Vercel demo still loads, and the raw deploy output is in today's log.
 - [ ] M2.2 code is deployed: CC inbox, calendar permission, Gmail opt-in, OAuth callback, encrypted tokens, 10-minute polling, calendar events and cleanup. Synthetic browser card and 21 unit tests pass. Live Google reply/calendar test remains blocked on OAuth credentials, the separate inbox, test Gmail and paid Gemini tier.
-- [ ] M2.1 after M2.2: red-team and tester fixes from PRDs 08 and 10. Do not wait for HQ review between milestones.
+- [x] M2.1 after M2.2: red-team and tester fixes from PRDs 08 and 10 deployed; 32 unit tests and all 16 synthetic AI fixtures pass. A fresh live venue-change case showed the correct date and grounded draft; a second case accepted a corrected refund date. Ready for HQ review; M2.2 remains active for its real Google test.

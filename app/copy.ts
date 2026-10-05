@@ -1,5 +1,5 @@
 export const productName = "Tickback";
-export const guaranteeLine = "If you're not happy within 14 days, you get the ₹49 back.";
+export const guaranteeLine = "If your refund hasn't landed 30 days after its due date and you followed the steps, you get the ₹49 back.";
 
 export const metaCopy = {
   title: "Tickback: get your stuck ticket refund back",
@@ -20,9 +20,9 @@ export const landingCopy = {
     event: "Monsoon Live, Bengaluru · 2 tickets",
     amount: "₹3,500",
     route: "On its way",
-    due: "Due by Fri, 23 Oct",
-    source: "They said \"within 7-10 working days\" on 9 Oct.",
-    next: "Nothing to send yet. Your check-in: Sat, 24 Oct.",
+    due: "Due by 23 Oct 2026",
+    source: "They said \"within 7-10 working days\" on 9 Oct 2026.",
+    next: "Nothing to send yet. Your check-in: 24 Oct 2026.",
   },
   familiarTitle: "Sound familiar?",
   familiar: [
@@ -48,7 +48,6 @@ export const landingCopy = {
   never: [
     "Ask for OTPs, passwords, card numbers or bank logins.",
     "Send anything without you. Messages go from your own email.",
-    "Sell or share your data.",
     "Keep your case after you delete it.",
   ],
   handleTitle: "What we handle",
@@ -85,7 +84,7 @@ export const sampleCopy = {
   showLess: "Show less",
   message: "See the message we'd prepare",
   messageTitle: "Your message to support",
-  messageBody: "Hello BookMyShow team,\n\nMy match was moved from Ahmedabad to Chennai. I chose the refund option and sent the physical tickets for scanning. Please confirm that you received them and tell me when my ₹2,400 refund will reach my original payment method. Please also share the refund reference number when it is processed.\n\nThank you,\n{name}",
+  messageBody: "Hello BookMyShow team,\n\nMy match was moved from Ahmedabad to Chennai. I chose the refund option and sent the physical tickets for scanning. Please confirm that you received them and tell me when my ₹2,400 refund will reach my original payment method. Please also share the refund reference number when it is processed.\n\nThank you.",
   close: "Close",
   status: "You need to act",
   event: "IPL match moved to another city",
@@ -139,13 +138,13 @@ export const caseCopy = {
   saveTitle: "Don't lose this case",
   calendar: "Add check-in to calendar",
   copyLink: "Copy my case link",
-  share: "Send to my WhatsApp",
-  linkNote: "This link is your key. Anyone with it can see this case.",
+  share: "Send to myself",
+  linkNote: "Anyone with this link can see this case, including your screenshots. Don't forward it.",
   copied: "Copied",
   addDate: "Your dates changed. Add the new check-in.",
   openEmail: "Open in my email",
   draftTitle: "Your message to support",
-  emailHelp: "We couldn't confirm this address. Look for \"Contact us\" or \"Grievance Officer\" in the app's Help section, then paste it here.",
+  emailHelp: "We couldn't confirm where to send this. Paste the organiser's message that names the channel, or find Contact us in the app's Help section.",
   emailNote: "This opens your own email app. Nothing is sent until you press send there.",
   calendarTitle: (amount: string, eventName: string) => `Check your ${amount}${amount === "refund" ? "" : " refund"} (${eventName})`,
   calendarDescription: (amount: string, eventName: string, caseLink: string) => `Has your ${amount}${amount === "refund" ? "" : " refund"} for ${eventName} landed? Open your case to update it or get your next step: ${caseLink}\n\nTickback. Nothing is sent without you.`,

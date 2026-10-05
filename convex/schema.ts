@@ -16,6 +16,7 @@ export default defineSchema({
     tier: v.union(v.literal("free_small"), v.literal("free_check"), v.literal("unknown_amount")),
     paidState: v.union(v.literal("none"), v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")),
     recoveredPaise: v.optional(v.number()), actionDoneAt: v.optional(v.string()), source: v.optional(v.string()),
+    factsConfirmedAt: v.optional(v.number()), paymentGraceUntil: v.optional(v.number()),
     createdAt: v.number(), updatedAt: v.number(), closedAt: v.optional(v.number()), purgeAfter: v.optional(v.number()),
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
   }).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),

@@ -67,7 +67,9 @@ export const get = query({
   handler: async (ctx, { code, token }) => {
     const item = await findCase(ctx, code, token);
     if (!item) return null;
-    const checkin = await ctx.db.query("checkins").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").first();
+    const checkins = await ctx.db.query("checkins").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect();
+    const checkin = checkins.filter((row) => row.status === "scheduled").sort((a, b) => a.date.localeCompare(b.date))[0];
+    const oldCheckin = checkins.filter((row) => row.status === "cancelled" && row.date !== checkin?.date).sort((a, b) => b._creationTime - a._creationTime)[0];
     const feedback = await ctx.db.query("feedback").withIndex("by_case", (q) => q.eq("caseId", item._id)).first();
     return {
       code: item.code, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
@@ -80,6 +82,8 @@ export const get = query({
       actionsRequired: (item.facts as { actionsRequired?: unknown[] } | undefined)?.actionsRequired ?? [],
       outOfScopeCategory: (item.facts as { outOfScopeCategory?: string } | undefined)?.outOfScopeCategory ?? null,
       situation: (item.facts as { situation?: string } | undefined)?.situation ?? null,
+      facts: item.facts ?? null, factsConfirmedAt: item.factsConfirmedAt ?? null,
+      oldCheckinDate: oldCheckin?.date ?? null, paymentGraceUntil: item.paymentGraceUntil ?? null,
       checkin: checkin ? { date: checkin.date, reason: checkin.reason, status: checkin.status } : null,
       paymentsEnabled: !!process.env.NEXT_PUBLIC_UPI_VPA,
       upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Tickback",
@@ -103,7 +107,7 @@ export const drafts = query({
   handler: async (ctx, { code, token }) => {
     const item = await assertAccess(ctx, code, token);
     const rows = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(10);
-    const locked = !!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && item.draftsShown > 1;
+    const locked = !!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && !(item.paymentGraceUntil && item.paymentGraceUntil > Date.now()) && item.draftsShown > 1;
     return rows.map((row, index) => ({ ...row, body: locked && index === 0 ? null : row.body }));
   },
 });
@@ -142,26 +146,54 @@ export const markSent = mutation({
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
     if (draft.step === "L0_email" || draft.step === "L0_chat" || draft.step === "NO_ROUTE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     else if (draft.step === "L1") {
-      await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "grievance_ack");
+      await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "grievance_ack");
       await scheduleCheckin(ctx, item._id, addDays(today, 30), "grievance_resolve");
     } else if (draft.step === "TRACE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "support_reply");
-    else if (draft.step === "FAILED_bank") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 5), "bank_reply");
+    else if (draft.step === "FAILED_platform") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: item._id });
     return null;
   },
 });
 
+export const recordSendChannel = mutation({
+  args: { ...accessArgs, channel: v.union(v.literal("email"), v.literal("chat"), v.literal("form"), v.literal("phone")) }, returns: v.null(),
+  handler: async (ctx, { code, token, channel }) => {
+    const item = await assertAccess(ctx, code, token);
+    await ctx.db.insert("caseEvents", { caseId: item._id, type: "send_channel", summary: `You used ${channel} to contact them`, actor: "user", createdAt: Date.now() });
+    return null;
+  },
+});
+
 export const markActionDone = mutation({
-  args: accessArgs, returns: v.null(),
-  handler: async (ctx, { code, token }) => {
+  args: { ...accessArgs, completedDate: v.string() }, returns: v.null(),
+  handler: async (ctx, { code, token, completedDate }) => {
     const item = await assertAccess(ctx, code, token);
     if (item.route !== "ACTION_NEEDED") throw new Error("This action is not needed for this case");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(completedDate) || completedDate > todayIST()) throw new Error("Choose when you finished the step");
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
     await clearCheckins(ctx, item._id);
-    await ctx.db.patch(item._id, { actionDoneAt: todayIST(), stage: "TRIAGING", latestRunId: runId, progress: { step: "date", at: now }, updatedAt: now });
+    await ctx.db.patch(item._id, { actionDoneAt: completedDate, stage: "TRIAGING", latestRunId: runId, progress: { step: "date", at: now }, updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "action_done", summary: "You completed the refund action", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId, reuseFacts: true });
+    return null;
+  },
+});
+
+export const confirmFacts = mutation({
+  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()) }, returns: v.null(),
+  handler: async (ctx, { code, token, looksRight, correction }) => {
+    const item = await assertAccess(ctx, code, token);
+    if (looksRight) {
+      await ctx.db.patch(item._id, { factsConfirmedAt: Date.now() });
+      return null;
+    }
+    if (!correction?.trim()) throw new Error("Tell us what needs fixing");
+    const now = Date.now();
+    const runId = Math.random().toString(36).slice(2);
+    await ctx.db.insert("inputs", { caseId: item._id, kind: "answer", text: redact(correction), storageIds: [], createdAt: now });
+    await ctx.db.patch(item._id, { factsConfirmedAt: undefined, stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
+    await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId });
     return null;
   },
 });

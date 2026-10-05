@@ -1,10 +1,10 @@
-import { addDays, addWorkingDays, daysBetween, shortDate } from "../../lib/dates";
+import { addDays, addWorkingDays, shortDate } from "../../lib/dates";
 import type { CaseRead } from "./read";
 
 export type Plan = {
   route: CaseRead["route"];
   dueDate: string | null;
-  dueSource: "message" | "platform_policy" | "rbi_tat" | "estimate" | null;
+  dueSource: "message_promise" | "platform_policy_verified" | "platform_policy_reported" | "rbi_tat" | "estimate" | null;
   dueSourceText: string | null;
   nextStep: string;
   checkins: { date: string; reason: string }[];
@@ -14,8 +14,13 @@ export type Plan = {
   compensationRupees: number | null;
 };
 
-const messageSteps = new Set(["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_bank", "NO_ROUTE_ask", "ACTION_form"]);
+const messageSteps = new Set(["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_platform", "NO_ROUTE_ask", "ACTION_form"]);
 const question = (id: string, text: string, options: string[]): CaseRead["questions"] => [{ id, text, options }];
+const hasPromise = (read: CaseRead) => !!read.promise.date || read.promise.workingDaysMax != null || read.promise.calendarDaysMax != null;
+function actionCompleted(required: string, completed: { action: string }[]): boolean {
+  const kind = /form|submit/i.test(required) ? /form|submit/i : /courier|ticket|deliver|return/i.test(required) ? /courier|ticket|deliver|return/i : null;
+  return !!kind && completed.some((done) => kind.test(done.action));
+}
 
 export function planCase(input: {
   read: CaseRead;
@@ -38,14 +43,32 @@ export function planCase(input: {
   if (!read.isEventTicket && route !== "OUT_OF_SCOPE") route = "OUT_OF_SCOPE";
   if (read.isEventTicket && route === "OUT_OF_SCOPE") route = "NEED_INFO";
   if (read.safety.containsInstructionsToAI && !read.amountPaid && !read.bookingId && read.situation === "unclear") route = "NEED_INFO";
-  const actionWasDone = route === "ACTION_NEEDED" && !!history.actionDoneAt;
+  if (read.routeConfidence < 0.65 && ["ACTION_NEEDED", "OVERDUE", "FAILED_PAYMENT", "TRACE"].includes(route)) {
+    route = "NEED_INFO";
+    questions = question("uncertain_facts", "A key detail is unclear. What did the organiser say about the refund?", []);
+  }
+  const completed = read.completedActions ?? [];
+  if (completed.some((action) => !action.date) && completed.some((action) => /form|ticket|courier|deliver/i.test(action.action))) {
+    route = "NEED_INFO";
+    questions = question("completed_dates", "When did you submit the form and when were the tickets delivered?", []);
+  }
+  const reportedDone = completed.length > 0 && (read.actionsRequired.length === 0 || read.actionsRequired.every((action) => actionCompleted(action.action, completed)));
+  const actionWasDone = route === "ACTION_NEEDED" && (!!history.actionDoneAt || reportedDone);
+  let actionCompletionDate: string | undefined;
   if (actionWasDone) {
-    dueDate = addWorkingDays(history.actionDoneAt!, 10);
-    dueSource = "estimate";
-    dueSourceText = "Estimate: 10 working days from the day you completed the required action. Keep any confirmation they gave you.";
-    route = dueDate < today ? "OVERDUE" : "WAIT";
-    if (route === "WAIT") checkins = [{ date: addDays(dueDate, 1), reason: "due" }];
-    else nextStep = history.ladderLevel === 0 ? "L0_email" : "L1";
+    const completedDate = history.actionDoneAt ?? completed.map((action) => action.date).filter((date): date is string => !!date).sort().at(-1);
+    actionCompletionDate = completedDate;
+    if (!completedDate) {
+      route = "NEED_INFO";
+      questions = question("completed_dates", "When did you submit the form and when were the tickets delivered?", []);
+    } else if (hasPromise(read)) {
+      route = "WAIT";
+    } else {
+      route = "WAIT";
+      dueSource = "estimate";
+      dueSourceText = "They have not promised a refund date. This is our check-in, based on when you finished the steps.";
+      checkins = [{ date: addWorkingDays(today > completedDate ? today : completedDate, 2), reason: "estimate_checkin" }];
+    }
   }
 
   if (route === "FAILED_PAYMENT" && read.paymentStatusShown === "unknown") {
@@ -53,11 +76,11 @@ export function planCase(input: {
     questions = question("paymentStatusShown", "Did the app show your payment as failed, pending or successful?", ["Failed", "Pending", "Successful", "Not sure"]);
   } else if (route === "FAILED_PAYMENT" && read.paymentStatusShown === "success") route = "WAIT";
 
-  if ((route === "WAIT" || route === "OVERDUE") && !actionWasDone) {
-    const anchor = read.promise.anchorDate ?? read.messageDate;
+  if ((route === "WAIT" || route === "OVERDUE") && (!actionWasDone || hasPromise(read)) && dueSource !== "estimate") {
+    const anchor = actionCompletionDate ?? read.promise.anchorDate ?? read.messageDate;
     if (read.promise.date) {
       dueDate = read.promise.date;
-      dueSource = "message";
+      dueSource = "message_promise";
       dueSourceText = read.promise.text ? `They said "${read.promise.text}" on ${read.messageDate || anchor ? shortDate((read.messageDate ?? anchor)!) : "the date in your message"}.` : "From the date in their message.";
     } else if (read.promise.workingDaysMax != null || read.promise.calendarDaysMax != null) {
       if (!anchor) {
@@ -65,24 +88,27 @@ export function planCase(input: {
         questions = question("messageDate", "When did they send this?", ["Today", "Yesterday", "Earlier"]);
       } else {
         dueDate = read.promise.workingDaysMax != null ? addWorkingDays(anchor, read.promise.workingDaysMax) : addDays(anchor, read.promise.calendarDaysMax!);
-        dueSource = "message";
+        dueSource = "message_promise";
         dueSourceText = `They said "${read.promise.text ?? "the refund window"}" on ${shortDate(anchor)}.`;
       }
     } else if (!anchor) {
       route = "NEED_INFO";
       questions = question("messageDate", "When did they send this?", ["Today", "Yesterday", "Earlier"]);
     } else {
-      const known = read.platform === "district" ? { days: 10, source: "District's policy says 7 to 10 working days from a refund request." }
-        : read.platform === "bookmyshow" ? { days: 10, source: "BookMyShow has said 7 to 10 working days in recent cancellations (reported)." }
+      const known = read.platform === "district" ? { days: 10, source: "District's policy says 7 to 10 working days from a refund request.", confidence: "verified" }
+        : read.platform === "bookmyshow" ? { days: 10, source: "BookMyShow has said 7 to 10 working days in recent cancellations (reported).", confidence: "reported" }
         : null;
       dueDate = addWorkingDays(anchor, known?.days ?? 10);
-      dueSource = known ? "platform_policy" : "estimate";
+      dueSource = known?.confidence === "verified" ? "platform_policy_verified" : known?.confidence === "reported" ? "platform_policy_reported" : "estimate";
       dueSourceText = known?.source ?? "Estimate: 10 working days from the message date. The organiser has not given a firm date.";
     }
     if (dueDate) {
       route = dueDate < today || read.userSaysLate ? "OVERDUE" : "WAIT";
       if (route === "WAIT") checkins = [{ date: addDays(dueDate, 1), reason: "due" }];
-      else nextStep = history.ladderLevel === 0 ? "L0_email" : history.ladderLevel === 1 ? "L1" : "L2";
+      else {
+        nextStep = history.ladderLevel === 0 ? "L0_email" : history.ladderLevel === 1 ? "L1" : "L2";
+        checkins = [{ date: addWorkingDays(today, 2), reason: "overdue_followup" }];
+      }
     }
   } else if (route === "FAILED_PAYMENT") {
     if (!read.paymentDate) {
@@ -91,17 +117,17 @@ export function planCase(input: {
     } else {
       dueDate = addDays(read.paymentDate, 5);
       dueSource = "rbi_tat";
-      dueSourceText = "Under the RBI's 2019 rule, a failed online payment should be reversed within 5 days of the payment date.";
+      dueSourceText = "RBI's rule for failed payments may apply. This is a date to check, not a confirmed refund promise.";
       if (today <= dueDate) checkins = [{ date: addDays(dueDate, 1), reason: "due" }];
       else {
-        nextStep = "FAILED_bank";
-        compensationRupees = daysBetween(dueDate, today) * 100;
+        nextStep = "FAILED_platform";
+        checkins = [{ date: addWorkingDays(today, 2), reason: "failed_payment_followup" }];
       }
     }
   } else if (route === "ACTION_NEEDED") {
     nextStep = "ACTION_form";
     dueDate = read.refundOptionDeadline ?? read.actionsRequired.map((a) => a.deadline).filter((d): d is string => !!d).sort()[0] ?? null;
-    dueSource = dueDate ? "message" : null;
+    dueSource = dueDate ? "message_promise" : null;
     dueSourceText = dueDate ? "From the deadline in their message." : null;
     checkins = [{ date: dueDate ? addDays(dueDate, read.ticketFormat === "physical" ? -3 : -1) : addDays(today, 2), reason: "action_deadline" }];
   } else if (route === "TRACE") nextStep = read.references.arn || read.references.rrnOrUtr ? "TRACE_bank" : "TRACE_ask";
