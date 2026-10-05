@@ -1,7 +1,7 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-05, M2.1 deployment. M0, M1, and M2 are DONE. M2.0 and M2.1 are READY FOR REVIEW. M2.2 remains ACTIVE pending its Google test. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
-M2.2 code is deployed on the Convex development site. The Gmail and Calendar connection flow cannot be tested until Ganesh supplies the Google OAuth client, separate case inbox and test Gmail. Named test accounts and case codes can be enabled without the paid Gemini tier; the paid tier remains required before outside users connect. M2.2 remains ACTIVE while awaiting that live test.
+Last updated: 2026-10-05, after the M2.2 live Google test. M0, M1, and M2 are DONE. M2.0, M2.2, and M2.1 are READY FOR REVIEW. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
+M2.2 Route 1 passed end to end on the Convex development site: the case inbox matched a reply-all, stored and re-triaged it, moved the check-in, and created one calendar reply alert with a pop-up. Repeating the poll created no duplicate. Named test accounts and case codes allow this test without the paid Gemini tier; the paid tier remains required before outside users connect.
 
 ## Live product
 
@@ -16,6 +16,7 @@ M2.2 code is deployed on the Convex development site. The Gmail and Calendar con
 - M2 paste and screenshot intake, redaction, private fragment link, date question, route/date/source/next-step card, save and calendar links. The deployed site completed a synthetic paste case and screenshot-only case. Wrong-token and saved-case reopen checks passed. Ten logged triages had p50 2.37 seconds.
 - M3 Friday path: verified email draft/send sheet, mark sent, scheduled check-in, Not yet to Grievance Officer draft, reply re-triage, action checklist and completion, no-route options, out-of-scope waitlist, close and feedback. A disposable synthetic case was deleted and was no longer readable. No real email or payment was sent.
 - M2.1: completed the red-team and tester changes, including fact confirmation, completed form and courier dates, grounded drafts, plain dates, softer failed-payment text, payment grace, future reminders, and the new guarantee. A fresh live made-up venue-change case returned 28 Sep 2026 and a draft that named the move, 10 Sep form, 17 Sep delivery and missed promise. The 390 px Privacy footer was tappable. The frozen Vercel demo loaded after the deployment.
+- M2.2 Route 1: a real Gmail reply-all for synthetic case `TB-DQKQMT` was found through the case inbox, saved, re-triaged, and reflected in the next step. Google Calendar visibly showed one `District replied about your ₹1,200 refund` alert with a start-time pop-up, plus the moved 7 Oct check-in. A second poll left exactly one alert.
 - `npm run build`, `npx tsc --noEmit`, and 33 unit tests pass. `npm run eval` passed all 16 synthetic fixtures, with exact asserted dates and zero invented contacts. Evidence: `docs/qa/eval-2026-10-05.md`.
 
 ## Still open
@@ -27,4 +28,4 @@ M2.2 code is deployed on the Convex development site. The Gmail and Calendar con
 
 ## First morning action
 
-Finish the Google Cloud OAuth client, separate case inbox and test Gmail, then run the M2.2 reply and Calendar test on the live site.
+Ask Claude HQ to review M2.0, M2.2, then M2.1. After that, run the remaining physical Android/iPhone checks and arrange the safe UPI payment test.

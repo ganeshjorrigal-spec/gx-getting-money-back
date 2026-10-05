@@ -57,7 +57,7 @@ Acceptance checks:
 - [ ] Backend changes are additive only, so the Vercel demo keeps working
 Reviewed by: pending
 
-## M2.2. Reply tracking and calendar alerts (after M2.0) | ACTIVE
+## M2.2. Reply tracking and calendar alerts (after M2.0) | READY FOR REVIEW
 Goal: per `docs/prd/09-gmail-tracking.md`, the user gets a calendar alert within 10 minutes of the organiser's reply, with the next step ready. Route 1 (CC inbox plus Calendar permission) first, then Route 2 (Gmail opt-in). Do this before M2.1.
 - [ ] Route 1: drafts CC the case inbox; a reply-all to the test thread is matched; one reply alert lands on the test calendar
 Acceptance checks:
@@ -67,7 +67,7 @@ Acceptance checks:
 - [ ] Test Gmail end to end: reply stored and re-triaged, next step updated, exactly one reply-alert event with a pop-up, check-in events created and moved by the app
 - [ ] Disconnect, close and delete revoke the token and remove future events
 - [ ] Privacy page Gmail section; unit tests for the builders and matching; evidence in today's log
-Blocked until Ganesh finishes the Google Cloud steps in `09` (OAuth client and a test Gmail). Build everything else meanwhile.
+Live Route 1 evidence: the separate case inbox matched a reply-all for `TB-DQKQMT`, stored and re-triaged the reply, moved the check-in, and created exactly one reply alert on the connected calendar with a pop-up at the event start. A second poll created no duplicate. Route 2 remains an optional secondary path and has code/unit coverage; its real Gmail thread flow was not repeated after Route 1 passed.
 Reviewed by: pending
 
 ## M2.1. Red-team and tester fixes (after M2.2) | READY FOR REVIEW
