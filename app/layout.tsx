@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-IN" className={`${geist.variable} ${newsreader.variable}`}>
+      <head>{process.env.CONVEX_STATIC_EXPORT === "1" && <script dangerouslySetInnerHTML={{ __html: "(()=>{const m=location.pathname.match(/^\\/c\\/(TB-[A-Z0-9]{6})\\/?$/);if(m)location.replace('/c/index.html?code='+m[1]+location.hash)})()" }} />}</head>
       <body>{children}</body>
     </html>
   );

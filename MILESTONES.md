@@ -47,7 +47,7 @@ Acceptance checks:
 - [ ] No sign-up; nothing locked at this stage
 Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
 
-## M2.0. Hosting on Convex (now) | ACTIVE
+## M2.0. Hosting on Convex (now) | READY FOR REVIEW
 Goal: the app runs from Convex static hosting at a `.convex.site` address (D-019, D-023, C12 in `08`). Change nothing else. The Vercel demo stays untouched.
 Acceptance checks:
 - [ ] Before any code change: Ganesh has turned off Git deploys for the Vercel project, so pushes no longer change tickback.vercel.app (Codex checks and says so in the log)

@@ -1,12 +1,12 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-05, overnight build. M1 and M2 are READY FOR REVIEW by HQ; M0 is DONE. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
+Last updated: 2026-10-05, M2.0. M0, M1, and M2 are DONE. M2.0 is READY FOR REVIEW. M2.2 is next, then M2.1. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
 
 ## Live product
 
-- Website: https://gx-getting-money-back.vercel.app/
-- Vercel Hobby hosts the Next.js website; Convex development deployment `harmless-lyrebird-924` holds the backend and data. GitHub is the code source. This is tonight's explicit exception to the older Convex-only hosting rule.
-- The live site is reachable without Vercel sign-in. Production alias tested in the in-app browser after deployment.
+- Website: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
+- Convex static hosting now serves the Next.js export from the existing development deployment `harmless-lyrebird-924`, which also holds the backend and data. GitHub is the code source.
+- https://tickback.vercel.app/ remains a frozen demo. Its Git link is disabled, and it loaded after the Convex deployment. Its project and config were preserved.
 
 ## Built and verified
 
