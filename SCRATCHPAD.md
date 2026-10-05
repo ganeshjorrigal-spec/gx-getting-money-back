@@ -10,5 +10,5 @@
 ## Current instruction, 5 Oct
 
 - [x] M2.0: Convex static hosting at the existing development `.convex.site` address; the saved case and phone-width screens work, the Vercel demo still loads, and the raw deploy output is in today's log.
-- [ ] M2.2 next: CC inbox route, calendar permission, then Gmail opt-in. Google OAuth credentials and test Gmail are Ganesh's setup steps; build independently while those are pending.
+- [ ] M2.2 code is deployed: CC inbox, calendar permission, Gmail opt-in, OAuth callback, encrypted tokens, 10-minute polling, calendar events and cleanup. Synthetic browser card and 21 unit tests pass. Live Google reply/calendar test remains blocked on OAuth credentials, the separate inbox, test Gmail and paid Gemini tier.
 - [ ] M2.1 after M2.2: red-team and tester fixes from PRDs 08 and 10. Do not wait for HQ review between milestones.

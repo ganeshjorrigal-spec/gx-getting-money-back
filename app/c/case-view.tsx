@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { caseCopy as c, productName } from "../copy";
@@ -11,6 +11,7 @@ import { displayDate } from "../../lib/dates";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate } from "../../lib/outbound";
 import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
+import { caseInboxAddress, codedSubject } from "../../lib/google-tracking";
 
 type CaseView = {
   code: string; stage: string; route: keyof typeof c.routeLabels | null; routeConfidence: number | null;
@@ -27,6 +28,7 @@ type CaseView = {
 };
 type Draft = { _id: Id<"drafts">; step: string; channel: string; status: string; to?: string; subject?: string; body: string | null; attachChecklist: string[] };
 type Event = { _id: string; type: string; summary: string; createdAt: number };
+type Tracking = { firstSent: boolean; calendar: boolean; gmail: boolean; inboxAddress: string | null; dismissed: boolean; lastReplyAt: number | null; noSentFound: boolean; configured: boolean; gmailReady: boolean };
 const money = (paise: number | null) => paise == null ? "refund" : `₹${(paise / 100).toLocaleString("en-IN")}`;
 
 export default function CaseView({ code }: { code: string }) {
@@ -58,7 +60,10 @@ export default function CaseView({ code }: { code: string }) {
   const [feedbackWorth, setFeedbackWorth] = useState<boolean | null>(null);
   const [feedbackComment, setFeedbackComment] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [includeCaseInbox, setIncludeCaseInbox] = useState(true);
+  const [pendingGoogle, setPendingGoogle] = useState<"calendar" | "gmail" | null>(null);
   const caseData = useQuery(api.cases.get, token ? { code, token } : "skip") as CaseView | null | undefined;
+  const tracking = useQuery(api.googleConnect.status, token && caseData ? { code, token } : "skip") as Tracking | undefined;
   const drafts = useQuery(api.cases.drafts, token && caseData ? { code, token } : "skip") as Draft[] | undefined;
   const events = useQuery(api.cases.timeline, token && caseData ? { code, token } : "skip") as Event[] | undefined;
   const answerQuestions = useMutation(api.cases.answerQuestions);
@@ -73,9 +78,21 @@ export default function CaseView({ code }: { code: string }) {
   const claimPayment = useMutation(api.payments.claim);
   const setAmount = useMutation(api.cases.setAmount);
   const sendFeedback = useMutation(api.feedback.send);
+  const dismissTracking = useMutation(api.googleConnect.dismiss);
+  const beginGoogle = useAction(api.googleActions.begin);
+  const disconnectGoogle = useAction(api.googleActions.disconnect);
 
   useEffect(() => {
     const readKey = () => {
+      const params = new URLSearchParams(location.search);
+      if (!location.hash && params.get("google") === "connected" && params.get("state")) {
+        const saved = sessionStorage.getItem(`tb-google-${params.get("state")}`);
+        if (saved) {
+          sessionStorage.removeItem(`tb-google-${params.get("state")}`);
+          params.delete("google"); params.delete("state");
+          history.replaceState(null, "", `${location.pathname}?${params.toString()}#k=${saved}`);
+        }
+      }
       const match = location.hash.match(/^#k=([A-Za-z0-9_-]{43})$/);
       setToken(match?.[1] ?? null);
       setReady(true);
@@ -169,10 +186,29 @@ export default function CaseView({ code }: { code: string }) {
     if (!body.trim()) return;
     if (drafts?.[0]?.channel !== "email") { await copy(body); setSentPrompt(true); return; }
     if (!to.trim() || !subject.trim()) return;
-    const result = buildMailto(to, subject, body);
+    const cc = includeCaseInbox && tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : undefined;
+    const result = buildMailto(to, codedSubject(subject, code), body, cc);
     if (result.copyFirst) { await copy(body); setNotice("Message copied. Paste it into the email."); }
     window.location.href = result.url;
     setSentPrompt(true);
+  }
+
+  async function connectGoogle(kind: "calendar" | "gmail") {
+    if (!token) return;
+    setBusy(true);
+    try {
+      const result = await beginGoogle({ code, token, kind });
+      sessionStorage.setItem(`tb-google-${result.state}`, token);
+      window.location.assign(result.url);
+    } catch { setNotice("Google connection is not ready yet. You can still paste a reply here."); setBusy(false); setPendingGoogle(null); }
+  }
+
+  async function disconnectTracking() {
+    if (!token) return;
+    setBusy(true);
+    try { await disconnectGoogle({ code, token }); setNotice("Google disconnected. Your case and manual calendar links still work."); }
+    catch { setNotice("Could not disconnect yet. Please try again."); }
+    finally { setBusy(false); }
   }
 
   async function markDraftSent() {
@@ -331,9 +367,11 @@ export default function CaseView({ code }: { code: string }) {
             </div>
             <p className="example-source">{c.linkNote}</p>
           </article>}
+          {tracking?.firstSent && !caseData.stage.startsWith("CLOSED") && (tracking.calendar || tracking.gmail ? <article className="case-card" aria-live="polite"><p className="section-kicker">REPLY TRACKING</p><h2>{tracking.gmail ? `Watching for ${caseData.platform ?? "the organiser"}'s reply` : "Calendar alerts connected"}</h2><p>{tracking.inboxAddress ? "We'll watch for replies copied to the Tickback case inbox." : "If they replied to you only, paste it here or connect Gmail."}</p>{tracking.lastReplyAt && <p>Their reply arrived. Your case has been updated.</p>}{tracking.noSentFound && <p>We couldn&apos;t find your sent email in Gmail. Did you send it from another address?</p>}{!tracking.gmail && tracking.configured && tracking.gmailReady && <button className="button button-secondary" disabled={busy} onClick={() => setPendingGoogle("gmail")}>Catch every reply: connect Gmail</button>}<button className="text-button" disabled={busy} onClick={disconnectTracking}>Disconnect Google</button></article> : !tracking.dismissed && <article className="case-card"><p className="section-kicker">OPTIONAL</p><h2>Want us to watch for their reply?</h2><p>When {caseData.platform ?? "the organiser"} replies to this email, we&apos;ll read that reply, get your next step ready, and put an alert on your Google Calendar so you don&apos;t miss it.</p><p>With Calendar permission, we can alert you if our case inbox receives a reply-all message. If they reply only to you, connect Gmail or paste it here.</p>{tracking.configured ? <><button className="button button-primary" disabled={busy} onClick={() => setPendingGoogle("calendar")}>Connect Google Calendar</button>{tracking.gmailReady && <button className="button button-secondary" disabled={busy} onClick={() => setPendingGoogle("gmail")}>Catch every reply: connect Gmail</button>}</> : <p className="input-hint">Google connection is being set up. You can still paste replies and add a check-in yourself.</p>}<button className="text-button" onClick={() => token && dismissTracking({ code, token })}>No thanks, I&apos;ll check myself</button></article>)}
+          {pendingGoogle && <article className="case-card" role="status"><h2>Before you go to Google</h2><p>Google may show “Google hasn&apos;t verified this app” while Tickback is new. If you choose to continue, use Advanced, then Go to Tickback. You can disconnect any time.</p>{pendingGoogle === "gmail" && <p>Google grants read-only access to your Gmail. Tickback searches only for replies to this refund email; matching replies go to Gemini to prepare your next step.</p>}<button className="button button-primary" disabled={busy} onClick={() => connectGoogle(pendingGoogle)}>Continue to Google</button><button className="text-button" onClick={() => setPendingGoogle(null)}>Not now</button></article>}
           {caseData.paymentsEnabled && caseData.draftsShown >= 1 && caseData.tier !== "free_small" && !["claimed", "confirmed"].includes(caseData.paidState) && <article className="case-card pay-card"><p className="section-kicker">STAY ON IT</p>{caseData.tier === "unknown_amount" ? <><h2>How much did you pay?</h2><p>Refunds under ₹300 stay free.</p><div className="answer-form"><label htmlFor="paid-amount">Amount paid in ₹</label><input id="paid-amount" type="number" min="0" step="0.01" value={unknownAmount} onChange={(event) => setUnknownAmount(event.target.value)} /><button className="button button-primary" disabled={busy || !unknownAmount} onClick={saveAmount}>Continue</button></div></> : <><h2>Every message after the first, written for you.</h2><p>₹49 for this case, until the money lands.</p><button className="button button-primary" onClick={() => setPayOpen(true)}>Stay on it for ₹49</button></>}</article>}
           {caseData.paidState === "not_found" && <p className="error-banner">We couldn&apos;t find your payment. If you paid, send us the UPI reference through the contact address on the privacy page and we&apos;ll fix it.</p>}
-          {caseData.stage !== "CLOSED_LANDED" && caseData.stage !== "TRIAGING" && <article className="case-card"><h2>They replied?</h2><p>Paste what they said and we&apos;ll update the next step.</p><button className="button button-secondary" onClick={() => setReplyOpen(true)}>Read their reply</button></article>}
+           {caseData.stage !== "CLOSED_LANDED" && caseData.stage !== "TRIAGING" && <article className="case-card"><h2>They replied?</h2><p>If they replied to you only, paste it here or connect Gmail. We&apos;ll update the next step.</p><button className="button button-secondary" onClick={() => setReplyOpen(true)}>Read their reply</button></article>}
           {events && events.length > 0 && <section className="case-timeline"><h2>Timeline</h2><ol>{(allEvents ? events : events.slice(0, 5)).map((event) => <li key={event._id}>{event.summary} <small>{new Date(event.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short" })}</small></li>)}</ol>{events.length > 5 && <button className="text-button" onClick={() => setAllEvents(!allEvents)}>{allEvents ? "Show less" : "Show all"}</button>}</section>}
           <div className="case-footer-actions">{!["CLOSED_LANDED", "CLOSED_NO_ROUTE", "CLOSED_OUT_OF_SCOPE", "TRIAGING", "NEED_INFO", "ERROR"].includes(caseData.stage) && <button className="text-button" onClick={() => checkin("landed")}>It&apos;s in, close this case</button>}<button className="text-button danger-text" onClick={() => setDeleteOpen(true)}>Delete this case</button></div>
           {notice && <p className="toast" role="status">{notice}</p>}
@@ -344,7 +382,7 @@ export default function CaseView({ code }: { code: string }) {
         <div className="sheet-handle" />
         <div className="sheet-heading"><h2>{drafts?.[0]?.channel === "bank" ? "Your message for your bank" : drafts?.[0]?.channel === "form" ? "Your form message" : drafts?.[0]?.step === "L1" ? "Your message to the Grievance Officer" : c.draftTitle}</h2><button className="text-button" onClick={() => setSendOpen(false)}>Close</button></div>
         <p className="example-source">Edit anything before you send.</p>
-        {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{!drafts?.[0]?.to && <p className="input-hint">{c.emailHelp}</p>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label></>}
+         {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{!drafts?.[0]?.to && <p className="input-hint">{c.emailHelp}</p>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. You can remove it.</label>}</>}
         <label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} rows={9} /></label>
         {drafts?.[0]?.attachChecklist?.length ? <><p className="section-kicker">ATTACH THESE FROM YOUR PHONE</p><ul className="checklist">{drafts[0].attachChecklist.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
         {drafts?.[0]?.channel === "bank" && <p className="input-hint">Send this from your bank app&apos;s help section, or to the customer care email on your statement. Keep the reference they give you.</p>}

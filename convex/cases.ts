@@ -139,12 +139,14 @@ export const markSent = mutation({
     await ctx.db.patch(draftId, { status: "sent" });
     await ctx.db.patch(item._id, { stage: "WAITING", updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "marked_sent", summary: `You sent the ${draft.step} message`, actor: "user", createdAt: now });
+    if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
     if (draft.step === "L0_email" || draft.step === "L0_chat" || draft.step === "NO_ROUTE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     else if (draft.step === "L1") {
       await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "grievance_ack");
       await scheduleCheckin(ctx, item._id, addDays(today, 30), "grievance_resolve");
     } else if (draft.step === "TRACE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "support_reply");
     else if (draft.step === "FAILED_bank") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 5), "bank_reply");
+    await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: item._id });
     return null;
   },
 });
@@ -177,6 +179,7 @@ export const answerCheckin = mutation({
       await clearCheckins(ctx, item._id);
       await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: now + 180 * 86_400_000, updatedAt: now });
       await ctx.db.insert("caseEvents", { caseId: item._id, type: "landed", summary: `₹${(amount / 100).toLocaleString("en-IN")} landed`, actor: "user", createdAt: now });
+      await ctx.scheduler.runAfter(0, internal.googleActions.cleanupCase, { caseId: item._id });
     } else if (answer === "not_yet") {
       const runId = Math.random().toString(36).slice(2);
       const sent = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect();

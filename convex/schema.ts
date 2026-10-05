@@ -17,6 +17,7 @@ export default defineSchema({
     paidState: v.union(v.literal("none"), v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")),
     recoveredPaise: v.optional(v.number()), actionDoneAt: v.optional(v.string()), source: v.optional(v.string()),
     createdAt: v.number(), updatedAt: v.number(), closedAt: v.optional(v.number()), purgeAfter: v.optional(v.number()),
+    trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
   }).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),
@@ -43,4 +44,23 @@ export default defineSchema({
   waitlist: defineTable({ category: v.string(), contact: v.string(), createdAt: v.number() }),
   payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number() }).index("by_code", ["code"]),
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),
+  googleOauthStates: defineTable({
+    stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox")),
+    createdAt: v.number(), encryptedCaseToken: v.optional(v.string()),
+  }).index("by_hash", ["stateHash"]).index("by_case", ["caseId"]),
+  googleConnections: defineTable({
+    caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox")),
+    email: v.optional(v.string()), encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), connectedAt: v.number(),
+  }).index("by_case", ["caseId"]).index("by_kind", ["kind"]),
+  googleCalendarEvents: defineTable({
+    caseId: v.id("cases"), connectionId: v.id("googleConnections"), eventId: v.string(), kind: v.union(v.literal("reply"), v.literal("checkin")),
+    sourceId: v.string(), date: v.optional(v.string()), reason: v.optional(v.string()), createdAt: v.number(),
+  }).index("by_case", ["caseId"]).index("by_source", ["caseId", "sourceId"]),
+  gmailReplies: defineTable({
+    caseId: v.id("cases"), messageId: v.string(), source: v.union(v.literal("inbox"), v.literal("gmail")), receivedAt: v.number(),
+  }).index("by_case_message", ["caseId", "messageId"]).index("by_case", ["caseId"]),
+  gmailWatches: defineTable({
+    caseId: v.id("cases"), draftId: v.id("drafts"), sentAt: v.number(), threadId: v.optional(v.string()),
+    noSentFound: v.optional(v.boolean()),
+  }).index("by_case", ["caseId"]).index("by_sent_at", ["sentAt"]),
 });

@@ -3,6 +3,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import type { CaseRead } from "./lib/read";
 import type { Plan } from "./lib/plan";
+import { codedSubject } from "../lib/google-tracking";
 
 export const progress = internalMutation({
   args: { caseId: v.id("cases"), runId: v.string(), step: v.string() },
@@ -45,6 +46,7 @@ export const applyTriage = internalMutation({
       const scheduledId = await ctx.scheduler.runAt(time, internal.checkins.fire, { checkinId });
       await ctx.db.patch(checkinId, { scheduledId });
     }
+    await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: args.caseId });
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "triaged", summary: read.summaryForUser.slice(0, 180), actor: "agent", createdAt: now });
     await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "triage", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, createdAt: now });
     return true;
@@ -63,7 +65,8 @@ export const saveDraft = internalMutation({
     if (!item || item.latestRunId !== args.runId) return null;
     const now = Date.now();
     await ctx.db.insert("drafts", {
-      caseId: args.caseId, step: args.step, channel: args.channel, to: args.to, subject: args.subject,
+      caseId: args.caseId, step: args.step, channel: args.channel, to: args.to,
+      subject: args.channel === "email" ? codedSubject(args.subject, item.code) : args.subject,
       body: args.body, attachChecklist: args.attachChecklist, status: "ready", createdAt: now,
     });
     await ctx.db.patch(args.caseId, { draftsShown: item.draftsShown + 1, progress: { step: "done", at: now }, updatedAt: now });

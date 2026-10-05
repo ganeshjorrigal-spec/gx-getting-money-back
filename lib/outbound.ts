@@ -1,12 +1,13 @@
 import { addDays } from "./dates";
 
-export function buildMailto(to: string, subject: string, body: string): { url: string; copyFirst: boolean } {
+export function buildMailto(to: string, subject: string, body: string, cc?: string): { url: string; copyFirst: boolean } {
   const address = encodeURIComponent(to.trim());
   const title = encodeURIComponent(subject);
-  const full = `mailto:${address}?subject=${title}&body=${encodeURIComponent(body.replace(/\r?\n/g, "\r\n"))}`;
+  const ccParam = cc ? `&cc=${encodeURIComponent(cc)}` : "";
+  const full = `mailto:${address}?subject=${title}${ccParam}&body=${encodeURIComponent(body.replace(/\r?\n/g, "\r\n"))}`;
   if (full.length <= 1900) return { url: full, copyFirst: false };
   return {
-    url: `mailto:${address}?subject=${title}&body=${encodeURIComponent("Your message is copied. Long-press here and tap Paste.")}`,
+    url: `mailto:${address}?subject=${title}${ccParam}&body=${encodeURIComponent("Your message is copied. Long-press here and tap Paste.")}`,
     copyFirst: true,
   };
 }

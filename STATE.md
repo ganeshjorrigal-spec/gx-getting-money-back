@@ -1,6 +1,7 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-05, M2.0. M0, M1, and M2 are DONE. M2.0 is READY FOR REVIEW. M2.2 is next, then M2.1. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
+Last updated: 2026-10-05, M2.2 code deployment. M0, M1, and M2 are DONE. M2.0 is READY FOR REVIEW. M2.2 remains ACTIVE pending its Google test; M2.1 is next. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
+M2.2 code is deployed on the Convex development site. The Gmail and Calendar connection flow cannot be tested with a real test account until Ganesh supplies the Google OAuth client, separate case inbox and test Gmail and enables the paid Gemini tier. M2.2 remains ACTIVE; M2.1 work is proceeding without waiting.
 
 ## Live product
 
