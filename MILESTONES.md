@@ -47,13 +47,13 @@ Acceptance checks:
 - [ ] No sign-up; nothing locked at this stage
 Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
 
-## M2.0. Hosting on Convex and data heads-up (now) | ACTIVE
+## M2.0. Hosting on Convex (now) | ACTIVE
 Goal: the app runs from Convex static hosting at a `.convex.site` address (D-019, D-023, C12 in `08`). Change nothing else. The Vercel demo stays untouched.
 Acceptance checks:
 - [ ] Before any code change: Ganesh has turned off Git deploys for the Vercel project, so pushes no longer change tickback.vercel.app (Codex checks and says so in the log)
 - [ ] `npm run deploy` builds the static site and deploys it with `@convex-dev/static-hosting`; the full raw deploy output is pasted in today's log
 - [ ] Home, Sample, Start, Privacy and a saved case link (including reload) work at the `.convex.site` address on a phone
-- [ ] Data heads-up beside Check my refund: "Testing phase. What you paste is read by Google's Gemini AI to work out your refund. On the free plan Google may use it to improve its products. Don't paste anything you wouldn't share." Link to Privacy. Remove any "we never share your data" line; Privacy names Convex as the host and keeps the Gemini wording
+- [ ] Privacy page names Convex as the host (no other copy changes; no data heads-up in this phase, D-023)
 - [ ] Backend changes are additive only, so the Vercel demo keeps working
 Reviewed by: pending
 
@@ -72,7 +72,7 @@ Reviewed by: pending
 
 ## M2.1. Red-team and tester fixes (after M2.2) | ACTIVE
 Goal: apply `docs/prd/08-red-team-changes.md` (C1 to C11; C12 is done in M2.0) and `docs/prd/10-tester-fixes.md` (T-1 to T-7, test F16).
-- [ ] T-1 to T-7 from `10`, each with its check; F16 added to the eval and passing Do this before more M3 work.
+- [ ] T-1 to T-7 from `10` (T-1 now means: remove the "we never share your data" promise; no separate heads-up yet), each with its check; F16 added to the eval and passing Do this before more M3 work.
 Acceptance checks:
 - [ ] C1: a case whose date came from an estimate or a REPORTED platform default says "Time to check" and shows the estimate line; "Overdue" appears only for a promised or VERIFIED date
 - [ ] C2: L1 draft never fills a grievance address the code does not hold; follow-up is +3 working days; wording per `08`
