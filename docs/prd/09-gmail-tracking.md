@@ -1,6 +1,19 @@
 # 09 Gmail reply tracking and calendar alerts (5 Oct 2026)
 
-Owner: Claude HQ. Decision: D-021. Codex builds this as M2.2, **before M2.1**. Where this file and files 01 to 08 disagree, this file wins.
+Owner: Claude HQ. Decisions: D-021, amended by D-022. Codex builds this as M2.2, after M2.0 (hosting) and before M2.1. Where this file and files 01 to 08 disagree, this file wins.
+
+## Route 1 (default, build first): CC a Tickback inbox
+
+- Create one Gmail inbox for Tickback (Ganesh creates it, e.g. `tickback.cases@gmail.com`; Codex must not sign up). Every draft's mailto adds `cc=tickback.cases+TB-XXXXXX@gmail.com` (plus-addressing keeps the case code). Tell the user in the send sheet: "We've added our case inbox in CC so we see their reply. You can remove it."
+- Tickback reads **its own** inbox through the Gmail API (Ganesh's consent, once, for that account only), every 10 minutes from a Convex cron, and matches mail by the `+TB-XXXXXX` address or the `[TB-XXXXXX]` subject code.
+- On a match: same steps as below (store redacted reply, re-triage, next step ready, reply alert).
+- To reach the user, ask for **Google Calendar permission only** (`calendar.events`) after the first Mark sent: "Want an alert on your calendar when they reply?" This also lets Tickback create and move check-ins. Without it, the case page banner and the calendar links still work.
+- Limit: an organiser who replies only to the sender (not reply-all) won't reach us. The case page says: "If they replied to you only, paste it here or connect Gmail."
+
+## Route 2 (opt-in): connect the user's Gmail
+
+The rest of this file describes Route 2. Offer it as a secondary option on the same card: "Catch every reply: connect Gmail."
+
 
 ## The job
 

@@ -47,8 +47,19 @@ Acceptance checks:
 - [ ] No sign-up; nothing locked at this stage
 Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
 
-## M2.2. Gmail reply tracking and calendar alerts (first) | ACTIVE
-Goal: per `docs/prd/09-gmail-tracking.md`, a connected user gets a calendar alert within 10 minutes of the organiser's reply, with the next step ready. Do this before M2.1.
+## M2.0. Hosting on Convex and data heads-up (now) | ACTIVE
+Goal: the app runs from Convex static hosting at a `.convex.site` address (D-019, D-023, C12 in `08`). Change nothing else. The Vercel demo stays untouched.
+Acceptance checks:
+- [ ] Before any code change: Ganesh has turned off Git deploys for the Vercel project, so pushes no longer change tickback.vercel.app (Codex checks and says so in the log)
+- [ ] `npm run deploy` builds the static site and deploys it with `@convex-dev/static-hosting`; the full raw deploy output is pasted in today's log
+- [ ] Home, Sample, Start, Privacy and a saved case link (including reload) work at the `.convex.site` address on a phone
+- [ ] Data heads-up beside Check my refund: "Testing phase. What you paste is read by Google's Gemini AI to work out your refund. On the free plan Google may use it to improve its products. Don't paste anything you wouldn't share." Link to Privacy. Remove any "we never share your data" line; Privacy names Convex as the host and keeps the Gemini wording
+- [ ] Backend changes are additive only, so the Vercel demo keeps working
+Reviewed by: pending
+
+## M2.2. Reply tracking and calendar alerts (after M2.0) | ACTIVE
+Goal: per `docs/prd/09-gmail-tracking.md`, the user gets a calendar alert within 10 minutes of the organiser's reply, with the next step ready. Route 1 (CC inbox plus Calendar permission) first, then Route 2 (Gmail opt-in). Do this before M2.1.
+- [ ] Route 1: drafts CC the case inbox; a reply-all to the test thread is matched; one reply alert lands on the test calendar
 Acceptance checks:
 - [ ] Connect card appears only after the first Mark sent; copy per `09`; works without connecting
 - [ ] OAuth via a Convex HTTP callback; scopes are only gmail.readonly and calendar.events (or a narrower calendar scope); refresh token encrypted; nothing secret in logs
@@ -59,8 +70,9 @@ Acceptance checks:
 Blocked until Ganesh finishes the Google Cloud steps in `09` (OAuth client and a test Gmail). Build everything else meanwhile.
 Reviewed by: pending
 
-## M2.1. Red-team hardening (before Friday) | ACTIVE
-Goal: apply the changes in `docs/prd/08-red-team-changes.md` (C1 to C12), after M2.2. Do C12 (Convex hosting) first within this milestone. Do this before more M3 work.
+## M2.1. Red-team and tester fixes (after M2.2) | ACTIVE
+Goal: apply `docs/prd/08-red-team-changes.md` (C1 to C11; C12 is done in M2.0) and `docs/prd/10-tester-fixes.md` (T-1 to T-7, test F16).
+- [ ] T-1 to T-7 from `10`, each with its check; F16 added to the eval and passing Do this before more M3 work.
 Acceptance checks:
 - [ ] C1: a case whose date came from an estimate or a REPORTED platform default says "Time to check" and shows the estimate line; "Overdue" appears only for a promised or VERIFIED date
 - [ ] C2: L1 draft never fills a grievance address the code does not hold; follow-up is +3 working days; wording per `08`
@@ -69,7 +81,6 @@ Acceptance checks:
 - [ ] C6 to C9: failed-payment wording, send-sheet context and channel question, trace wording, unmatched-payment handling
 - [ ] C10: dates in plain form (5 Oct 2026) everywhere users read them; placeholders highlighted
 - [ ] C11: offer card on every Rs 300+ case at the first answer; new `guaranteeLine`
-- [ ] C12: the live site runs from Convex static hosting; US-1 passes there, including reload of a case link; Vercel deploys stopped
 - [ ] Type check, unit tests and the full eval (F1 to F15) pass; evidence in today's log
 Reviewed by: pending
 
