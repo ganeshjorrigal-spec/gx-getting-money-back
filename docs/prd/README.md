@@ -65,6 +65,7 @@ Other names checked and available on 4 Oct: `chasekar.app`, `haqdaar.app`, `pais
 | `05-backend.md` | Architecture, harness, schema, functions, agent pipeline, prompts, validators, `planCase()`, scheduler, reliability, memory, security, cost, testing, env vars, daily ops |
 | `06-routes-kb.md` | Platforms, rules, contacts with confidence labels; seed JSON; Ganesh's manual BookMyShow check |
 | `07-build-plan.md` | Build order, day plan, eval fixtures, phone tests, launch checklist, build risks |
+| `08-red-team-changes.md` | Accepted changes from the independent review (5 Oct). Wins over 01 to 07 where they differ |
 
 ## How Codex should read this
 

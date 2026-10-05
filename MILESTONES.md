@@ -21,7 +21,7 @@ Carry into the start of M1 (small fixes, not blockers):
 - `tailwind.config.ts` maps only 6 colours. Add `accent-soft`, `on-accent`, `caution`, `caution-soft`, `danger`.
 - `tokens.css` lacks the `amount` size (40/44), line heights for each size, the sheet shadow and the motion durations from `02-design.md` section 6.2 and 6.3.
 
-## M1. Landing page and sample case (the product spec) | READY FOR REVIEW
+## M1. Landing page and sample case (the product spec) | DONE (HQ review 2026-10-05)
 Goal: a stranger understands in 10 seconds what it does, why to trust it, and can try a sample case.
 Acceptance checks:
 - [ ] Landing sections in the order of `docs/prd/03-frontend.md` S1; every string comes from `copy.ts` and matches `docs/prd/04-copy.md` section 3
@@ -31,9 +31,9 @@ Acceptance checks:
 - [ ] Lighthouse mobile performance score of 90 or more; landing JavaScript 120 KB gzipped or less
 - [ ] Readable at 360 px; AA contrast; light theme even when the phone is in dark mode
 - [ ] Nothing public links to an unbuilt screen (`/start` stays unlinked from public posts until M2 is DONE)
-Reviewed by: pending
+Reviewed by: Claude HQ, 2026-10-05. Checked: live landing and start page load; Example card and pricing copy present; Lighthouse mobile performance 0.96 in `docs/qa/lighthouse-2026-10-05.json`; type check clean. Not re-checked by HQ: `/sample`, `/taste`, 360 px layout, dark-mode phones (Ganesh's phone check covers these).
 
-## M2. Onboarding to first value (US-1) | READY FOR REVIEW
+## M2. Onboarding to first value (US-1) | DONE (HQ review 2026-10-05)
 Goal: paste a message, and in under 15 seconds see the route, the due date with its source, and the next step, on a phone.
 Acceptance checks:
 - [ ] Intake per `docs/prd/03-frontend.md` S3: paste, up to 4 compressed screenshots, chips, redaction on device and server
@@ -45,6 +45,18 @@ Acceptance checks:
 - [ ] Status card and save card per S5: calendar via Google link on Android and .ics on iPhone; copy link; share
 - [ ] Route on screen at p50 of 8 s or less over 10 logged runs
 - [ ] No sign-up; nothing locked at this stage
+Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
+
+## M2.1. Red-team hardening (before Friday) | ACTIVE
+Goal: apply the accepted red-team changes in `docs/prd/08-red-team-changes.md` (C1 to C10). Do this before more M3 work.
+Acceptance checks:
+- [ ] C1: a case whose date came from an estimate or a REPORTED platform default says "Time to check" and shows the estimate line; "Overdue" appears only for a promised or VERIFIED date
+- [ ] C2: L1 draft never fills a grievance address the code does not hold; follow-up is +3 working days; wording per `08`
+- [ ] C3 and C4: share wording, link warning, and the old-reminder notice with both dates
+- [ ] C5: "What we understood" strip with Looks right / Not quite; low confidence goes to NEED_INFO; fixtures F13 to F15 added to `npm run eval` and pass
+- [ ] C6 to C9: failed-payment wording, send-sheet context and channel question, trace wording, unmatched-payment handling
+- [ ] C10: dates in plain form (5 Oct 2026) everywhere users read them; placeholders highlighted
+- [ ] Type check, unit tests and the full eval (F1 to F15) pass; evidence in today's log
 Reviewed by: pending
 
 ## M3. Value loop (US-2 to US-9) | PROPOSED
