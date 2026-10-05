@@ -47,7 +47,7 @@ Acceptance checks:
 - [ ] No sign-up; nothing locked at this stage
 Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
 
-## M2.0. Hosting on Convex (now) | READY FOR REVIEW
+## M2.0. Hosting on Convex (now) | DONE (HQ review 2026-10-05)
 Goal: the app runs from Convex static hosting at a `.convex.site` address (D-019, D-023, C12 in `08`). Change nothing else. The Vercel demo stays untouched.
 Acceptance checks:
 - [ ] Before any code change: Ganesh has turned off Git deploys for the Vercel project, so pushes no longer change tickback.vercel.app (Codex checks and says so in the log)
@@ -55,7 +55,7 @@ Acceptance checks:
 - [ ] Home, Sample, Start, Privacy and a saved case link (including reload) work at the `.convex.site` address on a phone
 - [ ] Privacy page names Convex as the host (no other copy changes; no data heads-up in this phase, D-023)
 - [ ] Backend changes are additive only, so the Vercel demo keeps working
-Reviewed by: pending
+Reviewed by: Claude HQ, 2026-10-05. Checked: Home, Sample, Start and Privacy load at the `.convex.site` address with current copy; Privacy says "Convex hosts the website" and adds no heads-up (the Gemini free-tier line dates from M1, D-016); tickback.vercel.app still loads with its old copy, so it is frozen; raw deploy output is in the 5 Oct log; the case page at `/c/index.html?code=...` loads, its script points at the same backend, and old `/c/TB-...` links carry the redirect; a made-up case created through the live backend reopened by code and key (what a reload does), a wrong key returned nothing, and delete made it unreadable. Not seen by HQ: the case page rendering in a real browser after reload (no working browser this session; covered by Codex's browser check and the M2.2 live test, which ran on a saved case at this address). Notes, not blockers: unknown paths show the home page instead of a not-found page; `/taste` and `/m0-font-check` are public; the site runs on the Convex development deployment (decide before outside users).
 
 ## M2.2. Reply tracking and calendar alerts (after M2.0) | READY FOR REVIEW
 Goal: per `docs/prd/09-gmail-tracking.md`, the user gets a calendar alert within 10 minutes of the organiser's reply, with the next step ready. Route 1 (CC inbox plus Calendar permission) first, then Route 2 (Gmail opt-in). Do this before M2.1.
@@ -70,7 +70,7 @@ Acceptance checks:
 Live Route 1 evidence: the separate case inbox matched a reply-all for `TB-DQKQMT`, stored and re-triaged the reply, moved the check-in, and created exactly one reply alert on the connected calendar with a pop-up at the event start. A second poll created no duplicate. Route 2 remains an optional secondary path and has code/unit coverage; its real Gmail thread flow was not repeated after Route 1 passed.
 Reviewed by: pending
 
-## M2.1. Red-team and tester fixes (after M2.2) | READY FOR REVIEW
+## M2.1. Red-team and tester fixes (after M2.2) | DONE (HQ review 2026-10-05)
 Goal: apply `docs/prd/08-red-team-changes.md` (C1 to C11; C12 is done in M2.0) and `docs/prd/10-tester-fixes.md` (T-1 to T-7, test F16).
 - [ ] T-1 to T-7 from `10` (T-1 now means: remove the "we never share your data" promise; no separate heads-up yet), each with its check; F16 added to the eval and passing Do this before more M3 work.
 Acceptance checks:
@@ -82,7 +82,7 @@ Acceptance checks:
 - [ ] C10: dates in plain form (5 Oct 2026) everywhere users read them; placeholders highlighted
 - [ ] C11: offer card on every Rs 300+ case at the first answer; new `guaranteeLine`
 - [ ] Type check, unit tests and the full eval (F1 to F15) pass; evidence in today's log
-Reviewed by: pending
+Reviewed by: Claude HQ, 2026-10-05. Checked live: re-ran Shaktimaan's venue-change case (F16) through the live backend; it gave OVERDUE, due 28 Sep 2026, source "They said refund in 7 working days on 17 Sep 2026", both completed steps kept (form 10 Sep, tickets delivered 17 Sep), and a draft with an empty To field, plain dates, ₹2,400, the venue move and no placeholders (C2, C10, T-series). The fact strip gates the first answer (C5). Checked in code: "Overdue" only for a message promise or VERIFIED rule, "Time to check" for REPORTED or estimate (C1). Type check clean and 33 unit tests pass in HQ's sandbox; Codex's eval shows F1 to F16 passing (HQ did not re-run it). Not re-checked by HQ: C3, C4 and C6 to C9 screens, the offer card (pay card hidden until a UPI ID is set), physical phones.
 
 ## M3. Value loop (US-2 to US-9) | PROPOSED
 Goal: the case stays alive until the money lands, with every step ready to send from the user's own email or chat.
