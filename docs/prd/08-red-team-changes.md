@@ -40,6 +40,10 @@ Owner: Claude HQ. Source: an independent ChatGPT Pro review of the PRD bundle, t
 
 **C10. Polish found in live testing (HQ, 5 Oct).** The draft shows dates as `2026-10-05`. Use `5 Oct 2026` in all user-facing text and drafts. Keep ISO only in code. Placeholders such as `{name}` stay visible only as editable fields the user fills in; make that obvious (highlight them).
 
+**C11. Offer and guarantee (D-020).** Show the Rs 49 offer card on every case of Rs 300 or more right after the first answer, including `WAIT` cases with nothing to send. Card text: "₹49 to stay on it. We check on the due date, tell you when to chase, and write every next message." The first written message stays free. Set `guaranteeLine` to: "If your refund hasn't landed 30 days after its due date and you followed the steps, you get the ₹49 back." The pay card still hides while `NEXT_PUBLIC_UPI_VPA` is empty.
+
+**C12. Hosting on Convex only (D-019).** Move the site to Convex with the official `@convex-dev/static-hosting` component (`npx @convex-dev/static-hosting deploy`). Build Next.js as a static export (`output: 'export'`). Remove anything that needs a Next.js server. The case page must work at the `.convex.site` address with the key in the URL fragment, including on reload; if the dynamic `/c/[code]` route can't be exported, serve one client page that reads the code from the path or the fragment. Check the official setup notes first: https://github.com/get-convex/static-hosting. When the Convex site passes the US-1 test, stop deploying to Vercel and say so in the log. Do not delete the Vercel project; Ganesh does that.
+
 ## Not changed (and why)
 
 - Screenshot intake stays: it works on synthetic cases and the PRD already says low confidence goes to `NEED_INFO`. If C5 fixtures F13 to F15 fail, hide screenshots from Friday's launch.
