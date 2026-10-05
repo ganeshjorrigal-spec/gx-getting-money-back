@@ -15,4 +15,4 @@ Owner: Claude HQ. Source: Shaktimaan (GrowthX's agent) tested the Vercel build a
 ## Regression test case (add to `npm run eval` as F16)
 
 Input: "Two IPL tickets, ₹2,400, BookMyShow. Match moved from Ahmedabad to Chennai. I filled the refund form on 10 Sep and couriered the physical tickets; they were delivered on 17 Sep. They said refund in 7 working days. Nothing yet." Today: 2026-10-05.
-Expected: route `OVERDUE` (promise from the message: 7 working days from 17 Sep is 26 Sep); the draft says the match was moved (not cancelled), names the form date and the delivery date, and the missed 26 Sep date; the next check-in is a future date; no `{...}` left.
+Expected: route `OVERDUE` (promise from the message: 7 working days from 17 Sep is Mon 28 Sep); the draft says the match was moved (not cancelled), names the form date and the delivery date, and the missed 28 Sep date; the next check-in is a future date; no `{...}` left.
