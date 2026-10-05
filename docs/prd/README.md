@@ -66,6 +66,7 @@ Other names checked and available on 4 Oct: `chasekar.app`, `haqdaar.app`, `pais
 | `06-routes-kb.md` | Platforms, rules, contacts with confidence labels; seed JSON; Ganesh's manual BookMyShow check |
 | `07-build-plan.md` | Build order, day plan, eval fixtures, phone tests, launch checklist, build risks |
 | `08-red-team-changes.md` | Accepted changes from the independent review (5 Oct). Wins over 01 to 07 where they differ |
+| `09-gmail-tracking.md` | Gmail reply tracking and calendar alerts (D-021). Wins over 01 to 08 where they differ |
 
 ## How Codex should read this
 

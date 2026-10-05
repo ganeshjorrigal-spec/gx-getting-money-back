@@ -47,8 +47,20 @@ Acceptance checks:
 - [ ] No sign-up; nothing locked at this stage
 Reviewed by: Claude HQ, 2026-10-05, on the live site. Checked: a message with no date asked "When did they send this?" and then gave Fri 16 Oct with its source (matches F12 logic); the F2 overdue message gave Wed 23 Sep and a support draft with an empty To field and a help line (matches F2); the case link carries the key in the fragment; the case reopens; type check clean; 17 unit tests pass; Codex's `docs/qa/eval-2026-10-05.md` shows 12 of 12 with exact dates and zero invented contacts (HQ did not re-run it). Not re-checked by HQ: screenshot intake, wrong-token message, phone calendar and email handoff. Open polish: see C10 in `docs/prd/08-red-team-changes.md`.
 
+## M2.2. Gmail reply tracking and calendar alerts (first) | ACTIVE
+Goal: per `docs/prd/09-gmail-tracking.md`, a connected user gets a calendar alert within 10 minutes of the organiser's reply, with the next step ready. Do this before M2.1.
+Acceptance checks:
+- [ ] Connect card appears only after the first Mark sent; copy per `09`; works without connecting
+- [ ] OAuth via a Convex HTTP callback; scopes are only gmail.readonly and calendar.events (or a narrower calendar scope); refresh token encrypted; nothing secret in logs
+- [ ] Draft subjects carry the case code; the sent thread is found; only that thread (or the domain fallback) is read
+- [ ] Test Gmail end to end: reply stored and re-triaged, next step updated, exactly one reply-alert event with a pop-up, check-in events created and moved by the app
+- [ ] Disconnect, close and delete revoke the token and remove future events
+- [ ] Privacy page Gmail section; unit tests for the builders and matching; evidence in today's log
+Blocked until Ganesh finishes the Google Cloud steps in `09` (OAuth client and a test Gmail). Build everything else meanwhile.
+Reviewed by: pending
+
 ## M2.1. Red-team hardening (before Friday) | ACTIVE
-Goal: apply the changes in `docs/prd/08-red-team-changes.md` (C1 to C12). Do C12 (Convex hosting) first. Do this before more M3 work.
+Goal: apply the changes in `docs/prd/08-red-team-changes.md` (C1 to C12), after M2.2. Do C12 (Convex hosting) first within this milestone. Do this before more M3 work.
 Acceptance checks:
 - [ ] C1: a case whose date came from an estimate or a REPORTED platform default says "Time to check" and shows the estimate line; "Overdue" appears only for a promised or VERIFIED date
 - [ ] C2: L1 draft never fills a grievance address the code does not hold; follow-up is +3 working days; wording per `08`
