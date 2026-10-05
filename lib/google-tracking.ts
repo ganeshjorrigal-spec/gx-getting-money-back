@@ -1,6 +1,20 @@
 export const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
 export const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events.owned";
 
+export function gmailTestAllowed(email: string | undefined, paidTier: boolean, testAccounts: string | undefined): boolean {
+  if (paidTier) return true;
+  if (!email) return false;
+  return (testAccounts ?? "").split(",").map((value) => value.trim().toLowerCase()).filter(Boolean).includes(email.toLowerCase());
+}
+
+export function gmailTestConfigured(paidTier: boolean, testAccounts: string | undefined): boolean {
+  return paidTier || !!testAccounts?.split(",").some((value) => value.trim());
+}
+
+export function gmailTestCaseAllowed(code: string, paidTier: boolean, testCases: string | undefined): boolean {
+  return paidTier || (testCases ?? "").split(",").map((value) => value.trim().toUpperCase()).includes(code.toUpperCase());
+}
+
 export function codedSubject(subject: string | undefined, code: string): string {
   const base = (subject || "Refund follow-up").replace(/\s*\[TB-[A-Z0-9]{6}\]\s*/g, " ").trim();
   return `${base} [${code}]`;

@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { buildMailto } from "./outbound";
-import { caseInboxAddress, codedSubject, checkinEvent, messageMatchesCase, replyAlertEvent } from "./google-tracking";
+import { caseInboxAddress, codedSubject, checkinEvent, gmailTestAllowed, gmailTestCaseAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "./google-tracking";
+
+describe("test Gmail access", () => {
+  it("allows only named test accounts before the paid tier is enabled", () => {
+    const list = "test.one@example.com, case.inbox@example.com";
+    expect(gmailTestConfigured(false, list)).toBe(true);
+    expect(gmailTestAllowed("TEST.ONE@example.com", false, list)).toBe(true);
+    expect(gmailTestAllowed("stranger@example.com", false, list)).toBe(false);
+    expect(gmailTestAllowed("stranger@example.com", true, undefined)).toBe(true);
+    expect(gmailTestCaseAllowed("TB-ABC123", false, "TB-ABC123")).toBe(true);
+    expect(gmailTestCaseAllowed("TB-OTHER1", false, "TB-ABC123")).toBe(false);
+  });
+});
 import { decryptToken, encryptToken } from "./token-crypto";
 
 describe("case reply tracking", () => {
