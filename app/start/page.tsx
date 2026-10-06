@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { intakeCopy as c, productName } from "../copy";
+import { caseCopy, intakeCopy as c, productName } from "../copy";
 import { compressScreenshot } from "../../lib/images";
 import { getDeviceId, makeToken, saveCase, tokenHash } from "../../lib/case-link";
 import { redact } from "../../lib/redact";
@@ -110,7 +110,11 @@ export default function StartPage() {
         </fieldset>
         <p className="input-safety">{c.safety}</p>
         {error && <p className="error-banner" role="alert">{error}</p>}
-        <button className="button button-primary intake-submit" disabled={working || (!message.trim() && pictures.length === 0 && selected.length === 0)}>{working ? "Saving your case…" : c.submit}</button>
+        <button className="button button-primary intake-submit" disabled={working || (!message.trim() && pictures.length === 0 && selected.length === 0)}>{working ? <><span className="spinner" aria-hidden="true" /> Reading your message…</> : c.submit}</button>
+        {working && <div className="case-card progress-card intake-progress" role="status" aria-live="polite">
+          <div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>Reading your message…</strong></div>
+          <ol>{caseCopy.progress.map((step, index) => <li className={index === 0 ? "progress-current" : ""} key={step}><span>{index + 1}</span>{step}</li>)}</ol>
+        </div>}
         {!message.trim() && pictures.length === 0 && selected.length === 0 && <p className="input-hint">{c.disabled}</p>}
       </form>
     </div>

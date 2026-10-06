@@ -193,6 +193,11 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 .progress-card .progress-done, .progress-card .progress-current { color: var(--accent); font-weight: 600; }
 .progress-card .progress-done span { background: var(--accent-soft); border-color: var(--accent-soft); }
 .progress-card .progress-current span { border-color: var(--accent); }
+.progress-lead { display: flex; align-items: center; gap: var(--space-3); min-height: var(--control-height); color: var(--ink); }
+.spinner { display: inline-block; width: 1rem; height: 1rem; flex: 0 0 1rem; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: tickback-spin .75s linear infinite; }
+.intake-progress { margin-top: var(--space-5); }
+@keyframes tickback-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 1.5s; } }
 .status-card h2 { font-size: var(--text-title); line-height: var(--leading-title); }
 .due-block { border-top: var(--border-width) solid var(--line); border-bottom: var(--border-width) solid var(--line); padding: var(--space-4) 0; display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
 .due-block span { color: var(--muted); font-size: var(--text-small); }

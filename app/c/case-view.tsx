@@ -36,7 +36,6 @@ const money = (paise: number | null) => paise == null ? "refund" : `₹${(paise 
 export default function CaseView({ code }: { code: string }) {
   const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
   const [answer, setAnswer] = useState("");
   const [earlier, setEarlier] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -111,11 +110,6 @@ export default function CaseView({ code }: { code: string }) {
     window.addEventListener("hashchange", readKey);
     return () => window.removeEventListener("hashchange", readKey);
   }, []);
-  useEffect(() => {
-    if (caseData?.stage !== "TRIAGING") return;
-    const timer = window.setInterval(() => setElapsed((value) => value + 1), 1000);
-    return () => window.clearInterval(timer);
-  }, [caseData?.stage]);
   useEffect(() => {
     if (!caseData || !token) return;
     saveCase({ code, token, title: caseData.eventName || code, amountPaise: caseData.amountPaise ?? undefined, route: caseData.route ?? undefined, updatedAt: caseData.updatedAt });
@@ -336,7 +330,7 @@ export default function CaseView({ code }: { code: string }) {
     <div className="case-wrap">
       {deleted ? <div className="case-card bad-link" role="status"><h1>Deleted.</h1><Link className="text-link" href="/">Back to Tickback</Link></div>
         : invalid || (ready && caseData === null) ? <div className="case-card bad-link" role="alert"><h1>{c.badLink}</h1><Link className="text-link" href="/">Back to Tickback</Link></div>
-        : caseData == null ? <div className="case-card case-loading"><p>{c.progress[0]}…</p></div>
+        : caseData == null ? <div className="case-card case-loading"><div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>{c.progress[0]}…</strong></div></div>
         : <>
           <div className="case-heading"><p className="section-kicker">{caseData.platform ?? "YOUR CASE"}</p><h1>{caseData.eventName ?? "Your refund case"}</h1><p>{code}</p><p className="tracking-line"><span aria-hidden="true">{replyTrackingOn ? "●" : "○"}</span> {replyTrackingOn ? c.trackingOn : c.trackingOff}</p></div>
           {caseData.stage === "DUE" && <article className="case-card checkin-card" aria-live="polite">
@@ -345,9 +339,8 @@ export default function CaseView({ code }: { code: string }) {
           </article>}
           {caseData.stage === "CLOSED_LANDED" && <article className="case-card landed-card"><p className="section-kicker">CASE CLOSED</p><h2>{money(caseData.recoveredPaise)} back.</h2><p>Your refund landed. Your case history stays here until you delete it.</p><button className="button button-secondary" onClick={shareLanded}>Tell a friend who&apos;s waiting on a refund</button>{caseData.feedbackGiven || feedbackSent ? <p>Thanks for your feedback.</p> : <div className="feedback-form"><p>Was this worth it?</p><div className="answer-options"><button className="situation-chip" aria-pressed={feedbackWorth === true} onClick={() => setFeedbackWorth(true)}>Yes</button><button className="situation-chip" aria-pressed={feedbackWorth === false} onClick={() => setFeedbackWorth(false)}>Not really</button></div>{feedbackWorth != null && <><label htmlFor="feedback-comment">Anything we should fix? (optional)</label><input id="feedback-comment" value={feedbackComment} onChange={(event) => setFeedbackComment(event.target.value)} maxLength={500} /><button className="button button-secondary" onClick={feedback} disabled={busy}>Send feedback</button></>}</div>}</article>}
           {caseData.stage === "TRIAGING" && <article className="case-card progress-card" aria-live="polite">
-            <h2>Working out your refund</h2>
+            <div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>{c.progress[stepIndex] ?? c.progress[0]}…</strong></div>
             <ol>{c.progress.map((step, index) => <li className={index < stepIndex ? "progress-done" : index === stepIndex ? "progress-current" : ""} key={step}><span>{index < stepIndex ? "✓" : index + 1}</span>{step}</li>)}</ol>
-            {elapsed >= 12 && <p>{c.working}</p>}
           </article>}
           {caseData.stage === "ERROR" && <article className="case-card" role="alert"><h2>{c.error}</h2><button className="button button-primary" onClick={() => token && retry({ code, token })}>{c.retry}</button></article>}
            {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><h2>Check these details</h2><p>{caseData.platform ?? "Platform unknown"} · {caseData.eventName ?? "Event unknown"} · {money(caseData.amountPaise)}</p><p>Refund date: {caseData.dueDate ? displayDate(caseData.dueDate) : "not given"}. {caseData.facts?.promise?.text ? `They said: ${caseData.facts.promise.text}` : "No refund promise found."}</p><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => token && confirmFacts({ code, token, looksRight: true })}>Looks right</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={async () => { if (!token) return; setBusy(true); try { await confirmFacts({ code, token, looksRight: false, correction: factCorrection }); setCorrectingFacts(false); setFactCorrection(""); } catch { setNotice(c.error); } finally { setBusy(false); } }}>Save correction</button></div>}</article>}
