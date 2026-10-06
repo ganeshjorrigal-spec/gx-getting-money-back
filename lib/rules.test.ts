@@ -7,6 +7,7 @@ import { draftForCase, draftMatchesFacts } from "../convex/lib/draft";
 import type { CaseRead } from "../convex/lib/read";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink } from "./outbound";
 import { routeFor, verifiedEmailFor } from "./route-kb";
+import { responseSheetSyncDelay } from "./responses-sheet";
 
 const base: CaseRead = {
   isEventTicket: true, outOfScopeCategory: null, platform: "bookmyshow", platformNameAsWritten: "BookMyShow",
@@ -183,6 +184,12 @@ describe("grounding mixed dates and instructions", () => {
 });
 
 describe("user-owned actions", () => {
+  it("spreads Responses Sheet retries into small batches", () => {
+    expect(responseSheetSyncDelay(0)).toBe(0);
+    expect(responseSheetSyncDelay(4)).toBe(0);
+    expect(responseSheetSyncDelay(5)).toBe(1000);
+    expect(responseSheetSyncDelay(40)).toBe(8000);
+  });
   it("uses only platform-page-verified support addresses", () => {
     expect(verifiedEmailFor("District", "L0_email")?.value).toBe("support@district.in");
     expect(verifiedEmailFor("BookMyShow", "L1")?.value).toBe("allears@bookmyshow.com");

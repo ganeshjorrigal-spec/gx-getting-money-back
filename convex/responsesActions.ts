@@ -4,6 +4,7 @@ import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { decryptToken } from "../lib/token-crypto";
+import { responseSheetSyncDelay } from "../lib/responses-sheet";
 
 const headers = ["case code", "created", "name", "contact", "platform", "amount", "route", "due date", "stage", "channel", "last reply date", "feedback"];
 
@@ -120,9 +121,8 @@ export const syncAll = internalAction({
   handler: async (ctx) => {
     if (!await ctx.runQuery(internal.responsesData.sheetContext, {})) return null;
     const caseIds = await ctx.runQuery(internal.responsesData.caseIds, {});
-    for (const caseId of caseIds) {
-      try { await ctx.runAction(internal.responsesActions.syncCase, { caseId }); }
-      catch { /* A later change or scheduled sync retries this row. */ }
+    for (const [index, caseId] of caseIds.entries()) {
+      await ctx.scheduler.runAfter(responseSheetSyncDelay(index), internal.responsesActions.syncCase, { caseId });
     }
     return null;
   },

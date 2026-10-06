@@ -1,31 +1,34 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-05, after the M2.2 live Google test. M0, M1, and M2 are DONE. M2.0, M2.2, and M2.1 are READY FOR REVIEW. M3 Friday work is deployed but is not marked ready for review because payments and physical-phone checks cannot be completed tonight.
-M2.2 Route 1 passed end to end on the Convex development site: the case inbox matched a reply-all, stored and re-triaged it, moved the check-in, and created one calendar reply alert with a pop-up. Repeating the poll created no duplicate. Named test accounts and case codes allow this test without the paid Gemini tier; the paid tier remains required before outside users connect.
+Last updated: 2026-10-07, after the M2.3 live reply and Responses Sheet proofs. M0, M1, M2, M2.0 and M2.1 are DONE. M2.2 and M2.3 are READY FOR REVIEW. M3 Friday work is deployed but remains outside this review because payments and physical-phone checks are still open.
 
 ## Live product
 
 - Website: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
-- Convex static hosting now serves the Next.js export from the existing development deployment `harmless-lyrebird-924`, which also holds the backend and data. GitHub is the code source.
-- https://tickback.vercel.app/ remains a frozen demo. Its Git link is disabled, and it loaded after the Convex deployment. Its project and config were preserved.
+- Convex static hosting serves the Next.js export from development deployment `harmless-lyrebird-924`, which also holds the backend and data.
+- https://tickback.vercel.app/ remains a frozen demo. Its project and configuration were preserved.
 
-## Built and verified
+## M2.3 built and verified
 
-- Fixed all three M0 carry notes: exact 14-day guarantee wording, Tailwind colours, and missing type/shadow/motion tokens.
-- M1 landing, sample, taste, privacy: checked at 360 and 390 px. Lighthouse mobile score 96; the last audit transferred about 114 KB of JavaScript. Evidence: `docs/qa/lighthouse-2026-10-05.json` and today's log.
-- M2 paste and screenshot intake, redaction, private fragment link, date question, route/date/source/next-step card, save and calendar links. The deployed site completed a synthetic paste case and screenshot-only case. Wrong-token and saved-case reopen checks passed. Ten logged triages had p50 2.37 seconds.
-- M3 Friday path: verified email draft/send sheet, mark sent, scheduled check-in, Not yet to Grievance Officer draft, reply re-triage, action checklist and completion, no-route options, out-of-scope waitlist, close and feedback. A disposable synthetic case was deleted and was no longer readable. No real email or payment was sent.
-- M2.1: completed the red-team and tester changes, including fact confirmation, completed form and courier dates, grounded drafts, plain dates, softer failed-payment text, payment grace, future reminders, and the new guarantee. A fresh live made-up venue-change case returned 28 Sep 2026 and a draft that named the move, 10 Sep form, 17 Sep delivery and missed promise. The 390 px Privacy footer was tappable. The frozen Vercel demo loaded after the deployment.
-- M2.2 Route 1: a real Gmail reply-all for synthetic case `TB-DQKQMT` was found through the case inbox, saved, re-triaged, and reflected in the next step. Google Calendar visibly showed one `District replied about your ₹1,200 refund` alert with a start-time pop-up, plus the moved 7 Oct check-in. A second poll left exactly one alert.
-- `npm run build`, `npx tsc --noEmit`, and 33 unit tests pass. `npm run eval` passed all 16 synthetic fixtures, with exact asserted dates and zero invented contacts. Evidence: `docs/qa/eval-2026-10-05.md`.
+- Paid Gemini is active through `GEMINI_PAID_TIER=true`; the model remains `gemini-3.5-flash-lite`. Per-call input, output and total token counts are stored without message text.
+- Every new case can use the separate case inbox. Gmail opt-in remains restricted to the test-account list.
+- The case page shows reply-tracking state, exact CC instructions, Calendar permission guidance and the one-time `.ics` limitation.
+- AI submissions show a disabled button, spinner and four live progress steps.
+- Optional name and follow-up contact are stored with the case. Booking ID is confirmed before the first answer. Name and booking ID appear in drafts. Privacy explains the stored fields and their purpose.
+- The private `Tickback Responses` Google Sheet was created with `drive.file`, shared, and checked: 12 headers present, 41 case rows present, and the M2.3 District proof case is present. Codex did not sign in to Google.
+- BookMyShow synthetic case `TB-N73ZMT` completed two chat reply loops. Each loop produced another chat line and a new chase date; email remained the escalation.
+- District synthetic case `TB-5QFF3L` was sent with the exact case inbox in CC. The inbox poll matched one later reply-all and changed the case from `OVERDUE/L0_email` to `TRACE/TRACE_bank`.
+- BookMyShow, District, Paytm Insider, SkillBox and TicketGenie routes are present. Only addresses confirmed on the platforms' own pages are filled automatically.
+- Gmail web compose replaced the broken `mailto:` path in the in-app browser. The existing email-app path remains available as a fallback.
+- Type check passes. All 38 unit tests pass. The paid-tier F1-F16 eval passes with exact dates and zero invented contacts. Evidence: `docs/qa/eval-2026-10-06.md`, `docs/log/2026-10-06.md`, and `docs/log/2026-10-07.md`.
 
 ## Still open
 
-- The pay card is intentionally hidden because `NEXT_PUBLIC_UPI_VPA` is empty. The UPI link and QR code builder have unit coverage, but a real pay sheet and claim cannot be checked until Ganesh supplies a VPA and a safe payment test is arranged. No purchases or bank/UPI apps were used.
-- Android Chrome and iPhone Safari tests in `docs/prd/07-build-plan.md` section 4 were not run on physical phones. Calendar app handoff, mail app handoff, UPI chooser, 200% text zoom, offline mode, and saved regression screenshots remain unverified. The in-app browser covered the main web flow at phone widths.
-- Before accepting real paid cases, complete the PRD launch checks: Gemini billing and budget alert, working support contact, BookMyShow manual check, payment reconciliation, and phone tests. Nothing was purchased tonight.
-- M3 full milestone also has later-week work: L2, payment verification, analytics funnel, and remaining phone tests. M4 email is untouched. T1 validation is Ganesh's parallel task.
+- The pay card remains hidden because `NEXT_PUBLIC_UPI_VPA` is empty. A safe real-payment test still needs a supplied VPA.
+- Physical Android Chrome and iPhone Safari checks remain unverified, including app handoffs, 200% text zoom and offline behaviour.
+- Before real paid cases, complete the remaining launch checks: budget alert, public support contact, payment reconciliation and phone tests.
+- M3 full milestone still contains later-week work. M4 email is untouched. T1 validation remains Ganesh's parallel task.
 
-## First morning action
+## Next review
 
-Ask Claude HQ to review M2.0, M2.2, then M2.1. After that, run the remaining physical Android/iPhone checks and arrange the safe UPI payment test.
+Ask Claude HQ to review M2.3 using the two live synthetic cases and the Responses Sheet proof above.

@@ -2,14 +2,15 @@
 
 ## Current instruction, 6 Oct: M2.3
 
-- [x] Step 1 code and environment: paid Gemini key active, paid tier true, model fixed to `gemini-3.5-flash-lite`, named-case gate removed, Gmail opt-in account list retained, per-call token counts saved. Fresh unlisted case has inbox tracking; reply-all proof remains for final live test.
+- [x] Step 1 code and environment: paid Gemini key active, paid tier true, model fixed to `gemini-3.5-flash-lite`, named-case gate removed, Gmail opt-in account list retained, per-call token counts saved. Fresh unlisted cases have inbox tracking; live reply-all proof passed on `TB-5QFF3L`.
 - [x] Step 2: visible tracking state, copy-message CC instruction and Calendar permission explanation. Verified on the live Convex site.
 - [x] Step 3: compact waiting state and live progress steps after every AI submit. Verified on the live first-screen flow.
 - [x] Step 4: optional name and contact, booking ID confirmation, drafts and Privacy. Verified on a fresh live case.
-- [ ] Step 5: Responses sheet code is deployed with `drive.file`, sharing, row updates and deletion cleanup. One-time Google Allow and live row check remain.
+- [x] Step 5: Responses Sheet created through `drive.file`, shared, and verified with all 12 headers and the live District case row.
 - [x] Step 6: BookMyShow-first chat loop, reply paste/screenshots and chase dates. Verified twice on live synthetic case `TB-N73ZMT`.
 - [x] Step 7: verified support contacts for named platforms; unconfirmed items logged for Ganesh.
-- [ ] Final proof: live BookMyShow chat loop twice, live new District reply-all, paid-tier type check, unit tests and F1-F16 eval; mark M2.3 READY FOR REVIEW.
+- [x] Final proof: live BookMyShow chat loop twice, live new District reply-all, paid-tier type check, 38 unit tests and F1-F16 eval; M2.3 marked READY FOR REVIEW.
+- [x] Fixed the in-app browser email handoff: Gmail now opens through a normal web compose link with recipient, subject, body and case inbox CC; another email app remains available as a fallback.
 
 - [x] Pulled GitHub; M0 was DONE; fixed its three carry notes.
 - [x] Built and deployed M1, M2 and the available M3 Friday path. M1 and M2 await HQ review; do not wait for that review to continue future work.
