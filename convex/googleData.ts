@@ -19,6 +19,7 @@ export const saveReply = internalMutation({
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "reply_added", summary: "Their reply arrived; preparing your next step", actor: "system", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: args.caseId, runId });
     await ctx.scheduler.runAfter(30_000, internal.googleActions.replyAlert, { caseId: args.caseId, messageId: args.messageId, attempt: 0 });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: args.caseId });
     return true;
   },
 });

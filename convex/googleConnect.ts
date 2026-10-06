@@ -5,7 +5,7 @@ import { hashToken } from "./lib/access";
 import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAllowed, gmailTestAllowed, gmailTestConfigured } from "../lib/google-tracking";
 
 const accessArgs = { code: v.string(), token: v.string() };
-const kind = v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"));
+const kind = v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"));
 const callback = () => {
   const site = process.env.CONVEX_SITE_URL;
   if (!site) throw new Error("Convex site URL is missing");
@@ -54,7 +54,7 @@ export const authorize = internalQuery({
 });
 
 export const createState = internalMutation({
-  args: { stateHash: v.string(), caseId: v.id("cases"), kind: v.union(v.literal("calendar"), v.literal("gmail")), encryptedCaseToken: v.string() },
+  args: { stateHash: v.string(), caseId: v.optional(v.id("cases")), kind, encryptedCaseToken: v.optional(v.string()) },
   returns: v.null(),
   handler: async (ctx, args) => {
     await ctx.db.insert("googleOauthStates", { ...args, createdAt: Date.now() });
@@ -90,18 +90,23 @@ export const takeState = internalMutation({
 });
 
 export const store = internalMutation({
-  args: { caseId: v.optional(v.id("cases")), kind, encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), email: v.optional(v.string()) }, returns: v.null(),
+  args: { caseId: v.optional(v.id("cases")), kind, encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), email: v.optional(v.string()) }, returns: v.id("googleConnections"),
   handler: async (ctx, args) => {
     const item = args.caseId ? await ctx.db.get(args.caseId) : null;
     if (args.caseId && (!item || item.stage.startsWith("CLOSED"))) throw new Error("Case is closed");
-    const matches = args.kind === "inbox"
-      ? await ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", "inbox")).collect()
+    const matches = args.kind === "inbox" || args.kind === "responses"
+      ? await ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", args.kind)).collect()
       : await ctx.db.query("googleConnections").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).collect();
     for (const row of matches) if (row.kind === args.kind) await ctx.db.delete(row._id);
-    await ctx.db.insert("googleConnections", { caseId: args.caseId, kind: args.kind, encryptedRefreshToken: args.encryptedRefreshToken, encryptedCaseToken: args.encryptedCaseToken, email: args.email, connectedAt: Date.now() });
+    const connectionId = await ctx.db.insert("googleConnections", { caseId: args.caseId, kind: args.kind, encryptedRefreshToken: args.encryptedRefreshToken, encryptedCaseToken: args.encryptedCaseToken, email: args.email, connectedAt: Date.now() });
     if (args.caseId) await ctx.db.patch(args.caseId, { trackingDismissed: false });
-    return null;
+    return connectionId;
   },
+});
+
+export const connectionById = internalQuery({
+  args: { connectionId: v.id("googleConnections") }, returns: v.any(),
+  handler: async (ctx, { connectionId }) => ctx.db.get(connectionId),
 });
 
 export const loadForAction = internalQuery({

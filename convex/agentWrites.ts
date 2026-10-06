@@ -47,6 +47,7 @@ export const applyTriage = internalMutation({
       await ctx.db.patch(checkinId, { scheduledId });
     }
     await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: args.caseId });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: args.caseId });
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "triaged", summary: read.summaryForUser.slice(0, 180), actor: "agent", createdAt: now });
     await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "triage", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });
     return true;
@@ -71,6 +72,7 @@ export const saveDraft = internalMutation({
     });
     await ctx.db.patch(args.caseId, { draftsShown: item.draftsShown + 1, progress: { step: "done", at: now }, updatedAt: now });
     await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "draft", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: args.caseId });
     return null;
   },
 });

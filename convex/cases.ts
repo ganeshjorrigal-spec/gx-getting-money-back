@@ -62,6 +62,7 @@ export const create = mutation({
     await ctx.db.insert("inputs", { caseId, kind: "initial", text: args.text ? redact(args.text) : undefined, storageIds: args.storageIds, createdAt: now });
     await ctx.db.insert("caseEvents", { caseId, type: "created", summary: "Case started", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId, runId });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId });
     return { code };
   },
 });
@@ -131,6 +132,7 @@ export const addReply = mutation({
     await ctx.db.patch(item._id, { stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "reply_added", summary: "Their reply added", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });
@@ -157,6 +159,7 @@ export const markSent = mutation({
     } else if (draft.step === "TRACE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "support_reply");
     else if (draft.step === "FAILED_platform") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: item._id });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });
@@ -166,6 +169,7 @@ export const recordSendChannel = mutation({
   handler: async (ctx, { code, token, channel }) => {
     const item = await assertAccess(ctx, code, token);
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "send_channel", summary: `You used ${channel} to contact them`, actor: "user", createdAt: Date.now() });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });
@@ -208,6 +212,7 @@ export const confirmFacts = mutation({
           });
         }
       }
+      await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
       return null;
     }
     if (!correction?.trim()) throw new Error("Tell us what needs fixing");
@@ -217,6 +222,7 @@ export const confirmFacts = mutation({
     await ctx.db.insert("inputs", { caseId: item._id, kind: "answer", text: redact(answer), storageIds: [], createdAt: now });
     await ctx.db.patch(item._id, { facts, contact: savedContact, factsConfirmedAt: undefined, stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });
@@ -246,6 +252,7 @@ export const answerCheckin = mutation({
     } else {
       await ctx.db.insert("caseEvents", { caseId: item._id, type: "checkin_answered", summary: "The company replied", actor: "user", createdAt: now });
     }
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });
@@ -258,6 +265,7 @@ export const setAmount = mutation({
     const runId = Math.random().toString(36).slice(2);
     await ctx.db.patch(item._id, { amountPaise, tier: amountPaise < 30_000 ? "free_small" : "free_check", stage: amountPaise < 30_000 ? "TRIAGING" : item.stage, latestRunId: amountPaise < 30_000 ? runId : item.latestRunId, updatedAt: Date.now() });
     if (amountPaise < 30_000 && item.facts) await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId, reuseFacts: true });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });

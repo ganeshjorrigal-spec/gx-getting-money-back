@@ -31,6 +31,8 @@ import type * as lib_read from "../lib/read.js";
 import type * as m0Check from "../m0Check.js";
 import type * as payments from "../payments.js";
 import type * as qa from "../qa.js";
+import type * as responsesActions from "../responsesActions.js";
+import type * as responsesData from "../responsesData.js";
 import type * as retention from "../retention.js";
 import type * as waitlist from "../waitlist.js";
 
@@ -64,6 +66,8 @@ declare const fullApi: ApiFromModules<{
   m0Check: typeof m0Check;
   payments: typeof payments;
   qa: typeof qa;
+  responsesActions: typeof responsesActions;
+  responsesData: typeof responsesData;
   retention: typeof retention;
   waitlist: typeof waitlist;
 }>;

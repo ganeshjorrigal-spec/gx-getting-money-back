@@ -19,7 +19,8 @@ const client = () => {
   if (!id || !secret || !process.env.TOKEN_ENC_KEY) throw new Error("Google connection is not configured yet");
   return { id, secret };
 };
-const scopesFor = (kind: "calendar" | "gmail" | "inbox") => kind === "calendar" ? [CALENDAR_SCOPE] : kind === "gmail" ? [GMAIL_SCOPE, CALENDAR_SCOPE] : [GMAIL_SCOPE];
+const DRIVE_FILE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+const scopesFor = (kind: "calendar" | "gmail" | "inbox" | "responses") => kind === "calendar" ? [CALENDAR_SCOPE] : kind === "gmail" ? [GMAIL_SCOPE, CALENDAR_SCOPE] : kind === "responses" ? [DRIVE_FILE_SCOPE] : [GMAIL_SCOPE];
 function authUrl(state: string, scopes: string[]): string {
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.search = new URLSearchParams({ client_id: client().id, redirect_uri: callbackUrl(), response_type: "code", scope: scopes.join(" "), access_type: "offline", prompt: "consent", state }).toString();
@@ -37,6 +38,17 @@ export const begin = action({
     const state = newState();
     await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), caseId, kind: args.kind, encryptedCaseToken: await encryptToken(args.token) });
     return { state, url: authUrl(state, scopesFor(args.kind)) };
+  },
+});
+
+export const beginResponses = action({
+  args: {},
+  returns: v.object({ url: v.string() }),
+  handler: async (ctx) => {
+    if (!process.env.RESPONSES_SHEET_SHARE_EMAIL) throw new Error("Responses sheet sharing is not configured");
+    const state = newState();
+    await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), kind: "responses" });
+    return { url: authUrl(state, scopesFor("responses")) };
   },
 });
 
@@ -67,8 +79,8 @@ async function googleJson<T>(url: string, token: string, init?: RequestInit): Pr
 
 export const finishOauth = internalAction({
   args: { code: v.string(), state: v.string() }, returns: v.any(),
-  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox"; code: string | null }> => {
-    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
+  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses"; code: string | null; sheetUrl?: string }> => {
+    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
     const tokens = await exchangeCode(args.code);
     if (!tokens.refresh_token || !tokens.access_token) throw new Error("Google did not grant ongoing access. Try again.");
@@ -76,7 +88,7 @@ export const finishOauth = internalAction({
     const granted = new Set((tokens.scope || "").split(" "));
     if (required.some((scope) => !granted.has(scope))) throw new Error("Google did not grant the needed permission");
     let email: string | undefined;
-    if (state.kind !== "calendar") {
+    if (state.kind !== "calendar" && state.kind !== "responses") {
       const profile = await googleJson<{ emailAddress?: string }>("https://gmail.googleapis.com/gmail/v1/users/me/profile", tokens.access_token);
       email = profile.emailAddress?.toLowerCase();
       if (!email) throw new Error("Could not verify the Gmail account");
@@ -86,7 +98,11 @@ export const finishOauth = internalAction({
         : gmailTestAllowed(email, process.env.GMAIL_TEST_ACCOUNTS);
       if (!allowed) throw new Error("This account is not on the test list");
     }
-    await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
+    const connectionId = await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
+    if (state.kind === "responses") {
+      const sheetUrl = await ctx.runAction(internal.responsesActions.finishSetup, { connectionId });
+      return { kind: state.kind, code: null, sheetUrl };
+    }
     if (state.caseId) { try { await ctx.runAction(internal.googleActions.syncCheckins, { caseId: state.caseId }); } catch { /* The next poll will retry calendar sync. */ } }
     return { kind: state.kind, code: state.code ?? null };
   },

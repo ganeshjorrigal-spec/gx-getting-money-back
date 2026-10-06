@@ -48,11 +48,11 @@ export default defineSchema({
   payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number() }).index("by_code", ["code"]),
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),
   googleOauthStates: defineTable({
-    stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox")),
+    stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses")),
     createdAt: v.number(), encryptedCaseToken: v.optional(v.string()),
   }).index("by_hash", ["stateHash"]).index("by_case", ["caseId"]),
   googleConnections: defineTable({
-    caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox")),
+    caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses")),
     email: v.optional(v.string()), encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), connectedAt: v.number(),
   }).index("by_case", ["caseId"]).index("by_kind", ["kind"]),
   googleCalendarEvents: defineTable({
@@ -66,4 +66,10 @@ export default defineSchema({
     caseId: v.id("cases"), draftId: v.id("drafts"), sentAt: v.number(), threadId: v.optional(v.string()),
     noSentFound: v.optional(v.boolean()),
   }).index("by_case", ["caseId"]).index("by_sent_at", ["sentAt"]),
+  responsesSheetConfig: defineTable({
+    connectionId: v.id("googleConnections"), spreadsheetId: v.string(), sheetUrl: v.string(), nextRow: v.number(), createdAt: v.number(), updatedAt: v.number(),
+  }),
+  responseSheetRows: defineTable({
+    caseId: v.id("cases"), row: v.number(), createdAt: v.number(), updatedAt: v.number(),
+  }).index("by_case", ["caseId"]),
 });

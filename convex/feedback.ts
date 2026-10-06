@@ -1,6 +1,7 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
+import { internal } from "./_generated/api";
 
 export const send = mutation({
   args: { code: v.string(), token: v.string(), worthIt: v.boolean(), comment: v.optional(v.string()) }, returns: v.null(),
@@ -11,6 +12,7 @@ export const send = mutation({
     const existing = await ctx.db.query("feedback").withIndex("by_case", (q) => q.eq("caseId", item._id)).first();
     if (existing) await ctx.db.patch(existing._id, { worthIt, comment: comment?.trim(), createdAt: Date.now() });
     else await ctx.db.insert("feedback", { caseId: item._id, worthIt, comment: comment?.trim(), createdAt: Date.now() });
+    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },
 });

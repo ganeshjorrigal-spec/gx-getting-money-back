@@ -6,7 +6,7 @@
 - [x] Step 2: visible tracking state, copy-message CC instruction and Calendar permission explanation. Verified on the live Convex site.
 - [x] Step 3: compact waiting state and live progress steps after every AI submit. Verified on the live first-screen flow.
 - [x] Step 4: optional name and contact, booking ID confirmation, drafts and Privacy. Verified on a fresh live case.
-- [ ] Step 5: app-created responses sheet with one-time Google consent and one row per case.
+- [ ] Step 5: Responses sheet code is deployed with `drive.file`, sharing, row updates and deletion cleanup. One-time Google Allow and live row check remain.
 - [ ] Step 6: BookMyShow-first chat loop, reply paste/screenshots and chase dates.
 - [ ] Step 7: verified support contacts for named platforms; unconfirmed items logged for Ganesh.
 - [ ] Final proof: live BookMyShow chat loop twice, live new District reply-all, paid-tier type check, unit tests and F1-F16 eval; mark M2.3 READY FOR REVIEW.

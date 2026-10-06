@@ -4,6 +4,7 @@ import { internal } from "../_generated/api";
 
 export async function deleteCaseData(ctx: MutationCtx, item: Doc<"cases">): Promise<void> {
   const caseId = item._id;
+  await ctx.scheduler.runAfter(0, internal.responsesActions.clearCase, { caseId });
   const connections = await ctx.db.query("googleConnections").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect();
   const calendarEvents = await ctx.db.query("googleCalendarEvents").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect();
   if (connections.length) await ctx.scheduler.runAfter(0, internal.googleActions.cleanupDetached, {
