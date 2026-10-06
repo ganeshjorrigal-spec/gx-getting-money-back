@@ -38,7 +38,7 @@ describe("planner", () => {
     const plan = planCase({ read: { ...base, messageDate: "2026-09-09" }, today: "2026-10-04" });
     expect(plan.route).toBe("OVERDUE");
     expect(plan.dueDate).toBe("2026-09-23");
-    expect(plan.nextStep).toBe("L0_email");
+    expect(plan.nextStep).toBe("L0_chat");
   });
   it("asks for the missing message date", () => {
     const plan = planCase({ read: { ...base, messageDate: null }, today: "2026-10-12" });
@@ -96,7 +96,7 @@ describe("planner", () => {
     const plan = planCase({ read, today: "2026-10-05" });
     expect(plan.route).toBe("OVERDUE");
     expect(plan.dueDate).toBe("2026-09-28");
-    expect(plan.nextStep).toBe("L0_email");
+    expect(plan.nextStep).toBe("L0_chat");
   });
   it("labels an expired reported platform window as a check, not a firm promise", () => {
     const read = { ...base, messageDate: "2026-09-09", promise: { text: null, date: null, workingDaysMax: null, calendarDaysMax: null, anchorDate: null } };
@@ -170,6 +170,14 @@ describe("grounding mixed dates and instructions", () => {
     expect(draft.subject).toContain("BKMY12345");
     expect(draft.body).toContain("booking BKMY12345");
     expect(draft.body).toContain("Thank you,\nGanesh");
+  });
+  it("starts BookMyShow in chat, then keeps email as the escalation", () => {
+    const read = { ...base, messageDate: "2026-09-09" };
+    const first = planCase({ read, today: "2026-10-04", history: { ladderLevel: 0, draftsShown: 0, sentSteps: [] } });
+    const escalation = planCase({ read, today: "2026-10-04", history: { ladderLevel: 1, draftsShown: 1, sentSteps: ["L0_chat"] } });
+    expect(first.nextStep).toBe("L0_chat");
+    expect(escalation.nextStep).toBe("L1");
+    expect(draftForCase(read, "2026-10-04", "L0_chat", first.dueDate).body.trim().split(/\s+/).length).toBeLessThanOrEqual(80);
   });
 });
 

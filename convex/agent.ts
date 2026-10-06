@@ -12,7 +12,7 @@ import { groundRead } from "./lib/ground";
 import { draftForCase, draftMatchesFacts } from "./lib/draft";
 
 const draftSchema = z.object({ subject: z.string().nullable(), body: z.string(), attachChecklist: z.array(z.string()) });
-const draftSystem = `Write one short refund email from the saved facts. You do not send it. Never call a moved or postponed event cancelled. Include every completed step and its date, the amount, booking ID, and a promised refund date when supplied. Dates must look like 5 Oct 2026. Omit unknown details entirely; never use placeholders such as {name}. No invented contacts, links, rules or legal threats. Polite, firm, first person, under 160 words. Return the JSON schema only. No "to" field.`;
+const draftSystem = `Write one short refund message from the saved facts. You do not send it. For L0_chat write a chat line under 80 words; otherwise write an email under 160 words. Never call a moved or postponed event cancelled. Include every completed step and its date, the amount, booking ID, and a promised refund date when supplied. Dates must look like 5 Oct 2026. Omit unknown details entirely; never use placeholders such as {name}. No invented contacts, links, rules or legal threats. Polite, firm, first person. Return the JSON schema only. No "to" field.`;
 
 function knownAnswer(previous: CaseRead | undefined, answer: string | undefined, today: string, question: string | undefined): CaseRead | null {
   if (!previous || !answer) return null;
@@ -93,7 +93,8 @@ export const triage = internalAction({
         });
         draftUsage = { inputTokens: output.usage.inputTokens ?? 0, outputTokens: output.usage.outputTokens ?? 0, totalTokens: output.usage.totalTokens ?? 0 };
         draftModel = draftModelId;
-        if (draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) {
+        const withinChannelLimit = plan.nextStep !== "L0_chat" || output.object.body.trim().split(/\s+/).length <= 80;
+        if (withinChannelLimit && draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) {
           const namedBody = loaded.item.name && !output.object.body.includes(loaded.item.name) ? `${output.object.body.trim()}\n\n${loaded.item.name}` : output.object.body;
           draft = { ...output.object, body: namedBody, subject: output.object.subject ?? draft.subject };
         }

@@ -18,6 +18,7 @@ export function draftForCase(read: CaseRead, today: string, step: string, dueDat
   const context = `My ${booking}${event} was ${amount}. ${eventChange} ${completedLine}`.replace(/\s+/g, " ").trim();
   const closing = userName?.trim() ? `Thank you,\n${userName.trim()}` : "Thank you.";
   let body = `Hello ${platform} team,\n\n${context}\n\n${promiseLine} Please tell me the refund status, return it to my original payment method, and share the refund reference number.\n\n${closing}`;
+  if (step === "L0_chat") body = `Hi, ${context} ${promiseLine} Please check the refund status and share the refund reference number.${userName?.trim() ? `\n\n${userName.trim()}` : ""}`;
   if (step === "L1") body = `Dear Grievance Officer,\n\n${context}\n\n${promiseLine} I contacted support and need your help resolving this. Under the Consumer Protection (E-Commerce) Rules, 2020, grievances should be acknowledged within 48 hours. Please acknowledge this complaint and tell me when the refund will arrive.\n\n${closing}`;
   if (step === "TRACE_ask") body = `Hello ${platform} team,\n\n${context}\n\nYou said my refund was processed, but it has not reached my account. Please share the ARN or UTR, the date it was sent, and the payment method it went to.\n\n${closing}`;
   if (step === "TRACE_bank") body = `Hello,\n\n${context}\n\n${platform} marked the refund processed, but it has not reached my account. The reference is ${read.references.arn ?? read.references.rrnOrUtr}. Please trace it and tell me when it will be credited.\n\n${closing}`;

@@ -1,5 +1,6 @@
 import { addDays, addWorkingDays, shortDate } from "../../lib/dates";
 import type { CaseRead } from "./read";
+import { routeFor } from "../../lib/route-kb";
 
 export type Plan = {
   route: CaseRead["route"];
@@ -106,7 +107,7 @@ export function planCase(input: {
       route = dueDate < today || read.userSaysLate ? "OVERDUE" : "WAIT";
       if (route === "WAIT") checkins = [{ date: addDays(dueDate, 1), reason: "due" }];
       else {
-        nextStep = history.ladderLevel === 0 ? "L0_email" : history.ladderLevel === 1 ? "L1" : "L2";
+        nextStep = history.ladderLevel === 0 ? routeFor(read.platform)?.chatFirst ? "L0_chat" : "L0_email" : history.ladderLevel === 1 ? "L1" : "L2";
         checkins = [{ date: addWorkingDays(today, 2), reason: "overdue_followup" }];
       }
     }
