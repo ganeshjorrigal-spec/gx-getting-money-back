@@ -23,7 +23,11 @@ async function accessToken(encryptedRefreshToken: string): Promise<string> {
 
 async function googleJson<T>(url: string, token: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, { ...init, headers: { Authorization: `Bearer ${token}`, ...(init?.body ? { "Content-Type": "application/json" } : {}) } });
-  if (!response.ok) throw new Error(`Google API request failed (${response.status})`);
+  if (!response.ok) {
+    const failure = await response.json().catch(() => null) as { error?: { status?: string; details?: Array<{ reason?: string; metadata?: { service?: string; consumer?: string } }> } } | null;
+    const detail = failure?.error?.details?.[0];
+    throw new Error(`Google API request failed (${response.status}; ${failure?.error?.status ?? "unknown"}; ${detail?.reason ?? "unknown"}; ${detail?.metadata?.service ?? "unknown"}; ${detail?.metadata?.consumer ?? "unknown"})`);
+  }
   return await response.json() as T;
 }
 
