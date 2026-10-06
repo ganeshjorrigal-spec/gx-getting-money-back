@@ -77,7 +77,7 @@ export const triage = internalAction({
     const applied = await ctx.runMutation(internal.agentWrites.applyTriage, { caseId, runId, read, plan, model: usedModel, latencyMs, ...triageUsage });
     if (!applied || plan.nextStep === "none" || plan.nextStep === "questions" || plan.nextStep === "options" || plan.nextStep === "waitlist" || plan.locked) return null;
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "writing" });
-    let draft = draftForCase(read, today, plan.nextStep, plan.dueDate);
+    let draft = draftForCase(read, today, plan.nextStep, plan.dueDate, loaded.item.name);
     let draftModel = "safe_template";
     let draftLatency = 0;
     let draftUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
@@ -87,13 +87,16 @@ export const triage = internalAction({
       try {
         const output = await generateObject({
           model: google(draftModelId), schema: draftSchema, system: draftSystem,
-          prompt: `Today: ${today}. Step: ${plan.nextStep}. Facts: ${JSON.stringify(read)}. A safe skeleton: ${draft.body}`,
+          prompt: `Today: ${today}. Step: ${plan.nextStep}. Customer name for the sign-off: ${loaded.item.name ?? "not supplied"}. Facts: ${JSON.stringify(read)}. A safe skeleton: ${draft.body}`,
           maxOutputTokens: 700, abortSignal: AbortSignal.timeout(20_000), maxRetries: 0,
           providerOptions: { google: { thinkingConfig: { thinkingLevel: "low" } } },
         });
         draftUsage = { inputTokens: output.usage.inputTokens ?? 0, outputTokens: output.usage.outputTokens ?? 0, totalTokens: output.usage.totalTokens ?? 0 };
         draftModel = draftModelId;
-        if (draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) draft = { ...output.object, subject: output.object.subject ?? draft.subject };
+        if (draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) {
+          const namedBody = loaded.item.name && !output.object.body.includes(loaded.item.name) ? `${output.object.body.trim()}\n\n${loaded.item.name}` : output.object.body;
+          draft = { ...output.object, body: namedBody, subject: output.object.subject ?? draft.subject };
+        }
       } catch { /* Use the checked template when draft generation fails. */ }
       draftLatency = Date.now() - started;
     }

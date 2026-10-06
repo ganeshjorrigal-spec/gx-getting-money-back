@@ -165,6 +165,12 @@ describe("grounding mixed dates and instructions", () => {
     expect(draftMatchesFacts(draft, read, "2026-09-28")).toBe(true);
     expect(draftMatchesFacts({ ...draft, body: draft.body.replace("moved", "cancelled") }, read, "2026-09-28")).toBe(false);
   });
+  it("uses the confirmed booking ID and optional name in the draft", () => {
+    const draft = draftForCase(base, "2026-10-05", "L0_email", "2026-09-28", "Ganesh");
+    expect(draft.subject).toContain("BKMY12345");
+    expect(draft.body).toContain("booking BKMY12345");
+    expect(draft.body).toContain("Thank you,\nGanesh");
+  });
 });
 
 describe("user-owned actions", () => {

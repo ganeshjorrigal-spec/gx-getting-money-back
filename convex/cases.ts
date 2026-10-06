@@ -7,9 +7,13 @@ import { addDays, addWorkingDays, todayIST } from "../lib/dates";
 import { assertAccess, findCase } from "./lib/access";
 import { takeRate } from "./lib/rate";
 import { deleteCaseData } from "./lib/delete";
+import { draftForCase } from "./lib/draft";
+import type { CaseRead } from "./lib/read";
+import { codedSubject } from "../lib/google-tracking";
 
 const accessArgs = { code: v.string(), token: v.string() };
 const makeCode = () => `TB-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
+const cleanLine = (value: string | undefined, max: number) => value?.trim().replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").slice(0, max) || undefined;
 
 async function clearCheckins(ctx: MutationCtx, caseId: Id<"cases">) {
   const rows = await ctx.db.query("checkins").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect();
@@ -29,7 +33,7 @@ async function scheduleCheckin(ctx: MutationCtx, caseId: Id<"cases">, date: stri
 export const create = mutation({
   args: {
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), chips: v.array(v.string()),
-    tokenHash: v.string(), deviceId: v.string(), source: v.optional(v.string()),
+    tokenHash: v.string(), deviceId: v.string(), source: v.optional(v.string()), name: v.optional(v.string()),
   },
   returns: v.object({ code: v.string() }),
   handler: async (ctx, args) => {
@@ -52,6 +56,7 @@ export const create = mutation({
       code, tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0,
       tier: "unknown_amount", paidState: "none", latestRunId: runId,
       progress: { step: "reading", at: now }, source: args.source?.slice(0, 80),
+      name: cleanLine(args.name, 80),
       createdAt: now, updatedAt: now,
     });
     await ctx.db.insert("inputs", { caseId, kind: "initial", text: args.text ? redact(args.text) : undefined, storageIds: args.storageIds, createdAt: now });
@@ -88,6 +93,7 @@ export const get = query({
       paymentsEnabled: !!process.env.NEXT_PUBLIC_UPI_VPA,
       upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Tickback",
       feedbackGiven: !!feedback,
+      name: item.name ?? null, contact: item.contact ?? null,
     };
   },
 });
@@ -181,18 +187,35 @@ export const markActionDone = mutation({
 });
 
 export const confirmFacts = mutation({
-  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()) }, returns: v.null(),
-  handler: async (ctx, { code, token, looksRight, correction }) => {
+  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()), bookingId: v.optional(v.string()), contact: v.optional(v.string()) }, returns: v.null(),
+  handler: async (ctx, { code, token, looksRight, correction, bookingId, contact }) => {
     const item = await assertAccess(ctx, code, token);
+    const savedContact = contact === undefined ? item.contact : cleanLine(contact, 150);
+    if (savedContact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(savedContact) && savedContact.replace(/\D/g, "").length < 7) throw new Error("Enter a phone number or email");
+    const previousFacts = item.facts as CaseRead | undefined;
+    const savedBookingId = bookingId === undefined ? previousFacts?.bookingId : cleanLine(bookingId, 100) ?? null;
+    const facts = previousFacts ? { ...previousFacts, bookingId: savedBookingId ?? null } : previousFacts;
     if (looksRight) {
-      await ctx.db.patch(item._id, { factsConfirmedAt: Date.now() });
+      await ctx.db.patch(item._id, { facts, contact: savedContact, factsConfirmedAt: Date.now(), updatedAt: Date.now() });
+      if (facts && item.nextStep) {
+        const latestDraft = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").first();
+        if (latestDraft && latestDraft.status !== "sent") {
+          const updated = draftForCase(facts, todayIST(), item.nextStep, item.dueDate ?? null, item.name);
+          await ctx.db.patch(latestDraft._id, {
+            subject: latestDraft.channel === "email" ? codedSubject(updated.subject, item.code) : updated.subject,
+            body: updated.body,
+            attachChecklist: updated.attachChecklist,
+          });
+        }
+      }
       return null;
     }
     if (!correction?.trim()) throw new Error("Tell us what needs fixing");
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
-    await ctx.db.insert("inputs", { caseId: item._id, kind: "answer", text: redact(correction), storageIds: [], createdAt: now });
-    await ctx.db.patch(item._id, { factsConfirmedAt: undefined, stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
+    const answer = `${correction.trim()}${savedBookingId ? `\nBooking ID: ${savedBookingId}` : ""}`;
+    await ctx.db.insert("inputs", { caseId: item._id, kind: "answer", text: redact(answer), storageIds: [], createdAt: now });
+    await ctx.db.patch(item._id, { facts, contact: savedContact, factsConfirmedAt: undefined, stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId });
     return null;
   },

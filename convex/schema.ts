@@ -19,6 +19,7 @@ export default defineSchema({
     factsConfirmedAt: v.optional(v.number()), paymentGraceUntil: v.optional(v.number()),
     createdAt: v.number(), updatedAt: v.number(), closedAt: v.optional(v.number()), purgeAfter: v.optional(v.number()),
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
+    name: v.optional(v.string()), contact: v.optional(v.string()),
   }).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),

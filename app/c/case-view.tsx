@@ -27,6 +27,7 @@ type CaseView = {
   checkin: { date: string; reason: string; status: string } | null; paymentsEnabled: boolean;
   upiVpa: string | null; upiName: string;
   feedbackGiven: boolean;
+  name: string | null; contact: string | null;
 };
 type Draft = { _id: Id<"drafts">; step: string; channel: string; status: string; to?: string; subject?: string; body: string | null; attachChecklist: string[] };
 type Event = { _id: string; type: string; summary: string; createdAt: number };
@@ -65,6 +66,9 @@ export default function CaseView({ code }: { code: string }) {
   const [includeCaseInbox, setIncludeCaseInbox] = useState(true);
   const [pendingGoogle, setPendingGoogle] = useState<"calendar" | "gmail" | null>(null);
   const [factCorrection, setFactCorrection] = useState("");
+  const [bookingId, setBookingId] = useState("");
+  const [contact, setContact] = useState("");
+  const [detailsLoaded, setDetailsLoaded] = useState(false);
   const [correctingFacts, setCorrectingFacts] = useState(false);
   const [actionDate, setActionDate] = useState("");
   const [checkAgainDays, setCheckAgainDays] = useState<2 | 3 | 5>(2);
@@ -125,6 +129,22 @@ export default function CaseView({ code }: { code: string }) {
     if (!payOpen || !caseData?.upiVpa) return;
     import("qrcode").then((qrcode) => qrcode.toDataURL(buildUpiLink(caseData.upiVpa!, caseData.upiName, code), { width: 320, margin: 2 })).then(setQrImage).catch(() => setQrImage(""));
   }, [payOpen, caseData?.upiVpa, caseData?.upiName, code]);
+  useEffect(() => {
+    if (!caseData || caseData.factsConfirmedAt || detailsLoaded) return;
+    setBookingId(caseData.facts?.bookingId || "");
+    setContact(caseData.contact || "");
+    setDetailsLoaded(true);
+  }, [caseData, detailsLoaded]);
+
+  async function confirmCaseFacts(looksRight: boolean) {
+    if (!token || (!looksRight && !factCorrection.trim())) return;
+    setBusy(true);
+    try {
+      await confirmFacts({ code, token, looksRight, correction: looksRight ? undefined : factCorrection.trim(), bookingId, contact });
+      if (!looksRight) { setCorrectingFacts(false); setFactCorrection(""); }
+    } catch { setNotice(c.error); }
+    finally { setBusy(false); }
+  }
 
   async function submitAnswer(value = answer) {
     if (!token || !value.trim()) return;
@@ -343,7 +363,7 @@ export default function CaseView({ code }: { code: string }) {
             <ol>{c.progress.map((step, index) => <li className={index < stepIndex ? "progress-done" : index === stepIndex ? "progress-current" : ""} key={step}><span>{index < stepIndex ? "✓" : index + 1}</span>{step}</li>)}</ol>
           </article>}
           {caseData.stage === "ERROR" && <article className="case-card" role="alert"><h2>{c.error}</h2><button className="button button-primary" onClick={() => token && retry({ code, token })}>{c.retry}</button></article>}
-           {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><h2>Check these details</h2><p>{caseData.platform ?? "Platform unknown"} · {caseData.eventName ?? "Event unknown"} · {money(caseData.amountPaise)}</p><p>Refund date: {caseData.dueDate ? displayDate(caseData.dueDate) : "not given"}. {caseData.facts?.promise?.text ? `They said: ${caseData.facts.promise.text}` : "No refund promise found."}</p><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => token && confirmFacts({ code, token, looksRight: true })}>Looks right</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={async () => { if (!token) return; setBusy(true); try { await confirmFacts({ code, token, looksRight: false, correction: factCorrection }); setCorrectingFacts(false); setFactCorrection(""); } catch { setNotice(c.error); } finally { setBusy(false); } }}>Save correction</button></div>}</article>}
+           {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><h2>Check these details</h2><p>{caseData.platform ?? "Platform unknown"} · {caseData.eventName ?? "Event unknown"} · {money(caseData.amountPaise)}</p><p>Refund date: {caseData.dueDate ? displayDate(caseData.dueDate) : "not given"}. {caseData.facts?.promise?.text ? `They said: ${caseData.facts.promise.text}` : "No refund promise found."}</p><div className="confirm-details"><label htmlFor="booking-id">Booking ID <span>(if you have it)</span><input id="booking-id" value={bookingId} onChange={(event) => setBookingId(event.target.value)} maxLength={100} /></label><label htmlFor="follow-up-contact">Phone or email <span>(optional)</span><input id="follow-up-contact" value={contact} onChange={(event) => setContact(event.target.value)} maxLength={150} autoComplete="email" /></label><p className="input-hint">So Ganesh can follow up if something looks wrong.</p></div><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => confirmCaseFacts(true)}>Looks right</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={() => confirmCaseFacts(false)}>Save correction</button></div>}</article>}
           {route && !["ERROR", "CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card status-card">
              <span className={`route-chip ${route === "OVERDUE" || route === "ACTION_NEEDED" ? "caution-chip" : ""}`}>{route === "OVERDUE" && estimated ? "Time to check" : route === "WAIT" && (estimated || !caseData.dueDate) ? "Waiting for a refund" : c.routeLabels[route]}</span>
             {caseData.amountPaise != null && <p className="case-amount">{money(caseData.amountPaise)}</p>}

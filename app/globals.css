@@ -167,7 +167,12 @@ h3 { font-size: var(--text-heading); line-height: var(--leading-heading); margin
 .intake-page { padding-block: var(--space-10); }
 .intake-page h1 { font-family: var(--font-display), serif; font-size: var(--text-hero); line-height: var(--leading-hero); margin: var(--space-3) 0; }
 .intake-helper { color: var(--muted); line-height: var(--leading-body); margin-bottom: var(--space-6); }
-.intake-page textarea, .sample-sheet textarea, .sample-sheet input, .answer-form input { width: 100%; border: var(--border-width) solid var(--line); border-radius: var(--radius-control); padding: var(--space-4); background: var(--surface); color: var(--ink); font-size: var(--text-body); line-height: var(--leading-body); }
+.intake-page textarea, .intake-page input, .sample-sheet textarea, .sample-sheet input, .answer-form input, .confirm-details input { width: 100%; border: var(--border-width) solid var(--line); border-radius: var(--radius-control); padding: var(--space-4); background: var(--surface); color: var(--ink); font-size: var(--text-body); line-height: var(--leading-body); }
+.intake-name, .confirm-details label { display: block; font-size: var(--text-small); font-weight: 600; margin-block: var(--space-3); }
+.intake-name span, .confirm-details label span { color: var(--muted); font-weight: 400; }
+.intake-name + input { margin-bottom: var(--space-1); }
+.confirm-details { margin-block: var(--space-5); padding-block: var(--space-3); border-block: var(--border-width) solid var(--line); }
+.confirm-details input { display: block; margin-top: var(--space-2); }
 .intake-page textarea { min-height: 180px; resize: vertical; }
 .intake-tools { display: flex; gap: var(--space-6); }
 .intake-tools .text-button { min-height: var(--touch-height); }

@@ -12,6 +12,7 @@ import { redact } from "../../lib/redact";
 type Picture = { file: File; preview: string };
 
 export default function StartPage() {
+  const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [pictures, setPictures] = useState<Picture[]>([]);
@@ -76,7 +77,7 @@ export default function StartPage() {
       }
       const token = makeToken();
       const hash = await tokenHash(token);
-      const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId });
+      const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId, name: name.trim() || undefined });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/${result.code}#k=${token}`);
     } catch (caught) {
@@ -92,6 +93,9 @@ export default function StartPage() {
       <h1>{c.title}</h1>
       <p className="intake-helper">{c.helper}</p>
       <form onSubmit={submit}>
+        <label className="intake-name" htmlFor="customer-name">Your name <span>(optional)</span></label>
+        <input id="customer-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" />
+        <p className="input-hint">We use it only to sign the messages you choose to send.</p>
         <label className="sr-only" htmlFor="refund-message">{c.title}</label>
         <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={c.placeholder} />
         <div className="intake-tools">
