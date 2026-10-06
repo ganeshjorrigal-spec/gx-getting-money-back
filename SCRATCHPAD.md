@@ -8,7 +8,7 @@
 - [x] Step 4: optional name and contact, booking ID confirmation, drafts and Privacy. Verified on a fresh live case.
 - [ ] Step 5: Responses sheet code is deployed with `drive.file`, sharing, row updates and deletion cleanup. One-time Google Allow and live row check remain.
 - [x] Step 6: BookMyShow-first chat loop, reply paste/screenshots and chase dates. Verified twice on live synthetic case `TB-N73ZMT`.
-- [ ] Step 7: verified support contacts for named platforms; unconfirmed items logged for Ganesh.
+- [x] Step 7: verified support contacts for named platforms; unconfirmed items logged for Ganesh.
 - [ ] Final proof: live BookMyShow chat loop twice, live new District reply-all, paid-tier type check, unit tests and F1-F16 eval; mark M2.3 READY FOR REVIEW.
 
 - [x] Pulled GitHub; M0 was DONE; fixed its three carry notes.

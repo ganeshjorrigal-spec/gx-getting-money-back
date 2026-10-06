@@ -6,6 +6,7 @@ import { groundRead } from "../convex/lib/ground";
 import { draftForCase, draftMatchesFacts } from "../convex/lib/draft";
 import type { CaseRead } from "../convex/lib/read";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink } from "./outbound";
+import { routeFor, verifiedEmailFor } from "./route-kb";
 
 const base: CaseRead = {
   isEventTicket: true, outOfScopeCategory: null, platform: "bookmyshow", platformNameAsWritten: "BookMyShow",
@@ -182,6 +183,14 @@ describe("grounding mixed dates and instructions", () => {
 });
 
 describe("user-owned actions", () => {
+  it("uses only platform-page-verified support addresses", () => {
+    expect(verifiedEmailFor("District", "L0_email")?.value).toBe("support@district.in");
+    expect(verifiedEmailFor("BookMyShow", "L1")?.value).toBe("allears@bookmyshow.com");
+    expect(verifiedEmailFor("SkillBox", "L0_email")).toBeNull();
+    expect(verifiedEmailFor("Unknown organiser", "L0_email")).toBeNull();
+    expect(routeFor("Paytm Insider")?.key).toBe("paytminsider");
+    expect(routeFor("TicketGenie")?.supportEmail?.source).toBe("https://www.ticketgenie.in/contactus");
+  });
   it("keeps rupees and line breaks in the email link", () => {
     const mail = buildMailto("support@example.com", "Refund ₹3,500", "First line\nSecond line");
     expect(mail.copyFirst).toBe(false);

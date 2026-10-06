@@ -10,6 +10,7 @@ import { planCase } from "./lib/plan";
 import { TRIAGE_SYSTEM } from "./lib/prompts";
 import { groundRead } from "./lib/ground";
 import { draftForCase, draftMatchesFacts } from "./lib/draft";
+import { verifiedEmailFor } from "../lib/route-kb";
 
 const draftSchema = z.object({ subject: z.string().nullable(), body: z.string(), attachChecklist: z.array(z.string()) });
 const draftSystem = `Write one short refund message from the saved facts. You do not send it. For L0_chat write a chat line under 80 words; otherwise write an email under 160 words. Never call a moved or postponed event cancelled. Include every completed step and its date, the amount, booking ID, and a promised refund date when supplied. Dates must look like 5 Oct 2026. Omit unknown details entirely; never use placeholders such as {name}. No invented contacts, links, rules or legal threats. Polite, firm, first person. Return the JSON schema only. No "to" field.`;
@@ -102,7 +103,7 @@ export const triage = internalAction({
       draftLatency = Date.now() - started;
     }
     const channel = plan.nextStep === "ACTION_form" ? "form" : plan.nextStep === "TRACE_bank" ? "bank" : plan.nextStep === "L0_chat" ? "chat" : "email";
-    const to = channel === "email" && plan.nextStep === "L0_email" && read.platform === "district" ? "support@district.in" : channel === "email" && plan.nextStep !== "L1" ? read.contactsInText.find((contact) => contact.kind === "email")?.value : undefined;
+    const to = channel === "email" ? verifiedEmailFor(read.platform, plan.nextStep)?.value : undefined;
     await ctx.runMutation(internal.agentWrites.saveDraft, {
       caseId, runId, step: plan.nextStep, channel, to, subject: draft.subject ?? undefined, body: draft.body,
       attachChecklist: draft.attachChecklist, model: draftModel, latencyMs: draftLatency, ...draftUsage,

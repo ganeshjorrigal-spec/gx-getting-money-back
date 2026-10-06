@@ -12,7 +12,7 @@ import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate }
 import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
 import { caseInboxAddress, codedSubject } from "../../lib/google-tracking";
-import { routeFor } from "../../lib/route-kb";
+import { routeFor, verifiedEmailFor } from "../../lib/route-kb";
 
 type CaseView = {
   code: string; stage: string; route: keyof typeof c.routeLabels | null; routeConfidence: number | null;
@@ -350,6 +350,7 @@ export default function CaseView({ code }: { code: string }) {
   const exactInbox = tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : null;
   const replyTrackingOn = !!tracking?.firstSent && (!!exactInbox || !!tracking.gmail);
   const platformRoute = routeFor(caseData?.platform);
+  const verifiedRecipient = verifiedEmailFor(caseData?.platform, drafts?.[0]?.step ?? "");
   const sentChat = !!drafts?.some((draft) => draft.channel === "chat" && draft.status === "sent");
   const chaseDate = caseData?.checkin?.date ?? addWorkingDays(todayIST(), 2);
 
@@ -430,7 +431,7 @@ export default function CaseView({ code }: { code: string }) {
         {drafts?.[0]?.channel === "chat" && <p className="input-hint">If they go quiet, chase on {displayDate(chaseDate)}.</p>}
         {caseData?.facts?.bookingId && <p>Booking ID: <strong>{caseData.facts.bookingId}</strong></p>}
         {caseData?.dueDate && <p>{caseData.facts?.ticketFormat === "physical" && caseData.route === "ACTION_NEEDED" ? "Tickets must reach them by" : "Relevant date"}: {displayDate(caseData.dueDate)}</p>}
-         {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{drafts?.[0]?.to ? <p className="input-hint">{to === "support@district.in" ? <>Verified District support address. Source: <a href="https://www.district.in/contact" target="_blank" rel="noreferrer">District contact page</a>.</> : "Address from the organiser's message. Check it before sending."}</p> : <p className="input-hint">{drafts?.[0]?.step === "L1" ? "Find the Grievance Officer address in the platform's Help section. If you use an address they gave you, say where you found it." : c.emailHelp}</p>}{drafts?.[0]?.step === "L1" && <label>Where did they give you this address?<input value={grievanceSource} onChange={(event) => setGrievanceSource(event.target.value)} placeholder="Their message or Help page" /></label>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. You can remove it.</label>}</>}
+         {drafts?.[0]?.channel === "email" && <><label>To<input type="email" value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{drafts?.[0]?.to && verifiedRecipient ? <p className="input-hint">Verified on the platform&apos;s own page. Source: <a href={verifiedRecipient.source} target="_blank" rel="noreferrer">{platformRoute?.displayName ?? "platform"} contact page</a>.</p> : <p className="input-hint">{platformRoute?.chatPath ? <>We do not hold a verified email address for this step. Use <a href={platformRoute.chatPath.source} target="_blank" rel="noreferrer">{platformRoute.chatPath.value}</a>, or enter an address you checked yourself.</> : c.emailHelp}</p>}{drafts?.[0]?.step === "L1" && !verifiedRecipient && <label>Where did they give you this address?<input value={grievanceSource} onChange={(event) => setGrievanceSource(event.target.value)} placeholder="Their message or Help page" /></label>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. You can remove it.</label>}</>}
         <label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} rows={9} /></label>
         {drafts?.[0]?.attachChecklist?.length ? <><p className="section-kicker">ATTACH THESE FROM YOUR PHONE</p><ul className="checklist">{drafts[0].attachChecklist.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
         {drafts?.[0]?.step === "L1" && grievanceSource.trim() && <p className="input-hint">The message will say: I could not find the Grievance Officer&apos;s address on your site, so I am sending this to the address in {grievanceSource.trim()}.</p>}
