@@ -12,6 +12,15 @@ export function buildMailto(to: string, subject: string, body: string, cc?: stri
   };
 }
 
+export function buildGmailCompose(to: string, subject: string, body: string, cc?: string): { url: string; copyFirst: boolean } {
+  const params = new URLSearchParams({ view: "cm", fs: "1", to: to.trim(), su: subject, body: body.replace(/\r?\n/g, "\r\n") });
+  if (cc) params.set("cc", cc);
+  const full = `https://mail.google.com/mail/?${params.toString()}`;
+  if (full.length <= 1900) return { url: full, copyFirst: false };
+  params.set("body", "Your message is copied. Paste it here before sending.");
+  return { url: `https://mail.google.com/mail/?${params.toString()}`, copyFirst: true };
+}
+
 export function buildGoogleCalendar(date: string, title: string, description: string): string {
   const day = date.replace(/-/g, "");
   const params = new URLSearchParams({

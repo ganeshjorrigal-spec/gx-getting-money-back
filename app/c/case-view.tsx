@@ -8,7 +8,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { caseCopy as c, guaranteeLine, productName } from "../copy";
 import { forgetCase, getDeviceId, saveCase } from "../../lib/case-link";
 import { addWorkingDays, displayDate, todayIST } from "../../lib/dates";
-import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate } from "../../lib/outbound";
+import { buildGmailCompose, buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate } from "../../lib/outbound";
 import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
 import { caseInboxAddress, codedSubject } from "../../lib/google-tracking";
@@ -220,6 +220,16 @@ export default function CaseView({ code }: { code: string }) {
     const result = buildMailto(to, codedSubject(subject, code), message, cc);
     if (result.copyFirst) { await copy(message); setNotice("Message copied. Paste it into the email."); }
     window.location.href = result.url;
+    setSentPrompt(true);
+  }
+
+  async function openGmail() {
+    if (!body.trim() || drafts?.[0]?.channel !== "email" || !to.trim() || !subject.trim()) return;
+    const message = outboundBody();
+    const cc = includeCaseInbox && tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : undefined;
+    const result = buildGmailCompose(to, codedSubject(subject, code), message, cc);
+    window.open(result.url, "_blank", "noopener,noreferrer");
+    if (result.copyFirst) { await copy(message); setNotice("Message copied. Paste it into Gmail before sending."); }
     setSentPrompt(true);
   }
 
@@ -436,7 +446,8 @@ export default function CaseView({ code }: { code: string }) {
         {drafts?.[0]?.attachChecklist?.length ? <><p className="section-kicker">ATTACH THESE FROM YOUR PHONE</p><ul className="checklist">{drafts[0].attachChecklist.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
         {drafts?.[0]?.step === "L1" && grievanceSource.trim() && <p className="input-hint">The message will say: I could not find the Grievance Officer&apos;s address on your site, so I am sending this to the address in {grievanceSource.trim()}.</p>}
         {drafts?.[0]?.channel === "bank" && <p className="input-hint">Send this from your bank app&apos;s help section, or to the customer care email on your statement. Keep the reference they give you.</p>}
-        <button className="button button-primary" onClick={openEmail} disabled={!body.trim() || (drafts?.[0]?.channel === "email" && (!to.trim() || !subject.trim()))}>{drafts?.[0]?.channel === "email" ? c.openEmail : drafts?.[0]?.channel === "chat" ? "Copy chat message" : "Copy my message"}</button>
+        <button className="button button-primary" onClick={drafts?.[0]?.channel === "email" ? openGmail : openEmail} disabled={!body.trim() || (drafts?.[0]?.channel === "email" && (!to.trim() || !subject.trim()))}>{drafts?.[0]?.channel === "email" ? c.openEmail : drafts?.[0]?.channel === "chat" ? "Copy chat message" : "Copy my message"}</button>
+        {drafts?.[0]?.channel === "email" && <button className="button button-secondary" onClick={openEmail}>Open in another email app</button>}
         {drafts?.[0]?.channel === "email" && <button className="button button-secondary" onClick={async () => { await copy(outboundBody()); setSentPrompt(true); }}>Copy message</button>}
         {drafts?.[0]?.channel === "email" && exactInbox && includeCaseInbox && <div className="cc-copy"><span><strong>{c.ccLabel}</strong><code>{exactInbox}</code></span><button className="button button-secondary" onClick={() => copy(exactInbox)}>Copy CC address</button></div>}
         {to && <button className="text-button" onClick={() => copy(to)}>Copy address</button>}

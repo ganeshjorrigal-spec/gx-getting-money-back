@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildMailto } from "./outbound";
+import { buildGmailCompose, buildMailto } from "./outbound";
 import { caseInboxAddress, caseInboxAllowed, codedSubject, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "./google-tracking";
 
 describe("test Gmail access", () => {
@@ -26,6 +26,22 @@ describe("case reply tracking", () => {
     expect(url.searchParams.get("subject")).toBe("Refund for Monsoon Live [TB-A9AEFG]");
     expect(url.searchParams.get("cc")).toBe("tickback.cases+TB-A9AEFG@gmail.com");
     expect(codedSubject(subject, code)).toBe(subject);
+  });
+
+  it("opens the same tracked message in Gmail on the web", () => {
+    const gmail = buildGmailCompose(
+      "tickback.test@gmail.com",
+      "Refund for booking DIST-DEMO-6402 [TB-5QFF3L]",
+      "Hello District team,\n\nPlease check my refund.",
+      "tickback.cases+TB-5QFF3L@gmail.com",
+    );
+    const url = new URL(gmail.url);
+    expect(url.origin).toBe("https://mail.google.com");
+    expect(url.searchParams.get("to")).toBe("tickback.test@gmail.com");
+    expect(url.searchParams.get("su")).toContain("[TB-5QFF3L]");
+    expect(url.searchParams.get("cc")).toBe("tickback.cases+TB-5QFF3L@gmail.com");
+    expect(url.searchParams.get("body")).toContain("Please check my refund.");
+    expect(gmail.copyFirst).toBe(false);
   });
 
   it("accepts only a later reply carrying this case code, and excludes our own message", () => {
