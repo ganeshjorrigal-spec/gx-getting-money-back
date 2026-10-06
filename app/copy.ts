@@ -142,6 +142,7 @@ export const caseCopy = {
   linkNote: "Anyone with this link can see this case, including your screenshots. Don't forward it.",
   copied: "Copied",
   addDate: "Your dates changed. Add the new check-in.",
+  prepareEmail: "Prepare email",
   openEmail: "Open in Gmail",
   draftTitle: "Your message to support",
   emailHelp: "We couldn't confirm where to send this. Paste the organiser's message that names the channel, or find Contact us in the app's Help section.",
