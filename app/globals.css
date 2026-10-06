@@ -126,6 +126,11 @@ h3 { font-size: var(--text-heading); line-height: var(--leading-heading); margin
 .case-wrap { width: min(calc(100% - 2 * var(--page-gutter)), var(--width-app)); margin-inline: auto; }
 .case-shell { min-height: 100vh; padding-bottom: var(--space-18); }
 .case-code { color: var(--muted); font-size: var(--text-small); letter-spacing: .08em; font-weight: 600; }
+.tracking-line { display: flex; align-items: center; gap: var(--space-2); color: var(--muted); font-size: var(--text-small); }
+.tracking-line span { color: var(--accent); }
+.cc-copy { display: grid; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius-md); background: var(--accent-soft); }
+.cc-copy span { display: grid; gap: var(--space-1); }
+.cc-copy code { overflow-wrap: anywhere; font-family: inherit; }
 .sample-banner { background: var(--accent-soft); border-block: var(--border-width) solid var(--line); }
 .sample-banner .case-wrap { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding-block: var(--space-4); }
 .sample-banner p { margin: 0; font-size: var(--text-small); line-height: var(--leading-small); }

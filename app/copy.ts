@@ -146,6 +146,11 @@ export const caseCopy = {
   draftTitle: "Your message to support",
   emailHelp: "We couldn't confirm where to send this. Paste the organiser's message that names the channel, or find Contact us in the app's Help section.",
   emailNote: "This opens your own email app. Nothing is sent until you press send there.",
+  trackingOn: "Reply tracking is on for this case.",
+  trackingOff: "Reply tracking is off until you mark your first message sent.",
+  ccLabel: "Add this address in CC",
+  liveAlertNeedsCalendar: "A live reply alert needs Google Calendar permission.",
+  calendarFileOneTime: "A downloaded calendar file is a one-time reminder. It cannot alert you when a reply arrives.",
   calendarTitle: (amount: string, eventName: string) => `Check your ${amount}${amount === "refund" ? "" : " refund"} (${eventName})`,
   calendarDescription: (amount: string, eventName: string, caseLink: string) => `Has your ${amount}${amount === "refund" ? "" : " refund"} for ${eventName} landed? Open your case to update it or get your next step: ${caseLink}\n\nTickback. Nothing is sent without you.`,
 };

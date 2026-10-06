@@ -3,7 +3,7 @@
 ## Current instruction, 6 Oct: M2.3
 
 - [x] Step 1 code and environment: paid Gemini key active, paid tier true, model fixed to `gemini-3.5-flash-lite`, named-case gate removed, Gmail opt-in account list retained, per-call token counts saved. Fresh unlisted case has inbox tracking; reply-all proof remains for final live test.
-- [ ] Step 2: visible tracking state, copy-message CC instruction and Calendar permission explanation.
+- [x] Step 2: visible tracking state, copy-message CC instruction and Calendar permission explanation. Verified on the live Convex site.
 - [ ] Step 3: compact waiting state and live progress steps after every submit.
 - [ ] Step 4: optional name and contact, booking ID confirmation, drafts and Privacy.
 - [ ] Step 5: app-created responses sheet with one-time Google consent and one row per case.
