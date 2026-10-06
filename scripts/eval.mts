@@ -12,7 +12,7 @@ type Fixture = { id: string; today: string; input: string; route: string; due?: 
 const f1 = "9 Oct 2026, 6:42 PM. BookMyShow: Your booking BKMY12345 for Monsoon Live on 18 Oct has been cancelled by the organiser. A full refund of Rs 3,500 will be credited to your original payment method within 7-10 working days.";
 const fixtures: Fixture[] = [
   { id: "F1", today: "2026-10-10", input: f1, route: "WAIT", due: "2026-10-23", checkin: "2026-10-24", next: "none" },
-  { id: "F2", today: "2026-10-04", input: f1.replace("9 Oct 2026", "9 Sep 2026") + " Still nothing in my account.", route: "OVERDUE", due: "2026-09-23", next: "L0_email" },
+  { id: "F2", today: "2026-10-04", input: f1.replace("9 Oct 2026", "9 Sep 2026") + " Still nothing in my account.", route: "OVERDUE", due: "2026-09-23", next: "L0_chat" },
   { id: "F3", today: "2026-04-14", input: "BookMyShow: The match on 12 Apr at the Ahmedabad stadium has moved to Chennai. Keep your ticket for the rescheduled match, or request a refund by filling this form by 20 Apr: https://forms.gle/example. Physical tickets must reach the stadium box office for scanning before the refund is processed.", route: "ACTION_NEEDED", due: "2026-04-20", checkin: "2026-04-17" },
   { id: "F4", today: "2026-10-10", input: "Paid Rs 2,400 on District by UPI on 3 Oct for a comedy show. The app said payment failed. Money debited, no ticket, nothing in my bookings.", route: "FAILED_PAYMENT", due: "2026-10-08", next: "FAILED_platform" },
   { id: "F5", today: "2026-10-12", input: "BookMyShow says the refund of Rs 1,800 for booking BKMY777 was processed on 1 Oct. Nothing in my account yet.", route: "TRACE", next: "TRACE_ask" },

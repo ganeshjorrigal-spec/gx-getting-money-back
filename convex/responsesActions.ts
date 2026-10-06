@@ -114,3 +114,27 @@ export const syncAll = internalAction({
     return null;
   },
 });
+
+type SheetQa = { connected: boolean; headersOk: boolean; rowCount: number; hasCode: boolean };
+
+export const qaSheet = internalAction({
+  args: { code: v.optional(v.string()) },
+  returns: v.object({ connected: v.boolean(), headersOk: v.boolean(), rowCount: v.number(), hasCode: v.boolean() }),
+  handler: async (ctx, { code }): Promise<SheetQa> => {
+    const context: { config: { spreadsheetId: string }; connection: { encryptedRefreshToken: string } } | null = await ctx.runQuery(internal.responsesData.sheetContext, {});
+    if (!context) return { connected: false, headersOk: false, rowCount: 0, hasCode: false };
+    const token = await accessToken(context.connection.encryptedRefreshToken);
+    const result: { values?: Array<Array<string | number>> } = await googleJson(
+      `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(context.config.spreadsheetId)}/values/${encodeURIComponent("Cases!A1:L500")}`,
+      token,
+    );
+    const rows: Array<Array<string | number>> = result.values ?? [];
+    const first: Array<string | number> = rows[0] ?? [];
+    return {
+      connected: true,
+      headersOk: headers.every((header, index) => first[index] === header),
+      rowCount: Math.max(0, rows.length - 1),
+      hasCode: !!code && rows.slice(1).some((row) => row[0] === code),
+    };
+  },
+});
