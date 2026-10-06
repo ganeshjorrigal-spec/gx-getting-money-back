@@ -47,3 +47,23 @@ export const aiUsage = internalQuery({
     };
   },
 });
+
+export const caseStatus = internalQuery({
+  args: { code: v.string() }, returns: v.any(),
+  handler: async (ctx, { code }) => {
+    const item = await ctx.db.query("cases").withIndex("by_code", (q) => q.eq("code", code)).unique();
+    if (!item) return null;
+    const replies = await ctx.db.query("gmailReplies").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect();
+    const watches = await ctx.db.query("gmailWatches").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect();
+    return {
+      code: item.code,
+      stage: item.stage,
+      route: item.route ?? null,
+      nextStep: item.nextStep ?? null,
+      lastTrackedReplyAt: item.lastTrackedReplyAt ?? null,
+      trackedReplyCount: replies.length,
+      inboxReplyCount: replies.filter((reply) => reply.source === "inbox").length,
+      watchCount: watches.length,
+    };
+  },
+});

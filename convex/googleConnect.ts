@@ -109,6 +109,11 @@ export const connectionById = internalQuery({
   handler: async (ctx, { connectionId }) => ctx.db.get(connectionId),
 });
 
+export const connectionByKind = internalQuery({
+  args: { kind }, returns: v.any(),
+  handler: async (ctx, { kind }) => ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", kind)).first(),
+});
+
 export const loadForAction = internalQuery({
   args: { caseId: v.id("cases") }, returns: v.any(),
   handler: async (ctx, { caseId }) => {

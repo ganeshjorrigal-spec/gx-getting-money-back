@@ -62,6 +62,15 @@ export const finishSetup = internalAction({
   },
 });
 
+export const resumeSetup = internalAction({
+  args: {}, returns: v.string(),
+  handler: async (ctx): Promise<string> => {
+    const connection: { _id: import("./_generated/dataModel").Id<"googleConnections"> } | null = await ctx.runQuery(internal.googleConnect.connectionByKind, { kind: "responses" });
+    if (!connection) throw new Error("Responses Google connection is unavailable");
+    return await ctx.runAction(internal.responsesActions.finishSetup, { connectionId: connection._id });
+  },
+});
+
 export const syncCase = internalAction({
   args: { caseId: v.id("cases") }, returns: v.null(),
   handler: async (ctx, { caseId }) => {

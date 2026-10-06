@@ -22,8 +22,12 @@ http.route({
       destination.searchParams.set("google", "connected");
       destination.searchParams.set("state", state);
       return Response.redirect(destination, 302);
-    } catch {
-      return new Response("Google connection did not finish. Return to your case and try again.", { status: 400 });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "";
+      const sheetSetup = detail.includes("responsesActions:finishSetup") || detail.includes("Responses sheet setup");
+      return new Response(sheetSetup
+        ? "Google connected, but the Responses sheet could not be created. Enable the Google Sheets API and Google Drive API in this Google Cloud project, then try again."
+        : "Google connection did not finish. Return to your case and try again.", { status: 400 });
     }
   }),
 });
