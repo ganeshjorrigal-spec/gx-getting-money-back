@@ -1,5 +1,16 @@
 # Scratchpad
 
+## Current instruction, 6 Oct: M2.3
+
+- [x] Step 1 code and environment: paid Gemini key active, paid tier true, model fixed to `gemini-3.5-flash-lite`, named-case gate removed, Gmail opt-in account list retained, per-call token counts saved. Fresh unlisted case has inbox tracking; reply-all proof remains for final live test.
+- [ ] Step 2: visible tracking state, copy-message CC instruction and Calendar permission explanation.
+- [ ] Step 3: compact waiting state and live progress steps after every submit.
+- [ ] Step 4: optional name and contact, booking ID confirmation, drafts and Privacy.
+- [ ] Step 5: app-created responses sheet with one-time Google consent and one row per case.
+- [ ] Step 6: BookMyShow-first chat loop, reply paste/screenshots and chase dates.
+- [ ] Step 7: verified support contacts for named platforms; unconfirmed items logged for Ganesh.
+- [ ] Final proof: live BookMyShow chat loop twice, live new District reply-all, paid-tier type check, unit tests and F1-F16 eval; mark M2.3 READY FOR REVIEW.
+
 - [x] Pulled GitHub; M0 was DONE; fixed its three carry notes.
 - [x] Built and deployed M1, M2 and the available M3 Friday path. M1 and M2 await HQ review; do not wait for that review to continue future work.
 - [x] Tonight's authorised choices: private links, no accounts, hidden pay card without VPA, Tickback constant, Direction A, Gemini models from env, exact 14-day guarantee, Vercel Hobby website plus Convex backend. No paid plans or new sign-ups.

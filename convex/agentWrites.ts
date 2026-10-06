@@ -16,7 +16,7 @@ export const progress = internalMutation({
 });
 
 export const applyTriage = internalMutation({
-  args: { caseId: v.id("cases"), runId: v.string(), read: v.any(), plan: v.any(), model: v.string(), latencyMs: v.number() },
+  args: { caseId: v.id("cases"), runId: v.string(), read: v.any(), plan: v.any(), model: v.string(), latencyMs: v.number(), inputTokens: v.number(), outputTokens: v.number(), totalTokens: v.number() },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
@@ -48,7 +48,7 @@ export const applyTriage = internalMutation({
     }
     await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: args.caseId });
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "triaged", summary: read.summaryForUser.slice(0, 180), actor: "agent", createdAt: now });
-    await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "triage", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, createdAt: now });
+    await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "triage", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });
     return true;
   },
 });
@@ -57,7 +57,7 @@ export const saveDraft = internalMutation({
   args: {
     caseId: v.id("cases"), runId: v.string(), step: v.string(), channel: v.string(),
     to: v.optional(v.string()), subject: v.optional(v.string()), body: v.string(), attachChecklist: v.array(v.string()),
-    model: v.string(), latencyMs: v.number(),
+    model: v.string(), latencyMs: v.number(), inputTokens: v.number(), outputTokens: v.number(), totalTokens: v.number(),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
@@ -70,7 +70,7 @@ export const saveDraft = internalMutation({
       body: args.body, attachChecklist: args.attachChecklist, status: "ready", createdAt: now,
     });
     await ctx.db.patch(args.caseId, { draftsShown: item.draftsShown + 1, progress: { step: "done", at: now }, updatedAt: now });
-    await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "draft", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, createdAt: now });
+    await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "draft", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });
     return null;
   },
 });

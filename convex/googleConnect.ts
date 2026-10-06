@@ -2,7 +2,7 @@ import { internalMutation, internalQuery, mutation, query } from "./_generated/s
 import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
 import { hashToken } from "./lib/access";
-import { CALENDAR_SCOPE, GMAIL_SCOPE, gmailTestAllowed, gmailTestCaseAllowed, gmailTestConfigured } from "../lib/google-tracking";
+import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAllowed, gmailTestAllowed, gmailTestConfigured } from "../lib/google-tracking";
 
 const accessArgs = { code: v.string(), token: v.string() };
 const kind = v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"));
@@ -31,13 +31,13 @@ export const status = query({
     return {
       firstSent: !!watch,
       calendar: connections.some((connection) => connection.kind === "calendar" || connection.kind === "gmail"),
-      gmail: connections.some((connection) => connection.kind === "gmail" && gmailTestAllowed(connection.email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)),
-      inboxAddress: inbox && process.env.TICKBACK_INBOX_ADDRESS && gmailTestAllowed(inbox.email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS) && gmailTestCaseAllowed(item.code, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_CASE_CODES) ? process.env.TICKBACK_INBOX_ADDRESS : null,
+      gmail: connections.some((connection) => connection.kind === "gmail" && gmailTestAllowed(connection.email, process.env.GMAIL_TEST_ACCOUNTS)),
+      inboxAddress: inbox && process.env.TICKBACK_INBOX_ADDRESS && caseInboxAllowed(inbox.email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS) ? process.env.TICKBACK_INBOX_ADDRESS : null,
       dismissed: !!item.trackingDismissed,
       lastReplyAt: item.lastTrackedReplyAt ?? null,
       noSentFound: !!watch?.noSentFound,
       configured: !!process.env.GOOGLE_OAUTH_CLIENT_ID && !!process.env.GOOGLE_OAUTH_CLIENT_SECRET && !!process.env.TOKEN_ENC_KEY,
-      gmailReady: gmailTestConfigured(process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS) && gmailTestCaseAllowed(item.code, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_CASE_CODES),
+      gmailReady: gmailTestConfigured(process.env.GMAIL_TEST_ACCOUNTS),
     };
   },
 });

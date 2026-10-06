@@ -5,7 +5,7 @@ import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { encryptToken, decryptToken } from "../lib/token-crypto";
-import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAddress, checkinEvent, gmailTestAllowed, gmailTestCaseAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "../lib/google-tracking";
+import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAddress, caseInboxAllowed, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "../lib/google-tracking";
 import { todayIST } from "../lib/dates";
 
 const siteUrl = () => {
@@ -32,8 +32,7 @@ export const begin = action({
   args: { code: v.string(), token: v.string(), kind: v.union(v.literal("calendar"), v.literal("gmail")) },
   returns: v.object({ url: v.string(), state: v.string() }),
   handler: async (ctx, args) => {
-    if (args.kind === "gmail" && !gmailTestConfigured(process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)) throw new Error("Gmail tracking is not ready yet");
-    if (args.kind === "gmail" && !gmailTestCaseAllowed(args.code, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_CASE_CODES)) throw new Error("This case is not on the test list");
+    if (args.kind === "gmail" && !gmailTestConfigured(process.env.GMAIL_TEST_ACCOUNTS)) throw new Error("Gmail tracking is not ready yet");
     const { caseId } = await ctx.runQuery(internal.googleConnect.authorize, { code: args.code, token: args.token });
     const state = newState();
     await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), caseId, kind: args.kind, encryptedCaseToken: await encryptToken(args.token) });
@@ -71,7 +70,6 @@ export const finishOauth = internalAction({
   handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox"; code: string | null }> => {
     const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
-    if (state.kind === "gmail" && !gmailTestCaseAllowed(state.code ?? "", process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_CASE_CODES)) throw new Error("This case is not on the test list");
     const tokens = await exchangeCode(args.code);
     if (!tokens.refresh_token || !tokens.access_token) throw new Error("Google did not grant ongoing access. Try again.");
     const required = scopesFor(state.kind);
@@ -83,7 +81,10 @@ export const finishOauth = internalAction({
       email = profile.emailAddress?.toLowerCase();
       if (!email) throw new Error("Could not verify the Gmail account");
       if (state.kind === "inbox" && email !== process.env.TICKBACK_INBOX_ADDRESS?.toLowerCase()) throw new Error("This is not the configured case inbox");
-      if (!gmailTestAllowed(email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)) throw new Error("This account is not on the test list");
+      const allowed = state.kind === "inbox"
+        ? caseInboxAllowed(email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)
+        : gmailTestAllowed(email, process.env.GMAIL_TEST_ACCOUNTS);
+      if (!allowed) throw new Error("This account is not on the test list");
     }
     await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
     if (state.caseId) { try { await ctx.runAction(internal.googleActions.syncCheckins, { caseId: state.caseId }); } catch { /* The next poll will retry calendar sync. */ } }
@@ -123,17 +124,17 @@ function fromAddress(value: string): string { return /<([^>]+)>/.exec(value)?.[1
 export const poll = internalAction({
   args: {}, returns: v.null(),
   handler: async (ctx) => {
-    if (!gmailTestConfigured(process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)) return null;
+    const paidTier = process.env.GEMINI_PAID_TIER === "true";
+    if (!paidTier && !gmailTestConfigured(process.env.GMAIL_TEST_ACCOUNTS)) return null;
     const inbox = await ctx.runQuery(internal.googleConnect.inbox, {});
     const cases = await ctx.runQuery(internal.googleConnect.activeCases, {});
     for (const entry of cases) {
-      if (!gmailTestCaseAllowed(entry.code, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_CASE_CODES)) continue;
       try {
         const loaded = await ctx.runQuery(internal.googleConnect.loadForAction, { caseId: entry.caseId });
         if (!loaded) continue;
-        const own = loaded.connections.find((connection: { kind: string; email?: string }) => connection.kind === "gmail" && gmailTestAllowed(connection.email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS));
+        const own = loaded.connections.find((connection: { kind: string; email?: string }) => connection.kind === "gmail" && gmailTestAllowed(connection.email, process.env.GMAIL_TEST_ACCOUNTS));
         const inboxAddress = process.env.TICKBACK_INBOX_ADDRESS;
-        if (inbox && inboxAddress && gmailTestAllowed(inbox.email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)) {
+        if (inbox && inboxAddress && caseInboxAllowed(inbox.email, paidTier, process.env.GMAIL_TEST_ACCOUNTS)) {
           const token = await accessToken(inbox.encryptedRefreshToken);
           for (const watch of loaded.watches) {
             const recipient = caseInboxAddress(inboxAddress, entry.code);

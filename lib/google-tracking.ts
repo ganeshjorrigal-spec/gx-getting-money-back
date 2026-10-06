@@ -1,18 +1,17 @@
 export const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
 export const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events.owned";
 
-export function gmailTestAllowed(email: string | undefined, paidTier: boolean, testAccounts: string | undefined): boolean {
-  if (paidTier) return true;
+export function gmailTestAllowed(email: string | undefined, testAccounts: string | undefined): boolean {
   if (!email) return false;
   return (testAccounts ?? "").split(",").map((value) => value.trim().toLowerCase()).filter(Boolean).includes(email.toLowerCase());
 }
 
-export function gmailTestConfigured(paidTier: boolean, testAccounts: string | undefined): boolean {
-  return paidTier || !!testAccounts?.split(",").some((value) => value.trim());
+export function gmailTestConfigured(testAccounts: string | undefined): boolean {
+  return !!testAccounts?.split(",").some((value) => value.trim());
 }
 
-export function gmailTestCaseAllowed(code: string, paidTier: boolean, testCases: string | undefined): boolean {
-  return paidTier || (testCases ?? "").split(",").map((value) => value.trim().toUpperCase()).includes(code.toUpperCase());
+export function caseInboxAllowed(email: string | undefined, paidTier: boolean, testAccounts: string | undefined): boolean {
+  return paidTier || gmailTestAllowed(email, testAccounts);
 }
 
 export function codedSubject(subject: string | undefined, code: string): string {

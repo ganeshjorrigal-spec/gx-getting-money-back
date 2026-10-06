@@ -40,6 +40,7 @@ export const triage = internalAction({
     let read = reuseFacts && previous ? previous : latest?.kind === "answer" ? knownAnswer(previous, latest.text, today, loaded.item.questions?.[0]?.id) : null;
     let usedModel = "code";
     let latencyMs = 0;
+    let triageUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
     if (!read) {
       const modelIds = [process.env.GEMINI_MODEL, process.env.GEMINI_MODEL_FALLBACK].filter((model): model is string => !!model);
       if (!modelIds.length) { await ctx.runMutation(internal.agentWrites.fail, { caseId, runId, autoRetry: !!autoRetry }); return null; }
@@ -62,6 +63,7 @@ export const triage = internalAction({
           read = groundRead(caseReadSchema.parse(result.object), latest?.text ?? "", today);
           usedModel = modelId;
           latencyMs = Date.now() - started;
+          triageUsage = { inputTokens: result.usage.inputTokens ?? 0, outputTokens: result.usage.outputTokens ?? 0, totalTokens: result.usage.totalTokens ?? 0 };
           break;
         } catch {
           latencyMs += Date.now() - started;
@@ -72,12 +74,13 @@ export const triage = internalAction({
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "route" });
     const plan = planCase({ read, today, history: { ladderLevel: loaded.item.ladderLevel, draftsShown: loaded.item.draftsShown, sentSteps: [], actionDoneAt: loaded.item.actionDoneAt }, paid: ["claimed", "confirmed"].includes(loaded.item.paidState) || !!(loaded.item.paymentGraceUntil && loaded.item.paymentGraceUntil > Date.now()) || !process.env.NEXT_PUBLIC_UPI_VPA });
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "date" });
-    const applied = await ctx.runMutation(internal.agentWrites.applyTriage, { caseId, runId, read, plan, model: usedModel, latencyMs });
+    const applied = await ctx.runMutation(internal.agentWrites.applyTriage, { caseId, runId, read, plan, model: usedModel, latencyMs, ...triageUsage });
     if (!applied || plan.nextStep === "none" || plan.nextStep === "questions" || plan.nextStep === "options" || plan.nextStep === "waitlist" || plan.locked) return null;
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "writing" });
     let draft = draftForCase(read, today, plan.nextStep, plan.dueDate);
     let draftModel = "safe_template";
     let draftLatency = 0;
+    let draftUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
     const draftModelId = process.env.GEMINI_MODEL;
     if (draftModelId && ["L0_email", "L0_chat"].includes(plan.nextStep)) {
       const started = Date.now();
@@ -88,7 +91,9 @@ export const triage = internalAction({
           maxOutputTokens: 700, abortSignal: AbortSignal.timeout(20_000), maxRetries: 0,
           providerOptions: { google: { thinkingConfig: { thinkingLevel: "low" } } },
         });
-        if (draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) { draft = { ...output.object, subject: output.object.subject ?? draft.subject }; draftModel = draftModelId; }
+        draftUsage = { inputTokens: output.usage.inputTokens ?? 0, outputTokens: output.usage.outputTokens ?? 0, totalTokens: output.usage.totalTokens ?? 0 };
+        draftModel = draftModelId;
+        if (draftMatchesFacts({ ...output.object, subject: output.object.subject ?? draft.subject }, read, plan.dueDate)) draft = { ...output.object, subject: output.object.subject ?? draft.subject };
       } catch { /* Use the checked template when draft generation fails. */ }
       draftLatency = Date.now() - started;
     }
@@ -96,7 +101,7 @@ export const triage = internalAction({
     const to = channel === "email" && plan.nextStep === "L0_email" && read.platform === "district" ? "support@district.in" : channel === "email" && plan.nextStep !== "L1" ? read.contactsInText.find((contact) => contact.kind === "email")?.value : undefined;
     await ctx.runMutation(internal.agentWrites.saveDraft, {
       caseId, runId, step: plan.nextStep, channel, to, subject: draft.subject ?? undefined, body: draft.body,
-      attachChecklist: draft.attachChecklist, model: draftModel, latencyMs: draftLatency,
+      attachChecklist: draft.attachChecklist, model: draftModel, latencyMs: draftLatency, ...draftUsage,
     });
     return null;
   },

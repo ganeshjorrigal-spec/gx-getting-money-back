@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { buildMailto } from "./outbound";
-import { caseInboxAddress, codedSubject, checkinEvent, gmailTestAllowed, gmailTestCaseAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "./google-tracking";
+import { caseInboxAddress, caseInboxAllowed, codedSubject, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "./google-tracking";
 
 describe("test Gmail access", () => {
-  it("allows only named test accounts before the paid tier is enabled", () => {
+  it("opens the paid case inbox to every case but keeps Gmail opt-in allowlisted", () => {
     const list = "test.one@example.com, case.inbox@example.com";
-    expect(gmailTestConfigured(false, list)).toBe(true);
-    expect(gmailTestAllowed("TEST.ONE@example.com", false, list)).toBe(true);
-    expect(gmailTestAllowed("stranger@example.com", false, list)).toBe(false);
-    expect(gmailTestAllowed("stranger@example.com", true, undefined)).toBe(true);
-    expect(gmailTestCaseAllowed("TB-ABC123", false, "TB-ABC123")).toBe(true);
-    expect(gmailTestCaseAllowed("TB-OTHER1", false, "TB-ABC123")).toBe(false);
+    expect(gmailTestConfigured(list)).toBe(true);
+    expect(gmailTestAllowed("TEST.ONE@example.com", list)).toBe(true);
+    expect(gmailTestAllowed("stranger@example.com", list)).toBe(false);
+    expect(gmailTestAllowed("stranger@example.com", undefined)).toBe(false);
+    expect(caseInboxAllowed("stranger@example.com", true, undefined)).toBe(true);
+    expect(caseInboxAllowed("case.inbox@example.com", false, list)).toBe(true);
   });
 });
 import { decryptToken, encryptToken } from "./token-crypto";

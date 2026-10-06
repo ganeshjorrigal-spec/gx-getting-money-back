@@ -39,7 +39,8 @@ export default defineSchema({
   }).index("by_case", ["caseId"]),
   agentRuns: defineTable({
     caseId: v.id("cases"), runId: v.string(), step: v.string(), model: v.string(), attempt: v.number(), status: v.string(),
-    latencyMs: v.number(), error: v.optional(v.string()), createdAt: v.number(),
+    latencyMs: v.number(), inputTokens: v.optional(v.number()), outputTokens: v.optional(v.number()), totalTokens: v.optional(v.number()),
+    error: v.optional(v.string()), createdAt: v.number(),
   }).index("by_case", ["caseId"]),
   rateCounters: defineTable({ key: v.string(), windowStart: v.number(), count: v.number() }).index("by_key", ["key"]),
   waitlist: defineTable({ category: v.string(), contact: v.string(), createdAt: v.number() }),
