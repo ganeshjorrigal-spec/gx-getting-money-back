@@ -163,7 +163,7 @@ export const poll = internalAction({
               const receivedAt = Number(message.internalDate ?? 0);
               if (!messageMatchesCase({ to: header(message, "to"), subject: header(message, "subject"), from, code: entry.code, inbox: inboxAddress, ownEmail: inbox.email, sentAt: watch.sentAt, receivedAt })) continue;
               const text = messageText(message);
-              if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: entry.caseId, messageId: header(message, "message-id") || message.id, source: "inbox", text, receivedAt });
+              if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: entry.caseId, messageId: header(message, "message-id") || message.id, source: "inbox", text, sender: from, receivedAt });
             }
           }
         }
@@ -194,7 +194,7 @@ export const poll = internalAction({
               const districtFallback = !threadId && loaded.item.facts?.platform === "district" && from.endsWith("@district.in") && !!loaded.item.facts.bookingId && messageText(message).includes(loaded.item.facts.bookingId);
               if (!sameThread && !districtFallback) continue;
               const text = messageText(message);
-              if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: entry.caseId, messageId: header(message, "message-id") || message.id, source: "gmail", text, receivedAt });
+              if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: entry.caseId, messageId: header(message, "message-id") || message.id, source: "gmail", text, sender: from, receivedAt });
             }
           }
         }

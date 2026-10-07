@@ -13,6 +13,7 @@ import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
 import { caseInboxAddress, codedSubject } from "../../lib/google-tracking";
 import { routeFor, verifiedEmailFor } from "../../lib/route-kb";
+import { replyNextStepLabel } from "../../lib/reply-banner";
 
 type CaseView = {
   code: string; stage: string; route: keyof typeof c.routeLabels | null; routeConfidence: number | null;
@@ -29,6 +30,7 @@ type CaseView = {
   upiVpa: string | null; upiName: string;
   feedbackGiven: boolean;
   name: string | null; contact: string | null;
+  newReply: { _id: Id<"inputs">; sender: string; receivedAt: number; summary: string; keySentence: string } | null;
 };
 type Draft = { _id: Id<"drafts">; step: string; channel: string; status: string; to?: string; subject?: string; body: string | null; attachChecklist: string[] };
 type Event = { _id: string; type: string; summary: string; createdAt: number };
@@ -81,6 +83,7 @@ export default function CaseView({ code }: { code: string }) {
   const answerQuestions = useMutation(api.cases.answerQuestions);
   const retry = useMutation(api.cases.retry);
   const addReply = useMutation(api.cases.addReply);
+  const markReplySeen = useMutation(api.cases.markReplySeen);
   const uploadUrl = useMutation(api.files.generateUploadUrl);
   const markSent = useMutation(api.cases.markSent);
   const recordSendChannel = useMutation(api.cases.recordSendChannel);
@@ -364,6 +367,14 @@ export default function CaseView({ code }: { code: string }) {
   const sentChat = !!drafts?.some((draft) => draft.channel === "chat" && draft.status === "sent");
   const chaseDate = caseData?.checkin?.date ?? addWorkingDays(todayIST(), 2);
 
+  async function seenReply() {
+    if (!token || !caseData?.newReply) return;
+    setBusy(true);
+    try { await markReplySeen({ code, token, inputId: caseData.newReply._id }); }
+    catch { setNotice(c.error); }
+    finally { setBusy(false); }
+  }
+
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><span className="case-code">{code}</span></header>
     <div className="case-wrap">
@@ -372,6 +383,13 @@ export default function CaseView({ code }: { code: string }) {
         : caseData == null ? <div className="case-card case-loading"><div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>{c.progress[0]}…</strong></div></div>
         : <>
           <div className="case-heading"><p className="section-kicker">{caseData.platform ?? "YOUR CASE"}</p><h1>{caseData.eventName ?? "Your refund case"}</h1><p>{code}</p><p className="tracking-line"><span aria-hidden="true">{replyTrackingOn ? "●" : "○"}</span> {replyTrackingOn ? c.trackingOn : c.trackingOff}</p></div>
+          {caseData.newReply && <article className="case-card reply-banner" aria-live="polite">
+            <div className="reply-banner-top"><div><p className="section-kicker">NEW REPLY</p><h2>New reply from {caseData.platform ?? "the organiser"}</h2></div><time dateTime={new Date(caseData.newReply.receivedAt).toISOString()}>{new Date(caseData.newReply.receivedAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" })}</time></div>
+            <p className="reply-summary">{caseData.newReply.summary}</p>
+            <blockquote>{caseData.newReply.keySentence}</blockquote>
+            <div className="reply-next"><span>Updated next step</span><strong>{replyNextStepLabel(caseData.nextStep, caseData.platform)}</strong></div>
+            <button className="text-button" disabled={busy} onClick={seenReply}>Seen</button>
+          </article>}
           {caseData.stage === "DUE" && <article className="case-card checkin-card" aria-live="polite">
             <p className="section-kicker">YOUR CHECK-IN</p><h2>Has your {money(caseData.amountPaise)} landed?</h2>
             <div className="stacked-actions"><button className="button button-primary" onClick={() => checkin("landed")}>It&apos;s in</button><button className="button button-secondary" disabled={busy} onClick={() => checkin("not_yet")}>Not yet</button><button className="text-button" onClick={() => checkin("replied")}>They replied</button></div>

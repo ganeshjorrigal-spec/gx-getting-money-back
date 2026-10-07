@@ -143,6 +143,15 @@ h3 { font-size: var(--text-heading); line-height: var(--leading-heading); margin
 .case-card .case-amount { margin: var(--space-8) 0 var(--space-3); }
 .case-card h2, .case-timeline h2, .sample-sheet h2 { font-size: var(--text-title); line-height: var(--leading-title); margin: var(--space-3) 0; }
 .case-card p { line-height: var(--leading-body); }
+.reply-banner { background: var(--accent-soft); border-color: var(--accent); }
+.reply-banner-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); }
+.reply-banner-top h2 { margin-top: var(--space-1); }
+.reply-banner-top time { color: var(--muted); font-size: var(--text-small); white-space: nowrap; }
+.reply-summary { font-weight: 600; }
+.reply-banner blockquote { margin: var(--space-4) 0; padding: var(--space-4); border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 var(--radius-control) var(--radius-control) 0; line-height: var(--leading-body); }
+.reply-next { display: grid; gap: var(--space-1); }
+.reply-next span { color: var(--muted); font-size: var(--text-small); }
+.reply-next strong { line-height: var(--leading-body); }
 .caution-chip { color: var(--caution); background: var(--caution-soft); }
 .checklist { padding-left: var(--space-6); line-height: var(--leading-body); }
 .checklist li { padding-block: var(--space-2); }

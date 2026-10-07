@@ -77,6 +77,8 @@ export const get = query({
     const checkin = checkins.filter((row) => row.status === "scheduled").sort((a, b) => a.date.localeCompare(b.date))[0];
     const oldCheckin = checkins.filter((row) => row.status === "cancelled" && row.date !== checkin?.date).sort((a, b) => b._creationTime - a._creationTime)[0];
     const feedback = await ctx.db.query("feedback").withIndex("by_case", (q) => q.eq("caseId", item._id)).first();
+    const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(20);
+    const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
       code: item.code, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
@@ -95,7 +97,24 @@ export const get = query({
       upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Tickback",
       feedbackGiven: !!feedback,
       name: item.name ?? null, contact: item.contact ?? null,
+      newReply: latestTrackedReply && !latestTrackedReply.seenAt ? {
+        _id: latestTrackedReply._id,
+        sender: latestTrackedReply.sender!, receivedAt: latestTrackedReply.receivedAt!,
+        summary: latestTrackedReply.summary!, keySentence: latestTrackedReply.keySentence!,
+      } : null,
     };
+  },
+});
+
+export const markReplySeen = mutation({
+  args: { ...accessArgs, inputId: v.id("inputs") },
+  returns: v.null(),
+  handler: async (ctx, { code, token, inputId }) => {
+    const item = await assertAccess(ctx, code, token);
+    const input = await ctx.db.get(inputId);
+    if (!input || input.caseId !== item._id || input.kind !== "reply") throw new Error("Reply not found");
+    if (!input.seenAt) await ctx.db.patch(inputId, { seenAt: Date.now() });
+    return null;
   },
 });
 

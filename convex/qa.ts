@@ -67,3 +67,21 @@ export const caseStatus = internalQuery({
     };
   },
 });
+
+export const latestReplyInput = internalQuery({
+  args: { code: v.string() },
+  returns: v.any(),
+  handler: async (ctx, { code }) => {
+    const item = await ctx.db.query("cases").withIndex("by_code", (q) => q.eq("code", code)).unique();
+    if (!item) return null;
+    const inputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(20);
+    const input = inputs.find((row) => row.kind === "reply" && row.sender && row.receivedAt);
+    if (!input) return null;
+    return {
+      _id: input._id, caseId: input.caseId, kind: input.kind, text: input.text ?? null,
+      storageIds: input.storageIds, createdAt: input.createdAt, sender: input.sender ?? null,
+      receivedAt: input.receivedAt ?? null, summary: input.summary ?? null,
+      keySentence: input.keySentence ?? null, seenAt: input.seenAt ?? null, runId: input.runId ?? null,
+    };
+  },
+});

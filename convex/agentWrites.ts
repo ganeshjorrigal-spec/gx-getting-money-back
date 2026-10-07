@@ -40,6 +40,9 @@ export const applyTriage = internalMutation({
       progress: { step: plan.nextStep === "none" || plan.route === "NEED_INFO" ? "done" : "writing", at: now },
       updatedAt: now,
     });
+    const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).order("desc").take(10);
+    const replyInput = recentInputs.find((input) => input.kind === "reply" && input.runId === args.runId);
+    if (replyInput) await ctx.db.patch(replyInput._id, { summary: read.summaryForUser.trim().replace(/[\r\n]+/g, " ").slice(0, 180) });
     for (const checkin of plan.checkins) {
       const checkinId = await ctx.db.insert("checkins", { caseId: args.caseId, date: checkin.date, reason: checkin.reason, status: "scheduled" });
       const time = Math.max(now, Date.parse(`${checkin.date}T04:30:00.000Z`));

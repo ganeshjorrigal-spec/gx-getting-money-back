@@ -2,9 +2,10 @@ import { internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { redact } from "../lib/redact";
+import { replyKeySentence } from "../lib/reply-banner";
 
 export const saveReply = internalMutation({
-  args: { caseId: v.id("cases"), messageId: v.string(), source: v.union(v.literal("inbox"), v.literal("gmail")), text: v.string(), receivedAt: v.number() },
+  args: { caseId: v.id("cases"), messageId: v.string(), source: v.union(v.literal("inbox"), v.literal("gmail")), text: v.string(), sender: v.string(), receivedAt: v.number() },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
@@ -13,8 +14,13 @@ export const saveReply = internalMutation({
     if (existing) return false;
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
+    const text = redact(args.text.slice(0, 8_000));
     await ctx.db.insert("gmailReplies", { caseId: args.caseId, messageId: args.messageId, source: args.source, receivedAt: args.receivedAt });
-    await ctx.db.insert("inputs", { caseId: args.caseId, kind: "reply", text: redact(args.text.slice(0, 8_000)), storageIds: [], createdAt: now });
+    await ctx.db.insert("inputs", {
+      caseId: args.caseId, kind: "reply", text, storageIds: [], createdAt: now,
+      sender: args.sender.trim().toLowerCase().slice(0, 254), receivedAt: args.receivedAt,
+      keySentence: replyKeySentence(text), runId,
+    });
     await ctx.db.patch(args.caseId, { stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, lastTrackedReplyAt: now, updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "reply_added", summary: "Their reply arrived; preparing your next step", actor: "system", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: args.caseId, runId });

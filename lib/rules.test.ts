@@ -8,6 +8,7 @@ import type { CaseRead } from "../convex/lib/read";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink } from "./outbound";
 import { routeFor, verifiedEmailFor } from "./route-kb";
 import { responseSheetSyncDelay } from "./responses-sheet";
+import { replyKeySentence, replyNextStepLabel } from "./reply-banner";
 
 const base: CaseRead = {
   isEventTicket: true, outOfScopeCategory: null, platform: "bookmyshow", platformNameAsWritten: "BookMyShow",
@@ -184,6 +185,14 @@ describe("grounding mixed dates and instructions", () => {
 });
 
 describe("user-owned actions", () => {
+  it("keeps the organiser's useful sentence for the reply banner", () => {
+    const text = "Hello. We have initiated your refund of ₹1,200. It should reach your bank in 3-5 working days.";
+    expect(replyKeySentence(text)).toBe("We have initiated your refund of ₹1,200.");
+  });
+  it("turns the updated route code into a clear next step", () => {
+    expect(replyNextStepLabel("TRACE_bank", "District")).toBe("Ask your bank to trace the refund");
+    expect(replyNextStepLabel("L0_chat", "BookMyShow")).toBe("Send the next chat message to BookMyShow");
+  });
   it("spreads Responses Sheet retries into small batches", () => {
     expect(responseSheetSyncDelay(0)).toBe(0);
     expect(responseSheetSyncDelay(4)).toBe(0);
