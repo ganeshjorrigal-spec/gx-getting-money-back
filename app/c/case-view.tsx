@@ -47,6 +47,7 @@ export default function CaseView({ code }: { code: string }) {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [sendOpen, setSendOpen] = useState(false);
+  const [demoDraftToOpen, setDemoDraftToOpen] = useState<string | null>(null);
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -133,7 +134,11 @@ export default function CaseView({ code }: { code: string }) {
     setTo(draft.to ?? "");
     setSubject(demoSubject(!!caseData?.demo, draft.subject ?? ""));
     setBody(draft.body ?? "");
-  }, [drafts]);
+  }, [drafts, !!caseData?.demo]);
+  useEffect(() => {
+    if (!caseData?.demo || !demoDraftToOpen || !caseData.factsConfirmedAt || drafts?.[0]?.step !== demoDraftToOpen || drafts[0].status === "sent") return;
+    setSendOpen(true); setDemoDraftToOpen(null);
+  }, [caseData?.demo, caseData?.factsConfirmedAt, demoDraftToOpen, drafts]);
   useEffect(() => {
     if (!payOpen || !caseData?.upiVpa) return;
     import("qrcode").then((qrcode) => qrcode.toDataURL(buildUpiLink(caseData.upiVpa!, caseData.upiName, code), { width: 320, margin: 2 })).then(setQrImage).catch(() => setQrImage(""));
@@ -150,6 +155,7 @@ export default function CaseView({ code }: { code: string }) {
     setBusy(true);
     try {
       await confirmFacts({ code, token, looksRight, correction: looksRight ? undefined : factCorrection.trim(), bookingId, contact });
+      if (looksRight && caseData?.demo) setDemoDraftToOpen("L0_email");
       if (!looksRight) { setCorrectingFacts(false); setFactCorrection(""); }
     } catch { setNotice(c.error); }
     finally { setBusy(false); }
@@ -383,12 +389,12 @@ export default function CaseView({ code }: { code: string }) {
   async function skipDemo() {
     if (!token) return;
     setBusy(true);
-    try { await demoSkip({ code, token }); } catch { setNotice(c.error); } finally { setBusy(false); }
+    try { await demoSkip({ code, token }); setDemoDraftToOpen("L1"); } catch { setNotice(c.error); } finally { setBusy(false); }
   }
   async function addDemoBooking() {
     if (!token || !bookingId.trim()) return;
     setBusy(true);
-    try { await demoBooking({ code, token, bookingId: bookingId.trim() }); } catch (error) { setNotice(error instanceof Error ? error.message : c.error); } finally { setBusy(false); }
+    try { await demoBooking({ code, token, bookingId: bookingId.trim() }); setDemoDraftToOpen("DEMO_booking"); } catch (error) { setNotice(error instanceof Error ? error.message : c.error); } finally { setBusy(false); }
   }
 
   return <main className="case-shell">
