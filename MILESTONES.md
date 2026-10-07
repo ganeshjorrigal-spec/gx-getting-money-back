@@ -100,6 +100,27 @@ Acceptance checks:
 Live evidence: synthetic BookMyShow case `TB-N73ZMT` completed two chat reply loops. Fresh District case `TB-5QFF3L` was marked sent, its reply-all was found through the case inbox, and the case moved from `OVERDUE/L0_email` to `TRACE/TRACE_bank`. The private Responses Sheet was created with `drive.file`, shared, and verified with all 12 headers and the case row. Evidence: `docs/log/2026-10-06.md`, `docs/log/2026-10-07.md`, and `docs/qa/eval-2026-10-06.md`.
 Reviewed by: Claude HQ, 2026-10-07. Checked: type check clean and 38 unit tests pass in HQ's sandbox; the live first screen shows the optional name with its reason; the live Privacy page lists name, booking ID and contact, the Sheet, and the paid-tier Gemini line; Google scopes in code are only gmail.readonly, calendar.events.owned and drive.file; Gmail web compose and the mail-app link both carry the case-inbox CC; the named-case list is gone from the tracking path; `routeKb` auto-fills only entries with a source URL and no longer prefills addresses from the model; the paid-tier eval passed 16 of 16 with exact dates (on gemini-3.5-flash-lite, see note). Taken from Codex's log, not re-run by HQ: the District reply-all proof, the two BookMyShow chat loops, the Sheet rows. Not verified by HQ: the BookMyShow and District grievance and escalation addresses (both sites block HQ's tools), which Ganesh must spot-check before the first paid case. Notes: the live model is gemini-3.5-flash-lite, not 3.8 Flash; a real case used about 1,200 input and 700 output tokens. Addresses written in the organiser's own message are no longer prefilled; the user types them.
 
+## M2.4. Reply banner on the case screen (7 Oct) | ACTIVE
+Goal: when the case inbox matches a reply, the user sees it at the top of the case screen with the next step, without a refresh and without needing Google Calendar (D-027).
+Acceptance checks:
+- [ ] The existing reply input also stores the sender address, received date and a one-line AI summary; the inbox job, matching, calendar alert and Google permissions are unchanged
+- [ ] A "New reply from <platform>" card sits at the top of the case screen with the date, the summary, the organiser's own key sentence (redacted) and the updated next step
+- [ ] It shows whether or not Google Calendar is connected, through the existing live case query; "Seen" hides it until the next reply
+- [ ] Proof: one reply on a made-up case; the saved Convex record and a screenshot of the case screen in today's log
+Reviewed by: pending
+
+## M2.5. Demo organiser (after M2.4) | PROPOSED
+Goal: a tester can run a demo case end to end and see an organiser reply arrive and the next step update within about a minute, through the same path real cases use (D-027).
+Acceptance checks:
+- [ ] A "Try a demo" button creates a case marked demo; every demo screen shows a "Demo" label; demo rows are marked in the responses Sheet
+- [ ] Only demo cases put the demo organiser address in To; real cases can never use it (unit test)
+- [ ] The demo account is connected by Ganesh tapping Allow (send and read its own inbox, added as a test user); Codex never signs in to Google
+- [ ] The demo inbox is checked once a minute only while a demo case is open; it replies only to mail whose subject carries a demo case code; never to tickback.cases, itself or auto-replies; at most 4 replies per case (unit tests for each rule)
+- [ ] Replies go to everyone on the email, sender name "Demo organiser (playing <platform>)", first line "Demo reply, not from <platform>."; content follows a fixed ladder per platform (stall with 7 to 10 working days, ask for booking ID, refund processed with a made-up reference) with AI filling details only
+- [ ] After a demo reply is sent, one case-inbox check is scheduled about 30 seconds later; the 10-minute job, matching and calendar alert are unchanged
+- [ ] Proof: one demo case from send to on-screen banner, with timings, the demo reply as received and a screenshot, in today's log
+Reviewed by: pending
+
 ## M3. Value loop (US-2 to US-9) | PROPOSED
 Goal: the case stays alive until the money lands, with every step ready to send from the user's own email or chat.
 Friday scope is the "must" list in `docs/prd/07-build-plan.md` section 3b; the rest of M3 follows in week 2.
