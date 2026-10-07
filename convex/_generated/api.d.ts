@@ -14,6 +14,8 @@ import type * as agentWrites from "../agentWrites.js";
 import type * as cases from "../cases.js";
 import type * as checkins from "../checkins.js";
 import type * as crons from "../crons.js";
+import type * as demo from "../demo.js";
+import type * as demoActions from "../demoActions.js";
 import type * as feedback from "../feedback.js";
 import type * as files from "../files.js";
 import type * as googleActions from "../googleActions.js";
@@ -49,6 +51,8 @@ declare const fullApi: ApiFromModules<{
   cases: typeof cases;
   checkins: typeof checkins;
   crons: typeof crons;
+  demo: typeof demo;
+  demoActions: typeof demoActions;
   feedback: typeof feedback;
   files: typeof files;
   googleActions: typeof googleActions;

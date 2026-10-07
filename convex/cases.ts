@@ -97,6 +97,7 @@ export const get = query({
       upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Tickback",
       feedbackGiven: !!feedback,
       name: item.name ?? null, contact: item.contact ?? null,
+      demo: item.demo ?? null,
       newReply: latestTrackedReply && !latestTrackedReply.seenAt ? {
         _id: latestTrackedReply._id,
         sender: latestTrackedReply.sender!, receivedAt: latestTrackedReply.receivedAt!,
@@ -164,6 +165,14 @@ export const markSent = mutation({
     const draft = await ctx.db.get(draftId);
     if (!draft || draft.caseId !== item._id) throw new Error("Draft not found");
     if (draft.status === "sent") return null;
+    if (item.demo) {
+      if (item.demo.expiresAt <= Date.now() || item.demo.round >= 3 || item.demo.phase.startsWith("waiting")) throw new Error("This demo round is not ready to send");
+      if (item.demo.round === 1 && item.route !== "OVERDUE") throw new Error("Skip ahead before sending the escalation");
+      if (item.demo.round === 2 && !item.facts?.bookingId) throw new Error("Add a demo booking ID first");
+      const session = crypto.randomUUID();
+      await ctx.db.patch(item._id, { demo: { ...item.demo, session, phase: "waiting_organiser", deadline: Date.now() + 120_000 } });
+      await ctx.scheduler.runAfter(0, internal.demoActions.checkOrganiser, { caseId: item._id, session });
+    }
     const now = Date.now();
     const today = todayIST();
     await clearCheckins(ctx, item._id);
@@ -227,7 +236,7 @@ export const confirmFacts = mutation({
           await ctx.db.patch(latestDraft._id, {
             subject: latestDraft.channel === "email" ? codedSubject(updated.subject, item.code) : updated.subject,
             body: updated.body,
-            attachChecklist: updated.attachChecklist,
+            attachChecklist: item.demo ? [] : updated.attachChecklist,
           });
         }
       }
@@ -254,10 +263,11 @@ export const answerCheckin = mutation({
     if (item.stage.startsWith("CLOSED")) throw new Error("This case is closed");
     const now = Date.now();
     if (answer === "landed") {
+      if (item.demo && item.demo.round !== 3) throw new Error("Finish the three demo rounds before Money landed");
       const amount = amountPaise ?? item.amountPaise;
       if (amount == null || !Number.isFinite(amount) || amount < 0) throw new Error("Enter the amount received");
       await clearCheckins(ctx, item._id);
-      await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: now + 180 * 86_400_000, updatedAt: now });
+      await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: item.demo ? item.demo.expiresAt : now + 180 * 86_400_000, updatedAt: now });
       await ctx.db.insert("caseEvents", { caseId: item._id, type: "landed", summary: `₹${(amount / 100).toLocaleString("en-IN")} landed`, actor: "user", createdAt: now });
       await ctx.scheduler.runAfter(0, internal.googleActions.cleanupCase, { caseId: item._id });
     } else if (answer === "not_yet") {

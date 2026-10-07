@@ -1,3 +1,4 @@
+import { demoSheetPlatform } from "../lib/demo";
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -74,7 +75,7 @@ export const caseRow = internalQuery({
     const feedbackText = feedback ? `${feedback.worthIt ? "Yes" : "No"}${feedback.comment ? ` — ${feedback.comment}` : ""}` : "";
     return {
       code: item.code, createdAt: item.createdAt, name: item.name ?? "", contact: item.contact ?? "",
-      platform: item.platform ?? "", amount: item.amountPaise == null ? "" : item.amountPaise / 100,
+      platform: `${item.demo ? "Demo · " : ""}${item.platform ?? ""}`, amount: item.amountPaise == null ? "" : item.amountPaise / 100,
       route: item.route ?? "", dueDate: item.dueDate ?? "", stage: item.stage, channel, lastReplyAt, feedback: feedbackText,
     };
   },

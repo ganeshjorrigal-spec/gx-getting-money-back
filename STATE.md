@@ -1,6 +1,14 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-07, after the M2.4 live reply banner proof. M0, M1, M2, M2.0, M2.1 and M2.3 are DONE per MILESTONES.md. M2.2 and M2.4 are READY FOR REVIEW. M3 Friday work is deployed but remains outside this review because payments and physical-phone checks are still open.
+Last updated: 2026-10-07, during the M2.5 demo live proof. M0, M1, M2, M2.0, M2.1 and M2.3 are DONE per MILESTONES.md. M2.2 and M2.4 are READY FOR REVIEW. M3 Friday work is deployed but remains outside this review because payments and physical-phone checks are still open.
+
+## M2.5 in flight
+
+- Amended D-027 demo implemented and deployed: synthetic platform choice, three-round organiser ladder, skip clock, booking ID, bank reference, simulated closure, demo-labelled Sheet rows, no paywall and seven-day deletion.
+- Ganesh connected the separate demo account through Allow. Only that connection requests read/send; real Google scopes, 10-minute polling and calendar alerts remain unchanged.
+- Type check and 56 unit tests pass; paid-tier F1–F16 passes after grounding an invented F13 message date. Live three-round proof is unfinished; do not mark READY FOR REVIEW yet.
+- First preflight correctly refused a message sent from the case inbox. Fresh synthetic District case TB-1YUV02 is open. Round 1 is verified: same-thread reply in 2.446 seconds from finding email, shared-inbox save 17.887 seconds from Mark sent, live WAIT due 21 Oct/check-in 22 Oct. Round 2 escalation awaits user send.
+- Bounded fast checks stop after two minutes for the demo desk and one minute for the case inbox. A retry restarts checks without resending an already reserved organiser reply.
 
 ## M2.4 built and verified
 
@@ -38,4 +46,4 @@ Last updated: 2026-10-07, after the M2.4 live reply banner proof. M0, M1, M2, M2
 
 ## Next review
 
-Ask Claude HQ to review M2.4 using the saved reply record and live screenshot in today's log.
+Finish the M2.5 live three-round run, save received replies, round times and screenshots in today's log, then mark READY FOR REVIEW only with that proof.

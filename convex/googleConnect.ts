@@ -5,7 +5,7 @@ import { hashToken } from "./lib/access";
 import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAllowed, gmailTestAllowed, gmailTestConfigured } from "../lib/google-tracking";
 
 const accessArgs = { code: v.string(), token: v.string() };
-const kind = v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"));
+const kind = v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo"));
 const callback = () => {
   const site = process.env.CONVEX_SITE_URL;
   if (!site) throw new Error("Convex site URL is missing");
@@ -94,7 +94,7 @@ export const store = internalMutation({
   handler: async (ctx, args) => {
     const item = args.caseId ? await ctx.db.get(args.caseId) : null;
     if (args.caseId && (!item || item.stage.startsWith("CLOSED"))) throw new Error("Case is closed");
-    const matches = args.kind === "inbox" || args.kind === "responses"
+    const matches = args.kind === "inbox" || args.kind === "responses" || args.kind === "demo"
       ? await ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", args.kind)).collect()
       : await ctx.db.query("googleConnections").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).collect();
     for (const row of matches) if (row.kind === args.kind) await ctx.db.delete(row._id);

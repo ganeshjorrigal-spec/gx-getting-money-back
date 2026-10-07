@@ -59,7 +59,10 @@ export function groundRead(read: CaseRead, input: string, today = todayIST()): C
   const hinglishRange = /\brefund\s+(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+din\b/i.exec(input);
   if (hinglishRange) {
     const eventDate = /\b\d{1,2}\s+[A-Za-z]+\s+ko\s+event\s+tha\b/i.exec(input);
-    result = { ...result, promise: { ...result.promise, date: null, workingDaysMax: null, calendarDaysMax: Number(hinglishRange[2]), anchorDate: eventDate ? null : result.promise.anchorDate }, messageDate: eventDate && result.messageDate === result.eventDate ? null : result.messageDate };
+    const remaining = eventDate ? input.replace(eventDate[0], "") : input;
+    const statedDate = dateFromText(remaining, today);
+    const messageDate = eventDate ? statedDate ?? (/\b(?:today|yesterday)\b/i.test(remaining) ? result.messageDate : null) : result.messageDate;
+    result = { ...result, promise: { ...result.promise, date: null, workingDaysMax: null, calendarDaysMax: Number(hinglishRange[2]), anchorDate: eventDate ? messageDate : result.promise.anchorDate }, messageDate };
   }
   const form = /\b(?:filled|submitted)\b.{0,30}\bform\b.{0,12}\bon\s+(\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?)/i.exec(input);
   const delivered = /\b(?:tickets?\s+(?:were\s+)?)?delivered\s+on\s+(\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?)/i.exec(input);

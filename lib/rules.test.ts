@@ -170,6 +170,13 @@ describe("grounding mixed dates and instructions", () => {
     expect(grounded.promise.anchorDate).toBeNull();
     expect(planCase({ read: grounded, today: "2026-10-05" }).route).toBe("NEED_INFO");
   });
+  it("rejects an invented message date when only the event date was given", () => {
+    const read = { ...base, eventDate: "2026-10-12", messageDate: "2026-10-05", promise: { text: "5-7 din", date: null, workingDaysMax: null, calendarDaysMax: 7, anchorDate: "2026-10-05" } };
+    const grounded = groundRead(read, "BookMyShow: refund 5-7 din mein aa jayega, 12 Oct ko event tha", "2026-10-05");
+    expect(grounded.messageDate).toBeNull();
+    expect(planCase({ read: grounded, today: "2026-10-05" }).route).toBe("NEED_INFO");
+    expect(groundRead(read, "1 Oct 2026. Refund 5-7 din mein aa jayega, 12 Oct ko event tha", "2026-10-05").messageDate).toBe("2026-10-01");
+  });
   it("uses an explicit refund date instead of a nearby event date", () => {
     const read = { ...base, eventDate: "2026-10-18", promise: { text: "refund due 25 Oct", date: "2026-10-18", workingDaysMax: null, calendarDaysMax: null, anchorDate: null } };
     const grounded = groundRead(read, "Event: 18 Oct 2026. Refund due: 25 Oct 2026.", "2026-10-05");

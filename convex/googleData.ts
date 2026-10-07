@@ -10,8 +10,17 @@ export const saveReply = internalMutation({
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
     if (!item || item.stage.startsWith("CLOSED") || Date.now() - args.receivedAt > 45 * 86_400_000) return false;
+    if (args.sender.toLowerCase() === process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase() && !item.demo) return false;
+    if (item.demo && (args.sender.toLowerCase() !== process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase() || item.demo.round >= 3)) return false;
     const existing = await ctx.db.query("gmailReplies").withIndex("by_case_message", (q) => q.eq("caseId", args.caseId).eq("messageId", args.messageId)).unique();
     if (existing) return false;
+    if (item.demo) {
+      const demoReplies = await ctx.db.query("demoReplies").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
+      const outgoing = demoReplies.find(reply => reply.round === item.demo!.round + 1);
+      if (!outgoing) return false;
+      await ctx.db.patch(outgoing._id, { receivedAt: Date.now() });
+      await ctx.db.patch(item._id, { demo: { ...item.demo, round: outgoing.round, phase: "ready" } });
+    }
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
     const text = redact(args.text.slice(0, 8_000));

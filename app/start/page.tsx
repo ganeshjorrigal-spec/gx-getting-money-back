@@ -18,10 +18,12 @@ export default function StartPage() {
   const [pictures, setPictures] = useState<Picture[]>([]);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
+  const [demoPicker, setDemoPicker] = useState(false);
   const [pasteHint, setPasteHint] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const create = useMutation(api.cases.create);
+  const createDemo = useMutation(api.demo.create);
   const uploadUrl = useMutation(api.files.generateUploadUrl);
 
   useEffect(() => {
@@ -86,12 +88,30 @@ export default function StartPage() {
     }
   }
 
+  async function startDemo(platform: "bookmyshow" | "district") {
+    if (working) return;
+    setWorking(true); setError("");
+    try {
+      const token = makeToken();
+      const result = await createDemo({ platform, tokenHash: await tokenHash(token), deviceId: getDeviceId() });
+      saveCase({ code: result.code, token, updatedAt: Date.now() });
+      window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
+    } catch (error) { setError(error instanceof Error ? error.message : "Could not start the demo yet."); setWorking(false); }
+  }
+
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><Link className="text-link" href="/sample">See a real case</Link></header>
     <div className="case-wrap intake-page">
       <p className="section-kicker">START YOUR CASE</p>
       <h1>{c.title}</h1>
       <p className="intake-helper">{c.helper}</p>
+      <article className="case-card demo-intake">
+        <p className="section-kicker">Demo</p>
+        <h2>Feel a full refund chase in 3 minutes.</h2>
+        <p>You send three emails from your own Gmail. Our demo desk replies, and your case updates live. No real booking or money needed.</p>
+        {!demoPicker ? <button type="button" className="button button-secondary" disabled={working} onClick={() => setDemoPicker(true)}>Try a demo</button> : <><p>Pick a platform to play:</p><div className="save-actions"><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("bookmyshow")}>BookMyShow</button><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("district")}>District</button></div><p className="input-hint">BookMyShow uses email in this demo because we cannot simulate its in-app chat.</p>{working && <p role="status"><span className="spinner" /> Reading your message…</p>}</>}
+        {demoPicker && error && <p className="error-banner" role="alert">{error}</p>}
+      </article>
       <form onSubmit={submit}>
         <label className="intake-name" htmlFor="customer-name">Your name <span>(optional)</span></label>
         <input id="customer-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" />

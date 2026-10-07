@@ -1,5 +1,6 @@
 import { internalQuery } from "./_generated/server";
 import { v } from "convex/values";
+import { latestReplyText } from "../lib/reply-banner";
 
 export const pendingCheckin = internalQuery({
   args: { code: v.string() }, returns: v.any(),
@@ -83,5 +84,17 @@ export const latestReplyInput = internalQuery({
       receivedAt: input.receivedAt ?? null, summary: input.summary ?? null,
       keySentence: input.keySentence ?? null, seenAt: input.seenAt ?? null, runId: input.runId ?? null,
     };
+  },
+});
+
+export const demoProof = internalQuery({
+  args: { code: v.string() }, returns: v.any(),
+  handler: async (ctx, { code }) => {
+    const item = await ctx.db.query("cases").withIndex("by_code", q => q.eq("code", code)).unique();
+    if (!item?.demo) return null;
+    const sent = await ctx.db.query("demoReplies").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
+    const inputs = await ctx.db.query("inputs").withIndex("by_case", q => q.eq("caseId", item._id)).take(20);
+    const watches = await ctx.db.query("gmailWatches").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
+    return { code, stage: item.stage, route: item.route, dueDate: item.dueDate ?? null, createdAt: item.createdAt, closedAt: item.closedAt ?? null, recoveredPaise: item.recoveredPaise ?? null, demo: { round: item.demo.round, phase: item.demo.phase, now: item.demo.now, expiresAt: item.demo.expiresAt }, rounds: sent.map(reply => ({ round: reply.round, sameThread: reply.sameThread ?? null, foundAt: reply.createdAt, sentAt: reply.sentAt ?? null, receivedAt: reply.receivedAt ?? null, markedSentAt: watches[reply.round - 1]?.sentAt ?? null })), replies: inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt).map(input => ({ text: latestReplyText(input.text ?? ""), receivedAt: input.receivedAt, savedAt: input.createdAt })) };
   },
 });

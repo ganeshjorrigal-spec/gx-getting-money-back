@@ -14,6 +14,7 @@ http.route({
     if (!code || !state || incoming.searchParams.has("error")) return new Response("Google connection was not completed. Return to your case and try again.", { status: 400 });
     try {
       const result = await ctx.runAction(internal.googleActions.finishOauth, { code, state });
+      if (result.kind === "demo") return new Response("Tickback demo organiser connected. You can close this tab.");
       if (result.kind === "inbox") return new Response("Tickback case inbox connected. You can close this tab.");
       if (result.kind === "responses" && result.sheetUrl) return new Response(`<!doctype html><meta charset="utf-8"><title>Tickback Responses connected</title><main style="font:18px system-ui;max-width:680px;margin:64px auto;padding:24px"><h1>Responses sheet connected</h1><p>Tickback created the sheet, shared it with Ganesh and started adding cases.</p><p><a href="${result.sheetUrl}">Open Tickback Responses</a></p><p>You can close this tab.</p></main>`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
       if (!result.code) throw new Error("Case unavailable");

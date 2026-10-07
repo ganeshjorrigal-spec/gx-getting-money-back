@@ -6,6 +6,7 @@ import type { Plan } from "./lib/plan";
 import { codedSubject } from "../lib/google-tracking";
 import { redact } from "../lib/redact";
 import { replyKeySentence } from "../lib/reply-banner";
+import { caseRecipient } from "../lib/demo";
 
 export const progress = internalMutation({
   args: { caseId: v.id("cases"), runId: v.string(), step: v.string() },
@@ -71,9 +72,9 @@ export const saveDraft = internalMutation({
     if (!item || item.latestRunId !== args.runId) return null;
     const now = Date.now();
     await ctx.db.insert("drafts", {
-      caseId: args.caseId, step: args.step, channel: args.channel, to: args.to,
+      caseId: args.caseId, step: args.step, channel: args.channel, to: caseRecipient(!!item.demo, process.env.TICKBACK_DEMO_ADDRESS, args.to),
       subject: args.channel === "email" ? codedSubject(args.subject, item.code) : args.subject,
-      body: args.body, attachChecklist: args.attachChecklist, status: "ready", createdAt: now,
+      body: args.body, attachChecklist: item.demo ? [] : args.attachChecklist, status: "ready", createdAt: now,
     });
     await ctx.db.patch(args.caseId, { draftsShown: item.draftsShown + 1, progress: { step: "done", at: now }, updatedAt: now });
     await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "draft", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });

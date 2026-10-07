@@ -240,3 +240,7 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 .feedback-form input { width: 100%; min-height: var(--control-height); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); padding: var(--space-3); background: var(--surface); font-size: var(--text-body); }
 .feedback-form .button { margin-top: var(--space-3); }
 .upi-qr { width: 220px; height: 220px; display: block; margin: var(--space-4) auto; }
+
+.demo-tag { display: inline-block; font-size: var(--text-small); padding: var(--space-1) var(--space-2); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); color: var(--accent); background: var(--accent-soft); }
+.demo-intake { margin-block: var(--space-6); }
+.demo-steps { list-style: none; padding: 0; display: grid; gap: var(--space-3); color: var(--muted); }

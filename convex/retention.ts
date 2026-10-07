@@ -6,6 +6,8 @@ export const run = internalMutation({
   args: {}, returns: v.null(),
   handler: async (ctx) => {
     const now = Date.now();
+    const expiredDemos = await ctx.db.query("cases").withIndex("by_demo_expiry", q => q.gt("demo.expiresAt", 0).lte("demo.expiresAt", now)).take(100);
+    for (const item of expiredDemos) await deleteCaseData(ctx, item);
     const oldClosed = await ctx.db.query("cases").withIndex("by_purge_after", (q) => q.gt("purgeAfter", 0).lt("purgeAfter", now)).take(20);
     for (const item of oldClosed) {
       if (!item.purgeAfter || item.purgeAfter > now) continue;

@@ -20,7 +20,7 @@ const client = () => {
   return { id, secret };
 };
 const DRIVE_FILE_SCOPE = "https://www.googleapis.com/auth/drive.file";
-const scopesFor = (kind: "calendar" | "gmail" | "inbox" | "responses") => kind === "calendar" ? [CALENDAR_SCOPE] : kind === "gmail" ? [GMAIL_SCOPE, CALENDAR_SCOPE] : kind === "responses" ? [DRIVE_FILE_SCOPE] : [GMAIL_SCOPE];
+const scopesFor = (kind: "calendar" | "gmail" | "inbox" | "responses" | "demo") => kind === "demo" ? [GMAIL_SCOPE, "https://www.googleapis.com/auth/gmail.send"] : kind === "calendar" ? [CALENDAR_SCOPE] : kind === "gmail" ? [GMAIL_SCOPE, CALENDAR_SCOPE] : kind === "responses" ? [DRIVE_FILE_SCOPE] : [GMAIL_SCOPE];
 function authUrl(state: string, scopes: string[]): string {
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.search = new URLSearchParams({ client_id: client().id, redirect_uri: callbackUrl(), response_type: "code", scope: scopes.join(" "), access_type: "offline", prompt: "consent", state }).toString();
@@ -61,7 +61,7 @@ async function exchangeCode(code: string): Promise<TokenResult> {
   if (!response.ok) throw new Error("Google authorization failed");
   return await response.json() as TokenResult;
 }
-async function accessToken(encryptedRefreshToken: string): Promise<string> {
+export async function accessToken(encryptedRefreshToken: string): Promise<string> {
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ refresh_token: await decryptToken(encryptedRefreshToken), client_id: client().id, client_secret: client().secret, grant_type: "refresh_token" }),
@@ -71,7 +71,7 @@ async function accessToken(encryptedRefreshToken: string): Promise<string> {
   if (!body.access_token) throw new Error("Google connection needs to be renewed");
   return body.access_token;
 }
-async function googleJson<T>(url: string, token: string, init?: RequestInit): Promise<T> {
+export async function googleJson<T>(url: string, token: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, { ...init, headers: { Authorization: `Bearer ${token}`, ...(init?.body ? { "Content-Type": "application/json" } : {}) } });
   if (!response.ok) throw new Error(`Google API request failed (${response.status})`);
   return await response.json() as T;
@@ -79,8 +79,8 @@ async function googleJson<T>(url: string, token: string, init?: RequestInit): Pr
 
 export const finishOauth = internalAction({
   args: { code: v.string(), state: v.string() }, returns: v.any(),
-  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses"; code: string | null; sheetUrl?: string }> => {
-    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
+  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; sheetUrl?: string }> => {
+    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
     const tokens = await exchangeCode(args.code);
     if (!tokens.refresh_token || !tokens.access_token) throw new Error("Google did not grant ongoing access. Try again.");
@@ -93,7 +93,8 @@ export const finishOauth = internalAction({
       email = profile.emailAddress?.toLowerCase();
       if (!email) throw new Error("Could not verify the Gmail account");
       if (state.kind === "inbox" && email !== process.env.TICKBACK_INBOX_ADDRESS?.toLowerCase()) throw new Error("This is not the configured case inbox");
-      const allowed = state.kind === "inbox"
+      if (state.kind === "demo" && email !== process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase()) throw new Error("Choose the configured demo organiser account");
+      const allowed = state.kind === "demo" ? true : state.kind === "inbox"
         ? caseInboxAllowed(email, process.env.GEMINI_PAID_TIER === "true", process.env.GMAIL_TEST_ACCOUNTS)
         : gmailTestAllowed(email, process.env.GMAIL_TEST_ACCOUNTS);
       if (!allowed) throw new Error("This account is not on the test list");
@@ -109,24 +110,24 @@ export const finishOauth = internalAction({
 });
 
 type GmailList = { messages?: { id: string; threadId: string }[] };
-type GmailMessage = { id: string; threadId: string; internalDate?: string; snippet?: string; payload?: { mimeType?: string; body?: { data?: string }; headers?: { name: string; value: string }[]; parts?: GmailMessage["payload"][] } };
+export type GmailMessage = { id: string; threadId: string; internalDate?: string; snippet?: string; payload?: { mimeType?: string; body?: { data?: string }; headers?: { name: string; value: string }[]; parts?: GmailMessage["payload"][] } };
 const gmailBase = "https://gmail.googleapis.com/gmail/v1/users/me";
-async function listMessages(token: string, q: string): Promise<GmailList["messages"]> {
+export async function listMessages(token: string, q: string): Promise<GmailList["messages"]> {
   const url = new URL(`${gmailBase}/messages`);
   url.search = new URLSearchParams({ q, maxResults: "20" }).toString();
   return (await googleJson<GmailList>(url.toString(), token)).messages ?? [];
 }
-async function getMessage(token: string, id: string): Promise<GmailMessage> {
+export async function getMessage(token: string, id: string): Promise<GmailMessage> {
   return googleJson<GmailMessage>(`${gmailBase}/messages/${encodeURIComponent(id)}?format=full`, token);
 }
 async function getThread(token: string, id: string): Promise<GmailMessage[]> {
   const result = await googleJson<{ messages?: GmailMessage[] }>(`${gmailBase}/threads/${encodeURIComponent(id)}?format=full`, token);
   return result.messages ?? [];
 }
-function header(message: GmailMessage, name: string): string {
+export function header(message: GmailMessage, name: string): string {
   return message.payload?.headers?.find((item) => item.name.toLowerCase() === name)?.value ?? "";
 }
-function messageText(message: GmailMessage): string {
+export function messageText(message: GmailMessage): string {
   function plain(part: GmailMessage["payload"]): string | null {
     if (!part) return null;
     if (part.mimeType === "text/plain" && part.body?.data) return Buffer.from(part.body.data, "base64url").toString("utf8");
@@ -135,7 +136,7 @@ function messageText(message: GmailMessage): string {
   }
   return (plain(message.payload) ?? message.snippet ?? "").slice(0, 8_000);
 }
-function fromAddress(value: string): string { return /<([^>]+)>/.exec(value)?.[1]?.toLowerCase() ?? value.trim().toLowerCase(); }
+export function fromAddress(value: string): string { return /<([^>]+)>/.exec(value)?.[1]?.toLowerCase() ?? value.trim().toLowerCase(); }
 
 export const poll = internalAction({
   args: {}, returns: v.null(),
@@ -308,5 +309,17 @@ export const cleanupCase = internalAction({
     });
     await ctx.runMutation(internal.googleData.removeConnections, { caseId });
     return null;
+  },
+});
+
+export const beginDemo = internalAction({
+  args: {}, returns: v.object({ url: v.string() }),
+  handler: async (ctx) => {
+    if (!process.env.TICKBACK_DEMO_ADDRESS) throw new Error("Demo address is not configured");
+    const state = newState();
+    await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), kind: "demo" });
+    const url = new URL(authUrl(state, scopesFor("demo")));
+    url.searchParams.set("login_hint", process.env.TICKBACK_DEMO_ADDRESS);
+    return { url: url.toString() };
   },
 });

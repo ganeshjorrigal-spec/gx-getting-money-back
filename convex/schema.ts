@@ -20,7 +20,9 @@ export default defineSchema({
     createdAt: v.number(), updatedAt: v.number(), closedAt: v.optional(v.number()), purgeAfter: v.optional(v.number()),
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
     name: v.optional(v.string()), contact: v.optional(v.string()),
-  }).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
+    demo: v.optional(v.object({ round: v.number(), now: v.string(), expiresAt: v.number(), phase: v.union(v.literal("ready"), v.literal("waiting_organiser"), v.literal("waiting_inbox"), v.literal("timed_out")), session: v.optional(v.string()), deadline: v.optional(v.number()), bankBy: v.optional(v.string()) })),
+  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
+  demoReplies: defineTable({ caseId: v.id("cases"), messageId: v.string(), round: v.number(), status: v.union(v.literal("reserved"), v.literal("sent")), createdAt: v.number(), sentAt: v.optional(v.number()), receivedAt: v.optional(v.number()), sameThread: v.optional(v.boolean()) }).index("by_case", ["caseId"]).index("by_case_message", ["caseId", "messageId"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), createdAt: v.number(),
@@ -50,11 +52,11 @@ export default defineSchema({
   payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number() }).index("by_code", ["code"]),
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),
   googleOauthStates: defineTable({
-    stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses")),
+    stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),
     createdAt: v.number(), encryptedCaseToken: v.optional(v.string()),
   }).index("by_hash", ["stateHash"]).index("by_case", ["caseId"]),
   googleConnections: defineTable({
-    caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses")),
+    caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),
     email: v.optional(v.string()), encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), connectedAt: v.number(),
   }).index("by_case", ["caseId"]).index("by_kind", ["kind"]),
   googleCalendarEvents: defineTable({
