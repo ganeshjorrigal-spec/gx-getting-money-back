@@ -21,6 +21,8 @@
 
 ## M2.4, 7 Oct
 
+- [x] Follow-up reply date fix: newest tracked promise anchored to actual received date; explicit starts preserved; stale quoted dates/lateness excluded. Saved District case now WAIT, due 14 Oct, check-in 15 Oct. Live screenshot, 46 tests and full paid-tier eval saved.
+
 - [x] Deployed reply metadata, newest-reply AI summary and redacted key sentence.
 - [x] Verified the live District banner updates without refresh with Calendar disconnected; Seen hides it.
 - [x] Saved sanitized Convex record and screenshot in today's log; 41 tests and type check pass; M2.4 READY FOR REVIEW.

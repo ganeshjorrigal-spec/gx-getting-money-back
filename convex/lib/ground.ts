@@ -1,12 +1,46 @@
 import type { CaseRead } from "./read";
 import { dateValue, todayIST } from "../../lib/dates";
+import { latestReplyText } from "../../lib/reply-banner";
 
 const months: Record<string, string> = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
 function dateFromText(text: string, today: string): string | null {
+  const iso = /\b\d{4}-\d{2}-\d{2}\b/.exec(text)?.[0];
+  if (iso) { try { dateValue(iso); return iso; } catch { return null; } }
   const found = /\b(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*(\d{4})?\b/i.exec(text);
   if (!found) return null;
   const value = `${found[3] ?? today.slice(0, 4)}-${months[found[2].slice(0, 3).toLowerCase()]}-${found[1].padStart(2, "0")}`;
   try { dateValue(value); return value; } catch { return null; }
+}
+
+// Received dates are evidence from Gmail, not a guess based on today's date.
+export function groundTrackedReply(read: CaseRead, input: string, receivedAt: number, today = todayIST(), previous?: CaseRead): CaseRead {
+  const text = latestReplyText(input);
+  const receivedDate = todayIST(new Date(receivedAt));
+  let result = groundRead(read, text, today);
+  const duration = /\b(\d{1,2})(?:\s*(?:-|–|to)\s*(\d{1,2}))?\s+(working\s+)?days\b/i.exec(text);
+  const refundWindow = duration && /\b(refund|bank|credit|credited|reach)\b/i.test(text);
+  const explicitDeadline = /\brefund\s+(?:is\s+)?(?:due|by|on|credited\s+by)\s*:/i.test(text) || /\brefund\s+(?:is\s+)?(?:due|by|on|credited\s+by)\s+\d/i.test(text);
+  if (refundWindow && !explicitDeadline) {
+    const statedStart = /\b(?:from|starting(?:\s+on)?|after|processed\s+on|initiated\s+on|delivered\s+on|submitted\s+on)\s+(\d{4}-\d{2}-\d{2}|\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?)/i.exec(text);
+    const unknownStart = /\b(?:after|from|following)\s+(?:the\s+)?(?:approval|delivery|submission|processing|receipt|request)\b/i.test(text) && !statedStart;
+    const anchor = statedStart ? dateFromText(statedStart[1], receivedDate) : unknownStart ? null : receivedDate;
+    const days = Number(duration[2] ?? duration[1]);
+    result = {
+      ...result, messageDate: unknownStart ? null : receivedDate,
+      promise: { text: duration[0], date: null, workingDaysMax: duration[3] ? days : null, calendarDaysMax: duration[3] ? null : days, anchorDate: anchor },
+      userSaysLate: /\b(?:still|not yet)\b.{0,30}\b(?:received|arrived|credited)\b|\boverdue\b/i.test(text),
+    };
+    // A fresh initiated-refund window supersedes an earlier processed-refund claim.
+    if (/\brefund\b.{0,25}\binitiated\b|\binitiated\b.{0,25}\brefund\b/i.test(text)) {
+      result = { ...result, refundStatusClaimed: "initiated", refundProcessedDate: null, route: result.isEventTicket ? "WAIT" : result.route, questions: [] };
+    } else if (["WAIT", "OVERDUE", "NEED_INFO"].includes(result.route)) result = { ...result, route: "WAIT", questions: [] };
+  } else if (explicitDeadline) {
+    result = { ...result, messageDate: receivedDate, userSaysLate: false };
+  } else if (previous) {
+    // An acknowledgement must not restart an earlier promise's clock.
+    result = { ...result, promise: previous.promise, messageDate: previous.messageDate };
+  }
+  return result;
 }
 
 // Payment status must be stated by the person or their message. A debit alone proves neither failure nor success.

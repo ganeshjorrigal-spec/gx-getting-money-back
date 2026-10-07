@@ -7,6 +7,7 @@ Last updated: 2026-10-07, after the M2.4 live reply banner proof. M0, M1, M2, M2
 - Tracked replies store sender, received date, one-line AI summary and redacted key sentence. The top case card uses the existing live query and appears with Calendar disconnected. Seen hides it until a new reply input arrives.
 - Fixed quoted email history contaminating the banner summary and key sentence. Verified on the saved synthetic District reply without a refresh, then verified Seen hides the card.
 - Saved record and screenshot: `docs/log/2026-10-07.md`. Type check and 41 unit tests pass; the Convex deployment is live.
+- Follow-up date fix deployed: new tracked promises use the reply's received date, with explicit start dates preserved and quoted history excluded. Live District proof now waits until 14 Oct and checks in on 15 Oct. Type check, 46 unit tests and the paid-tier F1–F16 eval pass; proof in today's log.
 
 ## Live product
 

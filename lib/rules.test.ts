@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { addDays, addWorkingDays, displayDate, todayIST } from "./dates";
 import { redact } from "./redact";
 import { planCase } from "../convex/lib/plan";
-import { groundRead } from "../convex/lib/ground";
+import { groundRead, groundTrackedReply } from "../convex/lib/ground";
 import { draftForCase, draftMatchesFacts } from "../convex/lib/draft";
 import type { CaseRead } from "../convex/lib/read";
 import { buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink } from "./outbound";
@@ -23,6 +23,37 @@ const base: CaseRead = {
 };
 
 describe("date rules", () => {
+  const received = Date.parse("2026-10-06T19:00:00Z"); // 7 Oct in India.
+  it("anchors a new reply window to its received date, ignoring stale dates and quotes", () => {
+    const stale = { ...base, route: "TRACE" as const, userSaysLate: true, messageDate: "2026-09-15", refundStatusClaimed: "processed" as const, promise: { ...base.promise, anchorDate: "2026-09-15" } };
+    const read = groundTrackedReply(stale, "We have initiated your refund of ₹1,200. It should reach your bank in 3–5 working days.\nOn Wed, Oct 7 someone wrote:\n> Refund due by 15 Sep 2026.", received, "2026-10-07", stale);
+    const plan = planCase({ read, today: "2026-10-07" });
+    expect(read.messageDate).toBe("2026-10-07");
+    expect(read.promise.anchorDate).toBe("2026-10-07");
+    expect(plan.route).toBe("WAIT");
+    expect(plan.dueDate).toBe("2026-10-14");
+    expect(plan.nextStep).toBe("none");
+    expect(plan.checkins[0].date).toBe("2026-10-15");
+  });
+  it("keeps an explicitly stated start date over the reply received date", () => {
+    const read = groundTrackedReply(base, "Refund will reach your bank within 5 working days from 1 Oct 2026.", received, "2026-10-07");
+    expect(read.promise.anchorDate).toBe("2026-10-01");
+    expect(planCase({ read, today: "2026-10-07" }).dueDate).toBe("2026-10-08");
+  });
+  it("uses calendar days when the new reply does not say working", () => {
+    const read = groundTrackedReply(base, "Your refund will reach your bank in 3-5 days.", received, "2026-10-07");
+    expect(planCase({ read, today: "2026-10-07" }).dueDate).toBe("2026-10-12");
+  });
+  it("does not restart the clock for an acknowledgement", () => {
+    const previous = { ...base, promise: { ...base.promise, anchorDate: "2026-09-15" }, messageDate: "2026-09-15" };
+    const read = groundTrackedReply(base, "We are checking your booking.", received, "2026-10-07", previous);
+    expect(read.promise).toEqual(previous.promise);
+    expect(read.messageDate).toBe(previous.messageDate);
+  });
+  it("asks for an unknown conditional start instead of using the received date", () => {
+    const read = groundTrackedReply(base, "Your refund will reach your bank in 5 working days after approval.", received, "2026-10-07");
+    expect(planCase({ read, today: "2026-10-07" }).route).toBe("NEED_INFO");
+  });
   it("counts working days across two weekends", () => expect(addWorkingDays("2026-10-09", 10)).toBe("2026-10-23"));
   it("uses calendar days for failed payments", () => expect(addDays("2026-10-03", 5)).toBe("2026-10-08"));
   it("uses India time at midnight", () => expect(todayIST(new Date("2026-10-04T19:00:00Z"))).toBe("2026-10-05"));

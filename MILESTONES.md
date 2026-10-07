@@ -108,6 +108,7 @@ Acceptance checks:
 - [x] It shows whether or not Google Calendar is connected, through the existing live case query; "Seen" hides it until the next reply
 - [x] Proof: one reply on a made-up case; the saved Convex record and a screenshot of the case screen in today's log
 Live evidence: `docs/log/2026-10-07.md`, synthetic District case `TB-5QFF3L`, and `docs/qa/m2-4-reply-banner-2026-10-07.png`. Live update and Seen verified without refresh, with Calendar disconnected. Type check and 41 unit tests pass.
+Follow-up: the reply date reader now uses the actual received date for a new promise. Live proof case is WAIT, due 14 Oct, check-in 15 Oct. Evidence and screenshot in today's log; 46 unit tests and the full paid-tier F1–F16 eval pass.
 Reviewed by: pending
 
 ## M2.5. Demo organiser (after M2.4) | PROPOSED
