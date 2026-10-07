@@ -19,6 +19,12 @@
 - What failed and why: initial Convex and eval commands lacked sandbox network permission; rerunning with approved network access worked. An older synthetic case retained a wrong model date from before the date-grounding fix; a fresh case and all 12 eval fixtures passed after the fix. Local `next dev` fell back to fonts when network was denied, so the final production build was run with approved network access.
 - Next test: physical Android/iPhone handoffs and a real payment flow after a UPI VPA is supplied and the paid-launch checks are met.
 
+## M2.4, 7 Oct
+
+- [x] Deployed reply metadata, newest-reply AI summary and redacted key sentence.
+- [x] Verified the live District banner updates without refresh with Calendar disconnected; Seen hides it.
+- [x] Saved sanitized Convex record and screenshot in today's log; 41 tests and type check pass; M2.4 READY FOR REVIEW.
+
 ## Current instruction, 5 Oct
 
 - [x] M2.0: Convex static hosting at the existing development `.convex.site` address; the saved case and phone-width screens work, the Vercel demo still loads, and the raw deploy output is in today's log.

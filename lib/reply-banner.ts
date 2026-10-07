@@ -1,7 +1,13 @@
 const usefulTerms = /\b(refund|processed|initiated|credited|bank|working days?|reference|arn|rrn|utr|booking|need|unable|cannot|failed)\b/i;
 
+export function latestReplyText(text: string): string {
+  const lines = text.split(/\r?\n/);
+  const quoteStart = lines.findIndex((line) => /^\s*>/.test(line) || /^\s*On .+wrote:\s*$/i.test(line) || /^\s*-{2,}\s*(Original Message|Forwarded message)/i.test(line));
+  return (quoteStart < 0 ? lines : lines.slice(0, quoteStart)).join("\n").trim();
+}
+
 export function replyKeySentence(text: string): string {
-  const sentences = (text.replace(/\r?\n+/g, " ").match(/[^.!?]+[.!?]?/g) ?? [])
+  const sentences = (latestReplyText(text).replace(/\r?\n+/g, " ").match(/[^.!?]+[.!?]?/g) ?? [])
     .map((sentence) => sentence.trim().replace(/\s+/g, " "))
     .filter((sentence) => sentence.length > 2 && !/^(hello|hi|dear|thanks|thank you)[,.!]?$/i.test(sentence));
   const ranked = sentences.map((sentence, index) => ({ sentence, index, score: (sentence.match(new RegExp(usefulTerms.source, "gi")) ?? []).length }));

@@ -193,6 +193,9 @@ describe("user-owned actions", () => {
     expect(replyNextStepLabel("TRACE_bank", "District")).toBe("Ask your bank to trace the refund");
     expect(replyNextStepLabel("L0_chat", "BookMyShow")).toBe("Send the next chat message to BookMyShow");
   });
+  it("never uses quoted email history as the organiser's key sentence", () => {
+    expect(replyKeySentence("We have initiated your refund of ₹1,200.\nIt should reach your bank in 3–5 working days.\n\nOn Wed, Oct 7, 2026 someone wrote:\n> Please tell me the refund status, return it to my original payment method, and share the refund reference number.")).toBe("We have initiated your refund of ₹1,200.");
+  });
   it("spreads Responses Sheet retries into small batches", () => {
     expect(responseSheetSyncDelay(0)).toBe(0);
     expect(responseSheetSyncDelay(4)).toBe(0);

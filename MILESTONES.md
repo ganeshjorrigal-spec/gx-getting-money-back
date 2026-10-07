@@ -100,13 +100,14 @@ Acceptance checks:
 Live evidence: synthetic BookMyShow case `TB-N73ZMT` completed two chat reply loops. Fresh District case `TB-5QFF3L` was marked sent, its reply-all was found through the case inbox, and the case moved from `OVERDUE/L0_email` to `TRACE/TRACE_bank`. The private Responses Sheet was created with `drive.file`, shared, and verified with all 12 headers and the case row. Evidence: `docs/log/2026-10-06.md`, `docs/log/2026-10-07.md`, and `docs/qa/eval-2026-10-06.md`.
 Reviewed by: Claude HQ, 2026-10-07. Checked: type check clean and 38 unit tests pass in HQ's sandbox; the live first screen shows the optional name with its reason; the live Privacy page lists name, booking ID and contact, the Sheet, and the paid-tier Gemini line; Google scopes in code are only gmail.readonly, calendar.events.owned and drive.file; Gmail web compose and the mail-app link both carry the case-inbox CC; the named-case list is gone from the tracking path; `routeKb` auto-fills only entries with a source URL and no longer prefills addresses from the model; the paid-tier eval passed 16 of 16 with exact dates (on gemini-3.5-flash-lite, see note). Taken from Codex's log, not re-run by HQ: the District reply-all proof, the two BookMyShow chat loops, the Sheet rows. Not verified by HQ: the BookMyShow and District grievance and escalation addresses (both sites block HQ's tools), which Ganesh must spot-check before the first paid case. Notes: the live model is gemini-3.5-flash-lite, not 3.8 Flash; a real case used about 1,200 input and 700 output tokens. Addresses written in the organiser's own message are no longer prefilled; the user types them.
 
-## M2.4. Reply banner on the case screen (7 Oct) | ACTIVE
+## M2.4. Reply banner on the case screen (7 Oct) | READY FOR REVIEW
 Goal: when the case inbox matches a reply, the user sees it at the top of the case screen with the next step, without a refresh and without needing Google Calendar (D-027).
 Acceptance checks:
-- [ ] The existing reply input also stores the sender address, received date and a one-line AI summary; the inbox job, matching, calendar alert and Google permissions are unchanged
-- [ ] A "New reply from <platform>" card sits at the top of the case screen with the date, the summary, the organiser's own key sentence (redacted) and the updated next step
-- [ ] It shows whether or not Google Calendar is connected, through the existing live case query; "Seen" hides it until the next reply
-- [ ] Proof: one reply on a made-up case; the saved Convex record and a screenshot of the case screen in today's log
+- [x] The existing reply input also stores the sender address, received date and a one-line AI summary; the inbox job, matching, calendar alert and Google permissions are unchanged
+- [x] A "New reply from <platform>" card sits at the top of the case screen with the date, the summary, the organiser's own key sentence (redacted) and the updated next step
+- [x] It shows whether or not Google Calendar is connected, through the existing live case query; "Seen" hides it until the next reply
+- [x] Proof: one reply on a made-up case; the saved Convex record and a screenshot of the case screen in today's log
+Live evidence: `docs/log/2026-10-07.md`, synthetic District case `TB-5QFF3L`, and `docs/qa/m2-4-reply-banner-2026-10-07.png`. Live update and Seen verified without refresh, with Calendar disconnected. Type check and 41 unit tests pass.
 Reviewed by: pending
 
 ## M2.5. Demo organiser (after M2.4) | PROPOSED

@@ -4,6 +4,8 @@ import { v } from "convex/values";
 import type { CaseRead } from "./lib/read";
 import type { Plan } from "./lib/plan";
 import { codedSubject } from "../lib/google-tracking";
+import { redact } from "../lib/redact";
+import { replyKeySentence } from "../lib/reply-banner";
 
 export const progress = internalMutation({
   args: { caseId: v.id("cases"), runId: v.string(), step: v.string() },
@@ -16,7 +18,7 @@ export const progress = internalMutation({
 });
 
 export const applyTriage = internalMutation({
-  args: { caseId: v.id("cases"), runId: v.string(), read: v.any(), plan: v.any(), model: v.string(), latencyMs: v.number(), inputTokens: v.number(), outputTokens: v.number(), totalTokens: v.number() },
+  args: { caseId: v.id("cases"), runId: v.string(), read: v.any(), plan: v.any(), model: v.string(), latencyMs: v.number(), inputTokens: v.number(), outputTokens: v.number(), totalTokens: v.number(), replySummary: v.optional(v.string()) },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
@@ -42,7 +44,7 @@ export const applyTriage = internalMutation({
     });
     const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).order("desc").take(10);
     const replyInput = recentInputs.find((input) => input.kind === "reply" && input.runId === args.runId);
-    if (replyInput) await ctx.db.patch(replyInput._id, { summary: read.summaryForUser.trim().replace(/[\r\n]+/g, " ").slice(0, 180) });
+    if (replyInput) await ctx.db.patch(replyInput._id, { summary: redact((args.replySummary ?? read.summaryForUser).trim().replace(/[\r\n]+/g, " ")).slice(0, 240), keySentence: replyKeySentence(replyInput.text ?? "") });
     for (const checkin of plan.checkins) {
       const checkinId = await ctx.db.insert("checkins", { caseId: args.caseId, date: checkin.date, reason: checkin.reason, status: "scheduled" });
       const time = Math.max(now, Date.parse(`${checkin.date}T04:30:00.000Z`));

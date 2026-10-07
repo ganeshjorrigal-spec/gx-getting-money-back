@@ -1,6 +1,12 @@
 # Current state (owned by Codex)
 
-Last updated: 2026-10-07, after the M2.3 live reply and Responses Sheet proofs. M0, M1, M2, M2.0 and M2.1 are DONE. M2.2 and M2.3 are READY FOR REVIEW. M3 Friday work is deployed but remains outside this review because payments and physical-phone checks are still open.
+Last updated: 2026-10-07, after the M2.4 live reply banner proof. M0, M1, M2, M2.0, M2.1 and M2.3 are DONE per MILESTONES.md. M2.2 and M2.4 are READY FOR REVIEW. M3 Friday work is deployed but remains outside this review because payments and physical-phone checks are still open.
+
+## M2.4 built and verified
+
+- Tracked replies store sender, received date, one-line AI summary and redacted key sentence. The top case card uses the existing live query and appears with Calendar disconnected. Seen hides it until a new reply input arrives.
+- Fixed quoted email history contaminating the banner summary and key sentence. Verified on the saved synthetic District reply without a refresh, then verified Seen hides the card.
+- Saved record and screenshot: `docs/log/2026-10-07.md`. Type check and 41 unit tests pass; the Convex deployment is live.
 
 ## Live product
 
@@ -31,4 +37,4 @@ Last updated: 2026-10-07, after the M2.3 live reply and Responses Sheet proofs. 
 
 ## Next review
 
-Ask Claude HQ to review M2.3 using the two live synthetic cases and the Responses Sheet proof above.
+Ask Claude HQ to review M2.4 using the saved reply record and live screenshot in today's log.
