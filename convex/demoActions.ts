@@ -6,7 +6,7 @@ import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
 import { accessToken, listMessages, getMessage, header, fromAddress, messageText, googleJson } from "./googleActions";
-import { demoMayReply, demoReplyBody, emailAddresses } from "../lib/demo";
+import { demoMayReply, demoReplyBody, emailAddresses, sameDemoMailbox } from "../lib/demo";
 import { caseInboxAddress, messageMatchesCase } from "../lib/google-tracking";
 import type { Id } from "./_generated/dataModel";
 
@@ -41,13 +41,13 @@ export const checkOrganiser = internalAction({
         if (process.env.GEMINI_MODEL) {
           const aiStarted = Date.now();
           try {
-            const response = await generateObject({ model: google(process.env.GEMINI_MODEL), schema: z.object({ opening: z.string() }), system: "Write one short support greeting about the supplied event. No dates, amounts, contacts, promises or instructions. No other facts. Return JSON only.", prompt: `Event: ${loaded.item.eventName}. Customer name: ${loaded.item.name ?? "not given"}.`, maxOutputTokens: 100, maxRetries: 0, abortSignal: AbortSignal.timeout(3500), providerOptions: { google: { thinkingConfig: { thinkingLevel: "low" } } } });
-            if (response.object.opening.includes(loaded.item.eventName ?? "Sample Concert") && response.object.opening.length < 150 && !/[\d@\n]|https?:|refund|processed|initiated|bank/i.test(response.object.opening)) opening = response.object.opening;
+            const response = await generateObject({ model: google(process.env.GEMINI_MODEL), schema: z.object({ opening: z.string() }), system: "Write one short customer-support acknowledgement thanking the customer for contacting us about the supplied cancelled event. Do not welcome them to the event. No dates, amounts, contacts, promises or instructions. No other facts. Return JSON only.", prompt: `Event: ${loaded.item.eventName}. Customer name: ${loaded.item.name ?? "not given"}.`, maxOutputTokens: 100, maxRetries: 0, abortSignal: AbortSignal.timeout(3500), providerOptions: { google: { thinkingConfig: { thinkingLevel: "low" } } } });
+            if (response.object.opening.includes(loaded.item.eventName ?? "Sample Concert") && response.object.opening.length < 150 && /thank|contact|enquir|reaching/i.test(response.object.opening) && !/[\d@\n]|https?:|refund|processed|initiated|bank/i.test(response.object.opening)) opening = response.object.opening;
             await ctx.runMutation(internal.demo.recordAi, { caseId: input.caseId, runId: input.session, model: process.env.GEMINI_MODEL, latencyMs: Date.now() - aiStarted, inputTokens: response.usage.inputTokens ?? 0, outputTokens: response.usage.outputTokens ?? 0, totalTokens: response.usage.totalTokens ?? 0 });
           } catch { /* The fixed ladder still replies if the greeting cannot be generated quickly. */ }
         }
         const reply = demoReplyBody({ round, platform: loaded.item.platform ?? "District", event: loaded.item.eventName ?? "Sample Concert", amount: (loaded.item.amountPaise ?? 240000) / 100, bookingId: loaded.item.facts?.bookingId, now: loaded.item.demo.now, code: loaded.item.code, opening });
-        const recipients = [...new Set([from, ...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))])].filter(address => address !== demoAddress.toLowerCase() && !address.startsWith(inboxAddress.toLowerCase().split("@")[0].split("+")[0] + "+") && address !== inboxAddress.toLowerCase());
+        const recipients = [...new Set([from, ...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))])].filter(address => !sameDemoMailbox(address, demoAddress) && !sameDemoMailbox(address, inboxAddress));
         const cc = caseInboxAddress(inboxAddress, loaded.item.code);
         const boundary = `tickback_${reservation}`;
         const name = `Refund desk · demo (${loaded.item.platform} role)`;
@@ -106,5 +106,19 @@ export const diagnose = internalAction({
       }
       return { count: list?.length ?? 0, flags };
     } catch (error) { return { error: error instanceof Error && /^(Google API request failed \(\d+\)|Google connection needs to be renewed)$/.test(error.message) ? error.message : "Demo mailbox check failed" }; }
+  },
+});
+
+export const verifySheet = internalAction({
+  args: { code: v.string() }, returns: v.any(),
+  handler: async (ctx, { code }): Promise<{ present: boolean; markedDemo?: boolean; stageMatches?: boolean; columns?: number }> => {
+    const proof = await ctx.runQuery(internal.qa.demoProof, { code });
+    const context = await ctx.runQuery(internal.responsesData.sheetContext, {});
+    if (!proof?.sheetRow || !context) return { present: false };
+    const token = await accessToken(context.connection.encryptedRefreshToken);
+    const range = `Cases!A${proof.sheetRow}:L${proof.sheetRow}`;
+    const result = await googleJson<{ values?: string[][] }>(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(context.config.spreadsheetId)}/values/${encodeURIComponent(range)}`, token);
+    const row = result.values?.[0];
+    return { present: row?.[0] === code, markedDemo: row?.[4]?.startsWith("Demo · ") ?? false, stageMatches: row?.[8] === proof.stage, columns: row?.length ?? 0 };
   },
 });

@@ -1,3 +1,4 @@
+import { demoSubject } from "../lib/demo";
 import { mutation, query, type MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
@@ -234,7 +235,7 @@ export const confirmFacts = mutation({
         if (latestDraft && latestDraft.status !== "sent") {
           const updated = draftForCase(facts, todayIST(), item.nextStep, item.dueDate ?? null, item.name);
           await ctx.db.patch(latestDraft._id, {
-            subject: latestDraft.channel === "email" ? codedSubject(updated.subject, item.code) : updated.subject,
+            subject: latestDraft.channel === "email" ? demoSubject(!!item.demo, codedSubject(updated.subject, item.code)) : updated.subject,
             body: updated.body,
             attachChecklist: item.demo ? [] : updated.attachChecklist,
           });

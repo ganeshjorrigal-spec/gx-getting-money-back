@@ -1,0 +1,62 @@
+{
+  "closedAt": 1791380356242,
+  "code": "TB-1YUV02",
+  "createdAt": 1791379816182,
+  "demo": {
+    "expiresAt": 1791984616182,
+    "now": "2026-10-31",
+    "phase": "ready",
+    "round": 3
+  },
+  "dueDate": "2026-11-04",
+  "recoveredPaise": 240000,
+  "replies": [
+    {
+      "receivedAt": 1791380012000,
+      "savedAt": 1791380026570,
+      "text": "Hello and welcome to the Sample Concert.\n\nYour refund of ₹2,400 has been initiated. Please allow 7 to 10 working days\nfrom 7 Oct 2026 for it to reach your original payment method.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    },
+    {
+      "receivedAt": 1791380179000,
+      "savedAt": 1791380191266,
+      "text": "Thank you for contacting us about Sample Concert.\n\nPlease share your booking ID so we can locate the booking and check the\nrefund.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    },
+    {
+      "receivedAt": 1791380326000,
+      "savedAt": 1791380338153,
+      "text": "Welcome to the Sample Concert.\n\nThe refund of ₹2,400 for booking DEMO-2400 has been processed. Your refund\nreference is DEMO-1YUV02-REF. Please check your bank by 4 Nov 2026. Use\nthis reference if your bank needs to trace it.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    }
+  ],
+  "rounds": [
+    {
+      "foundAt": 1791380010847,
+      "markedSentAt": 1791380008683,
+      "readyAt": 1791380029583,
+      "receivedAt": 1791380026570,
+      "round": 1,
+      "sameThread": true,
+      "sentAt": 1791380013293
+    },
+    {
+      "foundAt": 1791380177900,
+      "markedSentAt": 1791380174289,
+      "readyAt": 1791380193652,
+      "receivedAt": 1791380191266,
+      "round": 2,
+      "sameThread": true,
+      "sentAt": 1791380180024
+    },
+    {
+      "foundAt": 1791380324697,
+      "markedSentAt": 1791380321225,
+      "readyAt": 1791380341732,
+      "receivedAt": 1791380338153,
+      "round": 3,
+      "sameThread": true,
+      "sentAt": 1791380326808
+    }
+  ],
+  "route": "TRACE",
+  "sheetRow": 45,
+  "stage": "CLOSED_LANDED"
+}

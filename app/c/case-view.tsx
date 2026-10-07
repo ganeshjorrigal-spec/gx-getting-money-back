@@ -1,5 +1,6 @@
 "use client";
 
+import { demoSubject } from "../../lib/demo";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -130,7 +131,7 @@ export default function CaseView({ code }: { code: string }) {
     const draft = drafts?.[0];
     if (!draft) return;
     setTo(draft.to ?? "");
-    setSubject(draft.subject ?? "");
+    setSubject(demoSubject(!!caseData?.demo, draft.subject ?? ""));
     setBody(draft.body ?? "");
   }, [drafts]);
   useEffect(() => {
@@ -402,7 +403,7 @@ export default function CaseView({ code }: { code: string }) {
             <div className="reply-banner-top"><div><p className="section-kicker">NEW REPLY</p><h2>New reply from {caseData.platform ?? "the organiser"}</h2></div><time dateTime={new Date(caseData.newReply.receivedAt).toISOString()}>{new Date(caseData.newReply.receivedAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" })}</time></div>
             <p className="reply-summary">{caseData.newReply.summary}</p>
             <blockquote>{caseData.newReply.keySentence}</blockquote>
-            <div className="reply-next"><span>Updated next step</span><strong>{caseData.demo?.round === 3 && caseData.dueDate ? `Check your bank by ${displayDate(caseData.dueDate)}` : replyNextStepLabel(caseData.nextStep, caseData.platform)}</strong></div>
+            <div className="reply-next"><span>Updated next step</span><strong>{caseData.demo && caseData.stage.startsWith("CLOSED") ? "Case closed" : caseData.demo?.round === 3 && caseData.dueDate ? `Check your bank by ${displayDate(caseData.dueDate)}` : replyNextStepLabel(caseData.nextStep, caseData.platform)}</strong></div>
             <button className="text-button" disabled={busy} onClick={seenReply}>Seen</button>
           </article>}
           {caseData.demo && !caseData.stage.startsWith("CLOSED") && <article className="case-card demo-story">

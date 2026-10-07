@@ -6,6 +6,7 @@ export type DemoPlatform = "bookmyshow" | "district";
 export const demoPlatformName = (platform: DemoPlatform) => platform === "bookmyshow" ? "BookMyShow" : "District";
 export const demoExpiry = (createdAt: number) => createdAt + DEMO_EXPIRY_MS;
 export const demoClockAfterSkip = (now: string, dueDate: string) => addDays(now > dueDate ? now : dueDate, 10);
+export const demoSubject = (isDemo: boolean, subject: string) => isDemo && !/^Demo\b/i.test(subject) ? `Demo: ${subject}` : subject;
 export const demoSheetPlatform = (isDemo: boolean, platform: string) => isDemo ? `Demo · ${platform}` : platform;
 export const demoPays = (isDemo: boolean, paid: boolean) => isDemo || paid;
 
@@ -16,7 +17,13 @@ export function caseRecipient(isDemo: boolean, demoAddress: string | undefined, 
 export function emailAddresses(value: string): string[] {
   return [...new Set((value.match(/[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? []).map((address) => address.toLowerCase()))];
 }
-const mailbox = (value: string) => value.toLowerCase().split("@")[0].split("+")[0] + "@" + value.toLowerCase().split("@")[1];
+const mailbox = (value: string) => {
+  const [local, domain] = value.toLowerCase().split("@");
+  const google = domain === "gmail.com" || domain === "googlemail.com";
+  const base = local.split("+")[0];
+  return (google ? base.replace(/\./g, "") : base) + "@" + (google ? "gmail.com" : domain);
+};
+export const sameDemoMailbox = (first: string, second: string) => mailbox(first) === mailbox(second);
 export function demoMayReply(input: { isDemo: boolean; code: string; subject: string; from: string; demoAddress: string; inboxAddress: string; autoSubmitted?: string; precedence?: string; suppress?: string; replies: number; expired?: boolean }): boolean {
   return input.isDemo && !input.expired && input.replies < DEMO_MAX_REPLIES
     && new RegExp(`\\[${input.code.replace(/[^A-Z0-9-]/g, "")}\\]`).test(input.subject)

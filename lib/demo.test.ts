@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { caseRecipient, demoMayReply, demoReplyBody, demoExpiry, demoPays, demoSheetPlatform, demoClockAfterSkip, emailAddresses } from "./demo";
+import { caseRecipient, demoMayReply, demoReplyBody, demoExpiry, demoPays, demoSubject, demoSheetPlatform, demoClockAfterSkip, emailAddresses } from "./demo";
 const safe = { isDemo: true, code: "TB-DEMO01", subject: "Refund [TB-DEMO01]", from: "buyer@example.com", demoAddress: "demo@example.com", inboxAddress: "cases@example.com", replies: 0 };
 describe("demo safety", () => {
   it("gives only demo cases the demo address", () => {
@@ -15,6 +15,10 @@ describe("demo safety", () => {
   });
   it("never responds to itself or the case inbox, including plus addresses", () => {
     for (const from of [safe.demoAddress, safe.inboxAddress, "cases+tb-demo01@example.com", "demo+test@example.com"]) expect(demoMayReply({ ...safe, from })).toBe(false);
+  });
+  it("recognises Gmail dot and googlemail aliases as the same inbox", () => {
+    const gmail = { ...safe, demoAddress: "demo.desk@gmail.com", inboxAddress: "case.inbox@gmail.com" };
+    for (const from of ["demodesk@gmail.com", "d.e.m.o.d.e.s.k+test@googlemail.com", "caseinbox@gmail.com", "c.a.s.e.i.n.b.o.x+test@googlemail.com"]) expect(demoMayReply({ ...gmail, from })).toBe(false);
   });
   it("never responds to auto-replies", () => {
     expect(demoMayReply({ ...safe, autoSubmitted: "auto-replied" })).toBe(false);
@@ -35,6 +39,15 @@ describe("demo safety", () => {
   it("labels demo rows in the responses sheet without changing real platforms", () => {
     expect(demoSheetPlatform(true, "District")).toBe("Demo · District");
     expect(demoSheetPlatform(false, "District")).toBe("District");
+  });
+  it("labels all demo subjects while preserving the tracking code and real subjects", () => {
+    for (const step of ["Refund for Sample Concert", "Refund follow-up", "Booking ID"]) {
+      const subject = `${step} [TB-DEMO01]`;
+      expect(demoSubject(true, subject)).toBe(`Demo: ${subject}`);
+      expect(demoMayReply({ ...safe, subject: demoSubject(true, subject) })).toBe(true);
+      expect(demoSubject(false, subject)).toBe(subject);
+    }
+    expect(demoSubject(true, "Demo: Refund [TB-DEMO01]")).toBe("Demo: Refund [TB-DEMO01]");
   });
   it("moves only the simulated clock past the promise", () => expect(demoClockAfterSkip("2026-10-07", "2026-10-21")).toBe("2026-10-31"));
   it("keeps the fixed three-round ladder and a visible footer", () => {

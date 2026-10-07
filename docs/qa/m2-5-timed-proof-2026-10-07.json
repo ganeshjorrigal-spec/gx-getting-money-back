@@ -1,0 +1,62 @@
+{
+  "closedAt": 1791380770966,
+  "code": "TB-P6XGW5",
+  "createdAt": 1791380471350,
+  "demo": {
+    "expiresAt": 1791985271350,
+    "now": "2026-10-31",
+    "phase": "ready",
+    "round": 3
+  },
+  "dueDate": "2026-11-04",
+  "recoveredPaise": 239900,
+  "replies": [
+    {
+      "receivedAt": 1791380528000,
+      "savedAt": 1791380540559,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nYour refund of ₹2,400 has been initiated. Please allow 7 to 10 working days\nfrom 7 Oct 2026 for it to reach your original payment method.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from BookMyShow."
+    },
+    {
+      "receivedAt": 1791380639000,
+      "savedAt": 1791380651133,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nPlease share your booking ID so we can locate the booking and check the\nrefund.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from BookMyShow."
+    },
+    {
+      "receivedAt": 1791380729000,
+      "savedAt": 1791380741375,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nThe refund of ₹2,400 for booking DEMO-2400 has been processed. Your refund\nreference is DEMO-P6XGW5-REF. Please check your bank by 4 Nov 2026. Use\nthis reference if your bank needs to trace it.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from BookMyShow."
+    }
+  ],
+  "rounds": [
+    {
+      "foundAt": 1791380527115,
+      "markedSentAt": 1791380514524,
+      "readyAt": 1791380543359,
+      "receivedAt": 1791380540559,
+      "round": 1,
+      "sameThread": true,
+      "sentAt": 1791380529309
+    },
+    {
+      "foundAt": 1791380638086,
+      "markedSentAt": 1791380636286,
+      "readyAt": 1791380653765,
+      "receivedAt": 1791380651133,
+      "round": 2,
+      "sameThread": true,
+      "sentAt": 1791380639936
+    },
+    {
+      "foundAt": 1791380728028,
+      "markedSentAt": 1791380725100,
+      "readyAt": 1791380745190,
+      "receivedAt": 1791380741375,
+      "round": 3,
+      "sameThread": true,
+      "sentAt": 1791380730142
+    }
+  ],
+  "route": "TRACE",
+  "sheetRow": 47,
+  "stage": "CLOSED_LANDED"
+}

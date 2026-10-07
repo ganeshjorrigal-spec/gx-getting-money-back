@@ -4,7 +4,7 @@ import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
 import { takeRate } from "./lib/rate";
 import { addDays, todayIST } from "../lib/dates";
-import { demoExpiry, demoClockAfterSkip, demoPlatformName, caseRecipient } from "../lib/demo";
+import { demoExpiry, demoClockAfterSkip, demoPlatformName, caseRecipient, demoSubject } from "../lib/demo";
 import { codedSubject } from "../lib/google-tracking";
 import { draftForCase } from "./lib/draft";
 import type { CaseRead } from "./lib/read";
@@ -46,7 +46,7 @@ export const skipAhead = mutation({
     const read = item.facts as CaseRead;
     const draft = draftForCase(read, now, "L1", item.dueDate, item.name);
     await ctx.db.patch(item._id, { demo: { ...item.demo, now }, route: "OVERDUE", nextStep: "L1", ladderLevel: 1, stage: "READY", updatedAt: Date.now() });
-    await ctx.db.insert("drafts", { caseId: item._id, step: "L1", channel: "email", to: caseRecipient(true, process.env.TICKBACK_DEMO_ADDRESS), subject: codedSubject(`Refund follow-up for ${item.eventName}`, item.code), body: draft.body, attachChecklist: [], status: "ready", createdAt: Date.now() });
+    await ctx.db.insert("drafts", { caseId: item._id, step: "L1", channel: "email", to: caseRecipient(true, process.env.TICKBACK_DEMO_ADDRESS), subject: demoSubject(true, codedSubject(`Refund follow-up for ${item.eventName}`, item.code)), body: draft.body, attachChecklist: [], status: "ready", createdAt: Date.now() });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "demo_skip", summary: "Demo clock moved 10 days past the due date; escalation ready", actor: "user", createdAt: Date.now() });
     await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
@@ -63,7 +63,7 @@ export const booking = mutation({
     const facts = { ...(item.facts as CaseRead), bookingId, questions: [] };
     await ctx.db.patch(item._id, { facts, stage: "READY", route: "OVERDUE", nextStep: "DEMO_booking", questions: [], updatedAt: Date.now() });
     await ctx.db.insert("inputs", { caseId: item._id, kind: "answer", text: `Demo booking ID: ${bookingId}`, storageIds: [], createdAt: Date.now() });
-    await ctx.db.insert("drafts", { caseId: item._id, step: "DEMO_booking", channel: "email", to: caseRecipient(true, process.env.TICKBACK_DEMO_ADDRESS), subject: codedSubject(`Booking ID for ${item.eventName}`, item.code), body: `Hello ${item.platform} team,\n\nMy booking ID is ${bookingId} for ${item.eventName}. The payment was ₹${((item.amountPaise ?? 240000) / 100).toLocaleString("en-IN")}. Please check the refund and share the reference.\n\nThank you.`, attachChecklist: [], status: "ready", createdAt: Date.now() });
+    await ctx.db.insert("drafts", { caseId: item._id, step: "DEMO_booking", channel: "email", to: caseRecipient(true, process.env.TICKBACK_DEMO_ADDRESS), subject: demoSubject(true, codedSubject(`Booking ID for ${item.eventName}`, item.code)), body: `Hello ${item.platform} team,\n\nMy booking ID is ${bookingId} for ${item.eventName}. The payment was ₹${((item.amountPaise ?? 240000) / 100).toLocaleString("en-IN")}. Please check the refund and share the reference.\n\nThank you.`, attachChecklist: [], status: "ready", createdAt: Date.now() });
     await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
   },

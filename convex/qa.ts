@@ -95,6 +95,14 @@ export const demoProof = internalQuery({
     const sent = await ctx.db.query("demoReplies").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
     const inputs = await ctx.db.query("inputs").withIndex("by_case", q => q.eq("caseId", item._id)).take(20);
     const watches = await ctx.db.query("gmailWatches").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
-    return { code, stage: item.stage, route: item.route, dueDate: item.dueDate ?? null, createdAt: item.createdAt, closedAt: item.closedAt ?? null, recoveredPaise: item.recoveredPaise ?? null, demo: { round: item.demo.round, phase: item.demo.phase, now: item.demo.now, expiresAt: item.demo.expiresAt }, rounds: sent.map(reply => ({ round: reply.round, sameThread: reply.sameThread ?? null, foundAt: reply.createdAt, sentAt: reply.sentAt ?? null, receivedAt: reply.receivedAt ?? null, markedSentAt: watches[reply.round - 1]?.sentAt ?? null })), replies: inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt).map(input => ({ text: latestReplyText(input.text ?? ""), receivedAt: input.receivedAt, savedAt: input.createdAt })) };
+    const runs = await ctx.db.query("agentRuns").withIndex("by_case", q => q.eq("caseId", item._id)).take(100);
+    const sheetRow = await ctx.db.query("responseSheetRows").withIndex("by_case", q => q.eq("caseId", item._id)).unique();
+    const replyInputs = inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt);
+    return { code, sheetRow: sheetRow?.row ?? null, stage: item.stage, route: item.route, dueDate: item.dueDate ?? null, createdAt: item.createdAt, closedAt: item.closedAt ?? null, recoveredPaise: item.recoveredPaise ?? null, demo: { round: item.demo.round, phase: item.demo.phase, now: item.demo.now, expiresAt: item.demo.expiresAt }, rounds: sent.map(reply => ({ round: reply.round, readyAt: runs.find(run => run.runId === replyInputs[reply.round - 1]?.runId && run.step === "triage" && run.status === "done")?.createdAt ?? null, sameThread: reply.sameThread ?? null, foundAt: reply.createdAt, sentAt: reply.sentAt ?? null, receivedAt: reply.receivedAt ?? null, markedSentAt: watches[reply.round - 1]?.sentAt ?? null })), replies: inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt).map(input => ({ text: latestReplyText(input.text ?? ""), receivedAt: input.receivedAt, savedAt: input.createdAt })) };
   },
+});
+
+export const recentDemos = internalQuery({
+  args: {}, returns: v.any(),
+  handler: async ctx => (await ctx.db.query("cases").withIndex("by_demo_expiry").order("desc").take(5)).filter(item => item.demo).map(item => ({ code: item.code, createdAt: item.createdAt, updatedAt: item.updatedAt, stage: item.stage, round: item.demo!.round, phase: item.demo!.phase })),
 });
