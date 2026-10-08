@@ -33,9 +33,6 @@
 - [ ] M2.2 code is deployed: CC inbox, calendar permission, Gmail opt-in, OAuth callback, encrypted tokens, 10-minute polling, calendar events and cleanup. Live Google reply/calendar test remains blocked on OAuth credentials, the separate inbox and test Gmail. Before the paid tier, only email addresses in `GMAIL_TEST_ACCOUNTS` and case codes in `GMAIL_TEST_CASE_CODES` can use Gmail tracking.
 - [x] M2.1 after M2.2: red-team and tester fixes from PRDs 08 and 10 deployed; 33 unit tests and all 16 synthetic AI fixtures pass. A fresh live venue-change case showed the correct date and grounded draft; a second case accepted a corrected refund date. Ready for HQ review; M2.2 remains active for its real Google test.
 
-## M2.5, current instruction 7 Oct
+## M2.5 handoff, 9 Oct
 
-- [x] Pull the amended D-027 contract; start after M2.4 READY FOR REVIEW.
-- [x] Connect the separate demo organiser with read/send scopes; Ganesh completed Allow, no Google sign-in by Codex.
-- [x] Build the three-round email demo, simulated skip, booking ID, bank reference, safe share, seven-day deletion and bounded 10-second checks.
-- [ ] Prove the live three-round journey, per-round times, total and screenshots; mark READY FOR REVIEW only after proof.
+Ganesh accepted the measured 3:10.731 timing exception. M2.5 is READY FOR REVIEW. Evidence is in the 7 Oct and 9 Oct logs; independent review remains with HQ. Completed M2.5 checklist cleared.
