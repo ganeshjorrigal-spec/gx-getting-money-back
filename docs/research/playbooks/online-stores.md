@@ -74,7 +74,7 @@ Payment side, in parallel or after: for scenario g1, the user's bank and then th
 
 - Store name and website.
 - Order ID and order date.
-- Payment method and amount; for scenario g, the bank debit with date and UTR or reference.
+- Payment method and amount; for scenarios g1 and g2, the bank debit with date and UTR or reference.
 - What happened: cancellation email, return request, pickup proof or failed pickup messages, delivery date versus promised date.
 - Photos of a wrong, damaged or fake product, and the unboxing if they have it.
 - The store's reply, if any, and any ticket number.
