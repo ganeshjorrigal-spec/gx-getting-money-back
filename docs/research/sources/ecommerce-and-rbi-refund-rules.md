@@ -6,7 +6,7 @@ Read by Claude HQ on 9 Oct 2026 through the built-in browser. All official gover
 
 URL: https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf
 Corrigendum G.S.R. 488(E), 4 Aug 2020, only fixes sub-clause lettering on pages 8 to 10. No wording change.
-The E-Commerce (Amendment) Rules, 2026 take effect 1 Jan 2027 (per PIB). Recheck rows 4(4), 4(5), 4(8), 4(10), 7 before then.
+A 2026 amendment effective 1 Jan 2027 is claimed in the Gemini draft (PIB). NOT VERIFIED: no official Gazette text seen yet.
 
 - Rule 2(1) Scope: these rules shall apply to: (a) all goods and services bought or sold over digital or electronic network including digital products; (b) all models of e-commerce, including marketplace and inventory models of e-commerce; (c) all e-commerce retail, including multi-channel single brand retailers and single brand retailers in single or multiple formats ...
 - Rule 3(1)(b): "e-commerce entity" means any person who owns, operates or manages digital or electronic facility or platform for electronic commerce, but does not include a seller offering his goods or services for sale on a marketplace e-commerce entity;
