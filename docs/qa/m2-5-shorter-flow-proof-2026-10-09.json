@@ -1,0 +1,62 @@
+{
+  "closedAt": 1791488785946,
+  "code": "TB-JNEC29",
+  "createdAt": 1791488595215,
+  "demo": {
+    "expiresAt": 1792093395215,
+    "now": "2026-11-02",
+    "phase": "ready",
+    "round": 3
+  },
+  "dueDate": "2026-11-05",
+  "recoveredPaise": 240000,
+  "replies": [
+    {
+      "receivedAt": 1791488640000,
+      "savedAt": 1791488652499,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nYour refund of ₹2,400 has been initiated. Please allow 7 to 10 working days\nfrom 9 Oct 2026 for it to reach your original payment method.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    },
+    {
+      "receivedAt": 1791488693000,
+      "savedAt": 1791488704832,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nPlease share your booking ID so we can locate the booking and check the\nrefund.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    },
+    {
+      "receivedAt": 1791488761000,
+      "savedAt": 1791488773158,
+      "text": "Thank you for contacting us regarding the cancelled Sample Concert.\n\nThe refund of ₹2,400 for booking DEMO-2400 has been processed. Your refund\nreference is DEMO-JNEC29-REF. Please check your bank by 5 Nov 2026. Use\nthis reference if your bank needs to trace it.\n\nRefund desk\n\nDemo reply from Tickback's demo desk, not from District."
+    }
+  ],
+  "rounds": [
+    {
+      "foundAt": 1791488639476,
+      "markedSentAt": 1791488627306,
+      "readyAt": 1791488654984,
+      "receivedAt": 1791488652499,
+      "round": 1,
+      "sameThread": true,
+      "sentAt": 1791488641295
+    },
+    {
+      "foundAt": 1791488691675,
+      "markedSentAt": 1791488679523,
+      "readyAt": 1791488707326,
+      "receivedAt": 1791488704832,
+      "round": 2,
+      "sameThread": true,
+      "sentAt": 1791488693634
+    },
+    {
+      "foundAt": 1791488759738,
+      "markedSentAt": 1791488747547,
+      "readyAt": 1791488776063,
+      "receivedAt": 1791488773158,
+      "round": 3,
+      "sameThread": true,
+      "sentAt": 1791488761940
+    }
+  ],
+  "route": "TRACE",
+  "sheetRow": 52,
+  "stage": "CLOSED_LANDED"
+}
