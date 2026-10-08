@@ -1,193 +1,118 @@
-# **Online Store Refund Playbook: India Direct-to-Consumer E-Commerce**
+# Online store refund playbook, India (v2, HQ rebuilt from official sources)
 
-## **Introduction to the Regulatory and Operational Framework**
+Status: rebuilt by Claude HQ on 9 Oct 2026 after the verifier failed the Gemini draft (`online-stores-gemini-raw.md`, `online-stores-gemini-raw-verification.md`). Every rule row quotes official text read on 9 Oct 2026; full text in `../sources/ecommerce-and-rbi-refund-rules.md`. Needs a fresh verifier pass and Ganesh's hand-check of section I before Codex uses it.
 
-The direct-to-consumer retail sector in India operates within a strict regulatory environment designed to safeguard buyer interests, ensure transparency, and mandate financial accountability. For an automated agent tasked with taking over and resolving stuck consumer refunds, relying on natural language approximations is insufficient. The agent must execute operations based on computed logic, utilizing a verified playbook stored as structured data. This logic determines the exact legal route for a refund, computes the statutory deadlines, formulates the next escalation step, and parses communication using strict regulatory anchor points.  
-The regulatory architecture governing online refunds rests on three primary pillars. The first pillar is the Consumer Protection Act of 2019, which establishes the foundational definitions of unfair trade practices and deficiencies in service1. The second pillar comprises the Consumer Protection (E-Commerce) Rules of 2020, which impose specific operational duties on digital storefronts, including the mandatory appointment of grievance officers and the strict prohibition of unilateral cancellation penalties3. It is critical to note that these 2020 rules are older than two years and must be continually monitored for superseding notifications. The government has already issued the Consumer Protection (E-Commerce) (Amendment) Rules of 2026, which will take effect on January 1, 2027, introducing stricter compliance regarding the provision of complaint copies to consumers and prohibiting bundled fees5.  
-The third pillar governs the financial mechanics of refunds. The Reserve Bank of India dictates the flow of returned capital through its Harmonisation of Turn Around Time framework for failed transactions, issued via circular DPSS.CO.PD No.629/02.01.014/2019-206. Although this circular is older than two years, its provisions have been reaffirmed by recent 2025 regulatory directions for Payment Aggregators, which explicitly mandate that all refunds must be routed back to the original method of payment8. Furthermore, the Central Consumer Protection Authority issued the Guidelines for Prevention and Regulation of Dark Patterns in 2023 to combat manipulative digital designs, such as forcing users to accept store credit instead of lawful monetary refunds10.  
-This playbook synthesizes these regulations into an exhaustive operational matrix for resolving stuck refunds on independent storefronts, contrasting their processes with those of large digital marketplaces to highlight necessary intervention points.
+Labels: VERIFIED = official government or regulator text, read 9 Oct 2026. REPORTED = secondary source or public complaints. HQ DEFAULT = a product choice, not a rule; never cited as law. NOT FOUND = looked for, not found.
 
-## **Comprehensive Analysis of Refund Scenarios and Computed Deadlines**
+## A. One-page summary
 
-The automated agent must first categorize every stuck refund into a definitive scenario. Each scenario triggers a specific computational route, dictating the regulatory source to quote, the deadline to anchor, and the evidence required from the user.
+The main lever is the **Consumer Protection (E-Commerce) Rules, 2020**. A D2C brand selling its own goods on its own website is an **inventory e-commerce entity**; the rules name single brand retailers explicitly (O01, O02). That brand must:
+- show a grievance officer, who acknowledges a complaint in 48 hours and resolves it in one month (O03, O04);
+- not refuse to take back goods or refund money when goods are defective, deficient, spurious, not as advertised, or delivered late (O09);
+- pay accepted refunds within a reasonable period, or as RBI prescribes (O06);
+- show accurate return and refund terms, and give a ticket number for each complaint (O07, O08).
 
-### **Order Cancelled and Prepaid Money Not Returned**
+RBI rules cover the money leg, with two limits the Gemini draft missed:
+- The **T+5 days and Rs 100 a day** rule covers only **failed payments**: money debited, no order confirmation. It does not cover a store refunding a completed order (O11, O12).
+- The **payment aggregator** (Razorpay, Cashfree, PayU and the like) must send refunds to the original payment method unless the payer asks otherwise (O14). This binds the aggregator, not the store.
 
-When an order is cancelled prior to shipping, the underlying contract of sale is voided. If a user cancels the order, the store's published refund policy applies to the initiation of the return. However, if the seller cancels the order unilaterally, the Consumer Protection (E-Commerce) Rules of 2020 strictly govern the action. These rules explicitly state that an e-commerce entity is prohibited from imposing cancellation charges on consumers unless similar charges are also borne by the entity due to a cancellation by a seller3.  
-Once the cancellation is confirmed, the financial reversal is governed by the Reserve Bank of India. The Harmonisation of Turn Around Time framework dictates that for card transactions or electronic payments where an account is debited but confirmation is not received, or for proactive reversals, the maximum resolution time is five working days7. The agent anchors the deadline computation to the date of cancellation plus five working days. If the money does not arrive within this window, the agent issues an escalation referencing the central bank's mandate and the associated penalty of one hundred rupees per day for delays7.
+Scenarios:
+- **a. Order cancelled, prepaid money not back.** Store cancelled: Rule 4(8) bars cancellation charges on the customer unless the store bears similar charges when it cancels (O05). Refund: O06 (reasonable period; no fixed day count). Chase with the store's own refund promise.
+- **b. Return accepted or picked up, refund not issued.** O06 plus the store's published refund terms (O07). If the goods were defective or not as advertised, O09 too.
+- **c. Pickup never happened.** No rule found that requires reverse pickup. Chase with the store's published return terms (O07), and O09 if the goods were defective.
+- **d. Wrong, damaged or fake product, return refused.** O09 directly. Strongest case.
+- **e. Cash on delivery.** No specific rule found. O09 and O06 still apply. The agent never collects bank details (Level 1); the user gives them to the store directly.
+- **f. Refund "processed" but not received.** Ask for the ARN or UTR. No regulator timeline found for this leg. Then the user's bank, then the RBI Integrated Ombudsman.
+- **g. Payment debited, order never created.** This is a failed transaction: auto-reversal within T+5 calendar days, Rs 100 a day after that, paid without a claim (O11 to O13).
+- **h. Store credit forced instead of a refund.** For defective, not-as-advertised or late goods, O09 bars refusing a refund. If the payment went through an aggregator, O14 says refunds go to the original method. No rule found that bans store credit for a simple change of mind.
+- **i. Store unresponsive or site shut.** Grievance officer (O03, O04). If none is shown, that is itself a breach of O03. Then the National Consumer Helpline (O15), then consumer commission. Card chargeback through the user's bank is the payment-side route.
 
-### **Return Accepted or Picked Up but Refund Not Issued**
+## B. Rule table
 
-In this scenario, the user has successfully surrendered the product to a logistics partner, and the merchant's warehouse has accepted the return. The primary rule governing this phase is that e-commerce entities must provide accurate information related to terms of exchange, returns, and refund processes in a clear and accessible manner4. The timeline for inspecting the product and triggering the refund relies entirely on the merchant's published policy.  
-However, the moment the merchant formally approves the return and claims to have initiated the refund, financial regulations supersede store policy. The payment aggregator processing the transaction must route the funds back to the original payment method within the five working days window stipulated by the central bank7. The agent computes the deadline by anchoring it to the date the store confirmed the return processing was complete.
+| id | scenario | rule in one plain sentence | deadline and anchor | exact quote | source | date read | label |
+|---|---|---|---|---|---|---|---|
+| O01 | all | The rules cover all online sales, including single brand retailers. | n/a | "all e-commerce retail, including multi-channel single brand retailers and single brand retailers in single or multiple formats" | E-Commerce Rules 2020, Rule 2(1)(c) | 9 Oct 2026 | VERIFIED |
+| O02 | all | A brand selling its own stock directly is an inventory e-commerce entity. | n/a | "\"inventory e-commerce entity\" means an e-commerce entity which owns the inventory of goods or services and sells such goods or services directly to the consumers and shall include single brand retailers and multi-channel single brand retailers" | E-Commerce Rules 2020, Rule 3(1)(f) | 9 Oct 2026 | VERIFIED |
+| O03 | i, all | Every online store must name a grievance officer and show their contact details on its site. | n/a | "shall appoint a grievance officer for consumer grievance redressal, and shall display the name, contact details, and designation of such officer on its platform." | E-Commerce Rules 2020, Rule 4(4) | 9 Oct 2026 | VERIFIED |
+| O04 | all | The grievance officer must acknowledge a complaint within 48 hours and resolve it within one month. | Complaint received + 48 hours; + 1 month. | "acknowledges the receipt of any consumer complaint within forty-eight hours and redresses the complaint within one month from the date of receipt of the complaint." | E-Commerce Rules 2020, Rule 4(5) | 9 Oct 2026 | VERIFIED |
+| O05 | a | A store cannot charge the customer for cancelling unless it bears similar charges when it cancels. | At cancellation. | "No e-commerce entity shall impose cancellation charges on consumers cancelling after confirming purchase unless similar charges are also borne by the e- commerce entity, if they cancel the purchase order unilaterally for any reason." | E-Commerce Rules 2020, Rule 4(8) | 9 Oct 2026 | VERIFIED |
+| O06 | a, b, e, f | Accepted refunds must be paid within a reasonable period, or as RBI or another law prescribes. No fixed day count. | Refund accepted date; no fixed deadline. | "Every e-commerce entity shall effect all payments towards accepted refund requests of the consumers as prescribed by the Reserve Bank of India or any other competent authority under any law for the time being in force, within a reasonable period of time, or as prescribed under applicable laws." | E-Commerce Rules 2020, Rule 4(10) | 9 Oct 2026 | VERIFIED |
+| O07 | b, c | A store selling its own stock must show accurate return, refund and grievance information. | n/a | "accurate information related to return, refund, exchange, warranty and guarantee, delivery and shipment, cost of return shipping, mode of payments, grievance redressal mechanism" | E-Commerce Rules 2020, Rule 7(1)(a) | 9 Oct 2026 | VERIFIED |
+| O08 | all | It must give a ticket number for each complaint. | n/a | "a ticket number for each complaint lodged, through which the consumer can track the status of their complaint." | E-Commerce Rules 2020, Rule 7(1)(f) | 9 Oct 2026 | VERIFIED |
+| O09 | b, d, h | A store selling its own stock cannot refuse a return or refund when goods are defective, deficient, spurious, not as advertised, or late (unless late due to force majeure). | n/a | "No inventory e-commerce entity shall refuse to take back goods, or withdraw or discontinue services purchased or agreed to be purchased, or refuse to refund consideration, if paid, if such goods or services are defective, deficient spurious, or if the goods or services are not of the characteristics or features as advertised or as agreed to, or if such goods or services are delivered late from the stated delivery schedule" | E-Commerce Rules 2020, Rule 7(4) | 9 Oct 2026 | VERIFIED |
+| O10 | marketplace contrast | The same duty applies to sellers on marketplaces. | n/a | "No seller offering goods or services through a marketplace e-commerce entity shall refuse to take back goods, or withdraw or discontinue services purchased or agreed to be purchased, or refuse to refund consideration, if paid, if such goods or services are defective, deficient or spurious" | E-Commerce Rules 2020, Rule 6(3) | 9 Oct 2026 | VERIFIED |
+| O11 | g | Card payment on a website debited but no order confirmation: auto-reversal within T+5 days, Rs 100 a day after that. T is the calendar date. | Payment date + 5 calendar days. | "Auto-reversal within T + 5 days." / "₹ 100/- per day of delay beyond T + 5 days." | RBI DPSS.CO.PD No.629/02.01.014/2019-20, Annex table row 2(c), cells shared with 2(b) | 9 Oct 2026 | VERIFIED |
+| O12 | g | UPI payment to a merchant debited but no confirmation: same T+5 days and Rs 100 a day. | Payment date + 5 calendar days. | "Auto-reversal within T + 5 days." / "₹100/- per day if delay is beyond T + 5 days." | Same circular, row 4(b) | 9 Oct 2026 | VERIFIED |
+| O13 | g | That compensation is paid without a claim; if not, the customer can complain to the RBI Ombudsman. | After T+5. | "Wherever financial compensation is involved, the same shall be effected to the customer's account suo moto, without waiting for a complaint or claim from the customer." | Same circular, paras 5 and 6 | 9 Oct 2026 | VERIFIED |
+| O14 | h | Payment aggregators must send refunds to the original payment method unless the payer asks otherwise. | n/a | "All refunds shall be made to the original method of payment, unless specifically instructed by the payer to credit the refund to an alternate mode belonging to the same payer." | RBI Master Direction on Payment Aggregators, 15 Sep 2025, para 10(f) | 9 Oct 2026 | VERIFIED |
+| O15 | i | The National Consumer Helpline says a grievance may take up to 30 days. A description, not a duty on the company. | NCH registration + up to 30 days. | "It may take up to a maximum of 30 days to arrive at a logical conclusion." | consumerhelpline.gov.in/public/about | 9 Oct 2026 | VERIFIED |
 
-### **Return Pickup Never Happened or Keeps Failing**
+Removed from the Gemini draft: T+5 working days for ordinary store refunds (the RBI rule covers failed payments only, and counts calendar days); the reversed cancellation-charge rule; the dark patterns "forced action" row (its definition does not cover store credit); the Consumer Protection Act 2(47) row (not needed, O09 is direct); all marketplace "T+5 working days" timelines (no source).
 
-Independent brands frequently rely on third-party logistics aggregators to manage reverse shipments. A critical failure point emerges when pickup agents falsely report that a customer was unavailable, leading to the cancellation of the return request. The law does not explicitly force a seller to provide reverse pickup services. However, if the seller's published policy promises reverse pickup, failing to execute it constitutes a deficiency in service under the Consumer Protection Act of 2019\. The agent operates by demanding strict adherence to the store's published terms, anchoring the follow-up timeline to the originally promised pickup date documented in the user's confirmation emails.
+## C. Finding a store's contacts (live lookup)
 
-### **Wrong, Damaged, or Fake Product and Seller Refuses Return**
+D2C stores are too many to list. The agent looks them up per case:
+1. Check the store's pages in this order: refund or return policy, contact page, terms of service, footer. On Shopify stores these are usually `/policies/refund-policy`, `/policies/terms-of-service`, `/pages/contact`.
+2. Look for "Grievance Officer", "Nodal Officer", a support email, and the legal entity name.
+3. Label each found contact with the page URL and date read. Only contacts seen on the store's own pages are filled in automatically (same rule as events, D-024 era).
+4. If no grievance officer is shown, say so in the escalation: Rule 4(4) requires one (O03). Use the support email.
+5. If nothing is found, ask the user to paste the address from their order email.
 
-Supplying a product that is damaged, counterfeit, or materially different from the advertised description represents a fundamental breach of the sales contract. The Consumer Protection (E-Commerce) Rules of 2020 mandate that sellers must provide guarantees related to the authenticity or genuineness of imported products and accurate information regarding warranties4. Furthermore, Section 2(47) of the Consumer Protection Act of 2019 defines an unfair trade practice as one that makes a false or misleading representation concerning the need for, or the usefulness of, any goods or services2.  
-When a seller refuses a return under these conditions, the agent immediately escalates the case to the merchant's Grievance Officer. The agent computes the deadline based on the statutory requirement for grievance resolution, asserting that providing defective goods violates federal consumer protection mandates.
+Marketplace grievance officers (Amazon, Flipkart, Myntra, Meesho, Nykaa): the Gemini rows failed verification. NOT FOUND until rechecked; marketplaces are contrast, not the first build.
 
-### **Cash on Delivery Orders and Refund Risks**
+## D. Escalation ladder
 
-Refunds for orders paid via Cash on Delivery present a structural challenge because the payment gateway cannot automatically reverse a physical cash transaction. To execute a refund, the user must manually provide bank account details or a Unified Payments Interface identifier to the merchant. The Reserve Bank of India recognizes Cash on Delivery transactions as those where banknotes are tendered at the time of delivery9.  
-The primary risk in this scenario involves typographical errors in account numbers or data privacy concerns when sharing sensitive financial information. The timeline for a cash order refund is entirely dictated by the store's internal policy, followed by standard banking transfer settlement times. The agent focuses on securely transmitting the user's verified financial details and anchoring the deadline to the merchant's stated processing timeline.
+1. Store support, by email, with order ID and evidence. Cite O09 if goods were defective or not as advertised, otherwise the store's own refund terms (O07) and O06. Ask for a ticket number (O08). Wait: HQ DEFAULT 3 days, or the store's own promised date if later.
+2. Grievance officer (O03). Must acknowledge in 48 hours, resolve in one month (O04). Check at 48 hours for the acknowledgement.
+3. National Consumer Helpline, 1915 or consumerhelpline.gov.in (O15). Up to 30 days.
+4. Consumer commission through e-Daakhil. The agent prepares, the user files.
 
-### **Refund Processed but Not Received via Banking Channels**
+Payment side, in parallel or after: for scenario g, the user's bank and then the RBI Ombudsman (O11 to O13). For f and i, the user's bank (chargeback or dispute). Chargeback windows: NOT FOUND, they vary by bank and card network.
 
-Merchants frequently claim a refund has been successfully processed by providing an Acquirer Reference Number or a Unique Transaction Reference number, yet the user's bank account shows no corresponding credit. This indicates a settlement delay within the payment network. For e-commerce card transactions, the central bank mandates automatic reversal within five working days, whereas Immediate Payment Service failures require a reversal within one working day7.  
-If the settlement timeline is breached, the user is legally entitled to compensation from the payment system operators. The agent anchors the deadline to the date the merchant generated the reference number. If the funds do not settle, the agent redirects the user to initiate a payment-side dispute with their issuing bank, utilizing the provided reference number as cryptographic proof of the pending reversal.
+## E. What the user must have
 
-### **Payment Debited but Order Never Created**
+- Store name and website.
+- Order ID and order date.
+- Payment method and amount; for scenario g, the bank debit with date and UTR or reference.
+- What happened: cancellation email, return request, pickup proof or failed pickup messages, delivery date versus promised date.
+- Photos of a wrong, damaged or fake product, and the unboxing if they have it.
+- The store's reply, if any, and any ticket number.
 
-This scenario occurs when a digital timeout disrupts the checkout process. The funds are debited from the user's account, but the merchant's system fails to register the order creation. Under the regulatory framework, this is explicitly defined as a failed transaction where the customer account is debited but confirmation is not received at the merchant system7. The resolution outer limit is strictly capped at five working days7. The agent computes the deadline by anchoring it to the exact date and time of the failed payment attempt, demanding an automatic reversal from the payment aggregator without requiring further verification from the merchant's inventory system.
+## F. How refunds get stuck (REPORTED, to fill from evidence)
 
-### **Store Credit or Coupon Forced Instead of a Refund**
+Hypotheses only, kept from the Gemini draft, until real complaints are collected:
+1. Store credit or wallet pushed instead of money.
+2. "Refund initiated" with no money, then the ticket is closed.
+3. Pickup marked "customer unavailable" and the return cancelled.
+4. Return rejected at quality check.
+5. Store says the gateway has the money; gateway says ask the store.
 
-Merchants often attempt to preserve revenue by issuing mandatory store wallets or gift cards instead of refunding liquid capital to the consumer. This practice violates multiple regulatory frameworks. The Central Consumer Protection Authority Guidelines for Prevention and Regulation of Dark Patterns of 2023 explicitly define Forced Action as forcing a user into taking an action that would require them to buy additional goods or subscribe to an unrelated service10.  
-Simultaneously, the Reserve Bank of India directions for Payment Aggregators state that all refunds shall be made to the original method of payment, unless specifically instructed by the payer to credit an alternate mode belonging to the same payer9. The agent is programmed to automatically reject forced store credit, citing these two specific regulatory clauses, and demand a direct routing of funds back to the original source account.
+## G. Dates the agent can compute
 
-### **Store Unresponsive or Website Shut Down**
+- Grievance officer acknowledgement: complaint sent + 48 hours (O04).
+- Grievance officer resolution: complaint sent + 1 month (O04).
+- Failed payment reversal (scenario g only): payment date + 5 calendar days; Rs 100 a day after that (O11, O12).
+- NCH: registration + up to 30 days (O15), described as "may take", not a deadline.
+- Everything else: the store's own promised date, read from its policy or emails, labelled as the store's promise.
 
-When a merchant ceases communication or their digital storefront is taken offline, traditional customer support escalations become futile. The escalation logic must bypass the internal hierarchy entirely. The agent drafts a final notice to the registered Grievance Officer. If the entity remains silent, the agent prepares a comprehensive docket for the user to submit to the National Consumer Helpline or the e-Daakhil consumer commission portal17. Concurrently, the agent instructs the user to immediately initiate a chargeback through their financial institution to recover the funds before the payment dispute window expires.
+## H. Open questions and NOT FOUND
 
-## **Analysis of Rule Sources for Agent Logic**
+1. **No fixed refund deadline** for ordinary store refunds: O06 says "reasonable period". The agent anchors on the store's own promise. Ganesh to decide the HQ DEFAULT for "unreasonable" (suggest: store's promise, or 7 days after return accepted if none).
+2. **Reverse pickup duty:** NOT FOUND in law.
+3. **Store credit on change of mind:** no rule found against it.
+4. **Chargeback windows:** NOT FOUND, vary by bank.
+5. **2026 amendment:** the E-Commerce (Amendment) Rules 2026 take effect 1 Jan 2027. Recheck O03 to O09 then.
+6. **Marketplace grievance officers:** NOT FOUND until rechecked.
 
-The computational logic of the agent is derived from a strict hierarchy of verified regulatory sources. The agent maps every drafted communication to a specific legal provision to ensure maximum leverage during escalations.  
-The Consumer Protection (E-Commerce) Rules of 2020 serve as the primary operational baseline. These rules mandate that every e-commerce entity must display its legal name, principal geographic address of headquarters, and all branches, alongside the name and contact details of its website4. Crucially, the rules compel merchants to appoint a Grievance Officer and clearly publish their name, designation, and contact numbers4. The rules also dictate that all contractual information required to be disclosed by law, including total price breakdowns and accurate refund terms, must be prominently displayed4. These rules will be significantly augmented by the Consumer Protection (E-Commerce) (Amendment) Rules of 2026, taking effect in 2027, which will prohibit marketplace entities from collecting bundled fees for unrelated services and mandate the provision of complaint copies to consumers5.  
-The Consumer Protection Act of 2019 provides the broader statutory authority for consumer rights. Section 2(47) is load-bearing for the agent's logic, as it defines unfair trade practices to include any false or misleading representation concerning the need for or usefulness of goods2. This section is deployed by the agent whenever a merchant misrepresents refund policies or supplies defective inventory.  
-The Central Consumer Protection Authority Guidelines for Prevention and Regulation of Dark Patterns of 2023 represent a critical tool for combating deceptive interface designs. Issued under Section 18 of the Consumer Protection Act, these guidelines prohibit practices designed to mislead or trick users by subverting consumer autonomy10. The agent specifically utilizes the definitions of Forced Action and Subscription Trap to counter merchants attempting to trap user funds in proprietary wallets or silent recurring billing cycles10.  
-Financial processing timelines rely entirely on the Reserve Bank of India framework. The Harmonisation of Turn Around Time circular, while older than two years, remains the definitive mechanism for resolving failed transactions. It establishes the mandatory five working days limit for reversing e-commerce card failures and enforces a strict daily penalty of one hundred rupees for non-compliance7. The updated 2025 regulatory directions for Payment Aggregators reinforce this by requiring aggregators to adhere to the turnaround time framework and distinctly mandating refunds to the original payment method8.  
-Finally, the National Consumer Helpline operates as the government-backed pre-litigation resolution platform. Through its Convergence Programme, over two thousand partnered companies are expected to resolve escalated grievances20. The portal establishes a maximum expected resolution timeline of thirty days from the moment a grievance is registered18. If this platform fails to yield a resolution, the e-Daakhil system provides the digital infrastructure for filing formal litigation with district consumer commissions.
+## I. Load-bearing lines (for Ganesh's hand-check)
 
-## **Live-Lookup Methodology for Contact Discovery**
-
-To automate the drafting of escalation messages, the agent must systematically parse the target merchant's digital storefront to extract mandatory legal disclosures and contact vectors.  
-The agent initiates the discovery phase by probing standard routing patterns common to platforms like Shopify and WooCommerce. It scans directories including policies slash refund policy, pages slash contact, and pages slash terms. The website footer serves as the secondary fallback for extracting baseline email addresses.  
-During the extraction phase, the agent executes regular expression searches to identify standard customer support email formats. Simultaneously, it parses the document object model for specific regulatory keywords, notably Grievance Officer or Nodal Officer, to extract the mandatory escalation contacts required by the e-commerce rules4. To identify the legal entity capable of being sued, the agent scans the terms of service and purchase invoices for formal corporate designations such as Private Limited or Limited Liability Partnership. Extracting the Goods and Services Tax Identification Number from the invoice is prioritized, as it allows the agent to conclusively determine the registered address and legal identity of the merchant.  
-A common compliance failure among independent brands is the omission of the mandated Grievance Officer details. When the agent detects this omission, it labels the finding as a direct regulatory breach of the e-commerce rules. The agent then substitutes the primary support email for the escalation routing but explicitly references the compliance failure in the drafted communication to maximize pressure on the merchant.
-
-## **User-Led Payment-Side Dispute Routes**
-
-Because the automated agent does not possess the legal authorization or credential access to interface directly with a user's banking institution, it must generate precise documentation to guide the user through independent payment-side escalations. These routes are utilized when merchant-side communication entirely breaks down.  
-The primary user-led route is the formal chargeback process. If a merchant refuses to issue a valid refund or ceases communication, the user must contact their credit or debit card issuing bank to dispute the transaction under the category of services not provided. The agent prepares a structured timeline of events and provides the necessary communication logs to serve as evidence for the bank's investigation.  
-For transactions processed through the Unified Payments Interface, the user is directed to utilize the dispute resolution mechanism built directly into their payment application. If the application provider fails to resolve the issue within the mandated turnaround time, the user can escalate the grievance through the central portal operated by the National Payments Corporation of India.  
-Additionally, users possess the regulatory right to escalate failed transactions directly to the Payment Aggregator that acquired the funds for the merchant. Payment aggregators operate under strict central bank supervision and are required to maintain independent dispute management frameworks and grievance officers8. The agent provides the user with the necessary reference numbers and regulatory citations to compel the aggregator to investigate the merchant's non-compliance.
-
-## **Data Structures and Computable Timelines**
-
-The automated agent relies on rigorous data structures to prevent misdirection. A missing or incorrect data point will halt the computation sequence, as an inaccurate legal threat is highly detrimental to the consumer's case.  
-The agent's calendar logic strictly differentiates between working days and calendar days based on the underlying regulatory source. Customer support acknowledgments are anchored to exact timestamps, tracking a forty eight hour window. Escalations to Grievance Officers are tracked using calendar days, allowing for a one month resolution window. Financial reversals governed by the central bank are calculated exclusively using working days, anchoring to the date of cancellation or return acceptance while systematically excluding weekends and recognized national banking holidays7. Government escalations through the National Consumer Helpline are tracked using a thirty day calendar window, anchored to the date the complaint is assigned to the company on the government portal18.  
-By synthesizing these precise regulatory anchors, data requirements, and operational workflows, the playbook ensures that the automated agent executes a legally sound, systematically escalating strategy to recover consumer funds trapped in the digital retail ecosystem.
-
-## **Output A: One-Page Summary**
-
-| Scenario | Responsible Entity | Deadline | Initial Agent Action |
-| :---- | :---- | :---- | :---- |
-| **Order cancelled, money not returned** | Merchant / Payment Aggregator | T+5 working days | Draft communication demanding financial reversal pursuant to central bank turnaround framework. |
-| **Return accepted, refund not issued** | Merchant / Payment Aggregator | T+5 working days from return acceptance | Draft communication citing delivery proof and central bank timeline regulations. |
-| **Return pickup never happened** | Merchant / Logistics Partner | Dictated by merchant policy | Draft communication demanding manual rescheduling of logistics pickup. |
-| **Wrong/damaged product, return refused** | Merchant | 1 month for grievance resolution | Escalate to Grievance Officer citing unfair trade practices under federal law. |
-| **Cash on delivery order refunds** | Merchant | Dictated by merchant policy | Securely transmit verified bank account details to merchant support. |
-| **Refund processed but not received** | User's Issuing Bank | T+5 working days from reference generation | Instruct user to file formal bank dispute utilizing the provided reference number. |
-| **Payment debited, order never created** | Payment Aggregator | T+5 working days | Draft communication to aggregator demanding automatic reversal of failed transaction. |
-| **Store credit or coupon forced** | Merchant | 1 month for grievance resolution | Escalate to Grievance Officer citing Dark Patterns regulations prohibiting forced action. |
-| **Store unresponsive or offline** | Grievance Officer / Regulator | 48 hours for initial acknowledgment | Bypass support, issue final notice to officer, prepare docket for government helpline. |
-
-## **Output B: Rule Table**
-
-| id | scenario | rule in one plain sentence | deadline and anchor | exact quote | source URL | page title | date read | label |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| 1 | h. Forced store credit | Refunds must be routed back to the original method of payment unless the consumer requests otherwise. | Immediate upon initiation of refund. | "All refunds shall be made to the original method of payment, unless specifically instructed by the payer to credit the refund to an alternate mode belonging to the same payer." | https\://www\.fidcindia.org.in/wp-content/uploads/2025/09/RBI-PAYMENT-AGGREGATORS-DIRECTIONS-15-09-25.pdf | RBI Payment Aggregators Directions | Oct 9, 2026 | VERIFIED |
-| 2 | h. Forced store credit | Forcing a consumer to accept unrelated services or store credit is a legally prohibited deceptive design pattern. | N/A | "Forced action mean forcing a user into taking an action that would require the user to buy any additional goods or subscribe or sign up for an unrelated service" | https\://socialwelfare.vikaspedia.in/viewcontent/social-welfare/social-awareness/consumer-education/the-guidelines-for-prevention-and-regulation-of-dark-patterns-2023?lgn=en | The Guidelines for Prevention and Regulation of Dark Patterns, 2023 | Oct 9, 2026 | VERIFIED |
-| 3 | a, b, f, g. Financial Refunds | Failed e-commerce transactions must be proactively reversed within five working days. | T+5 working days from the date of the failed transaction. | "Pro-active reversal (R) of failed transaction within a maximum of T \+ 5 days." | https\://www\.rbi.org.in/commonman/Upload/English/Notification/PDFs/CIRCULAR677EC931A7A65E4D99AA957D8E85BC0A2A.PDF | Harmonisation of Turn Around Time (TAT) | Oct 9, 2026 | VERIFIED |
-| 4 | a, b, f, g. Financial Refunds | Financial institutions must pay a daily penalty to the consumer for delaying refunds beyond the statutory limit. | Triggered after T+5 working days elapse. | "₹ 100/- per day of delay beyond T \+ 5 days" | https\://www\.rbi.org.in/commonman/Upload/English/Notification/PDFs/CIRCULAR677EC931A7A65E4D99AA957D8E85BC0A2A.PDF | Harmonisation of Turn Around Time (TAT) | Oct 9, 2026 | VERIFIED |
-| 5 | a. Order Cancelled | Merchants are prohibited from imposing cancellation fees when they unilaterally cancel a consumer order. | Immediate upon cancellation action. | "prohibited from imposing cancellation charges on consumers unless such charges are also borne by the e-commerce entities upon unilateral cancellations" | https\://www\.snrlaw.in/e-commerce-rules-2020/ | The E-Commerce Rules for 2020 \- S\&R Law | Oct 9, 2026 | VERIFIED |
-| 6 | d. Wrong product | Making false representations regarding the usefulness or need of goods constitutes an unfair trade practice. | N/A | "makes a false or misleading representation concerning the need for, or the usefulness of, any goods or services" | https\://app.draftbotpro.com/doc/53511558 | Section 2(47)(f) in Consumer Protection Act, 2019 | Oct 9, 2026 | VERIFIED |
-| 7 | All | The government helpline expects partnered entities to resolve consumer grievances within thirty days. | 30 days anchored to the registration of the grievance on the portal. | "It may take up to a maximum of 30 days to arrive at a logical conclusion." | https\://consumerhelpline.gov.in/public/about | National Consumer Helpline About Us | Oct 9, 2026 | VERIFIED |
-| 8 | All | Entities must publish contact details and accurate information regarding return and exchange processes. | N/A | "accurate information related to return, refund, exchange, warranty and guarantee, delivery and shipment" | https\://thc.nic.in/Central%20Governmental%20Rules/Consumer%20Protection%20(E-Commerce)%20Rules,%202020.pdf | Consumer Protection (E-Commerce) Rules, 2020 | Oct 9, 2026 | VERIFIED |
-| 9 | All | Entities must provide the contact details and designation of a specific officer for grievance redressal. | N/A | "the name and contact numbers, and designation of the grievance officer for consumer grievance redressal" | https\://thc.nic.in/Central%20Governmental%20Rules/Consumer%20Protection%20(E-Commerce)%20Rules,%202020.pdf | Consumer Protection (E-Commerce) Rules, 2020 | Oct 9, 2026 | VERIFIED |
-
-## **Output C: Live-Lookup Guide for Store Contacts**
-
-| Search Priority | Target URL Path | Extraction Target | Label Assignment | Handling Missing Data |
-| :---- | :---- | :---- | :---- | :---- |
-| 1 | /policies/refund-policy | Return timelines and policy constraints | POLICY\_TERMS | Flag as non-compliant if refund policy is entirely absent. |
-| 2 | /policies/terms-of-service | Registered corporate name and GSTIN | LEGAL\_ENTITY | Parse invoice documents to locate corporate identity. |
-| 3 | /pages/contact | General customer service email | SUPPORT\_EMAIL | Scan website footer for mailto links. |
-| 4 | /pages/grievance-officer | Name, designation, and direct contact of officer | GRIEVANCE\_CONTACT | Flag as E-Commerce Rules 2020 violation; substitute support email for escalation but cite the compliance failure in the text. |
-
-## **Output D: Escalation Ladder Per Scenario**
-
-| Escalation Step | Action Required | Wait Time | Legal Source Deployed |
-| :---- | :---- | :---- | :---- |
-| **1\. Primary Support Notification** | Transmit structured email to primary support address providing order details, screenshots, and demanding action based on policy. | 48 hours to 5 working days (dependent on banking turnaround rules). | Store's published return policy and central bank turnaround framework. |
-| **2\. Grievance Officer Escalation** | Transmit formal legal demand to the designated officer, copying primary support, citing failure of initial resolution. | 14 calendar days to allow for internal review before regulatory action. | Consumer Protection (E-Commerce) Rules 2020 and CCPA Dark Patterns Guidelines 2023\. |
-| **3\. National Consumer Helpline** | Prepare complete evidence docket and instruct user to submit via the government portal or SMS service. | 30 calendar days for government-facilitated mediation. | Consumer Protection Act 2019 provisions on deficiency in service. |
-| **4\. Consumer Commission Filing** | Generate comprehensive PDF dispute summary for user submission to the e-Daakhil litigation portal. | Indefinite pending court scheduling. | Formal litigation procedures under federal law. |
-
-## **Output E: Marketplace Contrast Table**
-
-| Marketplace | Refund Timeline | Escalation Path | Grievance Officer Page | Quote | Source URL | Title | Date Read | Label |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **Amazon** | T+5 working days | Customer Service to Grievance Officer (Iniyan R or Aditi Urdhwareshe) | https\://ship.amazon.in/privacy | "Name: Iniyan R. Email: grievance-officer@amazon.in." | https\://ship.amazon.in/privacy | Privacy Notice | Oct 9, 2026 | VERIFIED |
-| **Flipkart** | T+5 working days | Help Centre to Grievance Officer (Karthik R or Shreemanth M) | https\://www\.flipkart.com/pages/privacypolicy | "Mr Karthik R. Email: privacy.grievance@flipkart.com" | https\://www\.flipkart.com/pages/privacypolicy | Privacy Policy | Oct 9, 2026 | VERIFIED |
-| **Myntra** | T+5 working days | Customer Support to Grievance Officer (Arshwaal Singh) | https\://www\.myntra.com/privacypolicy | "Grievance Officer. Mr. Arshwaal Singh. Myntra Designs Pvt Ltd" | https\://www\.myntra.com/privacypolicy | Privacy Policy | Oct 9, 2026 | VERIFIED |
-| **Meesho** | T+5 working days | Care Portal to Grievance Officer (Murthy SN) | https\://www\.meesho.com/legal/privacy | "Name – Murthy S.N. email id: legalsupport@meesho.com" | https\://www\.meesho.com/legal/privacy | Privacy Policy | Oct 9, 2026 | VERIFIED |
-| **Nykaa** | T+5 working days | Support Mailbox to Grievance Officer | https\://www\.nykaa.com/investor-contact/lp | "Kindly write to support@nykaa.com only for any queries related to refunds / returns" | https\://www\.nykaa.com/investor-contact/lp | Investor Contact | Oct 9, 2026 | VERIFIED |
-
-## **Output F: Stuck Patterns in Practice**
-
-| Pattern Name | Description of Practice | Agent Countermeasure | Source Example | Label |
-| :---- | :---- | :---- | :---- | :---- |
-| **Forced Proprietary Wallets** | Merchants refuse bank transfers and force refunds into proprietary store wallets to trap consumer capital. | Immediately flag as a Forced Action dark pattern and a violation of central bank payment aggregator rules requiring original source refunds. | Review of Kwabey detailing refusal to refund to original payment method21. | REPORTED |
-| **Gateway Deflection** | Merchants claim they never received funds for failed transactions and direct users back to their banks, creating a circular deflection. | Cite the central bank turnaround framework, asserting the payment aggregator acts as the merchant's agent and statutory deadlines apply regardless of final settlement. | Secondary sources NOT FOUND in provided material. | REPORTED |
-| **Logistics Falsification** | Reverse pickup agents falsely mark consumers as unavailable, leading to merchants cancelling return requests after three arbitrary attempts. | Demand the merchant reopen the return window, establishing that the failure of their contracted logistics partner constitutes a deficiency in service. | Secondary sources NOT FOUND in provided material. | REPORTED |
-| **Quality Check Rejections** | Warehouses reject returns claiming items are used or missing tags, effectively confiscating the product and the funds. | Demand continuous, timestamped video evidence of the unboxing and inspection process from the merchant warehouse to shift the burden of proof. | Secondary sources NOT FOUND in provided material. | REPORTED |
-| **Reference Number Illusions** | Merchants generate an Acquirer Reference Number, close the support ticket, and abandon the user while settlement fails in the banking network. | Advise the user that merchant liability is technically met, and generate documentation for the user to file a direct dispute with their issuing bank. | Secondary sources NOT FOUND in provided material. | REPORTED |
-
-## **Output G: Open Questions and NOT FOUND Items**
-
-* **Explicit 48-Hour Acknowledgment Rule Text**: While it is widely understood that the Consumer Protection (E-Commerce) Rules require a 48-hour acknowledgment and 1-month resolution timeline, the exact verbatim quotation establishing these specific timeframes is NOT FOUND within the provided primary source extracts for the 2020 rules.  
-* **Reverse Pickup Obligations**: Specific statutory rules mandating that a merchant must provide and pay for reverse pickup logistics for standard returns are NOT FOUND. This remains governed entirely by the merchant's published terms of service.  
-* **Definition of Reasonable Period**: The e-commerce rules state refunds must be effected within a reasonable period. The exact statutory definition of how many days constitute a reasonable period for warehouse inspection prior to initiating the financial refund is NOT FOUND.  
-* **Stuck Pattern Evidence**: Sufficient primary or secondary source examples (three to five required) documenting widespread stuck patterns related to gateway deflection, logistics falsification, quality check rejections, and reference number illusions are NOT FOUND in the provided material, save for one instance related to forced wallets.
-
-## **Output H: Load-Bearing Lines**
-
-> 1. All refunds must be routed back to the original method of payment unless the user explicitly authorizes an alternative destination.  
-> 2. Failed electronic commerce transactions must be proactively reversed within a maximum of five working days.  
-> 3. Any delay in financial reversal beyond five working days entitles the consumer to a statutory penalty of one hundred rupees per day.  
-> 4. Merchants are strictly prohibited from imposing cancellation fees when they unilaterally void a consumer order.  
-> 5. Every digital storefront must prominently display the name and contact details of a designated Grievance Officer.  
-> 6. Grievance Officers must acknowledge the receipt of consumer complaints and drive resolution within prescribed federal timelines.  
-> 7. Deploying user interfaces that force consumers to accept store credit instead of lawful refunds is a prohibited deceptive design pattern.  
-> 8. Refusing to process a valid return for defective merchandise constitutes an unfair trade practice under federal consumer protection laws.  
-> 9. Failing to execute a published reverse pickup policy constitutes a legally actionable deficiency in service.  
-> 10. Escalations against large digital marketplaces require exhaustion of internal support portals before external executive contact is effective.
-
-#### **Works cited**
-
-> 1. Unfair Trade Practices under Consumer Protection Act, 2019, [https\://lawbhoomi.com/unfair-trade-practices-under-consumer-protection-act-2019/](https://lawbhoomi.com/unfair-trade-practices-under-consumer-protection-act-2019/)  
-> 2. Section 2(47) in Consumer Protection Act, 2019 \- Indian Kanoon, [https\://indiankanoon.org/doc/117738049/](https://indiankanoon.org/doc/117738049/)  
-> 3. Consumer Protection (E-Commerce) Rules, 2020 | Trilegal, [https\://trilegal.com/wp-content/uploads/2021/11/Consumer-Protection-E-Commerce-Rules-2020.pdf](https://trilegal.com/wp-content/uploads/2021/11/Consumer-Protection-E-Commerce-Rules-2020.pdf)  
-> 4. Consumer Protection (E-Commerce) Rules, 2020, [https\://thc.nic.in/Central%20Governmental%20Rules/Consumer%20Protection%20(E-Commerce)%20Rules,%202020.pdf](https://thc.nic.in/Central%20Governmental%20Rules/Consumer%20Protection%20\(E-Commerce\)%20Rules,%202020.pdf)  
-> 5. Consumer Protection (E-Commerce) (Amendment) Rules, 2026 \- PIB, [https\://www\.pib.gov.in/PressReleaseDetail.aspx?PRID=2308759®=48\&lang=1](https://www.pib.gov.in/PressReleaseDetail.aspx?PRID=2308759&reg=48&lang=1)  
-> 6. How to Get Faster Resolution from Your Payment Gateway Support, [https\://razorpay.com/blog/how-to-get-faster-resolution-from-your-payment-gateway-support-team-in-2026/](https://razorpay.com/blog/how-to-get-faster-resolution-from-your-payment-gateway-support-team-in-2026/)  
-> 7. All Operators and Participants of Authorised Payment Systems ... \- RBI, [https\://www\.rbi.org.in/commonman/Upload/English/Notification/PDFs/CIRCULAR677EC931A7A65E4D99AA957D8E85BC0A2A.PDF](https://www.rbi.org.in/commonman/Upload/English/Notification/PDFs/CIRCULAR677EC931A7A65E4D99AA957D8E85BC0A2A.PDF)  
-> 8. Reserve Bank of India (Regulation of Payment \- TeamLease RegTech, [https\://teamleaseregtech.com/updates/article/46661/reserve-bank-of-india-regulation-of-payment-aggregators-directions-202/](https://teamleaseregtech.com/updates/article/46661/reserve-bank-of-india-regulation-of-payment-aggregators-directions-202/)  
-> 9. Master Direction on Regulation of Payment Aggregator (PA), [https\://www\.fidcindia.org.in/wp-content/uploads/2025/09/RBI-PAYMENT-AGGREGATORS-DIRECTIONS-15-09-25.pdf](https://www.fidcindia.org.in/wp-content/uploads/2025/09/RBI-PAYMENT-AGGREGATORS-DIRECTIONS-15-09-25.pdf)  
-> 10. The Guidelines for Prevention and Regulation of Dark Patterns, 2023, [https\://socialwelfare.vikaspedia.in/viewcontent/social-welfare/social-awareness/consumer-education/the-guidelines-for-prevention-and-regulation-of-dark-patterns-2023?lgn=en](https://socialwelfare.vikaspedia.in/viewcontent/social-welfare/social-awareness/consumer-education/the-guidelines-for-prevention-and-regulation-of-dark-patterns-2023?lgn=en)  
-> 11. Guidelines for Prevention and Regulation of Dark Patterns, 2023, [https\://trilegal.com/wp-content/uploads/2023/12/Guidelines-for-Prevention-and-Regulation-of-Dark-Patterns-2023.pdf](https://trilegal.com/wp-content/uploads/2023/12/Guidelines-for-Prevention-and-Regulation-of-Dark-Patterns-2023.pdf)  
-> 12. Guidelines For Prevention And Regulation Of Dark Patterns, 2023, [https\://www\.legitquest.com/act/guidelines-for-prevention-and-regulation-of-dark-patterns-2023/E7CC](https://www.legitquest.com/act/guidelines-for-prevention-and-regulation-of-dark-patterns-2023/E7CC)  
-> 13. The E-Commerce Rules for 2020 \- S\&R Associates, [https\://www\.snrlaw.in/e-commerce-rules-2020/](https://www.snrlaw.in/e-commerce-rules-2020/)  
-> 14. Section 2(47)(f) in Consumer Protection Act, 2019 | Draft Bot Pro, [https\://app.draftbotpro.com/doc/53511558](https://app.draftbotpro.com/doc/53511558)  
-> 15. Prevention and regulation of 13 Dark Patterns in India. \- Medium, [https\://medium.com/@tanmaysongade/prevention-and-regulation-of-13-dark-patterns-in-india-7d9a4eee278a](https://medium.com/@tanmaysongade/prevention-and-regulation-of-13-dark-patterns-in-india-7d9a4eee278a)  
-> 16. Guidelines for Prevention and Regulation of Dark Patterns, 2023, [https\://www\.nls.ac.in/wp-content/uploads/2021/04/Dark-Patterns.pdf](https://www.nls.ac.in/wp-content/uploads/2021/04/Dark-Patterns.pdf)  
-> 17. Contact Details | National Consumer Helpline, [https\://consumerhelpline.gov.in/public/contact](https://consumerhelpline.gov.in/public/contact)  
-> 18. About Us | National Consumer Helpline, [https\://consumerhelpline.gov.in/public/about](https://consumerhelpline.gov.in/public/about)  
-> 19. ईपभोक्ता मामले, खाद्य और सार्वजजनक जर्तरण मंत्र, [https\://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules\_1732703966.pdf](https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf)  
-> 20. Convergence Program | National Consumer Helpline (NCH), [https\://consumerhelpline.gov.in/public/convergenceprogram](https://consumerhelpline.gov.in/public/convergenceprogram)  
-> 21. Kwabey Reviews: Customer Reviews and Ratings \- MouthShut.com, [https\://www\.mouthshut.com/product-reviews/kwabey-reviews-926052043](https://www.mouthshut.com/product-reviews/kwabey-reviews-926052043)
+1. O02, a D2C brand is an inventory e-commerce entity.
+2. O09, cannot refuse a refund for defective, not-as-advertised or late goods.
+3. O04, grievance officer: 48 hours to acknowledge, one month to resolve.
+4. O03, grievance officer must be shown on the site.
+5. O06, accepted refunds within a reasonable period (no fixed days).
+6. O05, cancellation charge rule, read the right way round.
+7. O11, failed card payment: T+5 calendar days and Rs 100 a day, failed payments only.
+8. O12, the same for UPI.
+9. O14, refunds to the original payment method (binds the aggregator).
+10. O15, NCH up to 30 days.
