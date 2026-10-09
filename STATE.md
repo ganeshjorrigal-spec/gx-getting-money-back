@@ -1,16 +1,23 @@
-# Current state (owned by Codex)
-
-Last updated: 10 October 2026. M2.6 is ACTIVE under the overnight flight prompt. Do not mark READY until morning live proofs. M2.5 READY FOR REVIEW: Ganesh accepts 3:10.731 as meeting the target, committed and pushed.
-
-## Overnight flight build
-- Steps 1–4 committed and pushed separately: sourced playbook data, flight intake/card, reply decisions, flight demo using the real reader and existing bounded inbox path.
-- Step 7 complete locally: 88 unit tests and type check pass; all 12 flight fixtures, two scope fixtures and unchanged F1–F16 pass. Static deployment and live browser proof next.
-- Paid model remains gemini-3.5-flash-lite. No Gmail sent, account login, OAuth changes or user-data deletion during this night.
-- Next: finish step 5, then annual payment and flight landing, 8+ paid flight fixtures plus F1–F16, deploy and live page proof.
-- Morning-only: real Gmail test send, three full timed flight demos, Razorpay Payment Link value, gated medical/AirSewa/source checks.
-
-## Existing product
-- Convex static site: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
-- Event flow and event demo retained. Frozen Vercel deployment/config retained; backend changes remain additive.
-- M2.4 and M2.5 READY, not DONE. Earlier proof remains in the 7 and 9 October logs.
-- Physical phone checks, real payment reconciliation, public support contact and budget alert remain open. M3/M4/T1 not advanced tonight.
+# Current state (owned by Codex)
+
+Last updated: 10 October 2026.
+
+## Milestones
+- M2.5 READY FOR REVIEW. Ganesh accepts the measured 3:10.731 run as meeting the speed target. Housekeeping committed/pushed before M2.6; not marked DONE.
+- M2.6 ACTIVE. All seven overnight flight build steps committed/pushed. Not READY until morning live proofs pass.
+
+## Working release
+- Live: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
+- Final product commit: 991dd1e. npm run deploy succeeded; 82 static files published. Home, Privacy, flight case, flight demo start and an existing event case checked live after deployment.
+- Type check and production build pass. 89 unit tests pass. FL01–FL12 plus scope fixtures FL13/FL14 pass; unchanged F1–F16 pass. Exact asserted dates, zero invented contacts; reports in docs/qa.
+- Synthetic TB-1FQG0T proves pending airline → paid travel site → bank reference with no promised date, then a user-chosen 20 Oct reminder. Saved reply opens without replacing the private key; reload works. Screenshots in docs/qa, evidence in docs/log/2026-10-10.md.
+- Flight demo TB-YVE5UI start/PNR/recipient roles and pay exclusion checked. Three Gmail rounds and timing remain untested; create fresh cases for timed proof.
+- Fixed paid gemini-3.5-flash-lite; usage counts only. Event routes/demo retained, real inbox matching/job/calendar/scopes unchanged. No Vercel deployment or config change.
+
+## For Ganesh in the morning
+1. Supply NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK in ignored .env and Convex; deploy. Pay is currently disabled. Verify actual Pay / I've paid / annual coverage / reconciliation.
+2. One real Gmail flight test send/reply-all through demo/test accounts, then three complete fresh timed flight demos with received replies and screenshots. Do not send synthetic complaints to real companies.
+3. Q10 AirSewa address check, Q11 officer spot-check, Q17 full medical paragraph (branch disabled), Q19 hand-helped intake/flag workflow. Stores not built.
+4. Physical Android/iPhone checks, real payment reconciliation, public support contact and budget alert remain open. In-app viewport override did not change the observed width, so no phone-width proof is claimed.
+
+No emails sent, account login, OAuth changes or user-data deletion tonight. M3/M4/T1 not advanced. Full morning checklist and skipped checks: docs/log/2026-10-10.md.
