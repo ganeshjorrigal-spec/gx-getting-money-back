@@ -122,7 +122,8 @@ Evidence: `docs/research/user-evidence/x-complaints.md` (29 public X complaints,
 
 ## G. Dates the agent can compute
 
-- Card refund due: cancellation date + 7 calendar days (F01). Applies to credit card only.
+- Credit card refund due: cancellation date + 7 calendar days (F01).
+- Debit card, UPI, net banking on direct bookings: check date = cancellation date + 15 working days (HQ DEFAULT, D-029; not a DGCA rule).
 - Travel-site refund due: 14 working days (F03), counted from the cancellation date as an HQ DEFAULT anchor because the CAR gives none; Monday to Friday. Holidays: see H3.
 - Look-in eligibility: now within booking time + 48 hours; for direct bookings, departure date minus booking date at least 7 days (domestic) or 15 days (international) (F05).
 - Denied boarding compensation tier: compare alternate departure with original, under 1 hour, up to 24 hours, over 24 hours (F10 to F12).
@@ -131,8 +132,8 @@ Evidence: `docs/research/user-evidence/x-complaints.md` (29 public X complaints,
 
 ## H. Open questions and NOT FOUND
 
-1. **UPI, debit card, net banking refunds:** M-II 3(a) names credit cards only. No rule found for other modes on direct bookings. Decision for HQ: apply 7 days as an HQ DEFAULT expectation, and say so plainly in messages.
-2. **Look-in for travel-site bookings:** 3(e) limits the 7 and 15 day condition to direct bookings. It is not clear whether travel-site bookings get look-in at all. Ganesh to read 3(e) and decide how the agent words it.
+1. **UPI, debit card, net banking refunds on direct bookings:** M-II 3(a) names credit cards only. DECIDED (D-029): check date 15 working days, labelled as Tickback's expectation, never cited as DGCA. A blog claim of "15 working days per DGCA" did not match the official text.
+2. **Look-in for travel-site bookings:** DECIDED (D-029): never promise it. Say the look-in duty sits on the airline and travel sites say they do not offer it. If the user bought the site's zero-cancellation add-on, chase under its terms (REPORTED until checked).
 3. **Working days:** CAR does not define them. HQ DEFAULT: Monday to Friday, ignore holidays, and say "about".
 4. **Reschedules by the airline** other than the M-IV 3.4.2 delay case: no specific refund rule found.
 5. **Yatra and ixigo grievance officers:** NOT FOUND.

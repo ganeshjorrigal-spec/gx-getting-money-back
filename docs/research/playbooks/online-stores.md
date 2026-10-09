@@ -98,7 +98,7 @@ Hypotheses only, kept from the Gemini draft, until real complaints are collected
 
 ## H. Open questions and NOT FOUND
 
-1. **No fixed refund deadline** for ordinary store refunds: O06 says "reasonable period". The agent anchors on the store's own promise. Ganesh to decide the HQ DEFAULT for "unreasonable" (suggest: store's promise, or 7 days after return accepted if none).
+1. **No fixed refund deadline** for ordinary store refunds: O06 says "reasonable period". DECIDED (D-029): check date = the store's own promised date, or 7 days after the return is accepted if none, labelled as Tickback's expectation.
 2. **Reverse pickup duty:** NOT FOUND in law.
 3. **Store credit on change of mind:** no rule found against it.
 4. **Chargeback windows:** NOT FOUND, vary by bank.
