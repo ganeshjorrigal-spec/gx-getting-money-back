@@ -104,7 +104,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {facts?.cancelledBy==="passenger"&&plan.amountOwed!==null&&<p><strong>Refund sought: Rs {plan.amountOwed.toLocaleString("en-IN")}</strong></p>}
 
- {plan.moneyWith!=="unknown"&&<p><strong>Who has your money now: {plan.moneyWith}</strong>{replyHistory?.[0]&&<> · from {facts?.reply.fromCompany??"their"} reply of {date(replyHistory[0].date)} <a href={`#flight-reply-${replyHistory[0]._id}`}>Read the reply</a></>}</p>}
+ {plan.moneyWith!=="unknown"&&<p><strong>Who has your money now: {plan.moneyWith}</strong>{replyHistory?.[0]&&<> · from {facts?.reply.fromCompany??"their"} reply of {date(replyHistory[0].date)} <button className="text-button" onClick={()=>{const element=document.getElementById(`flight-reply-${replyHistory[0]._id}`);if(element instanceof HTMLDetailsElement){element.open=true;element.scrollIntoView({behavior:"smooth",block:"center"});}}}>Read the reply</button></>}</p>}
 
  {plan.nextPerson&&<p>Next person: {plan.nextPerson.value} · {plan.nextPerson.role}, {plan.nextPerson.company} {plan.nextPerson.url&&<a href={plan.nextPerson.url} target="_blank" rel="noreferrer">Source, read {date(plan.nextPerson.readAt)}</a>}</p>}
 
