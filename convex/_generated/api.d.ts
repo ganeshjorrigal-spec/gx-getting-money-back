@@ -18,6 +18,8 @@ import type * as demo from "../demo.js";
 import type * as demoActions from "../demoActions.js";
 import type * as feedback from "../feedback.js";
 import type * as files from "../files.js";
+import type * as flightAgent from "../flightAgent.js";
+import type * as flights from "../flights.js";
 import type * as googleActions from "../googleActions.js";
 import type * as googleConnect from "../googleConnect.js";
 import type * as googleData from "../googleData.js";
@@ -55,6 +57,8 @@ declare const fullApi: ApiFromModules<{
   demoActions: typeof demoActions;
   feedback: typeof feedback;
   files: typeof files;
+  flightAgent: typeof flightAgent;
+  flights: typeof flights;
   googleActions: typeof googleActions;
   googleConnect: typeof googleConnect;
   googleData: typeof googleData;

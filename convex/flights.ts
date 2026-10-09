@@ -26,6 +26,7 @@ export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.stri
 export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string(),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight"||!item.questions?.some((q:{id:string})=>q.id===args.id))throw new Error("Question no longer available");
  const value=redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
+ if(args.id==="confirmReply"){if(value!=="Looks right")throw new Error("Paste a correction to their reply below");read.replyConfirmed=true;}
  if(["airline","bookedVia","cancellationDate","supportContactDate"].includes(args.id))Object.assign(read,{[args.id]:value});
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";
