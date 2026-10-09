@@ -1,7 +1,7 @@
 import {it,expect} from "vitest";
 import {sampleFlight} from "./flight-sample";
 import {groundFlightRead} from "./flight-ground";
-import {flightLookIn,flightWorkCount,flightSendCheckDate,planFlight} from "./flight";
+import {flightLookIn,flightWorkingDelay,flightWorkCount,flightSendCheckDate,planFlight} from "./flight";
 it("rejects made-up dates, references and model confirmation",()=>{
  const a=sampleFlight();a.reply={...a.reply,claim:"processed_reference",fromCompany:"MakeMyTrip",reference:"INVENTED",paidDate:"2026-10-01",promisedDate:"2026-10-09"};a.replyConfirmed=true;
  const r=groundFlightRead(a,"The refund is processed",a);
@@ -51,3 +51,5 @@ it("counts work from known events and ignores unrelated entries",()=>{
 
 it("never reuses an old reply date for the newest reply",()=>{const a=sampleFlight();a.reply={...a.reply,claim:"under_review",promisedDate:"2026-10-14"};expect(groundFlightRead(a,"Old promise: 14 Oct 2026. New: under review",a,false,undefined,false,"New: under review").reply.promisedDate).toBeNull();});
 it("keeps compensation-only and no-ticket failures outside the refund ladder",()=>{for(const scopeIssue of ["failed_no_ticket","compensation_only"] as const)expect(planFlight({...sampleFlight(),scopeIssue},"2026-10-10").route).toBe("OUT_OF_SCOPE");});
+
+it("counts approximate overdue working days without weekends or negative delays",()=>{expect(flightWorkingDelay("2026-09-25","2026-10-10")).toBe(10);expect(flightWorkingDelay("2026-10-09","2026-10-12")).toBe(1);expect(flightWorkingDelay("2026-10-14","2026-10-10")).toBe(0);});

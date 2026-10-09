@@ -79,11 +79,11 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  if(plan.body && item.factsConfirmedAt){
  if(plan.rung>=3&&plan.channel!=="bank"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
-   plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.map(i=>`${new Date(i.receivedAt??i.createdAt).toISOString().slice(0,10)} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");
+   plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.map(i=>`${todayIST(new Date(i.receivedAt??i.createdAt))} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");
  }await ctx.db.insert("drafts",{caseId:item._id,step:plan.nextStep,channel:plan.channel,to:plan.to??undefined,cc:plan.cc,subject:demoSubject(!!item.demo,codedSubject(plan.subject,item.code)),body:redact(plan.body)+(item.name?`\n\n${item.name}`:""),attachChecklist:item.demo?[]:["Cancellation confirmation","Booking receipt","Dated replies so far"],status:"ready",createdAt:now});await ctx.db.patch(item._id,{draftsShown:item.draftsShown+1});await ctx.db.insert("caseEvents",{caseId:item._id,type:"draft_written",summary:`Prepared ${plan.nextStep}`,actor:"agent",createdAt:now});}
  await ctx.db.insert("agentRuns",{caseId:item._id,runId:args.runId,step:"triage",model:args.model,attempt:1,status:"done",latencyMs:args.latencyMs,inputTokens:args.inputTokens,outputTokens:args.outputTokens,totalTokens:args.totalTokens,createdAt:now});
  await ctx.scheduler.runAfter(0,internal.googleActions.syncCheckins,{caseId:item._id});await ctx.scheduler.runAfter(0,internal.responsesActions.syncCase,{caseId:item._id});return null;
 }});
 
 
-export const replies=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")return [];const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(50);return inputs.filter(i=>i.kind==="reply").map(i=>({_id:i._id,text:redact(i.text??"Screenshot attached"),summary:i.summary??"",date:new Date(i.receivedAt??i.createdAt).toISOString().slice(0,10)}));}});
+export const replies=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")return [];const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(50);return inputs.filter(i=>i.kind==="reply").map(i=>({_id:i._id,text:redact(i.text??"Screenshot attached"),summary:i.summary??"",date:todayIST(new Date(i.receivedAt??i.createdAt))}));}});

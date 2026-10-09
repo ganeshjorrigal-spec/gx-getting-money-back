@@ -126,3 +126,5 @@ export function flightSendCheckDate(channel:string,today:string,promisedDate?:st
  if(channel==="bank")return validFlightDate(promisedDate)&&promisedDate!>today?promisedDate!:null;
  return addDays(today,channel==="portal"?30:7);
 }
+
+export function flightWorkingDelay(due:string|null,today:string):number {if(!validFlightDate(due)||!validFlightDate(today)||due!>=today)return 0;let n=0;for(let d=addDays(due!,1);d<=today;d=addDays(d,1)){const weekday=dateValue(d).getUTCDay();if(weekday!==0&&weekday!==6)n++;}return n;}
