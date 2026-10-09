@@ -1,77 +1,154 @@
 "use client";
+
 import Link from "next/link";
+
 import { useEffect,useState } from "react";
+
 import { useQuery,useMutation,useAction } from "convex/react";
+
 import { api } from "../../convex/_generated/api";
+
 import { type FlightRead,type FlightPlan } from "../../lib/flight";
+
 import { compressScreenshot } from "../../lib/images";
+
 import { getDeviceId,forgetCase } from "../../lib/case-link";
+
 import { todayIST,displayDate } from "../../lib/dates";
+
 import { buildGmailCompose,buildIcs } from "../../lib/outbound";
+
 import { caseInboxAddress } from "../../lib/google-tracking";
+
 import { refundRuleUrl } from "../../lib/flight-kb";
+
 import { annualGuarantee } from "../../lib/annual-pass";
+
 import { redact } from "../../lib/redact";
 
+
+
 export default function FlightCaseView({code,token}:{code:string;token:string}) {
+
  const args={code,token};const data=useQuery(api.cases.get,args);const drafts=useQuery(api.cases.drafts,args);const timeline=useQuery(api.cases.timeline,args);const tracking=useQuery(api.googleConnect.status,args);
+
  const confirm=useMutation(api.flights.confirm),answer=useMutation(api.flights.answer),sent=useMutation(api.cases.markSent),addReply=useMutation(api.cases.addReply),close=useMutation(api.cases.answerCheckin),seen=useMutation(api.cases.markReplySeen),retry=useMutation(api.cases.retry);
+
  const [received,setReceived]=useState("");
+
  const fare=useMutation(api.flights.fare);
+
  const [baseFare,setBaseFare]=useState(""),[fuel,setFuel]=useState(""),[charge,setCharge]=useState(""),[taxesReturned,setTaxesReturned]=useState(false);
+
  const claimAnnual=useMutation(api.annualPayments.claim),restoreAnnual=useMutation(api.annualPayments.restore);
+
  const counts=useQuery(api.flights.workCount,args),replyHistory=useQuery(api.flights.replies,args);
+
  const openedDraft=useMutation(api.flights.opened),reminder=useMutation(api.flights.reminder),uploadUrl=useMutation(api.files.generateUploadUrl),feedback=useMutation(api.feedback.send),remove=useMutation(api.cases.remove);
+
  const [picture,setPicture]=useState<File|null>(null),[reminderDate,setReminderDate]=useState(""),[feedbackText,setFeedbackText]=useState(""),[feedbackDone,setFeedbackDone]=useState(false);
+
  const beginCalendar=useAction(api.googleActions.begin),disconnectGoogle=useAction(api.googleActions.disconnect);
+
  const skipDemo=useMutation(api.demo.skipAhead),retryDemo=useMutation(api.demo.retry);
+
  const [pnr,setPnr]=useState(""),[bookingId,setBooking]=useState(""),[contact,setContact]=useState(""),[busy,setBusy]=useState(false),[error,setError]=useState(""),[reply,setReply]=useState(""),[correction,setCorrection]=useState(""),[correcting,setCorrecting]=useState(false),[answerValue,setAnswerValue]=useState(""),[recipient,setRecipient]=useState(""),[opened,setOpened]=useState(false);
+
  useEffect(()=>{if(data?.facts){setPnr(data.facts.pnr??"");setBooking(data.facts.bookingId??"");}},[data?.factsConfirmedAt]);
+
  if(!data)return <main className="case-shell"><p>Opening your case…</p></main>;
+
  const facts=data.facts as FlightRead|null,plan=data.flightPlan as FlightPlan|null,draft=drafts?.[0];
+
  const inbox=tracking?.inboxAddress?caseInboxAddress(tracking.inboxAddress,code):"";
+
  const cc=[...(draft?.cc??[]),inbox].filter(Boolean).join(",");
+
  const date=(d:string|null|undefined)=>d?displayDate(d):"Not given";
+
  const run=async(fn:()=>Promise<unknown>)=>{if(busy)return;setBusy(true);setError("");try{await fn();}catch(e){setError(e instanceof Error?e.message:"Please try again.");}finally{setBusy(false);}};
- const checkDate=plan?.checkDate??data.checkin?.date??data.dueDate;
+
+ const checkDate=plan?.checkDate??data.checkin?.date??(data.route==="WAIT"?data.dueDate:null);
+
  const checkDue=!!checkDate&&(data.demo?.now??todayIST())>=checkDate;
+
  const waiting=busy||data.stage==="TRIAGING";
+
  return <main className="case-shell flight-case"><header className="site-header"><Link className="wordmark" href="/">Tickback<span className="wordmark-dot">.</span></Link><Link className="text-link" href="/start">Start another case</Link></header><div className="case-wrap">
+
  <p>{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>
+
  <p>{tracking?.firstSent&&tracking?.configured?"Reply tracking is on through the case inbox.":"Reply tracking is off until you mark your first email sent."}</p>
+
  {error&&<p role="alert" className="error-banner">{error}</p>}
+
  {waiting?<section className="case-card progress-card" role="status"><span className="spinner" aria-hidden="true"/><h2>Reading your message…</h2><ol>{["Reading your message","Finding who owes it","Working out your date","Writing your next step"].map((label,i)=><li key={label} className={i<["reading","route","date","writing"].indexOf(data.progress?.step??"reading")?"progress-done":""}>{i<["reading","route","date","writing"].indexOf(data.progress?.step??"reading")?"✓ ":""}{label}</li>)}</ol></section>:<>
+
  {data.newReply&&<section className="case-card new-reply-card"><h2>New reply from {facts?.reply.fromCompany??data.platform}</h2><p>{date(new Date(data.newReply.receivedAt).toISOString().slice(0,10))}</p><p>{data.newReply.summary}</p><blockquote>{data.newReply.keySentence}</blockquote><p>{plan?.note||`Who owes you: ${plan?.owner}`}</p><button className="text-button" disabled={busy} onClick={()=>run(()=>seen({...args,inputId:data.newReply!._id}))}>Seen</button></section>}
+
  {data.demo&&<p>The companies are pretend. Everything Tickback does is real.</p>}
+
  {data.route==="NEED_INFO"?<section className="case-card"><h2>Need a bit more</h2>{data.questions.map((q:{id:string;text:string;options:string[]})=><div key={q.id}><label htmlFor={`answer-${q.id}`}>{q.text}</label><div className="situation-list">{q.options.map(value=><button className="situation-chip" key={value} disabled={busy} onClick={()=>{if(value==="Other"){document.getElementById(`answer-${q.id}`)?.focus();return;}if(value==="Not quite"||value==="Not clear"){setCorrecting(true);return;}void run(()=>answer({...args,id:q.id,value}));}}>{value==="passenger"?(q.id==="cancelledBy"?"I did":"Me, original payment method"):value==="direct"?"Airline website or app":value==="unknown"?"Not sure":value.replaceAll("_"," ")}</button>)}</div>{q.id==="taxes"?<><input aria-label="Taxes and airport fees, rupees" type="number" min="0" value={answerValue} onChange={e=>setAnswerValue(e.target.value)}/><label>Basic fare (optional)<input type="number" min="0" value={baseFare} onChange={e=>setBaseFare(e.target.value)}/></label><label>Fuel surcharge (optional)<input type="number" min="0" value={fuel} onChange={e=>setFuel(e.target.value)}/></label><label>Cancellation charge (optional)<input type="number" min="0" value={charge} onChange={e=>setCharge(e.target.value)}/></label><label><input type="checkbox" checked={taxesReturned} onChange={e=>setTaxesReturned(e.target.checked)}/> My taxes and airport fees already came back</label><p>Include UDF, ADF and PSF in taxes and fees. A disclosed agent fee is outside the cap. We only calculate an excess charge if basic fare, fuel and charge are all supplied.</p><button disabled={busy||!answerValue} onClick={()=>run(()=>fare({...args,taxes:Number(answerValue),baseFare:baseFare?Number(baseFare):undefined,fuel:fuel?Number(fuel):undefined,cancellationCharge:charge?Number(charge):undefined,taxesReturned}))}>Use this breakdown</button></>:(!q.options.length||q.options.includes("Other"))&&<><input id={`answer-${q.id}`} value={answerValue} onChange={e=>setAnswerValue(e.target.value)}/><button disabled={busy||!answerValue.trim()} onClick={()=>run(async()=>{await answer({...args,id:q.id,value:answerValue});setAnswerValue("");})}>Continue</button></>}</div>)}{correcting&&<><label htmlFor="reply-correction">What did Tickback read wrong?</label><textarea id="reply-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(async()=>{await confirm({...args,pnr,correction});setCorrecting(false);setCorrection("");})}>Read my correction</button></>}</section>:null}
+
  {facts&&!data.factsConfirmedAt&&!data.stage.startsWith("CLOSED")&&data.route!=="NEED_INFO"&&<section className="case-card"><h2>What we understood</h2><p>{facts.airline} · {facts.bookedVia==="direct"?"Booked direct":facts.bookedVia} · {facts.paymentMethod.replace("_"," ")} · Cancelled {date(facts.cancellationDate)}</p>
+
  <label htmlFor="flight-pnr">{data.demo?"PNR (demo: any made-up PNR works)":"PNR"}</label><input id="flight-pnr" value={pnr} maxLength={30} onChange={e=>setPnr(e.target.value)}/>{data.demo&&<button className="text-button" onClick={()=>setPnr("DEMO123")}>Use a sample PNR</button>}
+
  {facts.bookedVia!=="direct"&&<><label htmlFor="flight-booking">Travel-site booking ID (if you have it)</label><input id="flight-booking" value={bookingId} onChange={e=>setBooking(e.target.value)}/></>}
+
  <label htmlFor="flight-contact">Phone or email (optional)</label><input id="flight-contact" value={contact} onChange={e=>setContact(e.target.value)}/><p>So Ganesh can follow up.</p>
+
  {correcting?<><label htmlFor="flight-correction">What should we change?</label><textarea id="flight-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(()=>confirm({...args,pnr,correction}))}>Read the correction</button></>:<><button className="button button-primary" disabled={busy||!pnr.trim()} onClick={()=>run(()=>confirm({...args,pnr,bookingId,contact}))}>Looks right</button><button className="text-button" onClick={()=>setCorrecting(true)}>Not quite</button></>}</section>}
+
  {plan&&data.route!=="NEED_INFO"&&<section className="case-card" aria-label="Who owes you"><h2>Who owes you</h2><h3>{plan.owner}</h3><p>{facts?.bookedVia!=="direct"?"You booked on a travel site, so the airline is responsible for your refund.":"You booked direct, so the airline is responsible for your refund."}</p><h3>{data.route==="OUT_OF_SCOPE"?"Outside this flow":data.route==="TRACE"?"Left them, not with you yet":data.route==="WAIT"?"On its way":data.route==="NO_ROUTE"?"The other side is right":plan.dueSource==="estimate"?"Time to check":"Overdue"}</h3><p>{plan.dueDate?`Due ${date(plan.dueDate)}`:"No automatic bank date. Pick your reminder date."}</p><p>{plan.dueSourceText}</p>{plan.ruleId&&<a className="text-link" href={plan.ruleId==="F22"?(facts?.bookedVia==="Goibibo"?"https://www.goibibo.com/info/user-agreement/":"https://www.makemytrip.com/legal/in/eng/user_agreement.html"):refundRuleUrl} target="_blank" rel="noreferrer">{plan.ruleId==="F22"?"Read the company refund terms":"Read the DGCA refund rule"}</a>}
+
  {facts?.cancelledBy==="passenger"&&plan.amountOwed!==null&&<p><strong>Refund sought: Rs {plan.amountOwed.toLocaleString("en-IN")}</strong></p>}
- {plan.moneyWith!=="unknown"&&<p><strong>Who has your money now: {plan.moneyWith}</strong>{replyHistory?.[0]&&<> � from {facts?.reply.fromCompany??"their"} reply of {date(replyHistory[0].date)} <a href={`#flight-reply-${replyHistory[0]._id}`}>Read the reply</a></>}</p>}
- {plan.nextPerson&&<p>Next person: {plan.nextPerson.value} · {plan.nextPerson.company} {plan.nextPerson.url&&<a href={plan.nextPerson.url} target="_blank" rel="noreferrer">Source, read {date(plan.nextPerson.readAt)}</a>}</p>}
- {plan.above&&<p>Above them: {plan.above.value} · {plan.above.company}</p>}{plan.note&&<p>{plan.note}</p>}</section>}
+
+ {plan.moneyWith!=="unknown"&&<p><strong>Who has your money now: {plan.moneyWith}</strong>{replyHistory?.[0]&&<> · from {facts?.reply.fromCompany??"their"} reply of {date(replyHistory[0].date)} <a href={`#flight-reply-${replyHistory[0]._id}`}>Read the reply</a></>}</p>}
+
+ {plan.nextPerson&&<p>Next person: {plan.nextPerson.value} · {plan.nextPerson.role}, {plan.nextPerson.company} {plan.nextPerson.url&&<a href={plan.nextPerson.url} target="_blank" rel="noreferrer">Source, read {date(plan.nextPerson.readAt)}</a>}</p>}
+
+ {plan.above&&<p>Above them: {plan.above.value} · {plan.above.role}, {plan.above.company}</p>}{plan.note&&<p>{plan.note}</p>}</section>}
+
  {!data.demo&&!data.handHelped&&data.factsConfirmedAt&&!data.stage.startsWith("CLOSED")&&<section className="case-card price-card" aria-label="Annual payment"><h2>{data.annualPaid?"Your year is covered":"Rs 49 a year"}</h2>{data.annualPaid?<><p>Every case through {date(new Date(data.annualUntil!).toISOString().slice(0,10))}.</p><button className="text-button" disabled={busy} onClick={()=>run(()=>restoreAnnual({...args,deviceId:getDeviceId()}))}>Use my year on this device</button></>:<><p>{annualGuarantee}</p><p>Checking, your date and first step are free. Stay on every case for the year: replies, follow-ups and escalation steps. Ganesh checks payments daily.</p>{data.razorpayLink?<><a className="button button-primary" href={data.razorpayLink} target="_blank" rel="noreferrer">Pay Rs 49 for a year</a><p>Add {code} in the payment note.</p><button className="text-button" disabled={busy} onClick={()=>run(()=>claimAnnual({...args,deviceId:getDeviceId()}))}>I've paid</button></>:<><button className="button button-primary" disabled>Pay Rs 49 for a year</button><p>The payment link is being set up. Your first step is free.</p></>}</>}</section>}
+
  {data.factsConfirmedAt&&draft&&draft.body===null&&<section className="case-card"><h2>Your next message is ready</h2><p>The annual plan unlocks follow-ups. Your route and date remain visible.</p></section>}
+
  {data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<section className="case-card"><h2>Your next {draft.channel==="email"?"mail":"step"}</h2>
+
  {draft.channel==="email"&&<><p>To: {draft.to||"Paste the address from the company's own page"}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<p>CC: {cc}</p><p>{draft.subject}</p></>}
+
  <pre className="flight-message">{draft.body}</pre><ul>{draft.attachChecklist.map((line:string)=><li key={line}>{line}</li>)}</ul>
+
  {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",draft.body??"",cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",draft.body??"",cc).copyFirst)void navigator.clipboard.writeText(draft.body??"").catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
+
  <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(draft.body??"");await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button><p>Add this address in CC: {inbox}</p><button className="text-button" onClick={()=>run(()=>navigator.clipboard.writeText(inbox))}>Copy CC address</button>
+
  <p>You send it yourself. Tickback never sends your mail.</p>{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
+
  {data.demo?.kind === "flight" && data.demo.round === 3 && data.demo.phase === "ready" && data.dueDate && data.demo.now < data.dueDate && <button className="button button-primary" disabled={busy} onClick={()=>run(()=>skipDemo(args))}>Skip to the bank check date</button>}
+
  {data.demo?.phase === "timed_out" && <section className="case-card"><p>The demo check stopped after its time limit.</p><button disabled={busy} onClick={()=>run(()=>retryDemo(args))}>Check again</button></section>}
+
  {data.demo?.phase.startsWith("waiting")&&<section className="case-card" role="status"><span className="spinner"/><h2>Waiting for {data.demo.round===1?"Demo Air":"DemoTrips"}'s reply…</h2><ol><li>Checking the demo inbox</li><li>Reading the reply</li><li>Updating your next step</li></ol></section>}
+
  {checkDate&&!data.stage.startsWith("CLOSED")&&<section className="case-card"><h2>Your check-in: {date(checkDate)}</h2><p>{plan?.route==="TRACE"?"The company’s bank date, unless you picked your own reminder.":"Tickback's expectation for the next follow-up; not an official deadline."}</p><button className="text-button" onClick={()=>{const content=buildIcs({code,date:checkDate,title:"Tickback refund check-in",description:`Return to your private case: ${location.href}`,domain:location.hostname,checkinId:checkDate});const url=URL.createObjectURL(new Blob([content],{type:"text/calendar;charset=utf-8"}));const link=document.createElement("a");link.href=url;link.download=`tickback-${code}.ics`;link.click();URL.revokeObjectURL(url);}}>Download one-time calendar reminder</button></section>}
+
  {plan?.route==="TRACE"&&!plan.checkDate&&!data.stage.startsWith("CLOSED")&&<section className="case-card"><h2>Remind me on a date I pick</h2><p>No regulator bank timeline is held. This date is your choice.</p><input aria-label="Bank reminder date" type="date" value={reminderDate} onChange={e=>setReminderDate(e.target.value)}/><button disabled={busy||!reminderDate} onClick={()=>run(()=>reminder({...args,date:reminderDate}))}>Set my reminder</button></section>}
+
  {tracking?.firstSent&&!data.demo&&!data.stage.startsWith("CLOSED")&&<section className="case-card"><h2>Keep the reply alert live</h2><p>A live reply alert needs Google Calendar permission. A downloaded calendar file is only a one-time reminder.</p>{!tracking.calendar&&<button onClick={()=>run(async()=>{const url=await beginCalendar({...args,kind:"calendar"});window.location.assign(url.url);})}>Connect Google Calendar</button>}{tracking.calendar&&<><p>Google Calendar is connected.</p><button disabled={busy} onClick={()=>run(()=>disconnectGoogle(args))}>Disconnect Google</button></>}{tracking.gmailReady&&!tracking.gmail&&<button disabled={busy} onClick={()=>run(async()=>{const result=await beginCalendar({...args,kind:"gmail"});window.location.assign(result.url);})}>Connect Gmail (test accounts only)</button>}<p>If they replied only to you, paste it here.</p></section>}
+
  {(data.stage==="CLOSED_NO_ROUTE"||data.stage==="CLOSED_OUT_OF_SCOPE"||!data.stage.startsWith("CLOSED")&&data.factsConfirmedAt)&&<section className="case-card"><h2>{data.stage.startsWith("CLOSED")?"New evidence? Paste it to re-open this case.":checkDue?`Has your Rs ${(data.amountPaise??0)/100} landed?`:"They replied?"}</h2><label htmlFor="flight-reply">Paste their reply</label><textarea id="flight-reply" value={reply} onChange={e=>setReply(e.target.value)} maxLength={8000}/><label htmlFor="flight-reply-picture">Or add a screenshot (crop bank details first)</label><input id="flight-reply-picture" type="file" accept="image/*" onChange={e=>setPicture(e.target.files?.[0]??null)}/><button disabled={busy||(!reply.trim()&&!picture)} onClick={()=>run(async()=>{const storageIds=[];if(picture){const blob=await compressScreenshot(picture);const url=await uploadUrl({deviceId:getDeviceId()});const response=await fetch(url,{method:"POST",headers:{"Content-Type":"image/jpeg"},body:blob});if(!response.ok)throw new Error("Screenshot could not be uploaded");storageIds.push((await response.json()).storageId);}await addReply({...args,text:redact(reply)||undefined,storageIds});setReply("");setPicture(null);})}>Read their reply</button>{checkDue&&<button className="text-button" disabled={busy} onClick={()=>run(()=>close({...args,answer:"not_yet"}))}>Not yet, next step</button>}{!data.stage.startsWith("CLOSED")&&<><label>Amount received (rupees)<input type="number" min="0.01" step="0.01" value={received||String(plan?.amountOwed??(data.amountPaise??0)/100)} onChange={e=>setReceived(e.target.value)}/></label><button className="button button-primary" disabled={busy||!!data.demo&&(data.demo.round!==3||!checkDue)} onClick={()=>run(()=>close({...args,answer:"landed",amountPaise:Math.round((received?Number(received):plan?.amountOwed??(data.amountPaise??0)/100)*100)}))}>It's in, close this case</button></>}</section>}
+
  {data.stage==="CLOSED_LANDED"&&<section className="case-card"><h2>Money landed{data.demo?" · demo":""}</h2><p>Rs {((data.recoveredPaise??0)/100).toLocaleString("en-IN")}{data.demo?" simulated; no real money moved.":" recovered."}</p><p>Tickback told me who owed it and wrote every mail.</p>{counts&&<p>You: {counts.taps} taps. Tickback: read {counts.replies} replies, set {counts.dates} dates, wrote {counts.drafts} messages.</p>}<button className="text-button" onClick={()=>run(()=>navigator.clipboard.writeText(`${data.demo?"I tried a simulated refund chase. No real money moved.":`My Rs ${(data.recoveredPaise??0)/100} landed.`} Tickback told me who owed it and wrote every mail. ${location.origin}`))}>Copy share card</button>{!data.demo&&!feedbackDone&&<><h3>A review? Only if you want.</h3><textarea aria-label="Optional review" value={feedbackText} onChange={e=>setFeedbackText(e.target.value)} maxLength={500}/><p>You can share a screenshot of money arriving with Ganesh. Blur bank details. Nothing is published without your permission.</p><button disabled={busy||!feedbackText.trim()} onClick={()=>run(async()=>{await feedback({...args,worthIt:true,comment:redact(feedbackText)});setFeedbackDone(true);})}>Save my review</button></>}</section>}
+
  {data.stage==="ERROR"&&<button disabled={busy} onClick={()=>run(()=>retry(args))}>Try again</button>}
- <section className="case-card"><h2>Your messages</h2>{replyHistory?.map((row:{_id:string;text:string;summary:string;date:string})=><details key={row._id} id={`flight-reply-${row._id}`}><summary>Reply � {date(row.date)} � {row.summary||"Read the original"}</summary><pre className="flight-message">{row.text}</pre></details>)}{drafts?.map((row:{_id:string;subject?:string;body:string|null;createdAt:number;status:string})=><details key={row._id}><summary>{row.subject} � {date(new Date(row.createdAt).toISOString().slice(0,10))} � {row.status}</summary><pre className="flight-message">{row.body??"Annual plan unlocks this follow-up."}</pre></details>)}{facts?.reply.claim!=="none"&&<button className="text-button" disabled={busy} onClick={()=>setCorrecting(!correcting)}>Not quite: correct the reply read</button>}{correcting&&data.route!=="NEED_INFO"&&data.factsConfirmedAt&&<><label htmlFor="history-correction">What should we change?</label><textarea id="history-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(async()=>{await confirm({...args,pnr,correction});setCorrecting(false);setCorrection("");})}>Read my correction</button></>}</section><section className="case-timeline"><h2>Timeline</h2><ol>{timeline?.map(row=><li key={row._id}>{row.summary} · {date(new Date(row.createdAt).toISOString().slice(0,10))}</li>)}</ol></section><footer className="case-footer-actions"><Link href="/privacy">Privacy</Link><button className="text-button danger-text" disabled={busy} onClick={()=>{if(window.confirm("Delete this case and its saved messages?"))void run(async()=>{await remove(args);forgetCase(code);window.location.assign("/start");});}}>Delete this case</button></footer>
+
+ <section className="case-card"><h2>Your messages</h2>{replyHistory?.map((row:{_id:string;text:string;summary:string;date:string})=><details key={row._id} id={`flight-reply-${row._id}`}><summary>Reply · {date(row.date)} · {row.summary||"Read the original"}</summary><pre className="flight-message">{row.text}</pre></details>)}{drafts?.map((row:{_id:string;subject?:string;body:string|null;createdAt:number;status:string})=><details key={row._id}><summary>{row.subject} · {date(new Date(row.createdAt).toISOString().slice(0,10))} · {row.status}</summary><pre className="flight-message">{row.body??"Annual plan unlocks this follow-up."}</pre></details>)}{facts?.reply.claim!=="none"&&<button className="text-button" disabled={busy} onClick={()=>setCorrecting(!correcting)}>Not quite: correct the reply read</button>}{correcting&&data.route!=="NEED_INFO"&&data.factsConfirmedAt&&<><label htmlFor="history-correction">What should we change?</label><textarea id="history-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(async()=>{await confirm({...args,pnr,correction});setCorrecting(false);setCorrection("");})}>Read my correction</button></>}</section><section className="case-timeline"><h2>Timeline</h2><ol>{timeline?.map(row=><li key={row._id}>{row.summary} · {date(new Date(row.createdAt).toISOString().slice(0,10))}</li>)}</ol></section><footer className="case-footer-actions"><Link href="/privacy">Privacy</Link><button className="text-button danger-text" disabled={busy} onClick={()=>{if(window.confirm("Delete this case and its saved messages?"))void run(async()=>{await remove(args);forgetCase(code);window.location.assign("/start");});}}>Delete this case</button></footer>
+
  </>}
+
  </div></main>;
+
 }
+
