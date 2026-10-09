@@ -11,7 +11,7 @@ v1 is one case: a domestic flight booked on MakeMyTrip, Goibibo, Cleartrip, Ease
 **Why me (at least 1 of 3: an audience that trusts me, years inside the workflow, data nobody else has):**
 Honest first: I have no stuck flight refund of my own and I have not met a person with one yet. My own refunds (Rapido Rs 100, Swiggy Rs 210) were promised within a day, which is why I left them.
 - Data nobody else has (partial): a flight refund playbook built from the DGCA text itself (refund rules revised 24 Feb 2026, in force 26 Mar 2026), every rule quoted with link and date, plus the named Nodal Officer and Appellate Authority of IndiGo, Air India, SpiceJet and Akasa and the grievance officers of MakeMyTrip, Goibibo, Cleartrip and EaseMyTrip, each read on the company's own page and checked by a separate verifier agent (VERIFIED).
-- Why it matters: a Gemini Deep Research run on the same job quoted the old rule in 6 of its 10 load-bearing lines (21 working days for travel-site bookings; it is 14 now) and listed Yatra's investor-relations officer as the passenger contact (OBSERVATION, one run).
+- Why it matters: a Gemini Deep Research run on the same job took 6 of its 10 load-bearing lines from the old, superseded rule (for example 21 working days for travel-site bookings; it is 14 now) and listed Yatra's investor-relations officer as the passenger contact (OBSERVATION, one run).
 - Years inside the workflow: no. Audience that trusts me: weak (ex-Performics friends, Isha meditator friends, my institute).
 - What I can show: a live agent that already reads company replies through a CC'd case inbox, and a 3-minute demo where a demo company replies inside your own Gmail thread (live for events).
 

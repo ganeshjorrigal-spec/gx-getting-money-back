@@ -1,6 +1,6 @@
 # 01 Product: Tickback v2 (domestic flight refunds lead)
 
-Owner: Claude HQ. Status: DRAFT v2, 9 Oct 2026, written with the re-lock sheet (`IDEA_SCOPE.md`, re-lock of 10 Oct). Codex reads, never edits. The events version (v1, 4 Oct) is archived unchanged at `docs/archive/01-product-events-v1.md`.
+Owner: Claude HQ. Status: DRAFT v2, 9 Oct 2026, written with the re-lock sheet (`IDEA_SCOPE.md`, re-lock of 10 Oct). Independent review and fixes on 9 Oct: `docs/hq/relock-2026-10/reviews/PRODUCT-review.md`. Codex reads, never edits. The events version (v1, 4 Oct) is archived unchanged at `docs/archive/01-product-events-v1.md`.
 
 **Which file wins.** `IDEA_SCOPE.md` and `DECISIONS.md` win over this file. This file wins over `docs/prd/02` to `11` on anything about flights or online stores. On design tokens, copy tone, backend mechanics, reply tracking and the red-team rules in `08` ("Overdue" only for a rule or a promise, the "What we understood" strip, plain dates), those files still apply.
 
@@ -20,7 +20,7 @@ Owner: Claude HQ. Status: DRAFT v2, 9 Oct 2026, written with the re-lock sheet (
 
 A domestic flight gets cancelled, by the airline or by the passenger. The app says "refund initiated" or "processed". The bank shows nothing. The travel site says the airline has not paid it yet. The airline's chatbot repeats a template. On X they say "please DM us", and after the booking ID goes in the DM, it goes quiet. The passenger does not know who actually holds the money, what the rule says, or who sits above the person ignoring them. Most people are not refused. They are outlasted.
 
-For flights, unlike most refunds, the rule fixes both who owes the money and by when (F03, F01). That is why flights lead. For online stores the law only says "a reasonable period" (O06).
+For flights, unlike most refunds, the rule names who owes the money and, for travel-site, credit-card and cash bookings, by when (F03, F01, F02). Direct bookings paid by debit card, UPI or net banking have no DGCA day count (D-029 (2)). That is why flights lead. For online stores the law only says "a reasonable period" (O06).
 
 ### 1.2 Evidence ledger
 
@@ -29,7 +29,7 @@ For flights, unlike most refunds, the rule fixes both who owes the money and by 
 | E1 | DGCA CAR M-II Rev 3, dated 24 Feb 2026, in force 26 Mar 2026: travel-site bookings refunded in 14 working days with the airline responsible (F03); credit card refunds in 7 days (F01); taxes and airport fees always refunded (F04); credit shell is the passenger's choice (F06); the airline may not charge to process a refund (F08) | VERIFIED | `flights.md` B; `flights-verification.md` |
 | E2 | Named Nodal Officer and Appellate Authority for IndiGo, Air India, SpiceJet, Akasa; grievance officers for MakeMyTrip, Goibibo, Cleartrip, EaseMyTrip, each read on the company's own page on 9 Oct 2026 and re-checked by a separate verifier | VERIFIED (Ganesh spot-checks IndiGo, Air India, SpiceJet and EaseMyTrip before Codex hard-codes them, because those pages were read through tool summaries) | `flights.md` C; `reviews/R3-judge.md` row 2 |
 | E3 | Yatra and ixigo grievance officers | NOT FOUND | `flights.md` C, H5 |
-| E4 | A Gemini Deep Research run on the same job quoted the old rule in 6 of its 10 load-bearing lines (21 working days; it is 14 now), listed Yatra's investor (IEPF) contact as the passenger contact, and named a MakeMyTrip grievance officer from the holidays subdomain | OBSERVATION, one run | `flights-gemini-raw-verification.md`; `flights.md` C note |
+| E4 | A Gemini Deep Research run on the same job quoted the superseded (pre-2026) refund rule in 6 of its 10 load-bearing lines, including 21 working days for travel-site bookings (it is 14 now) and a 5-day look-in limit (it is 7 now), listed Yatra's investor (IEPF) contact as the passenger contact, and named a MakeMyTrip grievance officer from the holidays subdomain | OBSERVATION, one run | `flights-gemini-raw-verification.md`; `flights.md` C note |
 | E5 | The Gemini store draft: 9 of its 10 load-bearing lines were unsupported by their sources | OBSERVATION, one run | `online-stores-gemini-raw-verification.md` C |
 | E6 | 13 public flight complaints on X (9 Oct): 7 got "please DM us"; 3 say "processed", no money; 4 show the travel site waiting on the airline (Ganesh's reading of the posts); two SpiceJet-via-Goibibo posts at 90 and 120 days; all still open. 11 of the 13 are domestic | REPORTED, signals not rates | `user-evidence/x-complaints.md` |
 | E7 | Bilaspur consumer commission order, 18 Jul 2026: Go Airlines refunded Rs 6,437 to Paytm for a flight cancelled in 2020, the passenger never got it, and Paytm was held liable | REPORTED (Outlook Business, 22 Jul 2026) | `relock-2026-10/market-facts.md` |
@@ -45,7 +45,7 @@ For flights, unlike most refunds, the rule fixes both who owes the money and by 
 | E17 | How many people in Ganesh's network have a stuck flight refund now | MISSING; got by doing, not counting | IDEA_SCOPE |
 | E18 | Google Trends for "flight refund" in India | MISSING; run by hand Sat 10 | IDEA_SCOPE |
 
-Weak spots, said first (same as the sheet): no flight case of our own; the travel-site-versus-airline loop rests on one commission order and 4 public posts; willingness to pay unknown; replies are caught only when the company replies to all, or the user pastes, or connects Gmail.
+Weak spots, said first (same as the sheet): no flight case of our own; the travel-site-versus-airline loop rests on one commission order and 4 public posts; willingness to pay unknown; replies are caught only when the company replies to all or the user pastes them; Gmail connect is not open to everyone yet (test accounts only, `STATE.md`).
 
 ### 1.3 The user
 
@@ -87,7 +87,7 @@ When my flight got cancelled and the app is showing "refund initiated" since man
 **With Tickback, 4 steps:**
 1. Paste the cancellation mail or a screenshot
 2. See the "who owes you" card: who, when it was due, which rule, who sits above them, and the next mail ready
-3. Tap to send it from my own Gmail, with Tickback's case inbox in CC
+3. Open it in my own Gmail, read it, press send, with Tickback's case inbox in CC
 4. When anyone replies, or the next date comes, the next mail is ready; on the day, "It's in" or "Not yet"
 
 ### 1.6 Why an agent, and not one ChatGPT prompt
@@ -99,8 +99,8 @@ One prompt can write the first mail. It cannot do the rest, and the rest is wher
 | Writes one mail from what you tell it | Writes every mail over the life of the case, each from the dated thread so far |
 | Never sees the reply | Reads every reply that reaches its case inbox in CC (or that you paste), and says what changed |
 | Cannot switch who it writes to | **The owner switch.** When a reply says the other company has the money, code moves the case: the next mail goes to the other company, with the first one still in CC |
-| Asks nothing that pins anyone down | **The pinning question.** The first mail asks one plain question both companies must answer on the same thread: "On which date did the airline pay this refund to you?" The answer decides who holds the money |
-| Guesses day counts (a strong model gave the old 21 working days in 6 of 10 lines, E4) | Rules and named officers come from the verified playbook, as data. Dates are computed in code, never by the model |
+| Asks nothing that pins anyone down | **The pinning question.** The first mail puts one plain question to both companies on the same mail: "On which date did the airline pay this refund to you?" Whoever answers, the answer decides who holds the money |
+| Guesses day counts (a strong model quoted the superseded rule in 6 of 10 load-bearing lines, including the old 21 working days, E4) | Rules and named officers come from the verified playbook, as data. Dates are computed in code, never by the model |
 | Never comes back | Comes back on the date worked out in code: a calendar check-in, and an alert when a reply lands |
 | Forgets the thread | Carries the dated thread up the ladder: grievance officer and Nodal Officer, Appellate Authority, AirSewa, 1915 |
 | No record of the work | **The who-did-what count** at case close, for example "You: 4 taps. Tickback: read 3 replies, set 3 dates, wrote 4 mails." Computed from the case's own events, never typed in |
@@ -144,7 +144,7 @@ Worked example for tests (`addWorkingDays` in `lib/dates.ts`): cancellation Mon 
 | A reply says | Who has the money now | Date the card shows |
 |---|---|---|
 | The travel site is waiting for the airline (pending with airline) | The airline (F03) | Unchanged |
-| The airline paid the travel site on date D | The travel site | MakeMyTrip or Goibibo: D + 24 hours, their own terms (F22; 96 hours for bookings over 6 months old). Others: no published pass-on time; check date is the rung wait, 7 days from sending (TICKBACK DEFAULT, `flights.md` D2) |
+| The airline paid the travel site on date D | The travel site | MakeMyTrip or Goibibo: D + 24 hours, their own terms (F22). Their terms count from when they receive the money; Tickback uses the airline's paid date D as a stand-in and says "about". For bookings over 6 months old their terms say 96 hours, and only after the customer gives them bank details directly (never through Tickback, 4.3). Others: no published pass-on time; check date is the rung wait, 7 days from sending (TICKBACK DEFAULT, `flights.md` D2) |
 | A company sent it to your account with a reference | The last leg is your bank | The date in their reply, labelled as their promise. If none: open question Q3 (section 8) |
 
 **Never promised (D-029 (1)):** the 48-hour free look-in (F05) on a travel-site booking. The agent says the look-in duty sits on the airline and travel sites say they do not offer it. If the user bought the site's own "zero cancellation" add-on, the agent chases under that add-on's terms (REPORTED until each site's terms page is checked). For direct bookings, F05 applies as written: within 48 hours of booking, and only if departure is at least 7 days after booking.
@@ -153,7 +153,7 @@ Worked example for tests (`addWorkingDays` in `lib/dates.ts`): cancellation Mon 
 
 ### 2.3 The "who owes you" card (flights)
 
-One card at the top of every flight case. Every value comes from code and the playbook data, never from the model.
+One card at the top of every flight case. Every owner, rule, date and contact comes from code and the playbook data, never from the model. The model only supplies its read of a pasted message or reply (7.3), which code then applies.
 
 | Field | What it shows | Source of the value |
 |---|---|---|
@@ -177,7 +177,7 @@ Owner and dates, briefly. Same card, fewer fields.
 | Situation (playbook scenario) | Who owes you | Due date | Shown source |
 |---|---|---|---|
 | Return accepted or order cancelled, refund not issued (a, b) | The store, as an inventory e-commerce entity (O02) | The store's own promised date | "The store's promise" |
-| Same, store promised no date | The store (O02) | Return accepted + 7 days | "Tickback's expectation, not a rule" (D-029 (3)) |
+| Same, store promised no date | The store (O02) | Return accepted + 7 days (for a cancelled order with no return, the start day is open: Q22) | "Tickback's expectation, not a rule" (D-029 (3)) |
 | Defective, damaged, fake or not as advertised, refund refused (d, h) | The store; it cannot refuse (O09) | As above | O09 sentence plus the date source above |
 | Paid by card on the website or UPI, the store never got the order confirmation (g1) | Your bank and payment system auto-reverse | Payment date + 5 calendar days; Rs 100 a day after that "may be owed", paid without a claim (O11, O12, O13) | RBI rule. Not computed for net banking or other methods |
 | "Refund processed", not received (f) | The last leg is your bank | The store's stated date, if any | The store's promise |
@@ -201,14 +201,15 @@ Each rung says whether its wait is a rule, a company's own policy, or a Tickback
 | Rung | To (CC) | What the mail does | Wait before the next rung | Type of wait |
 |---|---|---|---|---|
 | 1 | Where the ticket was bought: airline customer care (direct) or the travel site's support | Cites the rows that fit (F01 to F08); asks for the complaint reference number (F21) | Until the due date in 2.2 | Rule (F01, F02, F03) or Tickback's expectation (direct, non-credit, D-029) |
-| 1, Cleartrip only | Cleartrip support (phone +91 9595333333, 24x7), Trip ID quoted | Cleartrip's own process: support first | 72 hours | Company policy (F23) |
-| 2 | Travel-site booking: the travel site's grievance officer, with the airline's Nodal Officer in CC on the same thread. Direct booking: the airline's Nodal Officer. Case inbox always in CC | Travel site: asks the pinning question ("On which date did the airline pay this refund to you?") and cites F03. Direct: asks "On which date was this refund sent, and with which reference?" and cites F01 or F02 only for credit card or cash; for debit card, UPI and net banking it cites no DGCA day count (D-029). Always asks for the complaint reference (F21) | 7 days | TICKBACK DEFAULT. Tickback's reading (not shown as a rule): a travel site is an e-commerce entity, so the 48-hour acknowledgement and one-month redressal (O04) apply to its grievance officer. MakeMyTrip and Goibibo: 24 hours after the airline paid them (F22, company terms) |
+| 1, Cleartrip only | Cleartrip support by phone (+91 9595333333, 24x7), Trip ID quoted. The playbook holds no Cleartrip support email, so this step is a call: Tickback shows the number and what to say, and the user confirms with the existing "I've sent it" step (worded "I've called") | Cleartrip's own process: support first | 72 hours | Company policy (F23) |
+| 2 | Travel-site booking: the travel site's grievance officer, with the airline's Nodal Officer in CC on the same thread. Direct booking: the airline's Nodal Officer. Case inbox always in CC | Travel site: asks the pinning question ("On which date did the airline pay this refund to you?") and cites F03. Direct: asks "On which date was this refund sent, and with which reference?" and cites F01 or F02 only for credit card or cash; for debit card, UPI and net banking it cites no DGCA day count (D-029). Always asks for the complaint reference (F21) | 7 days | TICKBACK DEFAULT. Tickback's reading (not shown as a rule): a travel site is an e-commerce entity, so the 48-hour acknowledgement and one-month redressal (O04) apply to its grievance officer. Only once a reply says the airline has paid MakeMyTrip or Goibibo: their own 24 hours (F22, company terms, 2.2) |
 | 3 | The airline's Appellate Authority, with the full dated thread (travel site in CC if one is involved) | Says who answered what and when; asks for the refund date and reference | 7 days | TICKBACK DEFAULT |
-| 4 | AirSewa app or portal (F20). The user files; Tickback prepares the complaint text and the dated thread | Same facts, with every date and every reply | 30 days (no official window found) | TICKBACK DEFAULT |
+| 4 | AirSewa app or portal (F20). The user files; Tickback prepares the complaint text and the dated thread | Same facts, with every date and every reply | 30 days (no official window found) | TICKBACK DEFAULT. Scope note: the DGCA text names AirSewa for denied boarding, cancellation and long delay; for a refund on a ticket the passenger cancelled, Tickback says "you can also file on AirSewa", not that the rule covers it (`flights-verification.md`, F20) |
 | 5 | National Consumer Helpline: 1915 or consumerhelpline.gov.in | Same facts | "May take up to 30 days" (described by NCH, not a duty) | NCH's own description (O15) |
 | Beyond | Consumer commission (e-Daakhil) | Tickback names it; it does not prepare or file it | n/a | LATER |
 
 Two ladder rules for code:
+- **Rung 1 is never drafted as a mail in v1.** Before the due date the case is `WAIT` (nothing to send); after it, the case starts at rung 2. The only rung 1 step Tickback shows is the Cleartrip call.
 - **Where a case starts.** A `WAIT` case has nothing to send. When the due date passes (at the start, or at a check-in "Not yet"), the first mail is rung 2, because rung 1's wait has run out. Exception: Cleartrip, where Tickback first asks "Did you contact Cleartrip support about this more than 72 hours ago?" and, if not, starts at rung 1 (F23).
 - **Early jump (TICKBACK DEFAULT).** A reply after the due date that confirms the owner has not paid yet ("not processed", "under process from our side") is an answer, so the next rung's mail is ready at once, without waiting the 7 days. A vague stall with no facts ("under review, we'll revert") waits the rung's wait, or the company's own promised date if the reply gives one.
 
@@ -284,7 +285,7 @@ I booked my flight on a travel site because the deal was good, and the airline c
 - **Given** the same case booked direct on IndiGo's website with UPI, **then** the date is 28 Sep 2026, the label is "Time to check", the source reads "Tickback's expectation, not a DGCA rule", and the mail goes To the Nodal Officer. The mail cites no DGCA day count and asks: "On which date was this refund sent, and with which reference?"
 - **Given** direct with a credit card, **then** the date is 14 Sep 2026 and the source is the DGCA rule.
 - **Given** booked on Yatra, **then** the travel-site line says we hold no checked address for Yatra and asks me to paste one; the IndiGo Nodal Officer still fills.
-- **Given** booked on Cleartrip and I say I have not contacted Cleartrip support, **then** the first step is Cleartrip support with the Trip ID, and a check-in 72 hours later (F23).
+- **Given** booked on Cleartrip and I say I have not contacted Cleartrip support, **then** the first step is a call to Cleartrip support (number shown, Trip ID quoted, no mail drafted), and after I confirm the call, a check-in 72 hours later (F23). At that check-in, Not yet opens the rung 2 mail to Cleartrip's grievance officer.
 - Every travel-site case: no look-in promise anywhere (D-029 (1)).
 - No model output sets a date, a rule or an address (unit test: the model's read is replaced with junk dates and addresses; the card is unchanged).
 - Target: card on screen in under 60 seconds from Start my case (MISSING until measured; log 10 runs).
@@ -306,14 +307,14 @@ After all this, they send me a UTR number and say it is processed. But my bank i
 
 - **Given** a reply with a UTR and a sent date, **when** it is read, **then** the route is `TRACE`, the card says "The money has left MakeMyTrip. The last leg is your bank.", and a short message for my bank is ready with the UTR, amount and date. It tells me to use my bank's own channel and never share an OTP.
 - **Then** the check date is the date in their reply, labelled as their promise. If the reply gives no date, open question Q3 applies (section 8): until Ganesh decides, no automatic date is set and the case offers "Remind me on a date I pick".
-- **Given** the reference and date show the refund went to a different account or card than mine, **then** the case says so plainly and the next mail asks the company to confirm the destination.
+- **Given** the reply names where the money was sent (for example "card ending 1234" or a wallet) and I tell Tickback that is not my account or card (through the existing "Not quite" on the read), **then** the case says so plainly and the next mail asks the company to confirm the destination. Tickback never asks for my account or card number to check this (4.3).
 
 ### FS-4: "They are offering a credit shell"
 
 The airline mail says I can take the amount as a credit shell for future travel. I don't want to fly them again soon, I want my money. But I am scared if I say no, will I get nothing?
 
 - **Given** a reply offering a credit shell or travel credit, **when** it is read, **then** the card says "A credit shell is your choice, not their default" with the DGCA source (F06), the owner is unchanged, and a mail is ready declining the credit shell and asking for the refund to the original payment method.
-- **Given** the user says the cancellation was because of a medical emergency, **then** the card says the airline may give either a refund or a credit shell in that case (F09), and the mail asks, it does not insist.
+- **Given** the user says the cancellation was because of a medical emergency, **then** the card says the airline may give either a refund or a credit shell in that case (F09), and the mail asks, it does not insist. Build gate: the verifier could not read the rest of para 3(m), which may add conditions; Ganesh reads it before this branch ships (Q17).
 - For a travel site's own wallet credit, the mail asks for the money to the original method and the source line says "Tickback's reading: the travel site acts for the airline (F03), and the airline's credit shell is your choice (F06)".
 
 ### FS-5: "I cancelled myself, and the fare was non-refundable"
@@ -323,7 +324,7 @@ My plans changed, I cancelled. The fare was non-refundable so I thought nothing 
 - **Given** a passenger-cancelled, non-refundable booking, **when** I confirm, **then** the agent asks for the fare breakdown (taxes, UDF, ADF, PSF) once.
 - **Then** the card says plainly: the base fare follows the fare rules, but taxes and airport fees always come back (F04); the cancellation charge cannot be more than basic fare plus fuel surcharge (F07); a travel-agent fee disclosed at booking is outside that cap and Tickback does not ask for it back; the airline cannot charge to process the refund (F08).
 - **Then** the amount owed is the taxes and fees (plus any amount above the F07 cap), and the due date follows 2.2.
-- **Given** a direct booking cancelled within 48 hours of booking with departure 7 or more days after booking, **then** the card says the look-in applied: no cancellation charge, only any fare difference (F05). Never for travel-site bookings (D-029 (1)).
+- **Given** a direct booking cancelled within 48 hours of booking with departure 7 or more days after booking, **then** the card says the look-in applied: no cancellation charge (F05). (The fare difference in F05 applies only when the ticket is changed, not cancelled.) Never for travel-site bookings (D-029 (1)).
 - **Given** the breakdown shows the taxes and fees already came back, **then** the route is `NO_ROUTE`, "The other side is right", with the source, no charge, and the case closes.
 
 ### FS-6: "Still nothing after the officers"
@@ -375,6 +376,8 @@ The flight and store demos reuse the M2.5 demo organiser as built (`convex/demo.
 
 **Cast (all made up, never real brands):** "DemoTrips" plays the travel site; "Demo Air" plays the airline. The card shows demo officers ("Grievance Officer, DemoTrips (demo)", "Nodal Officer, Demo Air (demo)", "Appellate Authority, Demo Air (demo)"), never a real name or address from the playbook.
 
+**What "one thread" means here.** Both roles are on every mail (one in To, the other in CC), every subject carries the same case code, and each demo reply lands in the Gmail thread of the mail it answers (live: the demo desk replies with In-Reply-To and the same Gmail thread id). Mails 2 and 3 open through Gmail web compose as new messages, so Gmail may show each round as its own conversation; the case page shows all six messages on one case timeline. The demo does not promise one Gmail conversation across all three rounds (open question Q20).
+
 **Addresses:** both roles live in the one demo account. Drafts address the roles as plus-addresses of the demo account (for example `<demo>+travelsite@` and `<demo>+airline@`), so the user sees two recipients. Replies are sent from the demo account's own address with a role display name. Code changes: the demo inbox check must accept the demo mailbox in To or Cc, matched by `sameDemoMailbox` (which already ignores the plus part), instead of the exact To match today. If plus-addressed receipt fails in the live test, fall back to one demo address with the role carried only by the sender name, and say so in the log.
 
 **Sender names and footer:** "Refund desk · demo (travel site role)" and "Nodal desk · demo (airline role)". Last line, small: "Demo reply from Tickback's demo desk, not from a real travel site or airline."
@@ -392,11 +395,21 @@ The flight and store demos reuse the M2.5 demo organiser as built (`convex/demo.
 | Skip ahead | Taps **Skip ahead to <check date>** (demo cases only) | none | Demo clock moves to the check date; the check-in banner asks "Has your Rs <amount> landed?" with It's in, Not yet, They replied |
 | Close | Taps It's in | none | **Money landed** with the amount and the who-did-what count, computed from the case's own events |
 
-Exactly 3 demo replies. Target about 3 minutes from Try a demo to Money landed (the events demo measured 3 min 11 s with a booking-ID round; this one has none).
+Exactly 3 demo replies. Target about 3 minutes from Try a demo to Money landed (the events demo measured 3 min 11 s, with the made-up booking ID typed in round 2; here the PNR moves to the confirm step).
+
+**Acceptance checks (flight demo).** Codex runs these on the live site and records evidence in the log, as for M2.5:
+- **Given** the demo desk is connected, **when** I tap Try a demo, Looks right and Use a sample PNR, **then** the card shows Demo Air as owner by rule (F03), "Overdue" with the date and source, the demo officers only, and mail 1 To the DemoTrips role with the Demo Air role and the case inbox in CC.
+- **When** I send each mail from my own Gmail and tap I've sent it, **then** exactly one reply arrives per round, from the role in the table, with the role sender name and the demo footer, in the Gmail thread of the mail it answers, and caught by the case inbox (not pasted).
+- After round 1: "Who owes you: still Demo Air" and mail 2 To the Demo Air role. After round 2: "Who has your money now: DemoTrips" marked Changed, with the reply linked. After round 3: route `TRACE`, the bank message, and the check date labelled as their promise.
+- Skip ahead, then It's in: Money landed with the who-did-what count, and its numbers match the case's events.
+- No demo draft names a playbook contact; no demo screen shows the Rs 49 offer; the Sheet row says "Demo ·".
+- Time from Try a demo to Money landed is measured on 3 runs and logged. About 3 minutes is the target; any overrun is recorded for HQ to judge, as with M2.5 (no pass or fail threshold is set here).
 
 **Code changes to the existing organiser (summary for Codex):**
 - `demo.create`: add kind `flight` with the sample above and the demo cast in the case facts.
-- `lib/demo.ts` `demoReplyBody`: a ladder per kind; for `flight`, the role and sender name per round as in the table. Dates in replies are computed from the demo clock in code.
+- `lib/demo.ts` `demoReplyBody`: a ladder per kind; for `flight`, the role per round as in the table, and the flight footer. Dates in replies are computed from the demo clock in code. The sender name is set today in `convex/demoActions.ts` (`Refund desk · demo (<platform> role)`) and the footer in `demoReplyBody` ("not from <platform>"); both become per-role for flights.
+- The demo opening-line check in `demoActions.ts` today requires the event name in the line; for flights it checks for the flight wording instead, with the same bans (no digits, no refund words, no contacts).
+- `convex/agent.ts` today forces route `TRACE` and a made-up bank date when an events demo reaches round 3. That shortcut must not apply to `flight`: the flight demo's route and dates come from the real decision code.
 - `demo.skipAhead`: for `flight`, allowed only after round 3 with route `TRACE`; moves the demo clock to the round 3 check date. The events rule (after round 1, 10 days past due) stays for event kinds.
 - `demo.booking` is not used for flights (PNR is taken at confirm).
 - Mails 2 and 3 must come from the real reply handler and the real decision code, not from demo mutations. Unit test: feed the three scripted replies into the real reader stub and the real decision code; check owner, who has the money, next To and CC, and route after each.
@@ -439,12 +452,12 @@ Cast: "DemoWear (demo store)". This is the events ladder with store words, the c
 
 Stages stay as built: `TRIAGING`, `NEED_INFO`, `READY`, `ACTED`, `WAITING`, `DUE`, `ERROR`, `CLOSED_LANDED`, `CLOSED_NO_ROUTE`, `CLOSED_OUT_OF_SCOPE`. Delete is an action, not a stage.
 
-New fields on a case (set only by code):
-- `refundType`: event, flight or store.
-- `owner`: who owes the refund by rule (airline, travel site, store).
-- `moneyWith`: who has the money now, from replies (airline, travel site, store, bank leg, unknown).
-- `rung`: ladder position (section 3).
-- `dueSource`: rule row id, company promise, or Tickback default.
+Case fields (set only by code). Reuse what exists; add only what is new:
+- `refundType` (new): event, flight or store.
+- `owner` (new): who owes the refund by rule (airline, travel site, store).
+- `moneyWith` (new): who has the money now, from replies (airline, travel site, store, bank leg, unknown).
+- Rung: reuse the existing `ladderLevel` for the ladder position (section 3); no second field.
+- Due source: reuse the existing `dueSource` and `dueSourceText`. Live values are `message_promise`, `platform_policy` and `estimate`; flights add a rule row id (F01, F02, F03, F22 as company policy). Tickback defaults stay `estimate`, which keeps the C1 "Time to check" label.
 - `count`: derived at close from case events (not stored by hand).
 
 ### 7.2 Transitions
@@ -537,7 +550,7 @@ Cut order if time runs short:
 
 What success means by 17 Oct (IDEA_SCOPE, Fri 16): at least 3 live flight cases where a real reply was read and the next step moved; owner named; bank reference got where one came; replies caught by CC versus pasted; drafts written versus sent; who saw the Rs 49 offer and who paid. Money landed counts only if it truly lands. Hand-helped users and product users are counted separately; demo runs never count.
 
-Price on the page (D-020, D-030 (3)): the route, the date and the first step are free; Rs 49 to stay on a case of Rs 300 or more, back if the money has not landed 30 days after its due date. Cases Ganesh helps by hand this week are free. Demo cases never see the offer.
+Price on the page (D-020, D-030 (3)): the route, the date and the first step are free; Rs 49 to stay on a case of Rs 300 or more, back if the money has not landed 30 days after its due date and you followed the steps (live `guaranteeLine` in `app/copy.ts`). The pay button stays off until Ganesh adds his UPI ID (live: the pay card is hidden while `NEXT_PUBLIC_UPI_VPA` is empty, `STATE.md`), as the sheet says. Cases Ganesh helps by hand this week are free. Demo cases never see the offer.
 
 ### 8.3 Open questions
 
@@ -554,13 +567,19 @@ From the playbooks (section H) and D-029:
 | Q7 | Block time for compensation tiers (H6) | Compensation is out of v1 |
 | Q8 | F03 gives no start day | TICKBACK DEFAULT: the cancellation date, shown on the card |
 | Q9 | Cleartrip and EaseMyTrip publish no pass-on time after the airline pays them | The 7-day rung wait applies (Tickback default) |
-| Q10 | AirSewa web address (`flights.md` C) | NOT CHECKED; Ganesh opens it before any case reaches rung 4 |
+| Q10 | AirSewa web address (`flights.md` C) | NOT CHECKED by HQ. The verifier saw airsewa.gov.in load with "Report Grievance" but could not read who runs it. Ganesh opens it before any case reaches rung 4 |
 | Q11 | Four contact pages read through tool summaries (IndiGo, Air India, SpiceJet, EaseMyTrip) | Ganesh spot-checks before Codex hard-codes them |
 | Q12 | Stores: no fixed refund deadline (`online-stores.md` H1) | DECIDED, D-029 (3): the store's promise, or 7 days after the return is accepted, as Tickback's expectation |
 | Q13 | Stores: reverse pickup duty; store credit on change of mind; chargeback windows (H2 to H4) | NOT FOUND in law. The agent does not claim them |
 | Q14 | Stores: the E-Commerce (Amendment) Rules 2026 take effect 1 Jan 2027 (H5; `market-facts.md` now marks it CONFIRMED from PIB, no Gazette number) | Re-read O03 to O09 against the amendment before 1 Jan 2027. No effect on this sprint |
 | Q15 | Stores: marketplace grievance officers (H6) | NOT FOUND until rechecked |
 | Q16 | Flight demo: plus-addressed recipients in the one demo account | Codex proves it in the live demo test; fallback in 6.2 |
+| Q17 | F09 (medical emergency): the verifier could not read the rest of CAR M-II para 3(m) (`flights-verification.md`) | Ganesh reads the full 3(m) before the FS-4 medical branch ships |
+| Q18 | What counts as the "live proof run" that unlocks stores (D-030 (2)) | OPEN, needs Ganesh. Not defined in the sheet or decisions |
+| Q19 | How hand-helped cases move into the product, and how a case is marked hand-helped so the two user counts stay separate (D-030 (4)) | OPEN, needs Ganesh |
+| Q20 | Flight demo: is "one thread" one case thread (as built, 6.2) or one Gmail conversation across all three rounds? | OPEN, needs Ganesh. One Gmail conversation would need a different send path than Gmail web compose and is not in this build |
+| Q21 | Which slice must be live on Tue 13 (the sheet's target), if not all of build steps 1 to 6 | OPEN, needs Ganesh. Cut order in 8.2 applies until he says |
+| Q22 | Stores: start date for "7 days" when an order was cancelled (not returned) and the store promised no date. D-029 (3) names only "return accepted" | OPEN, needs Ganesh |
 
 ### 8.4 What Shaktimaan will click, and what he must find
 
@@ -577,13 +596,14 @@ Ganesh ticks each line on the live site before telling Shaktimaan flights are li
 | 7 | Pastes a reply with a UTR | `TRACE`, "the last leg is your bank", a bank message, no OTP ask | FS-3 |
 | 8 | Looks for a look-in promise on a travel-site booking | None anywhere | D-029 (1) |
 | 9 | Types an OTP or a card number into the paste | It is stripped before saving; the agent never asks for it | 4.3 |
-| 10 | Runs Try a demo | Two labelled roles on one thread, exactly 3 replies, the owner switch on screen, Skip ahead, Money landed with the count, about 3 minutes, the demo footer on every reply | 6.2 |
+| 10 | Runs Try a demo | Two labelled roles on every mail, each reply in the Gmail thread of the mail it answers and all of them on one case timeline (6.2, Q20), exactly 3 replies, the owner switch on screen, Skip ahead, Money landed with the count, about 3 minutes, the demo footer on every reply | 6.2 |
 | 11 | Reads the privacy page | It matches the sheet's trust line word for word in meaning: reads what you paste and replies that reach the case inbox in CC; optional read-only Gmail; never logs in; never asks for an OTP or bank details | IDEA_SCOPE "Who they trust" |
 | 12 | Pastes an international flight or an event | International: honest out-of-scope note. Event: the old event flow still works | 2.1, 2.5 |
 | 13 | Closes a case with It's in | The amount and the who-did-what count from real events | FS-7, D-030 (5) |
 
 Mismatches known today, to fix or say before he looks:
-- **Pay card.** The sheet says the Rs 49 offer is live. The landing page shows it, but the in-case pay card is hidden because no UPI ID is set (`STATE.md`). Ganesh sets the UPI ID, or the sheet says the offer is shown but payment opens later.
-- **Gmail opt-in wording.** The sheet says Tickback "reads only your refund thread". The privacy page also allows "a matching message from a known sender when the thread cannot be found", and Gmail connect is limited to a test list this sprint (`STATE.md`). Either switch the known-sender fallback off for flight cases and say "test list" on the page, or soften the sheet line. Needs Ganesh.
+- **Pay card.** Resolved in the re-lock sheet: it now says the price shows on the page and the pay button stays off until the UPI ID is added, which matches the build (`STATE.md`). Nothing to fix unless Ganesh adds the UPI ID, in which case the Fri 16 report covers who paid.
+- **Gmail opt-in wording.** Resolved in the re-lock sheet: it now says Gmail connect is open only to test accounts and that Tickback reads the refund thread, or a reply from a known sender if the thread can't be found, which matches the privacy page.
+- **Privacy page gaps against the sheet's trust line.** The live privacy page (`app/privacy/page.tsx`) does not say "Tickback never logs in for you" or that Gmail connect is open only to test accounts. Line 11 above fails until those two lines are added (copy only, no feature change), plus the flight-roles line in 6.4 rule 7.
 - **The count.** The sheet says every case ends with the count. If the count is cut (D-030 (5)), the sheet line changes first.
 - **Flight demo.** Not built yet. The sheet's Tue 13 row is a target; Ganesh tells Shaktimaan the real day.
