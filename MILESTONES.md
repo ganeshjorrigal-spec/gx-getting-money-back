@@ -113,7 +113,7 @@ Reviewed by: pending
 
 ## M2.5. Demo organiser (after M2.4) | READY FOR REVIEW
 Goal: anyone can live a full refund chase in 2 to 3 minutes through the same path real cases use: their own Gmail sends, the case inbox reads the reply, the case updates live (D-027, amended 7 Oct).
-Build evidence: `docs/log/2026-10-07.md` and `docs/log/2026-10-09.md`. Ganesh accepted the measured 3:10.731 run's 10.731-second overrun on 9 Oct. The measured result remains recorded; independent review is pending.
+Build evidence: `docs/log/2026-10-07.md` and `docs/log/2026-10-09.md`. Ganesh explicitly accepted the measured 3:10.731 run as meeting the speed check before the M2.6 overnight build: three minutes was a target, not a hard limit. The measured result remains recorded; independent review is pending.
 Acceptance checks:
 - [ ] "Try a demo" on the start page; user picks BookMyShow or District; a demo case is created pre-filled with a sample message and the demo address as recipient; the user only taps Confirm. A small "Demo" tag on every demo screen. BookMyShow demos use the email path, with one line saying why
 - [ ] Round 1: user sends from their own Gmail (case inbox in CC); organiser replies with a stall (refund initiated, 7 to 10 working days); Tickback shows the due date and next check-in

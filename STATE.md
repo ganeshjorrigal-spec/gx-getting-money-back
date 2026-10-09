@@ -8,7 +8,7 @@ Last updated: 2026-10-09, after the M2.5 shorter-flow demo proof. M0, M1, M2, M2
 - Ganesh connected the separate demo account through Allow. Only that connection requests read/send; real Google scopes, 10-minute polling and Calendar alerts are unchanged. Users still send their own messages.
 - Build/type check, 58 unit tests and paid-tier F1-F16 passed on 7 Oct. The model remains gemini-3.5-flash-lite. No code changed during the 9 Oct proof continuation.
 - Full District journey, all three received replies and screenshots after each round are in the 7 Oct log. The final shorter-flow District run TB-JNEC29 closed for simulated Rs 2,400 in 3:10.731 on 9 Oct. All three replies stayed in their original threads, each sent within 2.202 seconds of finding the email. Closed stage and Demo Sheet row verified. Saved records and timings are in the 9 Oct log; screenshots are explicitly from the earlier run.
-- Ganesh accepted the 10.731-second overrun on 9 Oct and said distractions may have contributed. That cause is not independently established. M2.5 is READY FOR REVIEW with the measured timing exception recorded, not DONE.
+- Ganesh accepted the 10.731-second overrun on 9 Oct and said distractions may have contributed. That cause is not independently established. Ganesh subsequently confirmed the run meets the speed check because three minutes was a target, not a hard limit. M2.5 is READY FOR REVIEW, not DONE.
 - Automatic Demo subjects preserve tracking codes. Confirm opens the draft directly; Skip ahead and booking ID use the same draft-opening flow. Fast demo checks remain bounded and retain the specified 10-second interval.
 
 ## M2.4 built and verified
