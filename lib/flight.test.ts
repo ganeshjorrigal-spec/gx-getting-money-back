@@ -1,0 +1,15 @@
+import { describe,it,expect } from "vitest";
+import { flightReadSchema,flightDue,planFlight } from "./flight";
+import { flightRules } from "./flight-kb";
+export const sampleFlight=()=>flightReadSchema.parse({airline:"IndiGo",bookedVia:"MakeMyTrip",paymentMethod:"upi",cancellationDate:"2026-09-07",cancelledBy:"airline",domestic:true,flightName:"Delhi to Mumbai",amountPaid:5400,pnr:"SAMPLE",bookingId:"TEST-ID",bookingTime:null,departureDate:null,nonRefundable:false,medicalEmergency:false,taxes:null,baseFare:null,fuel:null,cancellationCharge:null,taxesReturned:null,supportContactDate:null,reply:{fromCompany:null,pointsAt:null,claim:"none",paidDate:null,promisedDate:null,reference:null,summary:"",confidence:1}});
+describe("flight rules and initial route",()=>{
+ it("carries all 23 sourced playbook rows",()=>{expect(flightRules).toHaveLength(23);expect(flightRules.every(r=>r.source&&r.quote&&r.label)).toBe(true);});
+ it("counts travel-site 14 working days and pins both companies",()=>{const p=planFlight(sampleFlight(),"2026-10-09");expect(p.dueDate).toBe("2026-09-25");expect(p.to).toBe("grievanceofficer@makemytrip.com");expect(p.cc).toContain("nodalofficer@goindigo.in");expect(p.body).toContain("On which date did the airline pay");});
+ it("uses seven calendar days for direct credit cards",()=>expect(flightDue({...sampleFlight(),bookedVia:"direct",paymentMethod:"credit_card"}).date).toBe("2026-09-14"));
+ it("labels direct UPI as a Tickback expectation",()=>{const p=planFlight({...sampleFlight(),bookedVia:"direct"},"2026-10-09");expect(p.dueDate).toBe("2026-09-28");expect(p.dueSource).toBe("estimate");expect(p.body).not.toContain("14 working");});
+ it("uses immediate cash and waits before the due date",()=>{expect(flightDue({...sampleFlight(),bookedVia:"direct",paymentMethod:"cash"}).date).toBe("2026-09-07");expect(planFlight(sampleFlight(),"2026-09-10").route).toBe("WAIT");});
+ it("never invents a Yatra grievance address",()=>{const p=planFlight({...sampleFlight(),bookedVia:"Yatra"},"2026-10-09");expect(p.to).toBeNull();expect(p.cc).toEqual(["nodalofficer@goindigo.in"]);});
+ it("uses a call first for Cleartrip, then waits 72 hours",()=>{expect(planFlight({...sampleFlight(),bookedVia:"Cleartrip"},"2026-10-09").channel).toBe("phone");expect(planFlight({...sampleFlight(),bookedVia:"Cleartrip",supportContactDate:"2026-10-08"},"2026-10-09").checkDate).toBe("2026-10-11");});
+ it("uses only demo role addresses in the demo",()=>{const p=planFlight({...sampleFlight(),airline:"Demo Air",bookedVia:"DemoTrips"},"2026-10-09",undefined,"desk@example.test");expect(p.to).toBe("desk+travelsite@example.test");expect(p.cc).toEqual(["desk+airline@example.test"]);expect(JSON.stringify(p)).not.toContain("goindigo.in");});
+ it("rejects international cases and asks at most three missing facts",()=>{expect(planFlight({...sampleFlight(),domestic:false},"2026-10-09").route).toBe("OUT_OF_SCOPE");expect(planFlight({...sampleFlight(),airline:null,bookedVia:null,cancellationDate:null,domestic:null},"2026-10-09").questions).toHaveLength(3);});
+});

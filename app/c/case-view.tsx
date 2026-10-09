@@ -1,6 +1,7 @@
 "use client";
 
 import { demoSubject } from "../../lib/demo";
+import FlightCaseView from "./flight-case-view";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -17,6 +18,7 @@ import { routeFor, verifiedEmailFor } from "../../lib/route-kb";
 import { replyNextStepLabel } from "../../lib/reply-banner";
 
 type CaseView = {
+  refundType?: string;
   code: string; stage: string; route: keyof typeof c.routeLabels | null; routeConfidence: number | null;
   platform: string | null; eventName: string | null; amountPaise: number | null; dueDate: string | null;
   dueSource: string | null; dueSourceText: string | null; nextStep: string | null;
@@ -397,6 +399,7 @@ export default function CaseView({ code }: { code: string }) {
     try { await demoBooking({ code, token, bookingId: bookingId.trim() }); setDemoDraftToOpen("DEMO_booking"); } catch (error) { setNotice(error instanceof Error ? error.message : c.error); } finally { setBusy(false); }
   }
 
+  if (caseData?.refundType === "flight" && token) return <FlightCaseView code={code} token={token} />;
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><span className="case-code">{caseData?.demo && <span className="demo-tag">Demo</span>} {code}</span></header>
     <div className="case-wrap">

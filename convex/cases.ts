@@ -34,7 +34,7 @@ async function scheduleCheckin(ctx: MutationCtx, caseId: Id<"cases">, date: stri
 export const create = mutation({
   args: {
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), chips: v.array(v.string()),
-    tokenHash: v.string(), deviceId: v.string(), source: v.optional(v.string()), name: v.optional(v.string()),
+    tokenHash: v.string(), deviceId: v.string(), source: v.optional(v.string()), name: v.optional(v.string()), refundType: v.optional(v.union(v.literal("event"),v.literal("flight"))),
   },
   returns: v.object({ code: v.string() }),
   handler: async (ctx, args) => {
@@ -58,6 +58,7 @@ export const create = mutation({
       tier: "unknown_amount", paidState: "none", latestRunId: runId,
       progress: { step: "reading", at: now }, source: args.source?.slice(0, 80),
       name: cleanLine(args.name, 80),
+      refundType: args.refundType,
       createdAt: now, updatedAt: now,
     });
     await ctx.db.insert("inputs", { caseId, kind: "initial", text: args.text ? redact(args.text) : undefined, storageIds: args.storageIds, createdAt: now });
@@ -81,7 +82,7 @@ export const get = query({
     const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(20);
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      code: item.code, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
+      code: item.code, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ?? null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
       dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: item.dueSourceText ?? null,
       nextStep: item.nextStep ?? null, questions: item.questions ?? [],

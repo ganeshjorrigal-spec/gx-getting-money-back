@@ -12,6 +12,7 @@ import { redact } from "../../lib/redact";
 type Picture = { file: File; preview: string };
 
 export default function StartPage() {
+  const [refundType,setRefundType] = useState<"flight"|"event">("flight");
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
@@ -79,7 +80,8 @@ export default function StartPage() {
       }
       const token = makeToken();
       const hash = await tokenHash(token);
-      const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId, name: name.trim() || undefined });
+      const eventMessage = /bookmyshow|district|concert|event ticket|ticketgenie|skillbox/i.test(message);
+      const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId, name: name.trim() || undefined, refundType:eventMessage?"event":refundType });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/${result.code}#k=${token}`);
     } catch (caught) {
@@ -104,7 +106,8 @@ export default function StartPage() {
     <div className="case-wrap intake-page">
       <p className="section-kicker">START YOUR CASE</p>
       <h1>{c.title}</h1>
-      <p className="intake-helper">{c.helper}</p>
+      <p className="intake-helper">{refundType==="flight"?"Paste the cancellation mail, a company reply, or add a screenshot. We’ll work out who owes the refund and your next step.":c.helper}</p>
+      <div className="situation-list"><button className="situation-chip" aria-pressed={refundType==="flight"} onClick={()=>setRefundType("flight")}>Flight refund</button><button className="situation-chip" aria-pressed={refundType==="event"} onClick={()=>setRefundType("event")}>Event ticket</button></div>
       <article className="case-card demo-intake">
         <p className="section-kicker">Demo</p>
         <h2>Feel a full refund chase in 3 minutes.</h2>

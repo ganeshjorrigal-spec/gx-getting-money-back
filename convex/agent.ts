@@ -13,6 +13,7 @@ import { draftForCase, draftMatchesFacts } from "./lib/draft";
 import { verifiedEmailFor } from "../lib/route-kb";
 import { latestReplyText } from "../lib/reply-banner";
 import { demoPays } from "../lib/demo";
+import { isFlightText } from "../lib/flight";
 
 const draftSchema = z.object({ subject: z.string().nullable(), body: z.string(), attachChecklist: z.array(z.string()) });
 const draftSystem = `Write one short refund message from the saved facts. You do not send it. For L0_chat write a chat line under 80 words; otherwise write an email under 160 words. Never call a moved or postponed event cancelled. Include every completed step and its date, the amount, booking ID, and a promised refund date when supplied. Dates must look like 5 Oct 2026. Omit unknown details entirely; never use placeholders such as {name}. No invented contacts, links, rules or legal threats. Polite, firm, first person. Return the JSON schema only. No "to" field.`;
@@ -37,6 +38,10 @@ export const triage = internalAction({
   handler: async (ctx, { caseId, runId, autoRetry, reuseFacts }) => {
     const loaded = await ctx.runQuery(internal.agentData.load, { caseId });
     if (!loaded || loaded.item.latestRunId !== runId) return null;
+    if (loaded.item.refundType === "flight" || (!loaded.item.demo && isFlightText(loaded.inputs.find(i => i.kind === "initial")?.text ?? ""))) {
+      await ctx.runAction(internal.flightAgent.triage, { caseId, runId, reuseFacts });
+      return null;
+    }
     const today = loaded.item.demo?.now ?? todayIST();
     const latest = loaded.inputs.at(-1);
     const previous = loaded.item.facts as CaseRead | undefined;

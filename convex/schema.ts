@@ -7,6 +7,7 @@ const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("
 export default defineSchema({
   cases: defineTable({
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),
+    refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),
     routeConfidence: v.optional(v.number()), facts: v.optional(v.any()), platform: v.optional(v.string()),
     eventName: v.optional(v.string()), amountPaise: v.optional(v.number()), dueDate: v.optional(v.string()),
     dueSource: v.optional(v.string()), dueSourceText: v.optional(v.string()), nextStep: v.optional(v.string()),
@@ -35,7 +36,7 @@ export default defineSchema({
   }).index("by_case", ["caseId", "createdAt"]),
   drafts: defineTable({
     caseId: v.id("cases"), step: v.string(), channel: v.string(), to: v.optional(v.string()),
-    subject: v.optional(v.string()), body: v.string(), attachChecklist: v.array(v.string()),
+    subject: v.optional(v.string()), cc: v.optional(v.array(v.string())), body: v.string(), attachChecklist: v.array(v.string()),
     status: v.union(v.literal("ready"), v.literal("opened"), v.literal("sent")), createdAt: v.number(),
   }).index("by_case", ["caseId"]),
   checkins: defineTable({
