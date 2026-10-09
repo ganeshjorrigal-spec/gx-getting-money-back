@@ -109,13 +109,16 @@ Rule-backed steps first, then HQ DEFAULT waits. The agent may cite the rule rows
 - For denied boarding: boarding pass or check-in proof and anything written from the counter.
 - Whether the user gave an email or phone at booking (F16).
 
-## F. How refunds get stuck (REPORTED, to be filled from X complaints)
+## F. How refunds get stuck (REPORTED)
 
-Kept from the Gemini draft as hypotheses only, until `docs/research/user-evidence/x-complaints.md` lands:
-1. Travel site and airline blame each other. Counter: F03.
-2. Credit shell pushed as the only option. Counter: F06.
-3. Taxes kept on "non-refundable" fares. Counter: F04.
-4. "Refund initiated" with no money. Counter: ask for ARN or UTR, F22 where it applies.
+Evidence: `docs/research/user-evidence/x-complaints.md` (29 public X complaints, 9 Oct 2026, small sample, all still open).
+1. **"Please DM us" as the first reply** (17 of 29). Counter: move the chase to email with the case inbox in CC, then the grievance officer or Nodal Officer, so the trail is written and dated.
+2. **Travel site waiting on the airline** (4 of 15 MakeMyTrip and Goibibo posts). Counter: F03, and F22 (ask the date the airline paid the travel site).
+3. **"Refund processed", no money** (7 of 29). Counter: ask for ARN or UTR and the date it left.
+4. **Very long waits** (90 to 120 days in 3 posts, two of them SpiceJet via Goibibo). Counter: the full ladder in D, with AirSewa.
+5. **Fees kept on cancellation** (4 posts). Counter: F04 for taxes and airport fees only. A travel-agent fee disclosed at booking is outside the F07 cap; never promise it back.
+6. **Credit shell or voucher pushed** (1 post). Counter: F06.
+7. **App chatbot loops** (3 posts). Counter: skip to email and the grievance officer.
 
 ## G. Dates the agent can compute
 
