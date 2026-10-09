@@ -1,4 +1,4 @@
-<!-- Charter, owned by Claude HQ. Re-lock text for Shaktimaan, 10 Oct 2026 (D-028, D-029, D-030). Replaces the events lock of 4 Oct (D-010). If the text Ganesh sends differs, replace this file with that exact text. Built over 3 rounds of drafts attacked by simulated Shaktimaan and UD reviewers and evidence audits: docs/hq/relock-2026-10/. -->
+<!-- Charter, owned by Claude HQ. LOCKED by Shaktimaan 9 Oct 2026, 23:19, with conditions (D-031). Replaces the events lock of 4 Oct (D-010). If the text Ganesh sends differs, replace this file with that exact text. Loop record: docs/hq/relock-2026-10/. -->
 # IDEA LOCK · Build Sprint (re-lock, 10 Oct 2026)
 
 Labels: VERIFIED (official text or the company's own page, opened by us). REPORTED (news or public posts). OBSERVATION (what I saw myself, small samples). MISSING (not known yet, with when I get it). A date marked "Tickback's expectation" is our choice, never a law.
