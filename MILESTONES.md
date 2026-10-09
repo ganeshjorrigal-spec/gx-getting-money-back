@@ -127,6 +127,22 @@ Acceptance checks:
 - [ ] Proof in today's log: one full run from tap to Money landed, time per round and total (target 3 minutes or less), the three replies as received, a screenshot after each round
 Reviewed by: pending
 
+## M2.6. Flights, live with events and payment (D-028 to D-033) | ACTIVE
+Goal: a person whose domestic flight refund is past its date pastes their cancellation mail and gets the "who owes you" card and the next mail; replies switch the owner by rule; a flight demo shows it in about 3 minutes; Rs 49 a year can be paid by Razorpay link. Events keep working exactly as today. Spec: `docs/prd/01-product.md` v2 (sections 2.1 to 2.3, 3, 4, 5 FS-1 to FS-7, 6.2, 6.4, 7, 8.2, 8.4); rules and contacts only from `docs/research/playbooks/flights.md`.
+Acceptance checks:
+- [ ] Flight playbook stored as data beside `lib/route-kb.ts`: rules F01 to F23 and contacts from `flights.md` B and C, each with source and label; events data untouched
+- [ ] Intake detects a flight case; asks PNR, booked via, payment method, cancellation date; never asks OTP, password or bank details
+- [ ] Owner and due date in code per `flights.md` G and D-029 (14 working days from cancellation labelled Tickback's reading; credit card 7 days; debit, UPI, net banking 15 working days labelled Tickback's expectation; never promise look-in on travel-site bookings)
+- [ ] "Who owes you" card: who, when due (with source or "Tickback's expectation"), rule line, officer above (from the company's own page only), next mail
+- [ ] Reply reading: model classifies company pointed at, claim, date or reference; code switches owner by rule (FS-2 to FS-4); next rung per `flights.md` D
+- [ ] Mails can carry a second company (To and CC) plus the case inbox
+- [ ] Flight demo (6.2): demo travel site and demo airline roles, exactly 3 rounds, one case timeline, Skip ahead, Money landed, who-did-what count; same safety rules as D-027 (unit test each); never sends to a real company address
+- [ ] Payment (D-033): Rs 49 a year, guarantee line under the price, pay card opens `NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK`, "I've paid" unlocks, hidden on demo cases
+- [ ] Landing leads with flights; events still reachable; privacy page adds "never logs in" and "Gmail connect is open to test accounts only for now"
+- [ ] Eval fixtures for flights (at least 8, built from the stories and the X patterns) pass with exact dates and zero invented contacts; all existing event fixtures F1 to F16 still pass
+- [ ] Proof in today's log; live proof runs (real Gmail send, demo full run with timing) are done with Ganesh in the morning
+Reviewed by: pending
+
 ## M3. Value loop (US-2 to US-9) | PROPOSED
 Goal: the case stays alive until the money lands, with every step ready to send from the user's own email or chat.
 Friday scope is the "must" list in `docs/prd/07-build-plan.md` section 3b; the rest of M3 follows in week 2.

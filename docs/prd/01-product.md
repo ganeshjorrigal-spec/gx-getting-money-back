@@ -550,7 +550,7 @@ Cut order if time runs short:
 
 What success means by 17 Oct (IDEA_SCOPE, Fri 16): at least 3 live flight cases where a real reply was read and the next step moved; owner named; bank reference got where one came; replies caught by CC versus pasted; drafts written versus sent; who saw the Rs 49 offer and who paid. Money landed counts only if it truly lands. Hand-helped users and product users are counted separately; demo runs never count.
 
-Price on the page (D-020, D-030 (3)): the route, the date and the first step are free; Rs 49 to stay on a case of Rs 300 or more, back if the money has not landed 30 days after its due date and you followed the steps (live `guaranteeLine` in `app/copy.ts`). The pay button stays off until Ganesh adds his UPI ID (live: the pay card is hidden while `NEXT_PUBLIC_UPI_VPA` is empty, `STATE.md`), as the sheet says. Cases Ganesh helps by hand this week are free. Demo cases never see the offer.
+Price on the page (D-033): checking a case (route, date, first step) is free. Rs 49 a year has Tickback stay on every case for that year; if it recovers nothing in that year, the Rs 49 comes back. One line under the price says it. The pay button opens a Razorpay Payment Link (`NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK`); "I've paid" unlocks at once and Ganesh reconciles daily. After a case closes as landed, Tickback asks, never forces, for a review or a screenshot of the money arriving. Cases Ganesh helps by hand this week are free. Demo cases never see the offer.
 
 ### 8.3 Open questions
 
@@ -577,8 +577,8 @@ From the playbooks (section H) and D-029:
 | Q17 | F09 (medical emergency): the verifier could not read the rest of CAR M-II para 3(m) (`flights-verification.md`) | Ganesh reads the full 3(m) before the FS-4 medical branch ships |
 | Q18 | What counts as the "live proof run" that unlocks stores (D-030 (2)) | OPEN, needs Ganesh. Not defined in the sheet or decisions |
 | Q19 | How hand-helped cases move into the product, and how a case is marked hand-helped so the two user counts stay separate (D-030 (4)) | OPEN, needs Ganesh |
-| Q20 | Flight demo: is "one thread" one case thread (as built, 6.2) or one Gmail conversation across all three rounds? | OPEN, needs Ganesh. One Gmail conversation would need a different send path than Gmail web compose and is not in this build |
-| Q21 | Which slice must be live on Tue 13 (the sheet's target), if not all of build steps 1 to 6 | OPEN, needs Ganesh. Cut order in 8.2 applies until he says |
+| Q20 | Flight demo thread | DECIDED (D-032): one case thread in Tickback, as built. Not one Gmail conversation |
+| Q21 | What is live on Tue 13 | DECIDED (D-032): events, flights and payment together. Cut order in 8.2 applies if it slips |
 | Q22 | Stores: start date for "7 days" when an order was cancelled (not returned) and the store promised no date. D-029 (3) names only "return accepted" | OPEN, needs Ganesh |
 
 ### 8.4 What Shaktimaan will click, and what he must find
