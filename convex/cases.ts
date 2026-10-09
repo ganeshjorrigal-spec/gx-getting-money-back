@@ -169,8 +169,8 @@ export const markSent = mutation({
     if (draft.status === "sent") return null;
     if (item.demo) {
       if (item.demo.expiresAt <= Date.now() || item.demo.round >= 3 || item.demo.phase.startsWith("waiting")) throw new Error("This demo round is not ready to send");
-      if (item.demo.round === 1 && item.route !== "OVERDUE") throw new Error("Skip ahead before sending the escalation");
-      if (item.demo.round === 2 && !item.facts?.bookingId) throw new Error("Add a demo booking ID first");
+      if (item.demo.kind !== "flight" && item.demo.round === 1 && item.route !== "OVERDUE") throw new Error("Skip ahead before sending the escalation");
+      if (item.demo.kind !== "flight" && item.demo.round === 2 && !item.facts?.bookingId) throw new Error("Add a demo booking ID first");
       const session = crypto.randomUUID();
       await ctx.db.patch(item._id, { demo: { ...item.demo, session, phase: "waiting_organiser", deadline: Date.now() + 120_000 } });
       await ctx.scheduler.runAfter(0, internal.demoActions.checkOrganiser, { caseId: item._id, session });

@@ -33,9 +33,18 @@ export function demoMayReply(input: { isDemo: boolean; code: string; subject: st
     && !/bulk|list|junk/i.test(input.precedence ?? "") && !input.suppress
     && !/mailer-daemon|postmaster|no-?reply|auto-?reply/i.test(input.from);
 }
-export function demoReplyBody(input: { round: number; platform: string; event: string; amount: number; bookingId?: string | null; now: string; code: string; opening?: string }): { body: string; reference: string; footer: string } {
+export function demoReplyBody(input: { round: number; platform: string; event: string; amount: number; bookingId?: string | null; now: string; code: string; opening?: string; kind?: "flight" | "event"; cancellationDate?: string }): { body: string; reference: string; footer: string } {
   const reference = `DEMO-${input.code.replace("TB-", "")}-REF`;
   const context = input.opening ?? `Thank you for contacting us about ${input.event}.`;
+  if (input.kind === "flight") {
+    const ladder = input.round === 1
+      ? `DemoTrips: Your refund of Rs ${input.amount} is pending with Demo Air. We will pass it on once the airline pays us.`
+      : input.round === 2
+      ? `Demo Air: We paid your refund of Rs ${input.amount} to DemoTrips on ${addWorkingDays(input.cancellationDate ?? input.now, 5)}. Our airline reference is DEMO-AIR-${input.code.replace("TB-", "")}. Please ask DemoTrips when it sent your refund to you.`
+      : `DemoTrips: We sent Rs ${input.amount} to your original payment method on ${input.now}. Your bank reference (UTR) is ${reference}. Please check your bank by ${addWorkingDays(input.now, 3)}. Use this reference if your bank needs to trace it.`;
+    const footer = "Demo reply from Tickback's demo desk, not from a real travel site or airline.";
+    return { body: `${context}\n\n${ladder}\n\n${input.round === 2 ? "Nodal desk, Demo Air" : "Refund desk, DemoTrips"}\n\n${footer}`, reference, footer };
+  }
   const ladder = input.round === 1
     ? `Your refund of ₹${input.amount.toLocaleString("en-IN")} has been initiated. Please allow 7 to 10 working days from ${displayDate(input.now)} for it to reach your original payment method.`
     : input.round === 2 ? "Please share your booking ID so we can locate the booking and check the refund."

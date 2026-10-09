@@ -90,12 +90,12 @@ export default function StartPage() {
     }
   }
 
-  async function startDemo(platform: "bookmyshow" | "district") {
+  async function startDemo(platform: "bookmyshow" | "district", kind: "flight"|"event" = "event") {
     if (working) return;
     setWorking(true); setError("");
     try {
       const token = makeToken();
-      const result = await createDemo({ platform, tokenHash: await tokenHash(token), deviceId: getDeviceId() });
+      const result = await createDemo({ platform, kind, tokenHash: await tokenHash(token), deviceId: getDeviceId() });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
     } catch (error) { setError(error instanceof Error ? error.message : "Could not start the demo yet."); setWorking(false); }
@@ -112,7 +112,7 @@ export default function StartPage() {
         <p className="section-kicker">Demo</p>
         <h2>Feel a full refund chase in 3 minutes.</h2>
         <p>You send three emails from your own Gmail. Our demo desk replies, and your case updates live. No real booking or money needed.</p>
-        {!demoPicker ? <button type="button" className="button button-secondary" disabled={working} onClick={() => setDemoPicker(true)}>Try a demo</button> : <><p>Pick a platform to play:</p><div className="save-actions"><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("bookmyshow")}>BookMyShow</button><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("district")}>District</button></div><p className="input-hint">BookMyShow uses email in this demo because we cannot simulate its in-app chat.</p>{working && <p role="status"><span className="spinner" /> Reading your message…</p>}</>}
+        {refundType === "flight" ? <button type="button" className="button button-secondary" disabled={working} onClick={()=>startDemo("district","flight")}>Try a flight demo</button> : !demoPicker ? <button type="button" className="button button-secondary" disabled={working} onClick={() => setDemoPicker(true)}>Try a demo</button> : <><p>Pick a platform to play:</p><div className="save-actions"><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("bookmyshow")}>BookMyShow</button><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("district")}>District</button></div><p className="input-hint">BookMyShow uses email in this demo because we cannot simulate its in-app chat.</p>{working && <p role="status"><span className="spinner" /> Reading your message…</p>}</>}
         {demoPicker && error && <p className="error-banner" role="alert">{error}</p>}
       </article>
       <form onSubmit={submit}>

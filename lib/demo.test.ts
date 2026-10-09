@@ -58,4 +58,13 @@ describe("demo safety", () => {
     expect(demoReplyBody({ ...data, round: 3 }).footer).toContain("not from District");
     expect(emailAddresses('Buyer <buyer@example.com>, cases+tb-demo01@example.com')).toHaveLength(2);
   });
+  it("keeps flight replies separate from the event ladder", () => {
+    const data = {kind:"flight" as const, platform:"DemoTrips",event:"Sample domestic flight",amount:5400,now:"2026-10-10",cancellationDate:"2026-09-07",code:safe.code};
+    const replies=[1,2,3].map(round=>demoReplyBody({...data,round}));
+    expect(replies[0].body).toContain("pending with Demo Air");
+    expect(replies[1].body).toContain("2026-09-14");
+    expect(replies[1].body).not.toContain("share your booking ID");
+    expect(replies[2].body).toContain("2026-10-14");
+    expect(replies.every(reply=>reply.footer.includes("not from a real travel site or airline"))).toBe(true);
+  });
 });

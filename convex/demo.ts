@@ -11,7 +11,7 @@ import type { CaseRead } from "./lib/read";
 
 const access = { code: v.string(), token: v.string() };
 export const create = mutation({
-  args: { platform: v.union(v.literal("bookmyshow"), v.literal("district")), tokenHash: v.string(), deviceId: v.string() },
+  args: { platform: v.union(v.literal("bookmyshow"), v.literal("district")), tokenHash: v.string(), deviceId: v.string(), kind: v.optional(v.union(v.literal("flight"), v.literal("event"))) },
   returns: v.object({ code: v.string() }),
   handler: async (ctx, args) => {
     if (!/^[a-f0-9]{64}$/.test(args.tokenHash) || !/^[A-Za-z0-9_-]{12,100}$/.test(args.deviceId)) throw new Error("Invalid case key");
@@ -25,9 +25,10 @@ export const create = mutation({
       if (attempt === 4) throw new Error("Please try again");
     }
     const now = Date.now(); const today = todayIST(); const runId = crypto.randomUUID();
-    const platform = demoPlatformName(args.platform);
-    const text = `${addDays(today, -30)}. ${platform}: Sample Concert has been cancelled. Your payment was Rs 2,400. A full refund will reach your original payment method in 7 to 10 working days. I have not received it.`;
-    const caseId = await ctx.db.insert("cases", { code, tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0, tier: "free_check", paidState: "none", platform, amountPaise: 240000, eventName: "Sample Concert", latestRunId: runId, progress: { step: "reading", at: now }, createdAt: now, updatedAt: now, demo: { round: 0, now: today, expiresAt: demoExpiry(now), phase: "ready" } });
+    const flight = args.kind === "flight";
+    const platform = flight ? "DemoTrips" : demoPlatformName(args.platform);
+    const text = flight ? `Domestic flight Delhi to Mumbai, Demo Air, booked through DemoTrips, paid Rs 5,400 by UPI. Airline cancelled on ${addDays(today,-30)}. Full refund not received. Sample flight; no real booking. PNR not supplied yet.` : `${addDays(today, -30)}. ${platform}: Sample Concert has been cancelled. Your payment was Rs 2,400. A full refund will reach your original payment method in 7 to 10 working days. I have not received it.`;
+    const caseId = await ctx.db.insert("cases", { code, refundType: flight ? "flight" : "event", tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0, tier: "free_check", paidState: "none", platform, amountPaise: flight ? 540000 : 240000, eventName: flight ? "Sample domestic flight" : "Sample Concert", latestRunId: runId, progress: { step: "reading", at: now }, createdAt: now, updatedAt: now, demo: { kind: args.kind ?? "event", round: 0, now: today, expiresAt: demoExpiry(now), phase: "ready" } });
     await ctx.db.insert("inputs", { caseId, kind: "initial", text, storageIds: [], createdAt: now });
     await ctx.db.insert("caseEvents", { caseId, type: "created", summary: "Demo case started with a sample cancellation message", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId, runId });
@@ -41,6 +42,12 @@ export const skipAhead = mutation({
   args: access, returns: v.null(),
   handler: async (ctx, args) => {
     const item = await assertAccess(ctx, args.code, args.token);
+    if (item.demo?.kind === "flight") {
+      if(item.demo.round !== 3 || item.demo.phase !== "ready" || !item.dueDate || item.stage.startsWith("CLOSED")) throw new Error("Skip to the bank check date after the third reply");
+      await ctx.db.patch(item._id,{demo:{...item.demo,now:item.dueDate},updatedAt:Date.now()});
+      await ctx.db.insert("caseEvents",{caseId:item._id,type:"demo_skip",summary:"Demo clock moved to the promised bank date",actor:"user",createdAt:Date.now()});
+      return null;
+    }
     if (!item.demo || item.demo.round !== 1 || item.demo.phase !== "ready" || !item.dueDate || item.stage.startsWith("CLOSED")) throw new Error("Skip ahead is available after the first demo reply");
     const now = demoClockAfterSkip(item.demo.now, item.dueDate);
     const read = item.facts as CaseRead;
@@ -58,7 +65,7 @@ export const booking = mutation({
   handler: async (ctx, args) => {
     const item = await assertAccess(ctx, args.code, args.token);
     const bookingId = args.bookingId.trim();
-    if (!item.demo || item.demo.round !== 2 || item.demo.phase !== "ready" || item.stage.startsWith("CLOSED")) throw new Error("Booking ID is not needed now");
+    if (!item.demo || item.demo.kind === "flight" || item.demo.round !== 2 || item.demo.phase !== "ready" || item.stage.startsWith("CLOSED")) throw new Error("Booking ID is not needed now");
     if (!/^[A-Za-z0-9_-]{1,50}$/.test(bookingId)) throw new Error("Use a made-up ID with letters, numbers or dashes");
     const facts = { ...(item.facts as CaseRead), bookingId, questions: [] };
     await ctx.db.patch(item._id, { facts, stage: "READY", route: "OVERDUE", nextStep: "DEMO_booking", questions: [], updatedAt: Date.now() });
