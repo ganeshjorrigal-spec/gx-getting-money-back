@@ -1,3 +1,4 @@
+import { flightSendCheckDate } from "../lib/flight";
 import { annualActive,razorpayPaymentLink } from "../lib/annual-pass";
 import { demoSubject } from "../lib/demo";
 import { mutation, query, type MutationCtx } from "./_generated/server";
@@ -195,7 +196,15 @@ export const markSent = mutation({
     await ctx.db.patch(item._id, { stage: "WAITING", ...(item.refundType==="flight"?{firstFlightSentAt:item.firstFlightSentAt??now}:{}), updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "marked_sent", summary: `You sent the ${draft.step} message`, actor: "user", createdAt: now });
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
-    if(item.refundType === "flight") await scheduleCheckin(ctx,item._id,addDays(today,draft.channel==="portal"?30:7),"flight_refund");
+    if(item.refundType === "flight") {
+      const checkDate=flightSendCheckDate(draft.channel,today,item.flightPlan?.checkDate);
+      if(checkDate){
+        await scheduleCheckin(ctx,item._id,checkDate,"flight_refund");
+        if(checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${checkDate}`,actor:"agent",createdAt:now});
+        const passOn=item.facts?.reply?.claim==="paid_site"&&item.dueSource==="estimate";
+        await ctx.db.patch(item._id,{flightPlan:{...item.flightPlan,checkDate,...(passOn?{dueDate:checkDate}:{})},...(passOn?{dueDate:checkDate}:{})});
+      }
+    }
     else if (draft.step === "L0_email" || draft.step === "L0_chat" || draft.step === "NO_ROUTE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     else if (draft.step === "L1") {
       await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "grievance_ack");
@@ -281,7 +290,7 @@ export const answerCheckin = mutation({
     if (answer === "landed") {
       if (item.demo && item.demo.round !== 3) throw new Error("Finish the three demo rounds before Money landed");
       const amount = amountPaise ?? item.amountPaise;
-      if (amount == null || !Number.isFinite(amount) || amount < 0) throw new Error("Enter the amount received");
+      if (amount == null || !Number.isFinite(amount) || amount < 0 || item.refundType==="flight"&&amount<=0) throw new Error("Enter the amount received");
       await clearCheckins(ctx, item._id);
       await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: item.demo ? item.demo.expiresAt : now + 180 * 86_400_000, updatedAt: now });
       if(item.refundType==="flight"&&!item.demo&&item.deviceHash){

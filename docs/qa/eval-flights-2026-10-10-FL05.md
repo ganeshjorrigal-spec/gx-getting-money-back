@@ -1,0 +1,9 @@
+# Flight eval — 2026-10-10
+
+Fixed paid model: gemini-3.5-flash-lite. Synthetic cases based on FS1–FS5 and public complaint patterns (pending airline, paid site, processed/not received, vague stalls, credit shell, retained taxes). No user data. Exact due/check dates, expected money holder and recipients asserted in code.
+
+| Fixture | Result | Observed | ms |
+|---|---|---|---:|
+| FL05 | PASS | claim paid_site; from IndiGo; points at MakeMyTrip; route OVERDUE; due 2026-10-03; check 2026-10-16; money with MakeMyTrip; To grievanceofficer@makemytrip.com; invented contacts 0 | 2113 |
+
+Passed 1/1. Counts only: input 645, output 282 tokens.

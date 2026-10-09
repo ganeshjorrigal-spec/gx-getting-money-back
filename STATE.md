@@ -4,7 +4,7 @@ Last updated: 10 October 2026. M2.6 is ACTIVE under the overnight flight prompt.
 
 ## Overnight flight build
 - Steps 1–4 committed and pushed separately: sourced playbook data, flight intake/card, reply decisions, flight demo using the real reader and existing bounded inbox path.
-- Step 5 in progress: fare rules, escalation/check-ins, closing count from case events. Backend additive; static frontend not deployed yet.
+- Step 7 complete locally: 88 unit tests and type check pass; all 12 flight fixtures, two scope fixtures and unchanged F1�F16 pass. Static deployment and live browser proof next.
 - Paid model remains gemini-3.5-flash-lite. No Gmail sent, account login, OAuth changes or user-data deletion during this night.
 - Next: finish step 5, then annual payment and flight landing, 8+ paid flight fixtures plus F1–F16, deploy and live page proof.
 - Morning-only: real Gmail test send, three full timed flight demos, Razorpay Payment Link value, gated medical/AirSewa/source checks.

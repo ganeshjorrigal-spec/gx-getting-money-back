@@ -38,7 +38,7 @@ for (const fixture of fixtures.filter((item) => !process.env.EVAL_ONLY || item.i
   const started = Date.now();
   let result = "ERROR";
   let detail = "";
-  for (const model of [process.env.GEMINI_MODEL, process.env.GEMINI_MODEL_FALLBACK].filter((m): m is string => !!m)) {
+  for (const model of [process.env.GEMINI_MODEL].filter((m): m is string => !!m)) {
     try {
       const response = await generateObject({
         model: google(model), schema: caseReadSchema, system: TRIAGE_SYSTEM,
@@ -68,7 +68,7 @@ for (const fixture of fixtures.filter((item) => !process.env.EVAL_ONLY || item.i
       if (!specialOK) detail += "; special check failed";
       if (!contactsOK) detail += "; invented contact";
       break;
-    } catch (error) { detail = error instanceof Error ? error.message.slice(0, 120) : "Model failed"; }
+    } catch (error) { detail = "Model request failed"; }
   }
   rows.push(`| ${fixture.id} | ${fixture.route} | ${result} | ${detail.replaceAll("|", "/")} | ${Date.now() - started} |`);
   process.stdout.write(`${fixture.id} ${result}: ${detail}\n`);
@@ -79,3 +79,4 @@ await mkdir("docs/qa", { recursive: true });
 const date = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 await writeFile(`docs/qa/eval-${date}.md`, report);
 if (correct < Math.max(1, rows.length - 1) || rows.some((row) => row.includes("| FAIL |") || row.includes("| ERROR |")) || !exactDates || inventedContacts) process.exitCode = 1;
+

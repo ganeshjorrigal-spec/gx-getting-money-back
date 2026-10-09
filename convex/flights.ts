@@ -36,9 +36,9 @@ export const opened=mutation({args:{code:v.string(),token:v.string(),draftId:v.i
 export const reminder=mutation({args:{code:v.string(),token:v.string(),date:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);const today=item.demo?.now??todayIST();
  if(item.refundType!=="flight"||item.route!=="TRACE"||!validFlightDate(args.date)||args.date<=today)throw new Error("Choose a future bank reminder date");
- const read=flightReadSchema.parse(item.facts);read.reply.promisedDate=args.date;
+ const read=flightReadSchema.parse(item.facts);
  // This is the user's reminder, never attributed to a bank or company's promise.
- const plan=planFlight(read,today,{rung:item.ladderLevel,moneyWith:item.moneyWith});
+ const plan=planFlight({...read,reply:{...read.reply,promisedDate:args.date}},today,{rung:item.ladderLevel,moneyWith:item.moneyWith});
  plan.dueSource="user_choice";plan.dueSourceText="Your chosen reminder date; not the company's promise.";
  const runId=crypto.randomUUID();await ctx.db.patch(item._id,{latestRunId:runId});
  await ctx.scheduler.runAfter(0,internal.flights.apply,{caseId:item._id,runId,read,plan,model:"code",latencyMs:0,inputTokens:0,outputTokens:0,totalTokens:0});return null;
@@ -55,10 +55,12 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight"||!item.questions?.some((q:{id:string})=>q.id===args.id))throw new Error("Question no longer available");
  const value=redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
  if(args.id==="confirmReply"){if(value!=="Looks right")throw new Error("Paste a correction to their reply below");read.replyConfirmed=true;}
+ if(args.id==="transferDestination"){if(value==="Not clear")throw new Error("Paste their exact reply or a correction below");if(value!=="passenger"&&value!==read.bookedVia)throw new Error("Choose the transfer destination");read.reply.pointsAt=value;read.reply.paymentDestination=value==="passenger"?"passenger":"travel_site";read.replyConfirmed=true;}
  if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {if(!validFlightDate(value))throw new Error("Use a valid date: YYYY-MM-DD");Object.assign(read,{[args.id]:value});}
  else if(["bookingTime","cancellationTime"].includes(args.id)){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)||!Number.isFinite(Date.parse(value+"+05:30")))throw new Error("Use YYYY-MM-DDTHH:mm");Object.assign(read,{[args.id]:value+"+05:30"});}
  else if(["airline","bookedVia"].includes(args.id)){if(value==="Other")throw new Error("Type the company name below");Object.assign(read,{[args.id]:value});}
  else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
+ else if(args.id==="supportContacted")read.supportContacted=value==="Yes";
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";
  else if(["taxes","amountPaid"].includes(args.id)){const amount=Number(value);if(!Number.isFinite(amount)||amount<0)throw new Error("Enter an amount");Object.assign(read,{[args.id]:amount});}
@@ -73,7 +75,7 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(10);
  const reply=inputs.find(i=>i.kind==="reply"&&i.runId===args.runId);if(reply)await ctx.db.patch(reply._id,{summary:redact(read.reply.summary).slice(0,240),keySentence:replyKeySentence(reply.text??"")});
  await ctx.db.insert("caseEvents",{caseId:item._id,type:reply?"reply_read":"triaged",summary:reply?redact(read.reply.summary).slice(0,180):`${plan.owner} owes the refund. ${plan.dueSourceText}`.slice(0,180),actor:"agent",createdAt:now});
- if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${plan.checkDate}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
+ if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${plan.checkDate}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
  if(plan.body && item.factsConfirmedAt){
  if(plan.rung>=3&&plan.channel!=="bank"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
@@ -82,3 +84,4 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  await ctx.db.insert("agentRuns",{caseId:item._id,runId:args.runId,step:"triage",model:args.model,attempt:1,status:"done",latencyMs:args.latencyMs,inputTokens:args.inputTokens,outputTokens:args.outputTokens,totalTokens:args.totalTokens,createdAt:now});
  await ctx.scheduler.runAfter(0,internal.googleActions.syncCheckins,{caseId:item._id});await ctx.scheduler.runAfter(0,internal.responsesActions.syncCase,{caseId:item._id});return null;
 }});
+

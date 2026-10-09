@@ -4,14 +4,15 @@ import { flightContact, flightRule, type FlightContact } from "./flight-kb";
 
 const nullable = z.string().nullable();
 export const flightReadSchema = z.object({
-  airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","unknown"]),
+  scopeIssue:z.enum(["none","failed_no_ticket","compensation_only"]).optional(), airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","unknown"]),
   cancellationDate: nullable, cancelledBy: z.enum(["airline","passenger","unknown"]), domestic: z.boolean().nullable(),
-  flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), cancellationTime: nullable.optional(),
+  flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), supportContacted:z.boolean().optional(), cancellationTime: nullable.optional(),
   bookingTime: nullable, departureDate: nullable, nonRefundable: z.boolean(), medicalEmergency: z.boolean(),
   taxes: z.number().nonnegative().nullable(), baseFare: z.number().nonnegative().nullable(), fuel: z.number().nonnegative().nullable(),
   cancellationCharge: z.number().nonnegative().nullable(), taxesReturned: z.boolean().nullable(), supportContactDate: nullable,
-  reply: z.object({ fromCompany: nullable, pointsAt: nullable, claim: z.enum(["none","stall","under_review","waiting_airline","paid_site","not_paid","processed_reference","credit_shell","asks_details","destination_wrong","other"]), paidDate: nullable, promisedDate: nullable, reference: nullable, summary: z.string(), confidence: z.number().min(0).max(1) }),
+  reply: z.object({ fromCompany: nullable, pointsAt: nullable, paymentDestination:z.enum(["passenger","travel_site","airline","unknown"]).optional(), claim: z.enum(["none","stall","under_review","waiting_airline","paid_site","not_paid","processed_reference","credit_shell","asks_details","destination_wrong","other"]), paidDate: nullable, promisedDate: nullable, reference: nullable, summary: z.string(), confidence: z.number().min(0).max(1) }),
 });
+export const flightAiSchema=flightReadSchema.extend({reply:flightReadSchema.shape.reply.extend({paymentDestination:z.enum(["passenger","travel_site","airline","unknown"]).describe("The destination of the described payment. Original payment method, customer bank/card/account means passenger. Airline paid travel site means travel_site. Pending with airline or no transfer means unknown. Not who wrote the reply.")})});
 export type FlightRead = z.infer<typeof flightReadSchema>;
 export type FlightQuestion = {id:string;text:string;options:string[]};
 export type FlightPlan = {
@@ -33,6 +34,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   const due=flightDue(read), airline=read.airline??"Your airline", site=read.bookedVia??"Your travel site", direct=site==="direct";
   const plan:FlightPlan={route:"NEED_INFO",owner:airline,moneyWith:prior?.moneyWith??"unknown",dueDate:due.date,dueSource:due.source,dueSourceText:due.text,rung:Math.max(2,prior?.rung??2),nextStep:"questions",nextPerson:null,above:flightContact(airline,"Appellate Authority"),to:null,cc:[],questions:[],note:"",ruleId:due.rule,body:null,subject:"Flight refund follow-up",channel:"email",checkDate:null,amountOwed:read.amountPaid};
   const ask=(id:string,text:string,options:string[]=[])=>plan.questions.push({id,text,options});
+  if(read.scopeIssue&&read.scopeIssue!=="none"){plan.route="OUT_OF_SCOPE";plan.nextStep="none";plan.note="Tickback handles refunds for issued domestic flight tickets. Failed payments without a ticket and compensation-only claims are outside this flow.";return plan;}
   if(read.domestic===false){plan.route="OUT_OF_SCOPE";plan.nextStep="none";plan.note="Tickback handles domestic flight refunds. International flights and compensation claims are not in Tickback yet.";return plan;}
   if(!read.airline)ask("airline","Which airline?",["IndiGo","Air India","SpiceJet","Akasa Air","Other"]);
   if(!read.bookedVia)ask("bookedVia","Where did you book?",["MakeMyTrip","Goibibo","Cleartrip","EaseMyTrip","direct","Other"]);
@@ -44,15 +46,17 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   if(plan.questions.length){plan.questions=plan.questions.slice(0,3);return plan;}
   if(read.medicalEmergency){plan.note="The medical-emergency rule still needs a full source check. Ask the airline about its terms; Tickback does not insist on a cash refund for this branch.";plan.nextStep="none";plan.route="OUT_OF_SCOPE";return plan;}
   if(read.cancelledBy==="passenger"&&direct){
-    if(!read.bookingTime)ask("bookingTime","When did you book? (YYYY-MM-DDTHH:mm, India time)");
-    if(!read.cancellationTime)ask("cancellationTime","When did you cancel? (YYYY-MM-DDTHH:mm, India time)");
-    if(!read.departureDate)ask("departureDate","When was the flight? (YYYY-MM-DD)");
+    if(!validFlightMoment(read.bookingTime))ask("bookingTime","When did you book? (YYYY-MM-DDTHH:mm, India time)");
+    if(!validFlightMoment(read.cancellationTime))ask("cancellationTime","When did you cancel? (YYYY-MM-DDTHH:mm, India time)");
+    if(!validFlightDate(read.departureDate))ask("departureDate","When was the flight? (YYYY-MM-DD)");
     if(plan.questions.length){plan.questions=plan.questions.slice(0,3);return plan;}
   }
   if(read.cancelledBy==="passenger" && read.nonRefundable && read.taxes===null){ask("taxes","What are the taxes and airport fees in your fare breakdown? (rupees)");return plan;}
   if(read.cancelledBy==="passenger"&&read.nonRefundable&&read.taxesReturned){plan.route="NO_ROUTE";plan.nextStep="none";plan.note="The other side is right: the non-refundable base fare follows the fare rules. Your taxes and airport fees have already come back (DGCA para 3(d)).";return plan;}
   if(read.cancelledBy==="passenger"&&read.nonRefundable)plan.amountOwed=(read.taxes??0)+(read.baseFare!==null&&read.fuel!==null&&read.cancellationCharge!==null?Math.max(0,read.cancellationCharge-read.baseFare-read.fuel):0);
-  if(site==="Cleartrip" && !read.supportContactDate){plan.route="OVERDUE";plan.rung=1;plan.nextStep="FLIGHT_call";plan.channel="phone";plan.note="Cleartrip asks you to contact support first. Call +91 9595333333, quote your Trip ID, and keep the complaint reference. Its own process allows 72 hours before grievance escalation.";plan.body=plan.note;plan.dueSourceText=flightRule("F23").sentence;return plan;}
+  if(site==="Cleartrip"&&due.date&&due.date<today&&!read.supportContactDate&&read.supportContacted===undefined){ask("supportContacted","Did you contact Cleartrip support about this?",["Yes","No"]);return plan;}
+  if(site==="Cleartrip"&&!read.supportContactDate&&read.supportContacted===true){ask("supportContactDate","When did you contact Cleartrip support? (YYYY-MM-DD)");return plan;}
+  if(site==="Cleartrip" && due.date&&due.date<today && !read.supportContactDate){plan.route="OVERDUE";plan.rung=1;plan.nextStep="FLIGHT_call";plan.channel="phone";plan.note="Cleartrip asks you to contact support first. Call +91 9595333333, quote your Trip ID, and keep the complaint reference. Its own process allows 72 hours before grievance escalation.";plan.body=plan.note;plan.dueSourceText=flightRule("F23").sentence;return plan;}
   if(site==="Cleartrip" && read.supportContactDate && addDays(read.supportContactDate,3)>today){plan.route="WAIT";plan.nextStep="none";plan.checkDate=addDays(read.supportContactDate,3);plan.note="Cleartrip's support window is 72 hours from your call (company policy).";return plan;}
   plan.route=due.date&&due.date>=today?"WAIT":"OVERDUE";plan.nextStep=plan.route==="WAIT"?"none":"FLIGHT_mail";plan.checkDate=plan.route==="WAIT"?due.date:null;
   if(plan.route==="WAIT"&&read.reply.claim==="none")return plan;
@@ -69,9 +73,17 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
     plan.body+=`\n\n${plan.note}${read.taxes!==null?` Taxes and fees: Rs ${read.taxes}.`:""}${plan.amountOwed!==null?` Refund sought: Rs ${plan.amountOwed}.`:""}`;
   }
   if(plan.channel==="portal")plan.body=plan.note+"\n\n"+plan.body;
-  const r=read.reply;
+  const r={...read.reply};
+  if(r.claim!=="none"&&!read.replyConfirmed&&(r.claim==="other"||r.confidence<0.8||![airline,site].includes(r.fromCompany??""))){plan.route="NEED_INFO";plan.questions=[{id:"confirmReply",text:`Tickback read: ${r.summary}. Does that look right?`,options:["Looks right","Not quite"]}];plan.nextStep="questions";plan.body=null;plan.to=null;plan.cc=[];plan.moneyWith=prior?.moneyWith??"unknown";return plan;}
+  // A reference is not enough to enter the bank leg. Destination facts decide
+  // which transfer occurred, even if the model selected the wrong claim label.
+  if(["paid_site","processed_reference"].includes(r.claim)){
+    if((r.paymentDestination==="travel_site"||r.pointsAt===site)&&!direct)r.claim="paid_site";
+    else if((r.paymentDestination==="passenger"||r.pointsAt==="passenger")&&r.reference)r.claim="processed_reference";
+    else {plan.route="NEED_INFO";plan.questions=[{id:"transferDestination",text:"Who did their reply say they paid?",options:direct?["passenger","Not clear"]:[site,"passenger","Not clear"]}];plan.nextStep="questions";plan.body=null;plan.to=null;plan.cc=[];return plan;}
+  }
   const q=(text:string)=>{plan.body=`Hello ${plan.nextPerson?.company??airline} team,\n\nPlease check ${identifier||"my flight refund"}${read.amountPaid!==null?` for Rs ${read.amountPaid}`:""}, cancelled ${displayDate(read.cancellationDate!)}.\n\n${text}\n\nPlease keep both companies on the reply and share the complaint reference.\n\nThank you.`;};
-  if(r.claim!=="none"&&!read.replyConfirmed&&(r.confidence<0.8||![airline,site].includes(r.fromCompany??""))){plan.route="NEED_INFO";plan.questions=[{id:"confirmReply",text:`Tickback read: ${r.summary}. Does that look right?`,options:["Looks right","Not quite"]}];plan.nextStep="questions";plan.body=null;plan.moneyWith=prior?.moneyWith??"unknown";return plan;}
+
   if(r.claim==="waiting_airline"){
    plan.route="OVERDUE";plan.moneyWith=airline;plan.nextPerson=nodal;plan.to=nodal?.email??null;plan.cc=[grievance?.email].filter((s):s is string=>!!s);plan.nextStep="FLIGHT_mail";plan.note=`Who owes you: still ${airline}. The rule puts the refund on the airline.`;plan.checkDate=addDays(today,7);q(`You are responsible for the travel-site refund (DGCA para 3(c)). On which date did you pay this refund to ${site}?`);
   }else if(r.claim==="paid_site"&&validFlightDate(r.paidDate)){
@@ -82,7 +94,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   }else if(r.claim==="credit_shell"){
    plan.route="OVERDUE";plan.nextStep="FLIGHT_mail";plan.note="A credit shell is your choice, not their default (DGCA para 3(f)).";q(`I decline the credit shell and ask for my refund to the original payment method. ${direct?"The choice is the passenger's under DGCA para 3(f).":"Tickback's reading: the travel site acts for the airline (para 3(c)), and the airline's credit shell is the passenger's choice (para 3(f))."}`);
   }else if(r.claim==="not_paid"&&due.date&&due.date<today){
-   plan.rung=Math.min(5,plan.rung+1);plan.nextPerson=plan.above;plan.to=plan.above?.email??null;plan.cc=[grievance?.email].filter((s):s is string=>!!s);plan.nextStep="FLIGHT_mail";plan.note="Tickback's reading: the owner confirmed it has not paid, so the next rung is ready now.";plan.checkDate=addDays(today,7);q("The refund is overdue and your reply confirms it is not processed. Please provide the refund date and bank reference, with the full dated thread.");
+   plan.moneyWith=airline;plan.rung=Math.min(5,plan.rung+1);plan.nextPerson=plan.above;plan.to=plan.above?.email??null;plan.cc=[grievance?.email].filter((s):s is string=>!!s);plan.nextStep="FLIGHT_mail";plan.note="Tickback's reading: the owner confirmed it has not paid, so the next rung is ready now.";plan.checkDate=addDays(today,7);q("The refund is overdue and your reply confirms it is not processed. Please provide the refund date and bank reference, with the full dated thread.");
   }else if(["stall","under_review"].includes(r.claim)){
    plan.route="WAIT";plan.nextStep="none";plan.body=null;plan.checkDate=validFlightDate(r.promisedDate)??prior?.checkDate??addDays(today,7);plan.note="Tickback's expectation: wait for their promised date, or the current rung's seven-day follow-up.";
   }else if(r.claim==="destination_wrong"){
@@ -97,11 +109,20 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
 }
 
 export function flightLookIn(read:FlightRead):boolean {
- if(read.bookedVia!=="direct"||read.cancelledBy!=="passenger"||!read.bookingTime||!read.cancellationTime||!validFlightDate(read.departureDate))return false;
- const booking=Date.parse(read.bookingTime),cancel=Date.parse(read.cancellationTime);
- return Number.isFinite(booking)&&Number.isFinite(cancel)&&cancel>=booking&&cancel-booking<=48*3_600_000&&read.departureDate!>=addDays(read.bookingTime.slice(0,10),7);
+ if(read.bookedVia!=="direct"||read.cancelledBy!=="passenger"||!validFlightMoment(read.bookingTime)||!validFlightMoment(read.cancellationTime)||!validFlightDate(read.departureDate))return false;
+ const booking=Date.parse(validFlightMoment(read.bookingTime)!),cancel=Date.parse(validFlightMoment(read.cancellationTime)!);
+ return Number.isFinite(booking)&&Number.isFinite(cancel)&&cancel>=booking&&cancel-booking<=48*3_600_000&&read.departureDate!>=addDays(read.bookingTime!.slice(0,10),7);
+}
+export function validFlightMoment(value:string|null|undefined):string|null {
+ if(!value||!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?(?:Z|[+-]\d{2}:\d{2})?$/.test(value)||!validFlightDate(value.slice(0,10)))return null;
+ const normalized=/(Z|[+-]\d{2}:\d{2})$/.test(value)?value:value+"+05:30";
+ return Number.isFinite(Date.parse(normalized))?normalized:null;
 }
 export function flightWorkCount(events:Array<{type:string;actor:string}>) {
  const taps=new Set(["confirmed","draft_opened","marked_sent","answered","checkin_answered","landed"]);
  return {taps:events.filter(e=>e.actor==="user"&&taps.has(e.type)).length,replies:events.filter(e=>e.type==="reply_read").length,dates:events.filter(e=>e.type==="date_set").length,drafts:events.filter(e=>e.type==="draft_written").length};
+}
+export function flightSendCheckDate(channel:string,today:string,promisedDate?:string|null):string|null {
+ if(channel==="bank")return validFlightDate(promisedDate)&&promisedDate!>today?promisedDate!:null;
+ return addDays(today,channel==="portal"?30:7);
 }
