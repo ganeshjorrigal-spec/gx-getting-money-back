@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { flightReadSchema,planFlight,type FlightRead } from "../lib/flight";
+import { groundFlightRead } from "../lib/flight-ground";
 import { todayIST } from "../lib/dates";
 import { latestReplyText } from "../lib/reply-banner";
 
@@ -17,9 +18,13 @@ export const triage=internalAction({args:{caseId:v.id("cases"),runId:v.string(),
  const content:Array<{type:"text";text:string}|{type:"image";image:Uint8Array;mediaType:string}>=[{type:"text",text:`Today: ${today}. Prior facts: ${JSON.stringify(loaded.item.facts??null)}. User inputs oldest to newest: ${loaded.inputs.map(i=>JSON.stringify({kind:i.kind,text:i.kind==="reply"?latestReplyText(i.text??""):i.text??"",receivedDate:i.receivedAt?todayIST(new Date(i.receivedAt)):null})).join("\n")}`}];
  for(const id of loaded.inputs.at(-1)?.storageIds??[]){const blob=await ctx.storage.get(id);if(blob)content.push({type:"image",image:new Uint8Array(await blob.arrayBuffer()),mediaType:blob.type||"image/jpeg"});}
  if(!process.env.GEMINI_MODEL)throw new Error("Model unavailable");const started=Date.now();const result=await generateObject({model:google(process.env.GEMINI_MODEL),schema:flightReadSchema,system:flightSystem,messages:[{role:"user",content}],maxOutputTokens:1800,maxRetries:0,abortSignal:AbortSignal.timeout(25000),providerOptions:{google:{thinkingConfig:{thinkingLevel:"low"}}}});
- read=flightReadSchema.parse(result.object);model=process.env.GEMINI_MODEL;latencyMs=Date.now()-started;inputTokens=result.usage.inputTokens??0;outputTokens=result.usage.outputTokens??0;totalTokens=result.usage.totalTokens??0;
+ const newest=loaded.inputs.at(-1);
+ read=groundFlightRead(flightReadSchema.parse(result.object),loaded.inputs.map(i=>i.kind==="reply"?latestReplyText(i.text??""):i.text??"").join("\n"),loaded.item.facts,(newest?.storageIds.length??0)>0,newest?.sender,!!loaded.item.demo);model=process.env.GEMINI_MODEL;latencyMs=Date.now()-started;inputTokens=result.usage.inputTokens??0;outputTokens=result.usage.outputTokens??0;totalTokens=result.usage.totalTokens??0;
  }
+ await ctx.runMutation(internal.agentWrites.progress,{caseId:args.caseId,runId:args.runId,step:"date"});
  const plan=planFlight(read,today,{rung:loaded.item.ladderLevel,moneyWith:loaded.item.moneyWith,dueDate:loaded.item.dueDate,checkDate:loaded.item.flightPlan?.checkDate},loaded.item.demo?process.env.TICKBACK_DEMO_ADDRESS:undefined);
+ if(args.reuseFacts&&loaded.item.dueSource==="user_choice"&&plan.route==="TRACE"){plan.dueSource="user_choice";plan.dueSourceText="Your chosen reminder date; not the company’s promise.";}
+ await ctx.runMutation(internal.agentWrites.progress,{caseId:args.caseId,runId:args.runId,step:"writing"});
  await ctx.runMutation(internal.flights.apply,{caseId:args.caseId,runId:args.runId,read,plan,model,latencyMs,inputTokens,outputTokens,totalTokens});
  }catch{await ctx.runMutation(internal.agentWrites.fail,{caseId:args.caseId,runId:args.runId,autoRetry:false});}
  return null;

@@ -150,7 +150,7 @@ export const addReply = mutation({
     if ((text?.length ?? 0) > 8_000 || storageIds.length > 4) throw new Error("Reply is too long");
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
-    await ctx.db.insert("inputs", { caseId: item._id, kind: "reply", text: text ? redact(text) : undefined, storageIds, createdAt: now });
+    await ctx.db.insert("inputs", { caseId: item._id, kind: "reply", text: text ? redact(text) : undefined, storageIds, createdAt: now, ...(item.refundType === "flight" ? {runId} : {}) });
     await ctx.db.patch(item._id, { stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "reply_added", summary: "Their reply added", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId: item._id, runId });
@@ -176,13 +176,21 @@ export const markSent = mutation({
       await ctx.scheduler.runAfter(0, internal.demoActions.checkOrganiser, { caseId: item._id, session });
     }
     const now = Date.now();
-    const today = todayIST();
+    const today = item.demo?.now ?? todayIST();
+    if (item.refundType === "flight" && draft.channel === "phone") {
+      const runId=crypto.randomUUID();
+      await ctx.db.patch(draftId,{status:"sent"});
+      await ctx.db.patch(item._id,{facts:{...item.facts,supportContactDate:today},stage:"TRIAGING",latestRunId:runId});
+      await ctx.db.insert("caseEvents",{caseId:item._id,type:"marked_sent",summary:"You called Cleartrip support",actor:"user",createdAt:now});
+      await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});return null;
+    }
     await clearCheckins(ctx, item._id);
     await ctx.db.patch(draftId, { status: "sent" });
     await ctx.db.patch(item._id, { stage: "WAITING", updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "marked_sent", summary: `You sent the ${draft.step} message`, actor: "user", createdAt: now });
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
-    if (draft.step === "L0_email" || draft.step === "L0_chat" || draft.step === "NO_ROUTE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
+    if(item.refundType === "flight") await scheduleCheckin(ctx,item._id,addDays(today,draft.channel==="portal"?30:7),"flight_refund");
+    else if (draft.step === "L0_email" || draft.step === "L0_chat" || draft.step === "NO_ROUTE_ask") await scheduleCheckin(ctx, item._id, addWorkingDays(today, 2), "support_reply");
     else if (draft.step === "L1") {
       await scheduleCheckin(ctx, item._id, addWorkingDays(today, 3), "grievance_ack");
       await scheduleCheckin(ctx, item._id, addDays(today, 30), "grievance_resolve");
@@ -272,6 +280,17 @@ export const answerCheckin = mutation({
       await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: item.demo ? item.demo.expiresAt : now + 180 * 86_400_000, updatedAt: now });
       await ctx.db.insert("caseEvents", { caseId: item._id, type: "landed", summary: `₹${(amount / 100).toLocaleString("en-IN")} landed`, actor: "user", createdAt: now });
       await ctx.scheduler.runAfter(0, internal.googleActions.cleanupCase, { caseId: item._id });
+    } else if (answer === "not_yet" && item.refundType === "flight") {
+      const today=item.demo?.now??todayIST();const due=item.flightPlan?.checkDate??item.dueDate;
+      if(!due||today<due)throw new Error("Your check-in date has not arrived yet");
+      const runId=crypto.randomUUID();
+      const sent=await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
+      const bank=item.route==="TRACE";const rung=bank?item.ladderLevel:sent.some(d=>d.status==="sent")?Math.min(5,item.ladderLevel+1):2;
+      const facts=bank?item.facts:{...item.facts,reply:{...item.facts.reply,claim:"none"}};
+      await clearCheckins(ctx,item._id);
+      await ctx.db.patch(item._id,{facts,ladderLevel:rung,stage:"TRIAGING",latestRunId:runId,updatedAt:now});
+      await ctx.db.insert("caseEvents",{caseId:item._id,type:"checkin_answered",summary:bank?"Refund has not landed; bank trace ready":"Refund has not landed; next rung ready",actor:"user",createdAt:now});
+      await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});
     } else if (answer === "not_yet") {
       const runId = Math.random().toString(36).slice(2);
       const sent = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect();

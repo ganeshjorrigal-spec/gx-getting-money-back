@@ -244,3 +244,12 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 .demo-tag { display: inline-block; font-size: var(--text-small); padding: var(--space-1) var(--space-2); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); color: var(--accent); background: var(--accent-soft); }
 .demo-intake { margin-block: var(--space-6); }
 .demo-steps { list-style: none; padding: 0; display: grid; gap: var(--space-3); color: var(--muted); }
+
+/* Flight screens extend the existing card and control system. */
+.flight-case .case-card label { display: block; margin-block: var(--space-3); font-size: var(--text-small); font-weight: 600; }
+.flight-case .case-card input:not([type="checkbox"]), .flight-case .case-card textarea { width: 100%; min-height: var(--control-height); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); padding: var(--space-3); background: var(--surface); color: var(--ink); font: inherit; }
+.flight-case .case-card textarea { min-height: 120px; }
+.flight-message { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: var(--leading-body); padding: var(--space-4); background: var(--surface-alt, var(--surface)); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); }
+.flight-case .case-card button { margin-block: var(--space-2); min-height: var(--control-height); }
+.flight-case .case-card { overflow-wrap: anywhere; }
+.flight-case .case-card h3 { margin-top: var(--space-5); }

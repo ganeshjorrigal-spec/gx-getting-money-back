@@ -44,7 +44,7 @@ export const skipAhead = mutation({
     const item = await assertAccess(ctx, args.code, args.token);
     if (item.demo?.kind === "flight") {
       if(item.demo.round !== 3 || item.demo.phase !== "ready" || !item.dueDate || item.stage.startsWith("CLOSED")) throw new Error("Skip to the bank check date after the third reply");
-      await ctx.db.patch(item._id,{demo:{...item.demo,now:item.dueDate},updatedAt:Date.now()});
+      await ctx.db.patch(item._id,{demo:{...item.demo,now:item.dueDate},stage:"DUE",updatedAt:Date.now()});
       await ctx.db.insert("caseEvents",{caseId:item._id,type:"demo_skip",summary:"Demo clock moved to the promised bank date",actor:"user",createdAt:Date.now()});
       return null;
     }

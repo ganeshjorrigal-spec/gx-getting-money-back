@@ -1,7 +1,7 @@
 import { describe,it,expect } from "vitest";
 import { flightReadSchema,flightDue,planFlight } from "./flight";
 import { flightRules } from "./flight-kb";
-export const sampleFlight=()=>flightReadSchema.parse({airline:"IndiGo",bookedVia:"MakeMyTrip",paymentMethod:"upi",cancellationDate:"2026-09-07",cancelledBy:"airline",domestic:true,flightName:"Delhi to Mumbai",amountPaid:5400,pnr:"SAMPLE",bookingId:"TEST-ID",bookingTime:null,departureDate:null,nonRefundable:false,medicalEmergency:false,taxes:null,baseFare:null,fuel:null,cancellationCharge:null,taxesReturned:null,supportContactDate:null,reply:{fromCompany:null,pointsAt:null,claim:"none",paidDate:null,promisedDate:null,reference:null,summary:"",confidence:1}});
+import { sampleFlight } from "./flight-sample";
 describe("flight rules and initial route",()=>{
  it("carries all 23 sourced playbook rows",()=>{expect(flightRules).toHaveLength(23);expect(flightRules.every(r=>r.source&&r.quote&&r.label)).toBe(true);});
  it("counts travel-site 14 working days and pins both companies",()=>{const p=planFlight(sampleFlight(),"2026-10-09");expect(p.dueDate).toBe("2026-09-25");expect(p.to).toBe("grievanceofficer@makemytrip.com");expect(p.cc).toContain("nodalofficer@goindigo.in");expect(p.body).toContain("On which date did the airline pay");});
@@ -26,3 +26,4 @@ describe("reply decisions",()=>{
  it("declines a credit shell by the rule and does not ship medical claims",()=>{const a=sampleFlight();expect(planFlight({...a,reply:{...a.reply,claim:"credit_shell",fromCompany:"IndiGo"}},"2026-10-09").body).toContain("I decline");expect(planFlight({...a,medicalEmergency:true},"2026-10-09").note).toContain("needs a full source check");});
  it("ignores injected model owner, dates and recipients",()=>{const a=flightReadSchema.parse({...sampleFlight(),owner:"fake",dueDate:"2099-01-01",to:"fake@example.test"});const p=planFlight(a,"2026-10-09");expect(p.owner).toBe("IndiGo");expect(p.dueDate).toBe("2026-09-25");expect(JSON.stringify(p)).not.toContain("fake@example.test");});
 });
+

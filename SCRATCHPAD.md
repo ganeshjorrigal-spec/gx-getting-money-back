@@ -36,3 +36,11 @@
 ## M2.5 handoff, 9 Oct
 
 Ganesh accepted the measured 3:10.731 timing exception. M2.5 is READY FOR REVIEW. Evidence is in the 7 Oct and 9 Oct logs; independent review remains with HQ. Completed M2.5 checklist cleared.
+
+## Overnight M2.6, 10 Oct
+- [x] Pull; follow docs/hq/codex-prompts/2026-10-10-overnight-M2.6-flights.md.
+- [x] M2.5 accepted 3:10.731 meets speed target; READY/logged/committed/pushed.
+- [x] Steps 1-4 flight data, intake, replies and demo committed separately.
+- [ ] Finish FS5-7, annual payment/landing, paid AI fixtures, deploy and live page proof.
+- [ ] Morning only: real send, three timed flight demos, Razorpay link value and gated source checks. Do not mark M2.6 READY tonight.
+
