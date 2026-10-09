@@ -15,6 +15,7 @@ async function rerun(ctx:MutationCtx,item:Doc<"cases">,read:FlightRead) {
  await ctx.db.patch(item._id,{facts:read,refundType:"flight",stage:"TRIAGING",latestRunId:runId,progress:{step:"route",at:now},updatedAt:now});
  await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});
 }
+export const handHelped=internalMutation({args:{code:v.string()},returns:v.null(),handler:async(ctx,{code})=>{const item=await ctx.db.query("cases").withIndex("by_code",q=>q.eq("code",code)).unique();if(item?.refundType==="flight")await ctx.db.patch(item._id,{handHelped:true});return null;}});
 export const workCount=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);
  const events=await ctx.db.query("caseEvents").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();

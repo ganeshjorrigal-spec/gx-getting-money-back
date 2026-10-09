@@ -7,7 +7,7 @@ const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("
 export default defineSchema({
   cases: defineTable({
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),
-    refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),
+    firstFlightSentAt: v.optional(v.number()), deviceHash: v.optional(v.string()), handHelped: v.optional(v.boolean()), refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),
     routeConfidence: v.optional(v.number()), facts: v.optional(v.any()), platform: v.optional(v.string()),
     eventName: v.optional(v.string()), amountPaise: v.optional(v.number()), dueDate: v.optional(v.string()),
     dueSource: v.optional(v.string()), dueSourceText: v.optional(v.string()), nextStep: v.optional(v.string()),
@@ -22,7 +22,7 @@ export default defineSchema({
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
     name: v.optional(v.string()), contact: v.optional(v.string()),
     demo: v.optional(v.object({ kind: v.optional(v.union(v.literal("flight"), v.literal("event"))), round: v.number(), now: v.string(), expiresAt: v.number(), phase: v.union(v.literal("ready"), v.literal("waiting_organiser"), v.literal("waiting_inbox"), v.literal("timed_out")), session: v.optional(v.string()), deadline: v.optional(v.number()), bankBy: v.optional(v.string()) })),
-  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
+  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_device", ["deviceHash"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
   demoReplies: defineTable({ caseId: v.id("cases"), messageId: v.string(), round: v.number(), status: v.union(v.literal("reserved"), v.literal("sent")), createdAt: v.number(), sentAt: v.optional(v.number()), receivedAt: v.optional(v.number()), sameThread: v.optional(v.boolean()) }).index("by_case", ["caseId"]).index("by_case_message", ["caseId", "messageId"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),
@@ -51,6 +51,8 @@ export default defineSchema({
   rateCounters: defineTable({ key: v.string(), windowStart: v.number(), count: v.number() }).index("by_key", ["key"]),
   waitlist: defineTable({ category: v.string(), contact: v.string(), createdAt: v.number() }),
   payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number() }).index("by_code", ["code"]),
+  annualRecoveries: defineTable({sourceCode:v.string(),caseCode:v.string(),amountPaise:v.number(),landedAt:v.number()}).index("by_source",["sourceCode"]).index("by_case",["caseCode"]),
+  annualPasses: defineTable({deviceHash:v.string(),sourceCode:v.string(),startedAt:v.number(),expiresAt:v.number(),state:v.union(v.literal("claimed"),v.literal("confirmed"),v.literal("not_found")),graceUntil:v.optional(v.number())}).index("by_device",["deviceHash"]).index("by_source",["sourceCode"]),
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),
   googleOauthStates: defineTable({
     stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),

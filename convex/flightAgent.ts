@@ -22,6 +22,7 @@ export const triage=internalAction({args:{caseId:v.id("cases"),runId:v.string(),
  read=groundFlightRead(flightReadSchema.parse(result.object),loaded.inputs.map(i=>i.kind==="reply"?latestReplyText(i.text??""):i.text??"").join("\n"),loaded.item.facts,(newest?.storageIds.length??0)>0,newest?.sender,!!loaded.item.demo);model=process.env.GEMINI_MODEL;latencyMs=Date.now()-started;inputTokens=result.usage.inputTokens??0;outputTokens=result.usage.outputTokens??0;totalTokens=result.usage.totalTokens??0;
  }
  await ctx.runMutation(internal.agentWrites.progress,{caseId:args.caseId,runId:args.runId,step:"date"});
+ if(loaded.item.demo?.kind==="flight"){read.airline="Demo Air";read.bookedVia="DemoTrips";read.flightName="Sample domestic flight";}
  const plan=planFlight(read,today,{rung:loaded.item.ladderLevel,moneyWith:loaded.item.moneyWith,dueDate:loaded.item.dueDate,checkDate:loaded.item.flightPlan?.checkDate},loaded.item.demo?process.env.TICKBACK_DEMO_ADDRESS:undefined);
  if(args.reuseFacts&&loaded.item.dueSource==="user_choice"&&plan.route==="TRACE"){plan.dueSource="user_choice";plan.dueSourceText="Your chosen reminder date; not the company’s promise.";}
  await ctx.runMutation(internal.agentWrites.progress,{caseId:args.caseId,runId:args.runId,step:"writing"});

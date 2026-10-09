@@ -1,3 +1,4 @@
+import { annualActive,razorpayPaymentLink } from "../lib/annual-pass";
 import { demoSubject } from "../lib/demo";
 import { mutation, query, type MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
@@ -5,7 +6,7 @@ import type { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { redact } from "../lib/redact";
 import { addDays, addWorkingDays, todayIST } from "../lib/dates";
-import { assertAccess, findCase } from "./lib/access";
+import { assertAccess, findCase, hashToken } from "./lib/access";
 import { takeRate } from "./lib/rate";
 import { deleteCaseData } from "./lib/delete";
 import { draftForCase } from "./lib/draft";
@@ -54,7 +55,7 @@ export const create = mutation({
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
     const caseId = await ctx.db.insert("cases", {
-      code, tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0,
+      code, deviceHash: await hashToken(args.deviceId), tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0,
       tier: "unknown_amount", paidState: "none", latestRunId: runId,
       progress: { step: "reading", at: now }, source: args.source?.slice(0, 80),
       name: cleanLine(args.name, 80),
@@ -80,9 +81,11 @@ export const get = query({
     const oldCheckin = checkins.filter((row) => row.status === "cancelled" && row.date !== checkin?.date).sort((a, b) => b._creationTime - a._creationTime)[0];
     const feedback = await ctx.db.query("feedback").withIndex("by_case", (q) => q.eq("caseId", item._id)).first();
     const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(20);
+    const annual = item.refundType === "flight" && item.deviceHash ? await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash!)).unique() : null;
+    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      code: item.code, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ?? null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
+      code: item.code, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, razorpayLink:item.refundType==="flight"?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:item.flightPlan.body} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
       dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: item.dueSourceText ?? null,
       nextStep: item.nextStep ?? null, questions: item.questions ?? [],
@@ -136,8 +139,11 @@ export const drafts = query({
   handler: async (ctx, { code, token }) => {
     const item = await assertAccess(ctx, code, token);
     const rows = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(10);
-    const locked = !!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && !(item.paymentGraceUntil && item.paymentGraceUntil > Date.now()) && item.draftsShown > 1;
-    return rows.map((row, index) => ({ ...row, body: locked && index === 0 ? null : row.body }));
+    const annual=item.refundType==="flight"&&item.deviceHash?await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash!)).unique():null;
+    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
+    const locked = item.refundType==="flight"?flightLocked:!!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && !(item.paymentGraceUntil && item.paymentGraceUntil > Date.now()) && item.draftsShown > 1;
+    const firstDraft=item.refundType==="flight"?await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("asc").first():null;
+    return rows.map((row, index) => ({ ...row, body: (item.refundType==="flight"?flightLocked&&row._id!==firstDraft?._id:locked&&index===0) ? null : row.body }));
   },
 });
 
@@ -180,13 +186,13 @@ export const markSent = mutation({
     if (item.refundType === "flight" && draft.channel === "phone") {
       const runId=crypto.randomUUID();
       await ctx.db.patch(draftId,{status:"sent"});
-      await ctx.db.patch(item._id,{facts:{...item.facts,supportContactDate:today},stage:"TRIAGING",latestRunId:runId});
+      await ctx.db.patch(item._id,{firstFlightSentAt:item.firstFlightSentAt??now,facts:{...item.facts,supportContactDate:today},stage:"TRIAGING",latestRunId:runId});
       await ctx.db.insert("caseEvents",{caseId:item._id,type:"marked_sent",summary:"You called Cleartrip support",actor:"user",createdAt:now});
       await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});return null;
     }
     await clearCheckins(ctx, item._id);
     await ctx.db.patch(draftId, { status: "sent" });
-    await ctx.db.patch(item._id, { stage: "WAITING", updatedAt: now });
+    await ctx.db.patch(item._id, { stage: "WAITING", ...(item.refundType==="flight"?{firstFlightSentAt:item.firstFlightSentAt??now}:{}), updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: item._id, type: "marked_sent", summary: `You sent the ${draft.step} message`, actor: "user", createdAt: now });
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
     if(item.refundType === "flight") await scheduleCheckin(ctx,item._id,addDays(today,draft.channel==="portal"?30:7),"flight_refund");
@@ -278,6 +284,11 @@ export const answerCheckin = mutation({
       if (amount == null || !Number.isFinite(amount) || amount < 0) throw new Error("Enter the amount received");
       await clearCheckins(ctx, item._id);
       await ctx.db.patch(item._id, { stage: "CLOSED_LANDED", recoveredPaise: amount, closedAt: now, purgeAfter: item.demo ? item.demo.expiresAt : now + 180 * 86_400_000, updatedAt: now });
+      if(item.refundType==="flight"&&!item.demo&&item.deviceHash){
+        const pass=await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash!)).unique();
+        const existing=await ctx.db.query("annualRecoveries").withIndex("by_case",q=>q.eq("caseCode",item.code)).first();
+        if(pass&&pass.startedAt<=now&&pass.expiresAt>=now&&!existing)await ctx.db.insert("annualRecoveries",{sourceCode:pass.sourceCode,caseCode:item.code,amountPaise:amount,landedAt:now});
+      }
       await ctx.db.insert("caseEvents", { caseId: item._id, type: "landed", summary: `₹${(amount / 100).toLocaleString("en-IN")} landed`, actor: "user", createdAt: now });
       await ctx.scheduler.runAfter(0, internal.googleActions.cleanupCase, { caseId: item._id });
     } else if (answer === "not_yet" && item.refundType === "flight") {

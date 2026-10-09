@@ -113,14 +113,14 @@ export default function StartPage() {
         <h2>Feel a full refund chase in 3 minutes.</h2>
         <p>You send three emails from your own Gmail. Our demo desk replies, and your case updates live. No real booking or money needed.</p>
         {refundType === "flight" ? <button type="button" className="button button-secondary" disabled={working} onClick={()=>startDemo("district","flight")}>Try a flight demo</button> : !demoPicker ? <button type="button" className="button button-secondary" disabled={working} onClick={() => setDemoPicker(true)}>Try a demo</button> : <><p>Pick a platform to play:</p><div className="save-actions"><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("bookmyshow")}>BookMyShow</button><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("district")}>District</button></div><p className="input-hint">BookMyShow uses email in this demo because we cannot simulate its in-app chat.</p>{working && <p role="status"><span className="spinner" /> Reading your message…</p>}</>}
-        {demoPicker && error && <p className="error-banner" role="alert">{error}</p>}
+        {(demoPicker||refundType==="flight") && error && <p className="error-banner" role="alert">{error}</p>}
       </article>
       <form onSubmit={submit}>
         <label className="intake-name" htmlFor="customer-name">Your name <span>(optional)</span></label>
         <input id="customer-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" />
         <p className="input-hint">We use it only to sign the messages you choose to send.</p>
         <label className="sr-only" htmlFor="refund-message">{c.title}</label>
-        <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={c.placeholder} />
+        <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={refundType==="flight"?"Paste your flight cancellation mail or the travel site’s reply…":c.placeholder} />
         <div className="intake-tools">
           <button type="button" className="text-button" onClick={paste}>{c.paste}</button>
           <button type="button" className="text-button" onClick={() => fileRef.current?.click()}>{c.screenshot}</button>
@@ -133,7 +133,7 @@ export default function StartPage() {
         </div>)}</div>}
         <fieldset className="chip-fieldset">
           <legend>{c.chipsLabel}</legend>
-          <div className="situation-list">{c.chips.map(([label, line]) => <button type="button" className={`situation-chip ${selected.includes(label) ? "chip-selected" : ""}`} aria-pressed={selected.includes(label)} onClick={() => toggleChip(label, line)} key={label}>{label}</button>)}</div>
+          <div className="situation-list">{(refundType==="flight"?[["Airline cancelled","The airline cancelled my domestic flight."],["I cancelled","I cancelled my domestic flight."],["Refund missing","The refund has not arrived."],["Pending with airline","The travel site says it is pending with the airline."]]:c.chips).map(([label, line]) => <button type="button" className={`situation-chip ${selected.includes(label) ? "chip-selected" : ""}`} aria-pressed={selected.includes(label)} onClick={() => toggleChip(label, line)} key={label}>{label}</button>)}</div>
         </fieldset>
         <p className="input-safety">{c.safety}</p>
         {error && <p className="error-banner" role="alert">{error}</p>}

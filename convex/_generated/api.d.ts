@@ -11,6 +11,7 @@
 import type * as agent from "../agent.js";
 import type * as agentData from "../agentData.js";
 import type * as agentWrites from "../agentWrites.js";
+import type * as annualPayments from "../annualPayments.js";
 import type * as cases from "../cases.js";
 import type * as checkins from "../checkins.js";
 import type * as crons from "../crons.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   agent: typeof agent;
   agentData: typeof agentData;
   agentWrites: typeof agentWrites;
+  annualPayments: typeof annualPayments;
   cases: typeof cases;
   checkins: typeof checkins;
   crons: typeof crons;

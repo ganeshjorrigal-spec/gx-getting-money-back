@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { guaranteeLine, landingCopy as c, productName } from "./copy";
+import { annualGuaranteeLine, flightLandingCopy as c, productName } from "./copy";
 import { LandingEnhancements } from "./landing-enhancements";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     <main className="home-shell">
       <header className="site-header">
         <Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link>
-        <Link prefetch={false} className="text-link" href="/sample">{c.headerLink} <span aria-hidden="true">↗</span></Link>
+        <Link prefetch={false} className="text-link" href="/start">{c.headerLink} <span aria-hidden="true">↗</span></Link>
       </header>
 
       <LandingEnhancements />
@@ -23,7 +23,7 @@ export default function Home() {
           <p className="hero-sub">{c.sub}</p>
           <div className="hero-actions">
             <Link prefetch={false} className="button button-primary" href="/start">{c.primary} <span aria-hidden="true">→</span></Link>
-            <Link prefetch={false} className="button button-secondary" href="/sample">{c.secondary}</Link>
+            <Link prefetch={false} className="button button-secondary" href="/start">{c.secondary}</Link>
           </div>
           <p className="trust-line">{c.trust}</p>
         </div>
@@ -79,7 +79,7 @@ export default function Home() {
       </section>
 
       <section className="section-wrap section-block">
-        <p className="section-kicker">BUILT FOR TICKET REFUNDS</p>
+        <p className="section-kicker">BUILT FOR DOMESTIC FLIGHT REFUNDS</p>
         <h2>{c.handleTitle}</h2>
         <div className="situation-list">{c.handles.map((s) => <span className="situation-chip" key={s}>{s}</span>)}</div>
         <p className="section-note">{c.handleLine}</p>
@@ -90,7 +90,7 @@ export default function Home() {
         <h2>{c.pricingTitle}</h2>
         <div className="pricing-grid">
           <article className="price-card"><span className="price-mark">₹0</span><h3>{c.freeTitle}</h3><p>{c.freeBody}</p></article>
-          <article className="price-card price-card-paid"><span className="price-mark">₹49</span><h3>{c.paidTitle}</h3><p>{c.paidBody}</p><p>{guaranteeLine}</p></article>
+          <article className="price-card price-card-paid"><span className="price-mark">₹49</span><h3>{c.paidTitle}</h3><p>{c.paidBody}</p><p>{annualGuaranteeLine}</p></article>
         </div>
         <p className="section-note">{c.under300}</p>
       </section>
@@ -111,3 +111,4 @@ export default function Home() {
     </main>
   );
 }
+
