@@ -75,7 +75,7 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(10);
  const reply=inputs.find(i=>i.kind==="reply"&&i.runId===args.runId);if(reply)await ctx.db.patch(reply._id,{summary:redact(read.reply.summary).slice(0,240),keySentence:replyKeySentence(reply.text??"")});
  await ctx.db.insert("caseEvents",{caseId:item._id,type:reply?"reply_read":"triaged",summary:reply?redact(read.reply.summary).slice(0,180):`${plan.owner} owes the refund. ${plan.dueSourceText}`.slice(0,180),actor:"agent",createdAt:now});
- if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${plan.checkDate}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
+ if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${plan.checkDate}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
  if(plan.body && item.factsConfirmedAt){
  if(plan.rung>=3&&plan.channel!=="bank"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
@@ -85,3 +85,5 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  await ctx.scheduler.runAfter(0,internal.googleActions.syncCheckins,{caseId:item._id});await ctx.scheduler.runAfter(0,internal.responsesActions.syncCase,{caseId:item._id});return null;
 }});
 
+
+export const replies=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")return [];const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(50);return inputs.filter(i=>i.kind==="reply").map(i=>({_id:i._id,text:redact(i.text??"Screenshot attached"),summary:i.summary??"",date:new Date(i.receivedAt??i.createdAt).toISOString().slice(0,10)}));}});
