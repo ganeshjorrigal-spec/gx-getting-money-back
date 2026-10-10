@@ -1,0 +1,4 @@
+Final build: 36 client JavaScript files scanned.
+RAZORPAY_KEY_SECRET references: 0.
+No Razorpay secret is present in local build env files. Secret is read only in Convex actions; no value reaches client code.
+Credential values never printed, logged, or committed.

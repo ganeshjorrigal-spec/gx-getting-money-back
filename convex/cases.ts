@@ -84,10 +84,10 @@ export const get = query({
     const feedback = await ctx.db.query("feedback").withIndex("by_case", (q) => q.eq("caseId", item._id)).first();
     const recentInputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(20);
     const annual = item.refundType === "flight" && item.deviceHash ? await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash!)).unique() : null;
-    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
+    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&(process.env.RAZORPAY_KEY_ID?true:!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      code: item.code, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, razorpayLink:item.refundType==="flight"?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
+      code: item.code, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, checkoutEnabled:!!process.env.RAZORPAY_KEY_ID, razorpayLink:!process.env.RAZORPAY_KEY_ID&&item.refundType==="flight"?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
       dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: currentProductCopy(item.dueSourceText) ?? null,
       nextStep: item.nextStep ?? null, questions: item.questions ?? [],
@@ -131,7 +131,8 @@ export const timeline = query({
   returns: v.any(),
   handler: async (ctx, { code, token }) => {
     const item = await assertAccess(ctx, code, token);
-    return ctx.db.query("caseEvents").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(30);
+    const rows = await ctx.db.query("caseEvents").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(30);
+    return rows.map(row => row.actor === "agent" ? {...row, summary: currentProductCopy(row.summary)} : row);
   },
 });
 
@@ -142,7 +143,7 @@ export const drafts = query({
     const item = await assertAccess(ctx, code, token);
     const rows = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(10);
     const annual=item.refundType==="flight"&&item.deviceHash?await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash!)).unique():null;
-    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
+    const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&(process.env.RAZORPAY_KEY_ID?true:!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
     const locked = item.refundType==="flight"?flightLocked:!!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && !(item.paymentGraceUntil && item.paymentGraceUntil > Date.now()) && item.draftsShown > 1;
     const firstDraft=item.refundType==="flight"?await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("asc").first():null;
     return rows.map((row, index) => ({ ...row, body: (item.refundType==="flight"?flightLocked&&row._id!==firstDraft?._id:locked&&index===0) ? null : currentProductCopy(row.body) }));

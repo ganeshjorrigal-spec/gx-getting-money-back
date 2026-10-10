@@ -14,6 +14,8 @@ import type * as agentWrites from "../agentWrites.js";
 import type * as annualPayments from "../annualPayments.js";
 import type * as cases from "../cases.js";
 import type * as checkins from "../checkins.js";
+import type * as checkout from "../checkout.js";
+import type * as checkoutData from "../checkoutData.js";
 import type * as crons from "../crons.js";
 import type * as demo from "../demo.js";
 import type * as demoActions from "../demoActions.js";
@@ -54,6 +56,8 @@ declare const fullApi: ApiFromModules<{
   annualPayments: typeof annualPayments;
   cases: typeof cases;
   checkins: typeof checkins;
+  checkout: typeof checkout;
+  checkoutData: typeof checkoutData;
   crons: typeof crons;
   demo: typeof demo;
   demoActions: typeof demoActions;

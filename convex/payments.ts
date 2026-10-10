@@ -8,6 +8,7 @@ export const claim = mutation({
   handler: async (ctx, { code, token }) => {
     if (!process.env.NEXT_PUBLIC_UPI_VPA) throw new Error("Payment is not available yet");
     const item = await assertAccess(ctx, code, token);
+    if (item.refundType === "flight") throw new Error("Use annual checkout for this case");
     if (item.paidState === "claimed" || item.paidState === "confirmed") return null;
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);

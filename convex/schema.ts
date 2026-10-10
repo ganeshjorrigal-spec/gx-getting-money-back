@@ -50,7 +50,7 @@ export default defineSchema({
   }).index("by_case", ["caseId"]),
   rateCounters: defineTable({ key: v.string(), windowStart: v.number(), count: v.number() }).index("by_key", ["key"]),
   waitlist: defineTable({ category: v.string(), contact: v.string(), createdAt: v.number() }),
-  payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number() }).index("by_code", ["code"]),
+  payments: defineTable({ code: v.string(), amountPaise: v.number(), status: v.union(v.literal("pending"), v.literal("claimed"), v.literal("confirmed"), v.literal("not_found")), claimedAt: v.number(), orderId: v.optional(v.string()), paymentId: v.optional(v.string()), deviceHash: v.optional(v.string()) }).index("by_code", ["code"]).index("by_order", ["orderId"]),
   annualRecoveries: defineTable({sourceCode:v.string(),caseCode:v.string(),amountPaise:v.number(),landedAt:v.number()}).index("by_source",["sourceCode"]).index("by_case",["caseCode"]),
   annualPasses: defineTable({deviceHash:v.string(),sourceCode:v.string(),startedAt:v.number(),expiresAt:v.number(),state:v.union(v.literal("claimed"),v.literal("confirmed"),v.literal("not_found")),graceUntil:v.optional(v.number())}).index("by_device",["deviceHash"]).index("by_source",["sourceCode"]),
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),

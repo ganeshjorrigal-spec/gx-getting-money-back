@@ -6,7 +6,7 @@ import {takeRate} from "./lib/rate";
 
 export const claim=mutation({args:{code:v.string(),token:v.string(),deviceId:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);
- if(item.demo||item.refundType!=="flight"||!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))throw new Error("Annual payment is not available yet");
+ if(process.env.RAZORPAY_KEY_ID||item.demo||item.handHelped||item.refundType!=="flight"||!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))throw new Error("Annual payment is not available yet");
  if(!/^[A-Za-z0-9_-]{43}$/.test(args.deviceId))throw new Error("Open the case on the device where you started it");
  const deviceHash=await hashToken(args.deviceId);
  await takeRate(ctx,`annual-claim:${deviceHash}`,3,86_400_000);
@@ -27,7 +27,7 @@ export const restore=mutation({args:{code:v.string(),token:v.string(),deviceId:v
  if(existing&&annualActive(existing,Date.now())&&existing.expiresAt>=pass!.expiresAt)return null;
  if(existing)await ctx.db.patch(existing._id,record);else await ctx.db.insert("annualPasses",record);return null;
 }});
-// Ganesh reconciles in Razorpay. No login, checkout, or payment verification call from Refund Genie.
+// Manual correction stays available alongside verified checkout.
 export const reconcile=internalMutation({args:{code:v.string(),found:v.boolean()},returns:v.null(),handler:async(ctx,args)=>{
  const passes=await ctx.db.query("annualPasses").withIndex("by_source",q=>q.eq("sourceCode",args.code)).collect();
  for(const pass of passes)await ctx.db.patch(pass._id,{state:args.found?"confirmed":"not_found",graceUntil:args.found?undefined:Date.now()+2*86_400_000});

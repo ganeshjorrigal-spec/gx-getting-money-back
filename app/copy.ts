@@ -108,7 +108,7 @@ export const flightLandingCopy = {
     ["What if the airline says it paid the travel site?","The airline stays answerable under the rule. The next mail asks the travel site for the bank reference and date it sent the refund to you, with the airline copied."],
     ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Send three demo mails from your own Gmail, watch replies update the case, then skip to the bank check date. No real booking or money."],
     ["Is this legal advice?","No. Refund Genie helps you use refund and grievance routes, with sources. It does not act as your lawyer or file for you."],
-    ["What does Rs 49 cover?","A year of staying on every case. Your first check and first step are free. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Ganesh checks payment claims by hand."],
+    ["What does Rs 49 cover?","A year of staying on every case. Your first check and first step are free. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Your year unlocks after Razorpay payment is verified."],
   ],
 };
 
