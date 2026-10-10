@@ -27,3 +27,15 @@ export const status=internalQuery({args:{code:v.string()},returns:v.any(),handle
  const item=await ctx.db.query("cases").withIndex("by_code",q=>q.eq("code",code)).unique();if(!item||item.source!=="qa-free-trial")throw new Error("Not a fixture");
  const trial=await caseTrial(ctx,item);return {code,landed:trial.landed,limit:trial.limit,locked:trial.locked};
 }});
+
+// Prepare an existing synthetic fixture for a user-sent Gmail round trip.
+export const prepareGmailProof=internalMutation({args:{code:v.string(),recipient:v.string()},returns:v.null(),handler:async(ctx,{code,recipient})=>{
+ const item=await ctx.db.query("cases").withIndex("by_code",q=>q.eq("code",code)).unique();
+ if(!item||item.source!=="qa-free-trial"||item.refundType!=="flight"||item.demo)throw new Error("Not a flight QA fixture");
+ if(!/^[a-zA-Z0-9._+-]+@gmail\.com$/.test(recipient)||recipient===process.env.TICKBACK_INBOX_ADDRESS||recipient===process.env.TICKBACK_DEMO_ADDRESS)throw new Error("Use a separate test Gmail account");
+ const draft=await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").first();
+ if(!draft||draft.status==="sent")throw new Error("Fixture already sent");
+ const body="Demo only: this is a made-up domestic flight refund test, not a real booking or complaint.\n\nIndiGo cancelled my Delhi to Mumbai flight booked through MakeMyTrip on 7 Sep 2026. The sample fare was Rs 5,400, paid by UPI. Sample PNR: SAMPLE. Booking ID: TEST-ID.\n\nPlease reply to all so the case inbox can read your test reply. No real refund or money is requested.";
+ await ctx.db.patch(draft._id,{to:recipient,cc:[],subject:`Demo: flight refund reply test [${code}]`,body,attachChecklist:[]});
+ await ctx.db.patch(item._id,{flightPlan:{...item.flightPlan,to:recipient,cc:[],body},updatedAt:Date.now()});return null;
+}});

@@ -17,3 +17,5 @@ D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; 
 - [ ] Post-trial Rs 49 TEST payment proof remains. Current deployment is now on live keys by Ganesh's instruction; do not submit a fixture payment as though it were test mode or switch keys back without his instruction.
 
 D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh switched both key IDs to live; safe match/live-mode check passes and redeployment is authorised. Current proof replaces neither the Gmail run nor the three timed demos.
+
+Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. User first send pending. Gmail browser access blocked by saved site permission; no workaround. After sent, mark sent and monitor; ask for reply-all from the separate test account.
