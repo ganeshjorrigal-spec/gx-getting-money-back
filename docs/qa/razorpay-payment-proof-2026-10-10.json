@@ -1,0 +1,11 @@
+{
+  "caseCode": "TB-1FQG0T",
+  "confirmedPayments": 1,
+  "amountPaise": 4900,
+  "orderIdStored": true,
+  "paymentIdStored": true,
+  "passStates": [
+    "confirmed"
+  ],
+  "coverageDatesStored": true
+}
