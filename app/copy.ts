@@ -54,11 +54,11 @@ export const landingCopy = {
   handles: ["Event cancelled", "Postponed", "Venue changed", "Money gone, no ticket", "\"Refunded\" but not received", "Can't attend (we'll tell you honestly)"],
   handleLine: "BookMyShow, District and organisers' own ticket sites. Concerts, comedy, cricket, festivals.",
   pricingTitle: "Pricing",
-  freeTitle: "Free to check.",
-  freeBody: "Your route, your date and your first step. Always free.",
-  paidTitle: "₹49 to stay on it.",
-  paidBody: "For refunds of ₹300 or more. Every message after the first, written for you: follow-ups, the grievance officer email, the helpline complaint.",
-  under300: "Refunds under ₹300 are free, start to finish.",
+  freeTitle: "Free until 3 refunds land",
+  freeBody: "Every message, reply and follow-up is free until three refunds land on this device.",
+  paidTitle: "Then Rs 49 a year",
+  paidBody: "After three refunds land, one year covers every flight and event refund chase.",
+  under300: "Free until 3 refunds land. Then Rs 49 a year.",
   questionsTitle: "Questions",
   questions: [
     ["Do you contact the organiser for me?", "No. You send every message, from your own email or the app's chat. We write it and tell you where to send it. That keeps it real, and it keeps you in control."],
@@ -101,14 +101,14 @@ export const flightLandingCopy = {
   ],
   handles:["Airline cancelled","You cancelled","Pending with airline","Processed, not received","Credit shell offered"],
   handleLine:"Domestic refunds with IndiGo, Air India, SpiceJet and Akasa Air; MakeMyTrip, Goibibo, Cleartrip and EaseMyTrip. For other companies you add the address from their own page. International flights and compensation claims are outside this version.",
-  paidTitle:"Rs 49 a year.",paidBody:"Stay on every case for that year: replies, follow-ups, officer emails and complaint text. You send every message.",under300:"Cases Ganesh helps by hand this week are free. Demos never need payment.",
+  paidTitle:"Then Rs 49 a year",paidBody:"After three refunds land, one year covers every flight and event refund chase.",under300:"Free until 3 refunds land. Then Rs 49 a year.",
   questions:[
     ["Does Refund Genie send or log in for me?","No. You send every real mail, make every call and file every complaint. Refund Genie never logs in to an airline, travel site or bank for you."],
     ["Where do the dates come from?","DGCA refund rules, the company’s own message or policy, or a labelled Refund Genie expectation. Working days mean Monday to Friday; estimates ignore holidays."],
     ["What if the airline says it paid the travel site?","The airline stays answerable under the rule. The next mail asks the travel site for the bank reference and date it sent the refund to you, with the airline copied."],
     ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Send three demo mails from your own Gmail, watch replies update the case, then skip to the bank check date. No real booking or money."],
     ["Is this legal advice?","No. Refund Genie helps you use refund and grievance routes, with sources. It does not act as your lawyer or file for you."],
-    ["What does Rs 49 cover?","A year of staying on every case. Your first check and first step are free. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Your year unlocks after Razorpay payment is verified."],
+    ["What does Rs 49 cover?","A year of staying on every case. Free until 3 refunds land on this device. Then Rs 49 a year. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Your year unlocks after Razorpay payment is verified."],
   ],
 };
 

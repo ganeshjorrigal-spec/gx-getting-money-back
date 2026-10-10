@@ -103,9 +103,9 @@ describe("planner", () => {
     expect(grounded.promise.date).toBeNull();
     expect(planCase({ read: grounded, today: "2026-10-05" }).dueDate).toBe("2026-09-23");
   });
-  it("locks only later written messages for larger refunds", () => {
+  it("prepares later event messages regardless of amount; device trial gates access", () => {
     const read = { ...base, messageDate: "2026-09-09" };
-    expect(planCase({ read, today: "2026-10-04", history: { ladderLevel: 0, draftsShown: 1, sentSteps: [] } }).locked).toBe(true);
+    expect(planCase({ read, today: "2026-10-04", history: { ladderLevel: 0, draftsShown: 1, sentSteps: [] } }).locked).toBe(false);
     expect(planCase({ read: { ...read, amountPaid: 299 }, today: "2026-10-04", history: { ladderLevel: 0, draftsShown: 1, sentSteps: [] } }).locked).toBe(false);
   });
   it("uses an existing refund reference for the bank step", () => {

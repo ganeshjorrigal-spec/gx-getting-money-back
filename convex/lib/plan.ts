@@ -15,7 +15,6 @@ export type Plan = {
   compensationRupees: number | null;
 };
 
-const messageSteps = new Set(["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_platform", "NO_ROUTE_ask", "ACTION_form"]);
 const question = (id: string, text: string, options: string[]): CaseRead["questions"] => [{ id, text, options }];
 const hasPromise = (read: CaseRead) => !!read.promise.date || read.promise.workingDaysMax != null || read.promise.calendarDaysMax != null;
 function actionCompleted(required: string, completed: { action: string }[]): boolean {
@@ -144,6 +143,7 @@ export function planCase(input: {
     nextStep = "questions";
     if (questions.length === 0) questions = question("situation", "What happened?", ["Event cancelled", "Postponed", "Venue changed", "Money gone, no ticket", "Refunded but not received", "I can't go"]);
   }
-  const locked = tier !== "free_small" && !input.paid && history.draftsShown >= 1 && messageSteps.has(nextStep);
+  // Payment access is decided by the per-device trial in cases.get/drafts.
+  const locked = false;
   return { route, dueDate, dueSource, dueSourceText, nextStep, checkins, questions, tier, locked, compensationRupees };
 }

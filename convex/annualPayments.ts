@@ -6,7 +6,7 @@ import {takeRate} from "./lib/rate";
 
 export const claim=mutation({args:{code:v.string(),token:v.string(),deviceId:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);
- if(process.env.RAZORPAY_KEY_ID||item.demo||item.handHelped||item.refundType!=="flight"||!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))throw new Error("Annual payment is not available yet");
+ if(process.env.RAZORPAY_KEY_ID||item.demo||item.handHelped||!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK))throw new Error("Annual payment is not available yet");
  if(!/^[A-Za-z0-9_-]{43}$/.test(args.deviceId))throw new Error("Open the case on the device where you started it");
  const deviceHash=await hashToken(args.deviceId);
  await takeRate(ctx,`annual-claim:${deviceHash}`,3,86_400_000);

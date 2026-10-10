@@ -1,0 +1,32 @@
+[
+  {
+    "code": "TB-795645",
+    "type": "flight",
+    "landed": 0,
+    "limit": 3,
+    "locked": false,
+    "draftVisible": true,
+    "excludedDemoAndHelped": true
+  },
+  {
+    "code": "TB-37ECCC",
+    "type": "flight",
+    "landed": 3,
+    "limit": 3,
+    "locked": true,
+    "draftVisible": false,
+    "excludedDemoAndHelped": true
+  },
+  {
+    "code": "TB-911E73",
+    "type": "event",
+    "landed": 3,
+    "limit": 3,
+    "locked": true,
+    "draftVisible": false,
+    "excludedDemoAndHelped": true
+  },
+  {
+    "checkoutDuringFreeTrialRejectedByTrialRule": true
+  }
+]

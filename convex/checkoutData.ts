@@ -1,3 +1,4 @@
+import { caseTrial } from "./lib/trial";
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { assertAccess, hashToken } from "./lib/access";
@@ -15,6 +16,7 @@ export const prepare = internalMutation({
   const deviceHash=await hashToken(args.deviceId);
   const prior=await ctx.db.query("annualPasses").withIndex("by_device",q=>q.eq("deviceHash",item.deviceHash??deviceHash)).unique();
   if(annualActive(prior,Date.now()))throw new Error("Your year is already covered");
+  if(!(await caseTrial(ctx,item)).locked)throw new Error("Your free trial is still available");
   await takeRate(ctx,`annual-order:${deviceHash}`,3,60_000);
   return deviceHash;
  }

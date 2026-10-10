@@ -12,7 +12,6 @@ import { groundRead, groundTrackedReply } from "./lib/ground";
 import { draftForCase, draftMatchesFacts } from "./lib/draft";
 import { verifiedEmailFor } from "../lib/route-kb";
 import { latestReplyText } from "../lib/reply-banner";
-import { demoPays } from "../lib/demo";
 import { isFlightText } from "../lib/flight";
 
 const draftSchema = z.object({ subject: z.string().nullable(), body: z.string(), attachChecklist: z.array(z.string()) });
@@ -90,7 +89,8 @@ export const triage = internalAction({
       if (loaded.item.demo.round === 1) read = { ...read, route: "WAIT", messageDate: today, promise: { text: "7 to 10 working days", date: null, workingDaysMax: 10, calendarDaysMax: null, anchorDate: today }, questions: [] };
       if (loaded.item.demo.round === 3) read = { ...read, route: "TRACE", refundStatusClaimed: "processed", references: { arn: null, rrnOrUtr: `DEMO-${loaded.item.code.replace("TB-", "")}-REF` }, questions: [] };
     }
-    let plan = planCase({ read, today, history: { ladderLevel: loaded.item.ladderLevel, draftsShown: loaded.item.draftsShown, sentSteps: [], actionDoneAt: loaded.item.actionDoneAt }, paid: demoPays(!!loaded.item.demo, ["claimed", "confirmed"].includes(loaded.item.paidState) || !!(loaded.item.paymentGraceUntil && loaded.item.paymentGraceUntil > Date.now()) || !process.env.NEXT_PUBLIC_UPI_VPA) });
+    // Drafts are prepared at every rung; cases.get/drafts apply the device trial lock.
+    let plan = planCase({ read, today, history: { ladderLevel: loaded.item.ladderLevel, draftsShown: loaded.item.draftsShown, sentSteps: [], actionDoneAt: loaded.item.actionDoneAt }, paid: true });
     if (loaded.item.demo?.round === 0) plan = { ...plan, route: "OVERDUE", nextStep: "L0_email", locked: false };
     if (loaded.item.demo?.round === 2) plan = { ...plan, route: "NEED_INFO", nextStep: "questions", questions: [{ id: "demo_booking", text: "Booking ID (demo: any made-up ID works)", options: [] }], checkins: [], locked: false };
     if (loaded.item.demo?.round === 3) plan = { ...plan, route: "TRACE", nextStep: "none", dueDate: addWorkingDays(today, 3), dueSource: "message_promise", dueSourceText: "A made-up refund reference is ready for your bank.", checkins: [{ date: addWorkingDays(today, 3), reason: "demo_bank" }], locked: false };

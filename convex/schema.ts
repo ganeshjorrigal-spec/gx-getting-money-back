@@ -22,7 +22,7 @@ export default defineSchema({
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
     name: v.optional(v.string()), contact: v.optional(v.string()),
     demo: v.optional(v.object({ kind: v.optional(v.union(v.literal("flight"), v.literal("event"))), round: v.number(), now: v.string(), expiresAt: v.number(), phase: v.union(v.literal("ready"), v.literal("waiting_organiser"), v.literal("waiting_inbox"), v.literal("timed_out")), session: v.optional(v.string()), deadline: v.optional(v.number()), bankBy: v.optional(v.string()) })),
-  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_device", ["deviceHash"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
+  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_device", ["deviceHash"]).index("by_device_stage", ["deviceHash", "stage"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
   demoReplies: defineTable({ caseId: v.id("cases"), messageId: v.string(), round: v.number(), status: v.union(v.literal("reserved"), v.literal("sent")), createdAt: v.number(), sentAt: v.optional(v.number()), receivedAt: v.optional(v.number()), sameThread: v.optional(v.boolean()) }).index("by_case", ["caseId"]).index("by_case_message", ["caseId", "messageId"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),

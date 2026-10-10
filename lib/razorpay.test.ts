@@ -28,10 +28,10 @@ describe("verified annual checkout", () => {
     expect(await validPaymentSignature(fixture, order, order, "pay_changed", signature)).toBe(false);
     expect(await validPaymentSignature(fixture, order, "", payment, signature)).toBe(false);
   });
-  it("allows real flights only, excluding demo and hand-helped cases", () => {
+  it("allows real flights and events, excluding demo and hand-helped cases", () => {
     expect(checkoutEligible({refundType:"flight"})).toBe(true);
     expect(checkoutEligible({refundType:"flight",demo:{round:0}})).toBe(false);
     expect(checkoutEligible({refundType:"flight",handHelped:true})).toBe(false);
-    expect(checkoutEligible({refundType:"event"})).toBe(false);
+    expect(checkoutEligible({refundType:"event"})).toBe(true);
   });
 });

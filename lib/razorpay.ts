@@ -1,6 +1,6 @@
 export function checkoutKeyMatches(serverKeyId: string | undefined, publicKeyId: string): boolean { return !!serverKeyId && serverKeyId === publicKeyId; }
 export function checkoutEligible(item: { refundType?: string; demo?: unknown; handHelped?: boolean }): boolean {
-  return item.refundType === "flight" && !item.demo && !item.handHelped;
+  return !item.demo && !item.handHelped;
 }
 export async function validPaymentSignature(secret: string, storedOrderId: string, orderId: string, paymentId: string, signature: string): Promise<boolean> {
   if (!storedOrderId || storedOrderId !== orderId || !/^order_[A-Za-z0-9]+$/.test(orderId) || !/^pay_[A-Za-z0-9]+$/.test(paymentId) || !/^[a-fA-F0-9]{64}$/.test(signature)) return false;
