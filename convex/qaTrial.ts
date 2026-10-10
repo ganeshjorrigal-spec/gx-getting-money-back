@@ -39,3 +39,13 @@ export const prepareGmailProof=internalMutation({args:{code:v.string(),recipient
  await ctx.db.patch(draft._id,{to:recipient,cc:[],subject:`Demo: flight refund reply test [${code}]`,body,attachChecklist:[]});
  await ctx.db.patch(item._id,{flightPlan:{...item.flightPlan,to:recipient,cc:[],body},updatedAt:Date.now()});return null;
 }});
+
+export const reopenGmailProof=internalMutation({args:{code:v.string()},returns:v.null(),handler:async(ctx,{code})=>{
+ const item=await ctx.db.query("cases").withIndex("by_code",q=>q.eq("code",code)).unique();
+ if(!item||item.source!=="qa-free-trial"||item.refundType!=="flight"||item.demo)throw new Error("Not a flight QA fixture");
+ const watch=await ctx.db.query("gmailWatches").withIndex("by_case",q=>q.eq("caseId",item._id)).first();
+ if(!watch)throw new Error("Send the fixture mail first");
+ if(item.stage!=="CLOSED_LANDED")return null;
+ await ctx.db.patch(item._id,{stage:"WAITING",closedAt:undefined,purgeAfter:undefined,recoveredPaise:undefined,updatedAt:Date.now()});
+ await ctx.db.insert("caseEvents",{caseId:item._id,type:"qa_reopened",summary:"Made-up fixture reopened for Gmail reply proof; no money recovered",actor:"system",createdAt:Date.now()});return null;
+}});

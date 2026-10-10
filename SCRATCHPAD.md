@@ -18,4 +18,4 @@ D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; 
 
 D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh switched both key IDs to live; safe match/live-mode check passes and redeployment is authorised. Current proof replaces neither the Gmail run nor the three timed demos.
 
-Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. User first send pending. Gmail browser access blocked by saved site permission; no workaround. After sent, mark sent and monitor; ask for reply-all from the separate test account.
+Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. First send and test-account reply-all confirmed by user. Fixture reopened from synthetic CLOSED_LANDED to WAITING; one inbox watch confirmed. Gmail browser access blocked by saved site permission; no workaround. Monitor receipt and confirm the known synthetic sender if requested.
