@@ -1,0 +1,31 @@
+{
+  "caseCode": "TB-795645",
+  "status": {
+    "code": "TB-795645",
+    "inboxReplyCount": 1,
+    "lastTrackedReplyAt": 1791630759801,
+    "nextStep": "FLIGHT_bank",
+    "route": "TRACE",
+    "stage": "READY",
+    "trackedReplyCount": 1,
+    "watchCount": 1
+  },
+  "savedReply": {
+    "kind": "reply",
+    "createdAt": 1791630759801,
+    "receivedAt": 1791630734000,
+    "summary": "Refund sent to original UPI payment method on 10 Oct 2026 with reference TEST-FLIGHT-001 and expected credit on 14 Oct 2026.",
+    "keySentence": "Your made-up Rs 5,400 refund was sent to your original UPI payment method on 10 Oct 2026."
+  },
+  "senderStored": true,
+  "recordSaved": true,
+  "captureNotes": {
+    "poll": "Existing scheduled inbox check; no manual poll invoked in this proof",
+    "liveQuery": "Reply banner appeared on already-open case tab without reload",
+    "confirmation": "Known synthetic test sender confirmed through Looks right",
+    "dueDate": "2026-10-14",
+    "reference": "TEST-FLIGHT-001",
+    "recoveryClaimed": false,
+    "privacy": "Sender presence recorded; address and raw email/quoted thread omitted"
+  }
+}

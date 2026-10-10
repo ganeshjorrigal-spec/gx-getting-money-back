@@ -23,11 +23,11 @@ Last updated: 10 October 2026.
 - Synthetic fixture TB-37ECCC is past the trial and retained as a QA fixture. Checkout now uses live keys; the fixture is not a test-mode payment link. It has no recipient and must not be emailed. Fixtures have no AI/mail/Sheet side effects; private fixture links remain only in ignored files/browser.
 
 ## Morning proof list
-1. Gmail flight reply proof through test/demo accounts: CC/reply-all matched, next step live, saved record and screenshot. No synthetic complaints to real companies.
+1. Gmail flight reply proof PASSED on TB-795645: scheduled job matched one test-account reply, live banner without reload, unknown sender confirmation, bank next step and 14 Oct check-in. Safe saved record and three screenshots in docs/qa/flight-gmail-*. No synthetic complaints to real companies.
 2. Three fresh complete timed flight demos: actual three replies, each round time and total, screenshots, bank Skip, It's in, work count and Demo Sheet row.
 3. Post-trial Rs 49 TEST payment proof remains outstanding. Ganesh has switched the current deployment to live keys; do not treat its checkout as test mode or switch keys back without his instruction. Previous pre-trial payment does not replace this test.
 
 ## Other open checks
 Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before enabling, Q19 hand-helped workflow, physical Android/iPhone, manual reconciliation and budget alert. Stores, M3/M4/T1 not advanced. Details and skipped checks remain in today's append-only log.
 
-Next single action: complete the outstanding Gmail flight reply proof with test/demo accounts.
+Next single action: complete three fresh timed full flight demos with user-sent emails.

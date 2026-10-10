@@ -2,7 +2,7 @@
 
 ## Next: M2.6 morning proof
 - [ ] Manual reconciliation proof remains. Previous test payment, annual unlock and user-reported dashboard check are confirmed; new post-trial payment proof remains.
-- [ ] Real Gmail test send and reply-all on a flight case using demo/test accounts only.
+- [x] Real Gmail test send and reply-all on a made-up flight fixture; saved record, live update and bank deadline proof logged.
 - [ ] Three fresh full timed flight demos: actual replies, same-thread/plus-address/CC receipt, round screenshots, bank Skip, Money landed count and Demo Sheet row.
 - [ ] Q10 AirSewa address; Q11 officer spot-check; Q17 full medical paragraph before enabling; HQ Q19 hand-helped workflow.
 - [ ] Physical Android/iPhone handoff; budget alert.
@@ -18,4 +18,4 @@ D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; 
 
 D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh switched both key IDs to live; safe match/live-mode check passes and redeployment is authorised. Current proof replaces neither the Gmail run nor the three timed demos.
 
-Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. First send and test-account reply-all confirmed by user. Fixture reopened from synthetic CLOSED_LANDED to WAITING; one inbox watch confirmed. Gmail browser access blocked by saved site permission; no workaround. Monitor receipt and confirm the known synthetic sender if requested.
+Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. Reply matched by scheduled job, confirmation handled, READY / TRACE / FLIGHT_bank with 14 Oct check-in. Saved record and screenshots logged. Gmail browser access remains blocked; no workaround. Next: three timed full flight demos.
