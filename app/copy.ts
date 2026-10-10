@@ -1,9 +1,9 @@
-export const productName = "Tickback";
+export { productName } from "../lib/product";
 export const guaranteeLine = "If your refund hasn't landed 30 days after its due date and you followed the steps, you get the ₹49 back.";
 
 export const metaCopy = {
-  title: "Tickback: who owes your flight refund?",
-  description: "Stuck domestic flight refund? See who owes you, the due date with its source, and your next message. You send every mail; Tickback follows the replies.",
+  title: "Refund Genie: who owes your flight refund?",
+  description: "Stuck domestic flight refund? See who owes you, the due date with its source, and your next message. You send every mail; Refund Genie follows the replies.",
 };
 
 export const landingCopy = {
@@ -70,20 +70,20 @@ export const landingCopy = {
   privacyQuestion: "What happens to my data?",
   privacyPaid: "Your case lives at a private link only you have. We use Google's Gemini to read your messages and write drafts, on a paid plan where Google doesn't use them to improve its products. Delete your case and it's gone.",
   privacyFree: "Your case lives at a private link only you have. We use Google's Gemini to read your messages and write drafts. During testing we use Gemini's free tier, under which Google may use content to improve its products. Delete your case and it's gone.",
-  footer: "Tickback helps you follow the refund routes that already exist. Not legal advice.",
+  footer: "Refund Genie helps you follow the refund routes that already exist. Not legal advice.",
   privacyLink: "Privacy",
   contactLink: "Contact",
 };
 
 // Flight positioning is separate so the existing event screens keep their copy.
-export const annualGuaranteeLine = "If Tickback recovers nothing in that year, your Rs 49 comes back.";
+export const annualGuaranteeLine = "If Refund Genie recovers nothing in that year, your Rs 49 comes back.";
 export const flightLandingCopy = {
   ...landingCopy,
   headerLink:"Try a flight demo", eyebrow:"For stuck domestic flight refunds in India",
   headline:"Airline or travel site: who owes your refund?",
-  sub:"Paste the cancellation mail. Tickback shows who owes you, the refund date with its source, and the next person to ask. You send the mail. When they reply, your next step updates.",
+  sub:"Paste the cancellation mail. Refund Genie shows who owes you, the refund date with its source, and the next person to ask. You send the mail. When they reply, your next step updates.",
   primary:"Check my flight refund",secondary:"Try a flight demo",trust:"Free first check · No sign-up · You send every mail",
-  example:{platform:"IndiGo · MakeMyTrip",label:"Made-up flight case",event:"Delhi → Mumbai · booked through MakeMyTrip",amount:"₹5,400",route:"Overdue",due:"Due about 25 Sep 2026",source:"Cancelled 7 Sep. DGCA: 14 working days; counting from cancellation is Tickback’s reading.",next:"Who owes you: IndiGo. Ask MakeMyTrip’s grievance officer, with IndiGo’s Nodal Officer in CC."},
+  example:{platform:"IndiGo · MakeMyTrip",label:"Made-up flight case",event:"Delhi → Mumbai · booked through MakeMyTrip",amount:"₹5,400",route:"Overdue",due:"Due about 25 Sep 2026",source:"Cancelled 7 Sep. DGCA: 14 working days; counting from cancellation is Refund Genie’s reading.",next:"Who owes you: IndiGo. Ask MakeMyTrip’s grievance officer, with IndiGo’s Nodal Officer in CC."},
   familiarTitle:"“We’re waiting for the airline.”",
   familiar:["The airline cancelled. The travel site says the refund is pending.","Then “refund processed”. Your bank still shows nothing.","Who has the money, and who do you ask next?"],
   familiarNote:"Patterns reported in public refund complaints. Each case needs its own evidence.",
@@ -97,18 +97,18 @@ export const flightLandingCopy = {
   why:[
     ["It keeps the dated record.","Your messages, replies and next check-in stay in one private case."],
     ["It follows the money.","A reply saying the airline paid the travel site changes the next person you ask."],
-    ["The rule has a source.","Dates are worked out in code. Tickback’s own expectations are labelled."],
+    ["The rule has a source.","Dates are worked out in code. Refund Genie’s own expectations are labelled."],
   ],
   handles:["Airline cancelled","You cancelled","Pending with airline","Processed, not received","Credit shell offered"],
   handleLine:"Domestic refunds with IndiGo, Air India, SpiceJet and Akasa Air; MakeMyTrip, Goibibo, Cleartrip and EaseMyTrip. For other companies you add the address from their own page. International flights and compensation claims are outside this version.",
   paidTitle:"Rs 49 a year.",paidBody:"Stay on every case for that year: replies, follow-ups, officer emails and complaint text. You send every message.",under300:"Cases Ganesh helps by hand this week are free. Demos never need payment.",
   questions:[
-    ["Does Tickback send or log in for me?","No. You send every real mail, make every call and file every complaint. Tickback never logs in to an airline, travel site or bank for you."],
-    ["Where do the dates come from?","DGCA refund rules, the company’s own message or policy, or a labelled Tickback expectation. Working days mean Monday to Friday; estimates ignore holidays."],
+    ["Does Refund Genie send or log in for me?","No. You send every real mail, make every call and file every complaint. Refund Genie never logs in to an airline, travel site or bank for you."],
+    ["Where do the dates come from?","DGCA refund rules, the company’s own message or policy, or a labelled Refund Genie expectation. Working days mean Monday to Friday; estimates ignore holidays."],
     ["What if the airline says it paid the travel site?","The airline stays answerable under the rule. The next mail asks the travel site for the bank reference and date it sent the refund to you, with the airline copied."],
     ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Send three demo mails from your own Gmail, watch replies update the case, then skip to the bank check date. No real booking or money."],
-    ["Is this legal advice?","No. Tickback helps you use refund and grievance routes, with sources. It does not act as your lawyer or file for you."],
-    ["What does Rs 49 cover?","A year of staying on every case. Your first check and first step are free. If Tickback recovers nothing in that year, the Rs 49 comes back. Ganesh checks payment claims by hand."],
+    ["Is this legal advice?","No. Refund Genie helps you use refund and grievance routes, with sources. It does not act as your lawyer or file for you."],
+    ["What does Rs 49 cover?","A year of staying on every case. Your first check and first step are free. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Ganesh checks payment claims by hand."],
   ],
 };
 
@@ -190,6 +190,6 @@ export const caseCopy = {
   liveAlertNeedsCalendar: "A live reply alert needs Google Calendar permission.",
   calendarFileOneTime: "A downloaded calendar file is a one-time reminder. It cannot alert you when a reply arrives.",
   calendarTitle: (amount: string, eventName: string) => `Check your ${amount}${amount === "refund" ? "" : " refund"} (${eventName})`,
-  calendarDescription: (amount: string, eventName: string, caseLink: string) => `Has your ${amount}${amount === "refund" ? "" : " refund"} for ${eventName} landed? Open your case to update it or get your next step: ${caseLink}\n\nTickback. Nothing is sent without you.`,
+  calendarDescription: (amount: string, eventName: string, caseLink: string) => `Has your ${amount}${amount === "refund" ? "" : " refund"} for ${eventName} landed? Open your case to update it or get your next step: ${caseLink}\n\nRefund Genie. Nothing is sent without you.`,
 };
 

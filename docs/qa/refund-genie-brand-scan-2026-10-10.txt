@@ -1,0 +1,9 @@
+convex\demoActions.ts:52:        const boundary = `tickback_${reservation}`;
+convex\demoActions.ts:57:        const raw = [`From: ${encoded(name)} <${demoAddress}>`, `To: ${recipients.join(", ")}`, `Cc: ${cc}`, `Subject: ${encoded(/^Re:/i.test(subject) ? subject : `Re: ${subject}`)}`, `In-Reply-To: ${messageId}`, `References: ${references}`, `Message-ID: <${reservation}@tickback-demo.local>`, "Auto-Submitted: auto-replied", "MIME-Version: 1.0", `Content-Type: multipart/alternative; boundary="${boundary}"`, "", `--${boundary}`, "Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(reply.body).toString("base64"), `--${boundary}`, "Content-Type: text/html; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(html).toString("base64"), `--${boundary}--`].join("\r\n");
+lib\case-link.ts:1:export const CASE_STORAGE_KEY = "tickback.cases";
+lib\case-link.ts:17:    const existing = localStorage.getItem("tickback.deviceId");
+lib\case-link.ts:20:    localStorage.setItem("tickback.deviceId", value);
+convex\m0Check.ts:6:    const bytes = new TextEncoder().encode("tickback-m0");
+app\globals.css:213:.spinner { display: inline-block; width: 1rem; height: 1rem; flex: 0 0 1rem; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: tickback-spin .75s linear infinite; }
+app\globals.css:215:@keyframes tickback-spin { to { transform: rotate(360deg); } }
+lib\product.ts:5:  return (typeof text === "string" ? text.replace(/Tickback/g, productName) : text) as T;

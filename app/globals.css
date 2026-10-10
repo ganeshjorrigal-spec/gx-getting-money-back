@@ -257,3 +257,6 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 .flight-case .case-wrap > h1 { font-family: var(--font-display), serif; font-size: var(--text-hero); line-height: var(--leading-hero); margin: var(--space-3) 0 var(--space-6); }
 .flight-case .case-card button, .flight-case .case-card .button { margin-right: var(--space-3); }
 .flight-case .case-card details { padding-block: var(--space-3); border-bottom: var(--border-width) solid var(--line); }
+
+.policy-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+.policy-links a { text-decoration: underline; text-underline-offset: 3px; }

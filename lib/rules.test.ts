@@ -272,7 +272,7 @@ describe("user-owned actions", () => {
     expect(ics.split("\r\n").every((line) => new TextEncoder().encode(line).length <= 75)).toBe(true);
   });
   it("puts the case code and exact amount in the UPI link", () => {
-    const upi = buildUpiLink("tickback@example", "Tickback", "TB-123456");
+    const upi = buildUpiLink("tickback@example", "Refund Genie", "TB-123456");
     const query = new URL(upi).searchParams;
     expect(query.get("pa")).toBe("tickback@example");
     expect(query.get("am")).toBe("49.00");

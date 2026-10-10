@@ -1,3 +1,4 @@
+import { currentProductCopy } from "../lib/product";
 import { flightSendCheckDate } from "../lib/flight";
 import { annualActive,razorpayPaymentLink } from "../lib/annual-pass";
 import { demoSubject } from "../lib/demo";
@@ -86,9 +87,9 @@ export const get = query({
     const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      code: item.code, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, razorpayLink:item.refundType==="flight"?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:item.flightPlan.body} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
+      code: item.code, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, razorpayLink:item.refundType==="flight"?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
-      dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: item.dueSourceText ?? null,
+      dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: currentProductCopy(item.dueSourceText) ?? null,
       nextStep: item.nextStep ?? null, questions: item.questions ?? [],
       progress: item.progress ?? null, tier: item.tier, paidState: item.paidState,
       compensationRupees: item.compensationRupees ?? null, updatedAt: item.updatedAt, createdAt: item.createdAt,
@@ -100,7 +101,7 @@ export const get = query({
       oldCheckinDate: oldCheckin?.date ?? null, paymentGraceUntil: item.paymentGraceUntil ?? null,
       checkin: checkin ? { date: checkin.date, reason: checkin.reason, status: checkin.status } : null,
       paymentsEnabled: !!process.env.NEXT_PUBLIC_UPI_VPA,
-      upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Tickback",
+      upiVpa: process.env.NEXT_PUBLIC_UPI_VPA ?? null, upiName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Refund Genie",
       feedbackGiven: !!feedback,
       name: item.name ?? null, contact: item.contact ?? null,
       demo: item.demo ?? null,
@@ -144,7 +145,7 @@ export const drafts = query({
     const flightLocked=item.refundType==="flight"&&!item.demo&&!item.handHelped&&!!razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK)&&!annualActive(annual,Date.now())&&!!item.firstFlightSentAt;
     const locked = item.refundType==="flight"?flightLocked:!!process.env.NEXT_PUBLIC_UPI_VPA && item.tier !== "free_small" && !["claimed", "confirmed"].includes(item.paidState) && !(item.paymentGraceUntil && item.paymentGraceUntil > Date.now()) && item.draftsShown > 1;
     const firstDraft=item.refundType==="flight"?await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("asc").first():null;
-    return rows.map((row, index) => ({ ...row, body: (item.refundType==="flight"?flightLocked&&row._id!==firstDraft?._id:locked&&index===0) ? null : row.body }));
+    return rows.map((row, index) => ({ ...row, body: (item.refundType==="flight"?flightLocked&&row._id!==firstDraft?._id:locked&&index===0) ? null : currentProductCopy(row.body) }));
   },
 });
 

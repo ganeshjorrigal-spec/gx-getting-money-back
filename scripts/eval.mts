@@ -74,7 +74,7 @@ for (const fixture of fixtures.filter((item) => !process.env.EVAL_ONLY || item.i
   process.stdout.write(`${fixture.id} ${result}: ${detail}\n`);
   await new Promise((resolve) => setTimeout(resolve, 1500));
 }
-const report = `# Tickback eval — ${addDays(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }), 0)}\n\nModel: ${process.env.GEMINI_MODEL}. Synthetic PRD fixtures F1–F16. No user data.\n\n| Fixture | Expected route | Result | Observed | ms |\n|---|---|---|---|---:|\n${rows.join("\n")}\n\nRoute correct: ${correct}/${rows.length}. Every asserted date exact: ${exactDates}. Invented contacts: ${inventedContacts}.\n`;
+const report = `# Refund Genie eval — ${addDays(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }), 0)}\n\nModel: ${process.env.GEMINI_MODEL}. Synthetic PRD fixtures F1–F16. No user data.\n\n| Fixture | Expected route | Result | Observed | ms |\n|---|---|---|---|---:|\n${rows.join("\n")}\n\nRoute correct: ${correct}/${rows.length}. Every asserted date exact: ${exactDates}. Invented contacts: ${inventedContacts}.\n`;
 await mkdir("docs/qa", { recursive: true });
 const date = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 await writeFile(`docs/qa/eval-${date}.md`, report);

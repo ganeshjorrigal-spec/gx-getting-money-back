@@ -14,7 +14,7 @@ const base="Domestic Delhi to Mumbai flight, IndiGo, airline cancelled on 7 Sep 
 const fixtures:Fixture[]=[
  {id:"FL01",input:base,route:"OVERDUE",due:"2026-09-25",to:"grievanceofficer@makemytrip.com"},
  {id:"FL02",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by credit card"),route:"OVERDUE",due:"2026-09-14",to:"nodalofficer@goindigo.in"},
- {id:"FL03",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by UPI"),route:"OVERDUE",due:"2026-09-28",body:"Tickback's expectation"},
+ {id:"FL03",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by UPI"),route:"OVERDUE",due:"2026-09-28",body:"Refund Genie's expectation"},
  {id:"FL04",prior:sampleFlight(),input:"MakeMyTrip reply: Your refund is pending with IndiGo. We will pass it on when the airline pays us.",route:"OVERDUE",due:"2026-09-25",money:"IndiGo",to:"nodalofficer@goindigo.in"},
  {id:"FL05",prior:sampleFlight(),input:"IndiGo reply: We paid the refund to MakeMyTrip on 2 Oct 2026. Airline transfer reference AIR-SYNTHETIC. Please ask the travel site when it sent you the refund.",route:"OVERDUE",due:"2026-10-03",money:"MakeMyTrip",to:"grievanceofficer@makemytrip.com",body:"bank reference"},
  {id:"FL06",prior:sampleFlight(),input:"MakeMyTrip reply: We sent Rs 5,400 to your original payment method on 2 Oct 2026. UTR SYNTHETIC-UTR-001. Please check your bank by 14 Oct 2026.",route:"TRACE",due:"2026-10-14",check:"2026-10-14",money:"bank",to:null},

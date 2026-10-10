@@ -42,13 +42,13 @@ export function demoReplyBody(input: { round: number; platform: string; event: s
       : input.round === 2
       ? `Demo Air: We paid your refund of Rs ${input.amount} to DemoTrips on ${addWorkingDays(input.cancellationDate ?? input.now, 5)}. Our airline reference is DEMO-AIR-${input.code.replace("TB-", "")}. Please ask DemoTrips when it sent your refund to you.`
       : `DemoTrips: We sent Rs ${input.amount} to your original payment method on ${input.now}. Your bank reference (UTR) is ${reference}. Please check your bank by ${addWorkingDays(input.now, 3)}. Use this reference if your bank needs to trace it.`;
-    const footer = "Demo reply from Tickback's demo desk, not from a real travel site or airline.";
+    const footer = "Demo reply from Refund Genie's demo desk, not from a real travel site or airline.";
     return { body: `${context}\n\n${ladder}\n\n${input.round === 2 ? "Nodal desk, Demo Air" : "Refund desk, DemoTrips"}\n\n${footer}`, reference, footer };
   }
   const ladder = input.round === 1
     ? `Your refund of ₹${input.amount.toLocaleString("en-IN")} has been initiated. Please allow 7 to 10 working days from ${displayDate(input.now)} for it to reach your original payment method.`
     : input.round === 2 ? "Please share your booking ID so we can locate the booking and check the refund."
     : `The refund of ₹${input.amount.toLocaleString("en-IN")} for booking ${input.bookingId} has been processed. Your refund reference is ${reference}. Please check your bank by ${displayDate(addWorkingDays(input.now, 3))}. Use this reference if your bank needs to trace it.`;
-  const footer = `Demo reply from Tickback's demo desk, not from ${input.platform}.`;
+  const footer = `Demo reply from Refund Genie's demo desk, not from ${input.platform}.`;
   return { body: `${context}\n\n${ladder}\n\nRefund desk\n\n${footer}`, reference, footer };
 }

@@ -1,10 +1,10 @@
+import { PolicyFooter } from "./policy-footer";
 import Link from "next/link";
 import { annualGuaranteeLine, flightLandingCopy as c, productName } from "./copy";
 import { LandingEnhancements } from "./landing-enhancements";
 
 export default function Home() {
   const paidTier = process.env.GEMINI_PAID_TIER === "true";
-  const contact = process.env.NEXT_PUBLIC_CONTACT;
   const faqs = [...c.questions, [c.privacyQuestion, paidTier ? c.privacyPaid : c.privacyFree]];
 
   return (
@@ -105,7 +105,7 @@ export default function Home() {
         <div className="section-wrap footer-inner">
           <Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link>
           <p>{c.footer}</p>
-          <div><Link prefetch={false} href="/privacy">{c.privacyLink}</Link>{contact && <a href={`mailto:${contact}`}>{c.contactLink}</a>}</div>
+          <PolicyFooter />
         </div>
       </footer>
     </main>

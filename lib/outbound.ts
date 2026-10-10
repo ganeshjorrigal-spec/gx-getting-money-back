@@ -50,7 +50,7 @@ export function buildIcs(input: { code: string; date: string; title: string; des
   const day = input.date.replace(/-/g, "");
   const stamp = (input.now ?? new Date()).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
   const lines = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Tickback//Refund check-in//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Refund Genie//Refund check-in//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
     `UID:${input.code}-${input.checkinId}@${input.domain}`, `DTSTAMP:${stamp}`,
     `DTSTART;TZID=Asia/Kolkata:${day}T100000`, `DTEND;TZID=Asia/Kolkata:${day}T101500`,
     `SUMMARY:${escapeIcs(input.title)}`, `DESCRIPTION:${escapeIcs(input.description)}`,

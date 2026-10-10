@@ -52,7 +52,7 @@ export const finishSetup = internalAction({
     if (!shareEmail) throw new Error("Responses sheet sharing is not configured");
     const token = await accessToken(connection.encryptedRefreshToken);
     const created = await googleJson<{ spreadsheetId: string }>("https://sheets.googleapis.com/v4/spreadsheets", token, {
-      method: "POST", body: JSON.stringify({ properties: { title: "Tickback Responses" }, sheets: [{ properties: { title: "Cases" } }] }),
+      method: "POST", body: JSON.stringify({ properties: { title: "Refund Genie Responses" }, sheets: [{ properties: { title: "Cases" } }] }),
     });
     const sheetUrl = `https://docs.google.com/spreadsheets/d/${created.spreadsheetId}/edit`;
     await googleJson(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(created.spreadsheetId)}/values/${encodeURIComponent("Cases!A1:L1")}?valueInputOption=RAW`, token, {
@@ -149,5 +149,19 @@ export const qaSheet = internalAction({
       rowCount: Math.max(0, rows.length - 1),
       hasCode: !!code && rows.slice(1).some((row) => row[0] === code),
     };
+  },
+});
+
+// Product rename only: keeps the existing spreadsheet, rows and Google scopes.
+export const renameProduct = internalAction({
+  args: {}, returns: v.boolean(),
+  handler: async (ctx) => {
+    const context = await ctx.runQuery(internal.responsesData.sheetContext, {});
+    if (!context) return false;
+    const token = await accessToken(context.connection.encryptedRefreshToken);
+    await googleJson(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(context.config.spreadsheetId)}:batchUpdate`, token, {
+      method: "POST", body: JSON.stringify({ requests: [{ updateSpreadsheetProperties: { properties: { title: "Refund Genie Responses" }, fields: "title" } }] }),
+    });
+    return true;
   },
 });

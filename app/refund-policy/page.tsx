@@ -1,0 +1,4 @@
+import { PolicyPage } from "../policy-page";
+import { SupportContact } from "../support-contact";
+export const metadata = { title: "Refund and cancellation policy | Refund Genie" };
+export default function Page() { return <PolicyPage title="Refund and cancellation policy"><section><h2>Rs 49 a year</h2><p>The annual plan costs Rs 49 for one year of refund follow-up.</p></section><section><h2>Full refund if nothing is recovered</h2><p>If Refund Genie recovers nothing in that year, you can ask for a full refund of your Rs 49 annual payment.</p></section><section><h2>Ask for a refund or cancellation</h2><p>Contact Ganesh at <SupportContact />. Include your case code and payment date so we can check the annual payment and recovery record. Do not send bank details, passwords or OTPs.</p></section></PolicyPage>; }
