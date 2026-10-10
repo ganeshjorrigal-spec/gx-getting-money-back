@@ -14,20 +14,20 @@ Last updated: 10 October 2026.
 
 ## D-035 verified checkout
 - Convex order creation, HMAC signature verification and confirmed annual pass deployed. Previous Rs 49 test payment on TB-1FQG0T is confirmed in Convex; coverage through 10 Oct 2027 survives reload. Ganesh confirmed checking its test-dashboard transaction. Safe proof and screenshots in docs/qa/razorpay-*.
-- Current public .env.local key ID does not match Convex's test key ID. Fresh file check and configuration action confirm configured=true, keyMatches=false, testMode=true. This supersedes the earlier matching-key status. Existing guard blocks checkout correctly; no keys changed or printed by Codex. Ganesh has been asked to correct the public test ID.
+- Ganesh switched both Convex and .env.local to live Razorpay keys and explicitly requested redeployment. Safe configuration check confirms configured=true, keyMatches=true, testMode=false, publicIdIsLive=true. No keys printed or changed by Codex; previous mismatch is resolved. Rebuilt/deployed 91 files (24a40637-5774-4ca6-848f-7c777372121a); live post-trial Pay button enabled and setup error gone. Screenshot in docs/qa/razorpay-live-card-2026-10-10.jpg. No live order/payment created.
 
 ## D-036 free trial
 - Three landed refunds per device across flights and events are free. Every draft is prepared; after the allowance, unsent drafts require the existing annual checkout. An active annual pass skips payment. Demos and hand-helped cases never count or see the card. FREE_LANDED_REFUNDS defaults to 3; counter caps at the allowance.
 - Shared trial counter/payment card, landing, Terms and Refund policy copy deployed. Event annual recovery records join the unchanged paid-year guarantee.
 - 103 tests pass; type check and production build pass. npm run deploy pushed Convex functions/index and 91 static files. Live 0/3 and 3/3 screens checked. Safe query proof and screenshots in docs/qa/free-trial-*.
-- Synthetic fixture TB-37ECCC is past the trial and left open for the test payment. It has no recipient and must not be emailed. Fixtures have no AI/mail/Sheet side effects; private fixture links remain only in ignored files/browser.
+- Synthetic fixture TB-37ECCC is past the trial and retained as a QA fixture. Checkout now uses live keys; the fixture is not a test-mode payment link. It has no recipient and must not be emailed. Fixtures have no AI/mail/Sheet side effects; private fixture links remain only in ignored files/browser.
 
 ## Morning proof list
 1. Gmail flight reply proof through test/demo accounts: CC/reply-all matched, next step live, saved record and screenshot. No synthetic complaints to real companies.
 2. Three fresh complete timed flight demos: actual three replies, each round time and total, screenshots, bank Skip, It's in, work count and Demo Sheet row.
-3. Correct the public test key ID, rebuild/deploy, then pay Rs 49 in TEST mode on TB-37ECCC; confirm payment/pass, unlocked message after reload and dashboard. Previous pre-trial payment does not replace this test.
+3. Post-trial Rs 49 TEST payment proof remains outstanding. Ganesh has switched the current deployment to live keys; do not treat its checkout as test mode or switch keys back without his instruction. Previous pre-trial payment does not replace this test.
 
 ## Other open checks
 Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before enabling, Q19 hand-helped workflow, physical Android/iPhone, manual reconciliation and budget alert. Stores, M3/M4/T1 not advanced. Details and skipped checks remain in today's append-only log.
 
-Next single action: Ganesh corrects the public test key ID; Codex rebuilds/deploys and checks the post-trial checkout.
+Next single action: complete the outstanding Gmail flight reply proof with test/demo accounts.

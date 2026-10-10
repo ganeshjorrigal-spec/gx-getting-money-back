@@ -14,6 +14,6 @@ Morning addendum completed: Refund Genie branding and four linked policy pages d
 
 D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; test checkout opening and safe dismissal verified. Actual test payment and annual unlock now verified; test-dashboard check remains. See today's appended log and test modal screenshot.
 
-- [ ] Correct public test key ID mismatch (Ganesh), rebuild/deploy, then Rs 49 TEST payment on TB-37ECCC past trial; verify unlock after reload and dashboard.
+- [ ] Post-trial Rs 49 TEST payment proof remains. Current deployment is now on live keys by Ganesh's instruction; do not submit a fixture payment as though it were test mode or switch keys back without his instruction.
 
-D-036 trial implemented, 103 tests and live counter/card proof saved. Existing key mismatch guard blocks payment until Ganesh corrects the public ID. Current proof replaces neither the Gmail run nor the three timed demos.
+D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh switched both key IDs to live; safe match/live-mode check passes and redeployment is authorised. Current proof replaces neither the Gmail run nor the three timed demos.
