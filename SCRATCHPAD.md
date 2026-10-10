@@ -1,7 +1,7 @@
 # Scratchpad
 
 ## Next: M2.6 morning proof
-- [ ] Match NEXT_PUBLIC_RAZORPAY_KEY_ID in the repo .env.local to Convex RAZORPAY_KEY_ID; rebuild/deploy, verify modal/dismiss, then Ganesh pays in test mode and checks unlock/dashboard.
+- [ ] Ganesh pays Rs 49 in Razorpay test mode on the open fixture, then verify annual unlock and test-dashboard transaction. Key match and modal/dismiss now verified.
 - [ ] Real Gmail test send and reply-all on a flight case using demo/test accounts only.
 - [ ] Three fresh full timed flight demos: actual replies, same-thread/plus-address/CC receipt, round screenshots, bank Skip, Money landed count and Demo Sheet row.
 - [ ] Q10 AirSewa address; Q11 officer spot-check; Q17 full medical paragraph before enabling; HQ Q19 hand-helped workflow.
@@ -12,4 +12,4 @@ Completed overnight work and proof are in STATE.md and docs/log/2026-10-10.md. M
 
 Morning addendum completed: Refund Genie branding and four linked policy pages deployed, checked, logged. Support email present in .env.local. M2.6 remains ACTIVE pending the list above.
 
-D-035 implemented/deployed with 95 passing tests; exact key alignment clarification pending. See today's log for the failed opening and guarded unpaid proof.
+D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; test checkout opening and safe dismissal verified. Actual payment/unlock proof remains. See today's appended log and test modal screenshot.
