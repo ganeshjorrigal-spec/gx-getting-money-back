@@ -87,7 +87,7 @@ export const triage = internalAction({
     if (loaded.item.demo) {
       read = { ...read, isEventTicket: true, platform: loaded.item.platform === "District" ? "district" : "bookmyshow", platformNameAsWritten: loaded.item.platform ?? null, eventName: loaded.item.eventName ?? null, amountPaid: 2400, bookingId: loaded.item.facts?.bookingId ?? read.bookingId, userSaysLate: false, routeConfidence: 1 };
       if (loaded.item.demo.round === 1) read = { ...read, route: "WAIT", messageDate: today, promise: { text: "7 to 10 working days", date: null, workingDaysMax: 10, calendarDaysMax: null, anchorDate: today }, questions: [] };
-      if (loaded.item.demo.round === 3) read = { ...read, route: "TRACE", refundStatusClaimed: "processed", references: { arn: null, rrnOrUtr: `DEMO-${loaded.item.code.replace("TB-", "")}-REF` }, questions: [] };
+      if (loaded.item.demo.round === 3) read = { ...read, route: "TRACE", refundStatusClaimed: "processed", references: { arn: null, rrnOrUtr: `DEMO-${loaded.item.code.replace(/^(?:TB|RG)-/, "")}-REF` }, questions: [] };
     }
     // Drafts are prepared at every rung; cases.get/drafts apply the device trial lock.
     let plan = planCase({ read, today, history: { ladderLevel: loaded.item.ladderLevel, draftsShown: loaded.item.draftsShown, sentSteps: [], actionDoneAt: loaded.item.actionDoneAt }, paid: true });

@@ -79,3 +79,5 @@ describe("Google refresh token storage", () => {
     }
   });
 });
+
+ it("matches new RG and old TB subjects and inbox addresses",()=>{for(const code of ["RG-A9AEFG","TB-A9AEFG"]){const input={code,to:caseInboxAddress("cases@example.com",code),subject:"Re: refund",from:"support@example.com",inbox:"cases@example.com",sentAt:1000,receivedAt:2000};expect(messageMatchesCase(input)).toBe(true);expect(messageMatchesCase({...input,to:"",subject:`Re: refund [${code}]`})).toBe(true);expect(codedSubject("Refund [TB-ABC123]",code)).toBe(`Refund [${code}]`);}});

@@ -20,7 +20,7 @@ export const create = mutation({
     await takeRate(ctx, "demo:global", 200, 86_400_000);
     let code = "";
     for (let attempt = 0; attempt < 5; attempt++) {
-      code = `TB-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
+      code = `RG-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
       if (!await ctx.db.query("cases").withIndex("by_code", q => q.eq("code", code)).first()) break;
       if (attempt === 4) throw new Error("Please try again");
     }

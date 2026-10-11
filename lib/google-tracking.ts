@@ -15,7 +15,7 @@ export function caseInboxAllowed(email: string | undefined, paidTier: boolean, t
 }
 
 export function codedSubject(subject: string | undefined, code: string): string {
-  const base = (subject || "Refund follow-up").replace(/\s*\[TB-[A-Z0-9]{6}\]\s*/g, " ").trim();
+  const base = (subject || "Refund follow-up").replace(/\s*\[(?:TB|RG)-[A-Z0-9]{6}\]\s*/g, " ").trim();
   return `${base} [${code}]`;
 }
 
@@ -26,7 +26,7 @@ export function caseInboxAddress(inbox: string, code: string): string {
 }
 
 export function messageMatchesCase(input: { to: string; subject: string; from: string; code: string; inbox?: string; ownEmail?: string; sentAt: number; receivedAt: number }): boolean {
-  if (input.receivedAt <= input.sentAt || !/^TB-[A-Z0-9]{6}$/.test(input.code)) return false;
+  if (input.receivedAt <= input.sentAt || !/^(?:TB|RG)-[A-Z0-9]{6}$/.test(input.code)) return false;
   if (input.ownEmail && input.from.toLowerCase().includes(input.ownEmail.toLowerCase())) return false;
   const codedSubject = input.subject.toUpperCase().includes(`[${input.code}]`);
   const codedInbox = input.inbox ? input.to.toLowerCase().includes(caseInboxAddress(input.inbox, input.code).toLowerCase()) : false;

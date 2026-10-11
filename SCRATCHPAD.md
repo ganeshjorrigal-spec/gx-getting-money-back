@@ -19,3 +19,10 @@ D-035 implemented/deployed with 95 passing tests. Key typo corrected by Ganesh; 
 D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh switched both key IDs to live; safe match/live-mode check passes and redeployment is authorised. Current proof replaces neither the Gmail run nor the three timed demos.
 
 Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. Reply matched by scheduled job, confirmation handled, READY / TRACE / FLIGHT_bank with 14 Oct check-in. Saved record and screenshots logged. Gmail browser access remains blocked; no workaround. Next: three timed full flight demos.
+
+## 11 Oct walkthrough fixes (current work)
+- [ ] Group 1: static policy routes, RG real-case codes with TB compatibility.
+- [ ] Group 2: greetings, plain rule citations, actual attachment line, reply-all, CC list.
+- [ ] Group 3: save link by Gmail, hero rows, overdue badge, payment question, plain deduplicated timeline, tracking copy.
+- [ ] Group 4: intake order, Gemini note, three loading steps, flight demo link, 44px targets.
+- [ ] Type check, unit tests, paid flight/event eval, deployment and 375px proof; full fixture mail in log.

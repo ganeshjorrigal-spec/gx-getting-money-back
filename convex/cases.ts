@@ -17,7 +17,7 @@ import type { CaseRead } from "./lib/read";
 import { codedSubject } from "../lib/google-tracking";
 
 const accessArgs = { code: v.string(), token: v.string() };
-const makeCode = () => `TB-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
+const makeCode = () => `RG-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
 const cleanLine = (value: string | undefined, max: number) => value?.trim().replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").slice(0, max) || undefined;
 
 async function clearCheckins(ctx: MutationCtx, caseId: Id<"cases">) {

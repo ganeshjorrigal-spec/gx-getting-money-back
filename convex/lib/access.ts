@@ -14,7 +14,7 @@ function equalHex(a: string, b: string): boolean {
 }
 
 export async function findCase(ctx: QueryCtx | MutationCtx, code: string, token: string): Promise<Doc<"cases"> | null> {
-  if (!/^TB-[A-Z0-9]{6}$/.test(code) || !/^[A-Za-z0-9_-]{43}$/.test(token)) return null;
+  if (!/^(?:TB|RG)-[A-Z0-9]{6}$/.test(code) || !/^[A-Za-z0-9_-]{43}$/.test(token)) return null;
   const item = await ctx.db.query("cases").withIndex("by_code", (q) => q.eq("code", code)).unique();
   if (!item) return null;
   return equalHex(item.tokenHash, await hashToken(token)) ? item : null;
