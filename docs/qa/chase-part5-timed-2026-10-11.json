@@ -1,0 +1,149 @@
+{
+  "timing": {
+    "start": 1791739768549,
+    "round1": 1791739827053,
+    "round2": 1791739852966,
+    "round3": 1791739895704,
+    "finishTap": 1791739903889,
+    "finishSeen": 1791739919951,
+    "tapToMoneyLandedMs": 135340,
+    "savedClosureMs": 135237
+  },
+  "demo": {
+    "closedAt": 1791739903786,
+    "code": "RG-BC9710",
+    "createdAt": 1791739769597,
+    "demo": {
+      "expiresAt": 1792344569597,
+      "now": "2026-10-26",
+      "phase": "ready",
+      "round": 2
+    },
+    "dueDate": "2026-10-26",
+    "recoveredPaise": 540000,
+    "replies": [
+      {
+        "receivedAt": 1791739801000,
+        "savedAt": 1791739813368,
+        "text": "Thank you for contacting us about Sample domestic flight.\n\nDemoTrips: Your refund of Rs 5400 is pending with Demo Air. We will pass it\non once the airline pays us.\n\nRefund desk, DemoTrips\n\nDemo reply from Refund Genie's demo desk, not from a real travel site or\nairline."
+      },
+      {
+        "receivedAt": 1791739828893,
+        "savedAt": 1791739828893,
+        "text": "Simulated demo call. Reply from Demo Air care:\nDemo Air: Please give the PNR.\nDemo Air: Demo Air paid Rs 5400 to DemoTrips on 2026-10-21. Airline reference DEMO-AIR-RG-BC9710. DemoTrips now has the refund."
+      },
+      {
+        "receivedAt": 1791739870000,
+        "savedAt": 1791739882332,
+        "text": "Thank you for contacting us about Sample domestic flight.\n\nDemo Air: We have now processed Rs 5400 to your original payment method on\n2026-10-21. Your bank reference (UTR) is DEMO-BC9710-REF. Please check your\nbank by 2026-10-26. Use this reference to trace the refund if it does not\narrive.\n\nNodal desk, Demo Air\n\nDemo reply from Refund Genie's demo desk, not from a real travel site or\nairline."
+      }
+    ],
+    "rounds": [
+      {
+        "foundAt": 1791739799985,
+        "markedSentAt": 1791739787064,
+        "readyAt": 1791739815262,
+        "receivedAt": 1791739813368,
+        "round": 1,
+        "sameThread": true,
+        "sentAt": 1791739801663
+      },
+      {
+        "foundAt": 1791739869483,
+        "markedSentAt": 1791739857068,
+        "readyAt": 1791739884290,
+        "receivedAt": 1791739882332,
+        "round": 2,
+        "sameThread": true,
+        "sentAt": 1791739871121
+      }
+    ],
+    "route": "TRACE",
+    "sheetRow": 98,
+    "stage": "CLOSED_LANDED"
+  },
+  "calls": {
+    "calls": [
+      {
+        "confirmingDraftId": "jn76mwwgghfzzezhk80vvg425n8g3xr0",
+        "costUsd": 0,
+        "durationSeconds": 75,
+        "label": "Simulated demo call",
+        "mode": "simulated",
+        "patchIn": false,
+        "readerOutput": {
+          "moneyWith": "DemoTrips",
+          "nextContact": "DemoTrips",
+          "nextStep": "FLIGHT_mail",
+          "owner": "Demo Air",
+          "reply": {
+            "claim": "paid_site",
+            "confidence": 1,
+            "fromCompany": "Demo Air",
+            "paidDate": "2026-10-21",
+            "paymentDestination": "travel_site",
+            "pointsAt": "DemoTrips",
+            "promisedDate": null,
+            "reference": "DEMO-AIR-RG-BC9710",
+            "summary": "Demo Air stated that Rs 5400 was paid to DemoTrips on 2026-10-21 with reference DEMO-AIR-RG-BC9710."
+          }
+        },
+        "reason": null,
+        "status": "completed",
+        "transcript": "Genie: Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE.\nMenu: For refunds, press 2.\nGenie: [Pressed 2]\nMenu: Please hold. [Hold music, 20 seconds]\nCare: Please give the PNR.\nGenie: SAMPLE. What is the refund status, processing date, who has the money, and reference?\nCare: Demo Air paid Rs 5400 to DemoTrips on 2026-10-21. Airline reference DEMO-AIR-RG-BC9710. DemoTrips now has the refund.\nGenie: Thank you. I will ask DemoTrips for the bank transfer reference. Goodbye."
+      }
+    ],
+    "caseId": "jd7fdkmb40d7c71v6a7mdd72y58g25t4",
+    "code": "RG-BC9710",
+    "mails": [
+      {
+        "body": "Dear Grievance Officer,\n\nPlease check my Demo Air flight refund (PNR SAMPLE, booking ID TEST-ID). The cancellation date was 11 Sep 2026, and I paid Rs 5400.\n\nDGCA refund rule, paragraph 3(c): the airline must complete travel-site refunds within 14 working days. The refund due date is 1 Oct 2026.\n\nOn which date did the airline pay this refund to you? Please share the complaint reference number.\n\nPlease reply to all on this mail and keep RG-BC9710 in the subject, so my records stay in one thread.\n\nThank you,\nDemo Passenger",
+        "company": "DemoTrips",
+        "day": "2026-10-11",
+        "state": "sent",
+        "subject": "Demo: Flight refund chase [RG-BC9710]"
+      },
+      {
+        "body": "Dear Demo Air refund desk,\n\nDemo only: the following was a simulated call, not a conversation with a real company.\n\nAs told on our simulated call today at 11:00 am IST by your agent, Demo Air stated that Rs 5400 was paid to DemoTrips on 2026-10-21 with reference DEMO-AIR-RG-BC9710.. Please confirm in writing.\n\nPlease reply to all on this mail and keep RG-BC9710 in the subject, so my records stay in one thread.\n\nThank you.",
+        "company": "Demo Air",
+        "day": "2026-10-21",
+        "state": "sent",
+        "subject": "Demo: refund call confirmation [RG-BC9710]"
+      }
+    ],
+    "moneyWith": "bank",
+    "stage": "CLOSED_LANDED"
+  },
+  "gmailDelivery": {
+    "code": "RG-BC9710",
+    "mails": [
+      {
+        "caseCodeInSubject": true,
+        "company": "DemoTrips",
+        "day": "2026-10-11",
+        "fromCaseAddress": true,
+        "hasParent": false,
+        "messageIdRegistered": true,
+        "passengerInCc": true,
+        "pdfAttached": true,
+        "recipientsAllowed": true,
+        "replyToCaseAddress": true,
+        "sentAt": 1791739786000
+      },
+      {
+        "caseCodeInSubject": true,
+        "company": "Demo Air",
+        "day": "2026-10-21",
+        "fromCaseAddress": true,
+        "hasParent": true,
+        "messageIdRegistered": true,
+        "passengerInCc": true,
+        "pdfAttached": false,
+        "recipientsAllowed": true,
+        "replyToCaseAddress": true,
+        "sentAt": 1791739856000
+      }
+    ],
+    "oneGmailThread": true
+  }
+}

@@ -1,4 +1,5 @@
 "use client";
+import { PublicChaseDemo } from "./public-chase-demo";
 import { CallHistory } from "./call-history";
 import { ChaseAuthority } from "./chase-authority";
 import { firstStep } from "../../lib/first-step";
@@ -68,6 +69,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  useEffect(()=>{if(data?.facts){setPnr(data.facts.pnr??"");setBooking(data.facts.bookingId??"");}},[data?.factsConfirmedAt]);
 
 
+ if(data?.demo?.chaseStory)return <PublicChaseDemo code={code} token={token} data={data}/>;
  if(!data)return <main className="case-shell"><p>Opening your case…</p></main>;
 
  const facts=data.facts as FlightRead|null,plan=data.flightPlan as FlightPlan|null,draft=drafts?.[0];

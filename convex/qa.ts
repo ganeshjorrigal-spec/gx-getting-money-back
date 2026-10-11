@@ -97,7 +97,7 @@ export const demoProof = internalQuery({
     const watches = await ctx.db.query("gmailWatches").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
     const runs = await ctx.db.query("agentRuns").withIndex("by_case", q => q.eq("caseId", item._id)).take(100);
     const sheetRow = await ctx.db.query("responseSheetRows").withIndex("by_case", q => q.eq("caseId", item._id)).unique();
-    const replyInputs = inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt);
+    const replyInputs = inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt && (!item.demo?.chaseStory || !input.text?.startsWith("Simulated demo call.")));
     return { code, sheetRow: sheetRow?.row ?? null, stage: item.stage, route: item.route, dueDate: item.dueDate ?? null, createdAt: item.createdAt, closedAt: item.closedAt ?? null, recoveredPaise: item.recoveredPaise ?? null, demo: { round: item.demo.round, phase: item.demo.phase, now: item.demo.now, expiresAt: item.demo.expiresAt }, rounds: sent.map(reply => ({ round: reply.round, readyAt: runs.find(run => run.runId === replyInputs[reply.round - 1]?.runId && run.step === "triage" && run.status === "done")?.createdAt ?? null, sameThread: reply.sameThread ?? null, foundAt: reply.createdAt, sentAt: reply.sentAt ?? null, receivedAt: reply.receivedAt ?? null, markedSentAt: watches[reply.round - 1]?.sentAt ?? null })), replies: inputs.filter(input => input.kind === "reply" && input.sender && input.receivedAt).map(input => ({ text: latestReplyText(input.text ?? ""), receivedAt: input.receivedAt, savedAt: input.createdAt })) };
   },
 });

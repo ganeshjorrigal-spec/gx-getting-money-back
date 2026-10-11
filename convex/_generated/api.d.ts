@@ -18,6 +18,7 @@ import type * as calls from "../calls.js";
 import type * as cases from "../cases.js";
 import type * as chase from "../chase.js";
 import type * as chaseActions from "../chaseActions.js";
+import type * as chaseDemo from "../chaseDemo.js";
 import type * as checkins from "../checkins.js";
 import type * as checkout from "../checkout.js";
 import type * as checkoutData from "../checkoutData.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   cases: typeof cases;
   chase: typeof chase;
   chaseActions: typeof chaseActions;
+  chaseDemo: typeof chaseDemo;
   checkins: typeof checkins;
   checkout: typeof checkout;
   checkoutData: typeof checkoutData;

@@ -28,4 +28,4 @@ Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step ca
 - [x] Part 2 READY FOR REVIEW: timestamped authority/PDF, three actual demo mails/replies over ten skipped days, passenger updates, daily/recipient gates and live Stop proof. 139 tests pass; deployed.
 - [x] Ganesh authorised Part 3 simulated-only work and saved CALL_ALLOWLIST. 149 tests, both call fixtures, actual test confirming mails and 375px call proof pass. No live calling authorised.
 - [x] Part 4 READY FOR REVIEW: show the chase, top next action, call details and honest landing promise. 151 tests pass. Rohan story withheld.
-- [ ] Part 5: public demo with simulated call, timed 375px run, log/commit/push/report.
+- [x] Part 5 READY FOR REVIEW: public demo with two actual test mails/replies and one simulated call; RG-BC9710 closed in 2:15.340, all rounds captured at 375px. 157 tests, root type check and build pass. Live calls/recording/actual patch-in remain untested; no real company contacted.

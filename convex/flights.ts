@@ -88,7 +88,11 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  await ctx.db.insert("agentRuns",{caseId:item._id,runId:args.runId,step:"triage",model:args.model,attempt:1,status:"done",latencyMs:args.latencyMs,inputTokens:args.inputTokens,outputTokens:args.outputTokens,totalTokens:args.totalTokens,createdAt:now});
  if(item.chase?.active&&reply)await ctx.scheduler.runAfter(0,internal.chaseActions.notify,{caseId:item._id,key:`reply:${reply._id}`,what:"Genie read a new reply.",reply:redact(read.reply.summary).slice(0,240),next:`${plan.channel==="bank"?"Check your bank":plan.nextPerson?`Contact ${plan.nextPerson.company}`:"Watch for their reply"}${plan.checkDate?` · check-in ${plan.checkDate}`:""}`});
  const pendingCall=await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").first();
- if(item.chase?.active&&!(pendingCall?.status==="completed"&&!pendingCall.confirmingDraftId))await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});
+ if(item.demo?.chaseStory&&reply&&item.demo.phase==='ready'){
+  if(item.demo.round===1&&item.demo.chasePhase==='first_mail')await ctx.db.patch(item._id,{demo:{...item.demo,chasePhase:'ready_call'}});
+  if(item.demo.round===2&&plan.route==='TRACE')await ctx.db.patch(item._id,{demo:{...item.demo,chasePhase:'bank'}});
+ }
+ if(item.chase?.active&&!item.demo?.chaseStory&&!(pendingCall?.status==="completed"&&!pendingCall.confirmingDraftId))await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});
  await ctx.scheduler.runAfter(0,internal.googleActions.syncCheckins,{caseId:item._id});await ctx.scheduler.runAfter(0,internal.responsesActions.syncCase,{caseId:item._id});return null;
 }});
 

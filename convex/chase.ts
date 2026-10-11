@@ -18,6 +18,7 @@ import { caseTrial } from "./lib/trial";
 import { takeRate } from "./lib/rate";
 import { todayIST, addDays } from "../lib/dates";
 const access = { code: v.string(), token: v.string() };
+export const demoProofAccess=internalQuery({args:{caseId:v.id('cases')},returns:v.any(),handler:async(ctx,{caseId})=>{const item=await ctx.db.get(caseId);if(!item?.demo||!item.chase)return null;const connection=await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','inbox')).first();return {item:{chase:{email:item.chase.email}},connection};}});
 export const inspectByCode = internalQuery({
   args: { code: v.string() },
   returns: v.any(),
@@ -88,6 +89,7 @@ export const authorise = internalMutation({
       item.stage.startsWith("CLOSED")
     )
       throw new Error("Confirm your flight facts and PNR first");
+    if(item.demo?.chaseStory && (item.chase || item.demo.chasePhase!=='authority')) throw new Error('The sample permission is already saved');
     await ctx.db.patch(item._id, {
       chase: {
         active: true,
@@ -204,6 +206,7 @@ export const reserve = internalMutation({
       (await caseTrial(ctx, item)).locked
     )
       return null;
+    if(item.demo?.chaseStory && !['first_mail','confirm_mail'].includes(item.demo.chasePhase??'')) return null;
     const latest = await ctx.db
       .query("drafts")
       .withIndex("by_case", (q) => q.eq("caseId", item._id))

@@ -305,7 +305,7 @@ export const answerCheckin = mutation({
     if (item.stage.startsWith("CLOSED")) throw new Error("This case is closed");
     const now = Date.now();
     if (answer === "landed") {
-      if (item.demo && item.demo.round !== 3) throw new Error("Finish the three demo rounds before Money landed");
+      if (item.demo && (item.demo.chaseStory ? item.demo.chasePhase !== 'bank' || item.route !== 'TRACE' || item.demo.now < (item.dueDate??'9999') : item.demo.round !== 3)) throw new Error("Finish the three demo rounds before Money landed");
       const amount = amountPaise ?? item.amountPaise;
       if (amount == null || !Number.isFinite(amount) || amount < 0 || item.refundType==="flight"&&amount<=0) throw new Error("Enter the amount received");
       await clearCheckins(ctx, item._id);

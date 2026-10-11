@@ -8,13 +8,14 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { callFixture, needsPassenger, callMode } from "../lib/calls";
 import { startCall, assistantOverrides, safeCallResult } from "../lib/call-transport";
-export const run=internalAction({args:{caseId:v.id("cases"),fixture:v.union(v.literal("reference"),v.literal("identity"))},returns:v.null(),handler:async(ctx,args)=>{
+export const run=internalAction({args:{caseId:v.id("cases"),fixture:v.union(v.literal("reference"),v.literal("identity")),expectedMode:v.optional(v.union(v.literal("live"),v.literal("simulated")))},returns:v.null(),handler:async(ctx,args)=>{
  const r=await ctx.runMutation(internal.calls.reserve,args);if(!r?.item.chase)return null;
  if(!await ctx.runQuery(internal.chase.stillActive,{caseId:r.item._id,authorisedAt:r.item.chase.authorisedAt}))return null;
- const transcript=callFixture(args.fixture,{name:r.item.chase.name,pnr:r.item.facts.pnr,amount:(r.item.amountPaise??0)/100,date:r.item.demo?.now??r.now.toString(),code:r.item.code});
- const result=await startCall(process.env,{phoneNumberId:process.env.VAPI_PHONE_NUMBER_ID,assistantId:process.env.VAPI_ASSISTANT_ID,customer:{number:r.number},assistantOverrides:assistantOverrides({name:r.item.chase.name,pnr:r.item.facts.pnr,company:r.item.facts.airline,mobile:r.item.chase.mobile,model:process.env.GEMINI_MODEL??""})},transcript);
+ const recording=r.item.demo?.chaseStory?await ctx.runQuery(internal.chaseDemo.recording,{}):null;
+ const transcript=recording?.transcript??callFixture(args.fixture,{name:r.item.chase.name,pnr:r.item.facts.pnr,amount:(r.item.amountPaise??0)/100,date:r.item.demo?.now??r.now.toString(),code:r.item.code});
+ const result=await startCall({...process.env,CALL_MODE:r.mode},{phoneNumberId:process.env.VAPI_PHONE_NUMBER_ID,assistantId:process.env.VAPI_ASSISTANT_ID,customer:{number:r.number},assistantOverrides:assistantOverrides({name:r.item.chase.name,pnr:r.item.facts.pnr,company:r.item.facts.airline,mobile:r.item.chase.mobile,model:process.env.GEMINI_MODEL??""})},transcript);
  if(result.status==="queued"){await ctx.runMutation(internal.calls.queued,{id:r.callId,externalId:result.externalId!});await ctx.scheduler.runAfter(15000,internal.callActions.poll,{id:r.callId,attempt:0});}
- else await ctx.runMutation(internal.calls.finish,{id:r.callId,status:result.status,transcript:result.transcript,reason:result.reason,costUsd:0,durationSeconds:args.fixture==="identity"?65:75,patchIn:needsPassenger(transcript)});
+ else await ctx.runMutation(internal.calls.finish,{id:r.callId,status:result.status,transcript:result.transcript,reason:result.reason,recordingUrl:recording?.url,recordingKind:recording?"roleplay":undefined,costUsd:0,durationSeconds:args.fixture==="identity"?65:75,patchIn:needsPassenger(transcript)});
  return null;
 }});
 export const poll=internalAction({args:{id:v.id("calls"),attempt:v.number()},returns:v.null(),handler:async(ctx,args)=>{const loaded=await ctx.runQuery(internal.calls.load,{id:args.id});if(!loaded||loaded.call.status!=="queued"||!loaded.call.externalId)return null;

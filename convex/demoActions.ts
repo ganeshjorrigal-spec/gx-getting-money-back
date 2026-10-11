@@ -47,7 +47,7 @@ export const checkOrganiser = internalAction({
             await ctx.runMutation(internal.demo.recordAi, { caseId: input.caseId, runId: input.session, model: process.env.GEMINI_MODEL, latencyMs: Date.now() - aiStarted, inputTokens: response.usage.inputTokens ?? 0, outputTokens: response.usage.outputTokens ?? 0, totalTokens: response.usage.totalTokens ?? 0 });
           } catch { /* The fixed ladder still replies if the greeting cannot be generated quickly. */ }
         }
-        const reply = demoReplyBody({ round, kind: loaded.item.demo.kind, cancellationDate: loaded.item.facts?.cancellationDate, platform: loaded.item.platform ?? "District", event: loaded.item.eventName ?? "Sample Concert", amount: (loaded.item.amountPaise ?? 240000) / 100, bookingId: loaded.item.facts?.bookingId, now: loaded.item.demo.now, code: loaded.item.code, opening });
+        const reply = demoReplyBody({ round, chaseStory:loaded.item.demo.chaseStory, kind: loaded.item.demo.kind, cancellationDate: loaded.item.facts?.cancellationDate, platform: loaded.item.platform ?? "District", event: loaded.item.eventName ?? "Sample Concert", amount: (loaded.item.amountPaise ?? 240000) / 100, bookingId: loaded.item.facts?.bookingId, now: loaded.item.demo.now, code: loaded.item.code, opening });
         const recipients = [...new Set([from, ...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))])].filter(address => !sameDemoMailbox(address, demoAddress) && !sameDemoMailbox(address, inboxAddress));
         const cc = caseInboxAddress(inboxAddress, loaded.item.code);
         const boundary = `tickback_${reservation}`;

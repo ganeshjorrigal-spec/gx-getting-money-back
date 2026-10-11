@@ -28,6 +28,7 @@ export default function StartPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const create = useMutation(api.cases.create);
   const createDemo = useMutation(api.demo.create);
+  const createChaseDemo=useMutation(api.chaseDemo.create);
   const uploadUrl = useMutation(api.files.generateUploadUrl);
 
   useEffect(() => {
@@ -98,7 +99,8 @@ export default function StartPage() {
     setWorking(true); setError("");
     try {
       const token = makeToken();
-      const result = await createDemo({ platform, kind, tokenHash: await tokenHash(token), deviceId: getDeviceId() });
+      const hash=await tokenHash(token),deviceId=getDeviceId();
+      const result = kind==="flight"?await createChaseDemo({tokenHash:hash,deviceId}):await createDemo({ platform, kind, tokenHash:hash,deviceId });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
     } catch (error) { setError(userError(error)); setWorking(false); }
@@ -142,7 +144,7 @@ export default function StartPage() {
       <article className="case-card demo-intake">
         <p className="section-kicker">Demo</p>
         <h2>Feel a full refund chase in 3 minutes.</h2>
-        <p>You send three emails from your own Gmail. Our demo desk replies, and your case updates live. No real booking or money needed.</p>
+        <p>{refundType==="flight"?"Genie sends two test mails and plays a simulated care call. Watch the chase update live. No phone number, Gmail sign-in or real booking needed.":"You send three emails from your own Gmail. Our demo desk replies, and your case updates live. No real booking or money needed."}</p>
         {refundType === "flight" ? <button type="button" className="button button-secondary" disabled={working} onClick={()=>startDemo("district","flight")}>Try a flight demo</button> : !demoPicker ? <button type="button" className="button button-secondary" disabled={working} onClick={() => setDemoPicker(true)}>Try a demo</button> : <><p>Pick a platform to play:</p><div className="save-actions"><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("bookmyshow")}>BookMyShow</button><button type="button" className="button button-primary" disabled={working} onClick={() => startDemo("district")}>District</button></div><p className="input-hint">BookMyShow uses email in this demo because we cannot simulate its in-app chat.</p>{working && <p role="status"><span className="spinner" /> Reading your message…</p>}</>}
         {(demoPicker||refundType==="flight") && error && <p className="error-banner" role="alert">{error}</p>}
       </article>

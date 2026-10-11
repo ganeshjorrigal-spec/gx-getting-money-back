@@ -106,7 +106,7 @@ export const flightLandingCopy = {
     ["Does Refund Genie send or log in for me?","Written permission lets Genie send and follow up to approved test addresses. Calls are simulated for now and labelled. You can send mails yourself instead and file complaints yourself. Refund Genie never logs in to an airline, travel site or bank for you."],
     ["Where do the dates come from?","DGCA refund rules, the company’s own message or policy, or a labelled Refund Genie expectation. Working days mean Monday to Friday; estimates ignore holidays."],
     ["What if the airline says it paid the travel site?","The airline stays answerable under the rule. The next mail asks the travel site for the bank reference and date it sent the refund to you, with the airline copied."],
-    ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Send three demo mails from your own Gmail, watch replies update the case, then skip to the bank check date. No real booking or money."],
+    ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Genie sends two test mails and plays a simulated care call. Watch replies update the case, then skip to the bank check date. No phone number or Gmail sign-in needed. No real booking or money."],
     ["Is this legal advice?","No. Refund Genie helps you use refund and grievance routes, with sources. It does not act as your lawyer or file for you."],
     ["What does Rs 49 cover?","A year of staying on every case. Free until 3 refunds land on this device. Then Rs 49 a year. If Refund Genie recovers nothing in that year, the Rs 49 comes back. Your year unlocks after Razorpay payment is verified."],
   ],
