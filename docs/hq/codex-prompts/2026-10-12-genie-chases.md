@@ -4,7 +4,7 @@ Run after the hotfix (`2026-10-11-hotfix-answers.md`). The restyle can run along
 
 ---
 
-git pull, then the AGENTS.md start-of-session order. Read D-038 first; it changes how much Genie does by itself. Build in four parts, one clean commit each, and stop at each "WAIT" for me. Do not change the playbook data, date rules, or the event flow.
+git pull, then the AGENTS.md start-of-session order. Read D-038 first; it changes how much Genie does by itself. Build in five parts, one clean commit each, and stop at each "WAIT" for me. Do not change the playbook data, date rules, or the event flow.
 
 ## Part 1: Start the journey (no new services)
 
@@ -46,12 +46,25 @@ Show it only after I confirm Rohan has okayed this exact text:
 
 > "Every time I called, it was a new person. I had to start the story from the beginning." Rohan cancelled his IndiGo return flight, booked through a travel app, within a day of booking. IndiGo said the app would pass on the refund. The app wanted proof he didn't have. Seven or eight calls and three weeks later, about ₹15,000 came back.
 
+## Part 5: The public flight demo shows the new chase
+
+"Try a demo" today shows the old flow (the user opens each mail in Gmail and sends it). Update it to D-038, reusing the demo organiser, the two demo roles and the one case thread (D-032):
+- The visitor taps "Let Genie send and follow up" with a pre-filled sample authorisation (labelled "Demo, nothing is sent to a real company").
+- Round 1: Genie sends the mail to the demo travel site by itself; the demo travel site replies "ask the airline".
+- Round 2: Genie calls the demo airline care line. In the public demo this is NOT a live call: play the recording and transcript saved from the Part 3 test call (the one that ends with a reference), so no visitor burns call credits or needs to give a phone number. The call result moves the owner, as in a real case.
+- Round 3: Genie mails the confirming note; the demo airline replies "refund processed, reference X". Money landed, then the who-did-what count, now counting Genie's mails and calls.
+- Keep Skip ahead and the 3-minute length. The chase timeline is the hero of the demo.
+- Optional, only if time remains: a "Call my phone to hear Genie" button for the demo, limited to numbers in CALL_ALLOWLIST (for Ganesh's live pitch).
+
+Proof: one full demo run timed, with screenshots at 375px of each round and the final count.
+
 ## Proof (in the log, per part)
 
 - Part 1: fixture outputs.
 - Part 2: a demo case where Genie sends 3 mails over a skipped 10 days, reads 3 demo replies and switches owner; the authorisation PDF; Stop works.
 - Part 3: two recorded calls to the demo care line: one ends with a reference, one hits the OTP ask and patches my phone in. Transcripts in the log, reply reader output, the confirming mail. Cost per call.
 - Part 4: screenshots at 375px.
+- Part 5: see above.
 - Privacy page and Terms updated: authorisation, what Genie sends, calls are AI and recorded, what is stored, how to stop.
 
 Mark nothing DONE. Update STATE.md, append the log, commit and push after each part.
