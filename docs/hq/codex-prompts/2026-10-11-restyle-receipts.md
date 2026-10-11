@@ -54,7 +54,7 @@ Keep it in `app/copy.ts`. Plain English, a few everyday Indian words, no em dash
 2. **Hero** (illustration 1 beside or above on phone):
    - Eyebrow: "For cancelled domestic flights"
    - H1: "Flight cancelled. Refund still not in your account?"
-   - Sub: "Refund Genie is an AI agent for stuck flight refunds in India. Paste the cancellation mail. Genie tells you who has your money, the date they had to pay by under DGCA rules, and writes the complaint to the right officer. You send it from your own Gmail."
+   - Sub: "Refund Genie is an AI agent for stuck flight refunds in India. Tell it once what happened. Genie finds who has your money and the date they had to pay by under DGCA rules, then calls and mails them for you, and keeps at it till the money lands. You only step in if they need you." (D-038)
    - Buttons: "Check my refund" and "See a 3-minute demo".
    - Under the buttons: the receipt slip with the sample case (labelled "Sample case"): SpiceJet, due 1 Oct 2026, write to MakeMyTrip's grievance officer, ₹6,240, stamp OVERDUE.
 3. **Logo strip**: "Works for refunds from" plus the 8 logos and the not-affiliated line.
@@ -62,7 +62,8 @@ Keep it in `app/copy.ts`. Plain English, a few everyday Indian words, no em dash
 5. **What Genie does** (3 icons): "Reads your mail" (finds airline, booking site, PNR, cancellation date). "Knows the rules" (DGCA refund timelines, who the Nodal Officer and Appellate Authority are). "Writes and follows up" (every next mail ready; reads their reply and tells you what it means).
 6. **Why Genie** (4 points, icons):
    - "Made for India. DGCA rules, Indian airlines and travel sites, the real grievance officers. Checked against the official text."
-   - "You stay in control. Mails go from your own Gmail. No login, no OTP, no bank details. Ever."
+   - "Tell your story once. Genie keeps your case, calls and mails them, and updates you. No more explaining it again to a new person every time."
+   - "You stay in control. No login, no OTP, no bank details. Ever. If they need you on a call, Genie connects you. Stop Genie any time."
    - "Every claim has a source. The rule, the date, the company's own page. No guesswork."
    - Price, from config: "Free until your first 3 refunds land. Then ₹49 a year. Nothing recovered in that year? You get the ₹49 back."
 7. **See a real case**: a phone-frame screenshot of a sample flight case card (fixture, labelled "Sample case"), with "Try the demo" button.
