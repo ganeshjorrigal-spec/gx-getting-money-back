@@ -1,3 +1,4 @@
+import { greeting } from "./mail-copy";
 import { z } from "zod";
 import { addDays, addWorkingDays, dateValue, displayDate } from "./dates";
 import { flightContact, flightRule, type FlightContact } from "./flight-kb";
@@ -66,7 +67,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   if(plan.rung>=4){plan.to=null;plan.cc=[];plan.channel="portal";plan.nextStep=plan.rung===4?"FLIGHT_airsewa":"FLIGHT_nch";plan.note=plan.rung===4?"File this dated complaint yourself on the AirSewa app or portal named in the DGCA rule. Refund Genie's expectation is a 30-day follow-up, not an official window. The portal address needs Ganesh's check before use.":"Call 1915 or use consumerhelpline.gov.in yourself. NCH says resolution may take up to 30 days. The consumer commission is a later option; Refund Genie does not file for you.";}
   const question=direct?"On which date was this refund sent, and with which reference?":"On which date did the airline pay this refund to you?";
   const identifier=[read.pnr?`PNR ${read.pnr}`:null,read.bookingId?`booking ID ${read.bookingId}`:null].filter(Boolean).join(", ");
-  plan.body=`Hello ${plan.nextPerson?.value.split(",")[0]??(direct?airline:site)} team,\n\nPlease check my ${airline} flight refund${identifier?` (${identifier})`:""}. The cancellation date was ${displayDate(read.cancellationDate!)}${read.amountPaid!==null?`, and I paid Rs ${read.amountPaid}`:""}.\n\n${due.text}\n\n${question} Please share the complaint reference number.\n\nThank you.`;
+  plan.body=`${greeting(plan.nextPerson,direct?airline+" support":site+" support")}\n\nPlease check my ${airline} flight refund${identifier?` (${identifier})`:""}. The cancellation date was ${displayDate(read.cancellationDate!)}${read.amountPaid!==null?`, and I paid Rs ${read.amountPaid}`:""}.\n\n${flightMailRule(due.source,due.date)}\n\n${question} Please share the complaint reference number.\n\nThank you.`;
   if(read.cancelledBy==="passenger"){
     plan.note="The base fare follows the fare rules. Taxes and airport fees always come back. Cancellation charges cannot exceed basic fare plus fuel surcharge. Disclosed travel-agent fees sit outside that cap; no extra airline refund-processing charge.";
     if(flightLookIn(read)){plan.amountOwed=read.amountPaid;plan.note="The direct-booking look-in applies: cancelled within 48 hours of booking, with departure at least seven days after booking. No cancellation charge (DGCA para 3(l)).";plan.ruleId="F05";}
@@ -82,7 +83,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
     else if((r.paymentDestination==="passenger"||r.pointsAt==="passenger")&&r.reference)r.claim="processed_reference";
     else {plan.route="NEED_INFO";plan.questions=[{id:"transferDestination",text:"Who did their reply say they paid?",options:direct?["passenger","Not clear"]:[site,"passenger","Not clear"]}];plan.nextStep="questions";plan.body=null;plan.to=null;plan.cc=[];return plan;}
   }
-  const q=(text:string)=>{plan.body=`Hello ${plan.nextPerson?.company??airline} team,\n\nPlease check ${identifier||"my flight refund"}${read.amountPaid!==null?` for Rs ${read.amountPaid}`:""}, cancelled ${displayDate(read.cancellationDate!)}.\n\n${text}\n\nPlease keep both companies on the reply and share the complaint reference.\n\nThank you.`;};
+  const q=(text:string)=>{plan.body=`${greeting(plan.nextPerson,airline+" support")}\n\nPlease check ${identifier||"my flight refund"}${read.amountPaid!==null?` for Rs ${read.amountPaid}`:""}, cancelled ${displayDate(read.cancellationDate!)}.\n\n${text}\n\nPlease keep both companies on the reply and share the complaint reference.\n\nThank you.`;};
 
   if(r.claim==="waiting_airline"){
    plan.route="OVERDUE";plan.moneyWith=airline;plan.nextPerson=nodal;plan.to=nodal?.email??null;plan.cc=[grievance?.email].filter((s):s is string=>!!s);plan.nextStep="FLIGHT_mail";plan.note=`Who owes you: still ${airline}. The rule puts the refund on the airline.`;plan.checkDate=addDays(today,7);q(`You are responsible for the travel-site refund (DGCA para 3(c)). On which date did you pay this refund to ${site}?`);
@@ -92,7 +93,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   }else if(r.claim==="processed_reference"&&r.reference){
    plan.route="TRACE";plan.moneyWith="bank";plan.channel="bank";plan.to=null;plan.cc=[];plan.nextPerson=null;plan.above=null;plan.nextStep="FLIGHT_bank";plan.dueDate=validFlightDate(r.promisedDate);plan.dueSource=plan.dueDate?"message_promise":"estimate";plan.dueSourceText=plan.dueDate?"The company's own promised bank date.":"No automatic bank date: no regulator timeline is held. Remind me on a date I pick.";plan.checkDate=plan.dueDate;plan.note=`The money has left ${r.fromCompany??site}. The last leg is your bank.`;plan.body=`Please trace my refund of Rs ${read.amountPaid??"the booked amount"}, reference ${r.reference}${validFlightDate(r.paidDate)?`, sent on ${displayDate(r.paidDate!)}`:""}. It has not arrived. Please check the reference and tell me its status.\n\nUse your bank's own channel. Never share an OTP, password or bank login with Refund Genie.`;
   }else if(r.claim==="credit_shell"){
-   plan.route="OVERDUE";plan.nextStep="FLIGHT_mail";plan.note="A credit shell is your choice, not their default (DGCA para 3(f)).";q(`I decline the credit shell and ask for my refund to the original payment method. ${direct?"The choice is the passenger's under DGCA para 3(f).":"Refund Genie's reading: the travel site acts for the airline (para 3(c)), and the airline's credit shell is the passenger's choice (para 3(f))."}`);
+   plan.route="OVERDUE";plan.nextStep="FLIGHT_mail";plan.note="A credit shell is your choice, not their default (DGCA para 3(f)).";q(`I decline the credit shell and ask for my refund to the original payment method. ${direct?"The choice is the passenger's under DGCA para 3(f).":"DGCA refund rule, paragraphs 3(c) and 3(f): the airline is responsible for travel-site refunds and a credit shell is the passenger's choice."}`);
   }else if(r.claim==="not_paid"&&due.date&&due.date<today){
    plan.moneyWith=airline;plan.rung=Math.min(5,plan.rung+1);plan.nextPerson=plan.above;plan.to=plan.above?.email??null;plan.cc=[grievance?.email].filter((s):s is string=>!!s);plan.nextStep="FLIGHT_mail";plan.note="Refund Genie's reading: the owner confirmed it has not paid, so the next rung is ready now.";plan.checkDate=addDays(today,7);q("The refund is overdue and your reply confirms it is not processed. Please provide the refund date and bank reference, with the full dated thread.");
   }else if(["stall","under_review"].includes(r.claim)){
@@ -128,3 +129,11 @@ export function flightSendCheckDate(channel:string,today:string,promisedDate?:st
 }
 
 export function flightWorkingDelay(due:string|null,today:string):number {if(!validFlightDate(due)||!validFlightDate(today)||due!>=today)return 0;let n=0;for(let d=addDays(due!,1);d<=today;d=addDays(d,1)){const weekday=dateValue(d).getUTCDay();if(weekday!==0&&weekday!==6)n++;}return n;}
+
+export function flightMailRule(source:string,due:string|null) {
+ const date=due?` The refund due date is ${displayDate(due)}.`:"";
+ if(source==="F03")return `DGCA refund rule, paragraph 3(c): the airline must complete travel-site refunds within 14 working days.${date}`;
+ if(source==="F01")return `DGCA refund rule, paragraph 3(a): credit card refunds must be made within seven days of cancellation.${date}`;
+ if(source==="F02")return "DGCA refund rule, paragraph 3(b): cash refunds must be made immediately at the airline office where bought.";
+ return "Please confirm the refund date and status.";
+}

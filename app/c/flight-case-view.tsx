@@ -1,4 +1,6 @@
 "use client";
+import { CcList, AttachmentPicker } from "./mail-tools";
+import { finishMail } from "../../lib/mail-copy";
 import { TrialCard } from "./trial-card";
 import { PolicyFooter } from "../policy-footer";
 
@@ -37,6 +39,8 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  const confirm=useMutation(api.flights.confirm),answer=useMutation(api.flights.answer),sent=useMutation(api.cases.markSent),addReply=useMutation(api.cases.addReply),close=useMutation(api.cases.answerCheckin),seen=useMutation(api.cases.markReplySeen),retry=useMutation(api.cases.retry);
 
  const [received,setReceived]=useState("");
+ const [attachments,setAttachments]=useState<string[]>([]);
+ useEffect(()=>setAttachments([]),[drafts?.[0]?._id]);
 
  const fare=useMutation(api.flights.fare);
 
@@ -63,7 +67,9 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  const inbox=tracking?.inboxAddress?caseInboxAddress(tracking.inboxAddress,code):"";
 
- const cc=[...(draft?.cc??[]),inbox].filter(Boolean).join(",");
+ const ccList=[...(draft?.cc??[]),inbox].filter(Boolean);
+ const cc=ccList.join(",");
+ const mailBody=draft?.channel==="email"&&draft.body?finishMail(draft.body,code,attachments,data.name):draft?.body??"";
 
  const date=(d:string|null|undefined)=>d?displayDate(d):"Not given";
 
@@ -117,13 +123,13 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<section className="case-card"><h2>Your next {draft.channel==="email"?"mail":"step"}</h2>
 
- {draft.channel==="email"&&<><p>To: {draft.to||"Paste the address from the company's own page"}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<p>CC: {cc}</p><p>{draft.subject}</p></>}
+ {draft.channel==="email"&&<><p>To: {draft.to||"Paste the address from the company's own page"}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
 
- <pre className="flight-message">{draft.body}</pre><ul>{draft.attachChecklist.map((line:string)=><li key={line}>{line}</li>)}</ul>
+ <pre className="flight-message">{mailBody}</pre>{draft.channel==="email"&&<AttachmentPicker selected={attachments} change={setAttachments}/>}
 
- {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",draft.body??"",cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",draft.body??"",cc).copyFirst)void navigator.clipboard.writeText(draft.body??"").catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
+ {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).copyFirst)void navigator.clipboard.writeText(mailBody).catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
 
- <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(draft.body??"");await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button><p>Add this address in CC: {inbox}</p><button className="text-button" onClick={()=>run(()=>navigator.clipboard.writeText(inbox))}>Copy CC address</button>
+ <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>
 
  <p>You send it yourself. Refund Genie never sends your mail.</p>{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
 

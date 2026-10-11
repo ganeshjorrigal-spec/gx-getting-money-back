@@ -1,3 +1,5 @@
+import { finishMail, greeting } from "../lib/mail-copy";
+import { flightMailRule } from "../lib/flight";
 import { caseTrial } from "./lib/trial";
 import { currentProductCopy } from "../lib/product";
 import { flightSendCheckDate } from "../lib/flight";
@@ -144,7 +146,17 @@ export const drafts = query({
     const item = await assertAccess(ctx, code, token);
     const rows = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(10);
     const trial=await caseTrial(ctx,item);
-    return rows.map(row => ({...row,body:trial.locked&&row.status!=="sent"?null:currentProductCopy(row.body)}));
+    return rows.map(row => {
+      let body=currentProductCopy(row.body)??"";
+      if(row.channel==="email"){
+        if(item.refundType==="flight"){
+          body=body.replace(/^Hello [^\n]+,/,greeting(item.flightPlan?.nextPerson));
+          body=body.replace(/DGCA refund rule\.[^]*?(?=\n\n)/,flightMailRule(item.flightPlan?.dueSource??"",item.flightPlan?.dueDate??null));
+        } else body=body.replace(/^Hello ([^\n]+),/,"Dear $1,");
+        body=finishMail(body,item.code,[],item.name);
+      }
+      return {...row,body:trial.locked&&row.status!=="sent"?null:body};
+    });
   },
 });
 

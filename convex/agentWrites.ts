@@ -1,3 +1,4 @@
+import { finishMail } from "../lib/mail-copy";
 import { internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
@@ -74,7 +75,7 @@ export const saveDraft = internalMutation({
     await ctx.db.insert("drafts", {
       caseId: args.caseId, step: args.step, channel: args.channel, to: caseRecipient(!!item.demo, process.env.TICKBACK_DEMO_ADDRESS, args.to),
       subject: args.channel === "email" ? demoSubject(!!item.demo, codedSubject(args.subject, item.code)) : args.subject,
-      body: args.body, attachChecklist: item.demo ? [] : args.attachChecklist, status: "ready", createdAt: now,
+      body: args.channel === "email" ? finishMail(args.body.replace(/^Hello ([^\n]+),/,"Dear $1,"),item.code,[],item.name) : args.body, attachChecklist: item.demo ? [] : args.attachChecklist, status: "ready", createdAt: now,
     });
     await ctx.db.patch(args.caseId, { draftsShown: item.draftsShown + 1, progress: { step: "done", at: now }, updatedAt: now });
     await ctx.db.insert("agentRuns", { caseId: args.caseId, runId: args.runId, step: "draft", model: args.model, attempt: 1, status: "done", latencyMs: args.latencyMs, inputTokens: args.inputTokens, outputTokens: args.outputTokens, totalTokens: args.totalTokens, createdAt: now });

@@ -1,4 +1,6 @@
 "use client";
+import { CcList, AttachmentPicker } from "./mail-tools";
+import { finishMail } from "../../lib/mail-copy";
 import { PolicyFooter } from "../policy-footer";
 
 import { demoSubject } from "../../lib/demo";
@@ -38,7 +40,7 @@ type CaseView = TrialData & {
   demo: { round: number; now: string; expiresAt: number; phase: string } | null;
   newReply: { _id: Id<"inputs">; sender: string; receivedAt: number; summary: string; keySentence: string } | null;
 };
-type Draft = { _id: Id<"drafts">; step: string; channel: string; status: string; to?: string; subject?: string; body: string | null; attachChecklist: string[] };
+type Draft = { _id: Id<"drafts">; step: string; channel: string; status: string; to?: string; cc?:string[]; subject?: string; body: string | null; attachChecklist: string[] };
 type Event = { _id: string; type: string; summary: string; createdAt: number };
 type Tracking = { firstSent: boolean; calendar: boolean; gmail: boolean; inboxAddress: string | null; dismissed: boolean; lastReplyAt: number | null; noSentFound: boolean; configured: boolean; gmailReady: boolean };
 const money = (paise: number | null) => paise == null ? "refund" : `₹${(paise / 100).toLocaleString("en-IN")}`;
@@ -55,6 +57,8 @@ export default function CaseView({ code }: { code: string }) {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+  const [attachments,setAttachments]=useState<string[]>([]);
+
   const [grievanceSource, setGrievanceSource] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
   const [reply, setReply] = useState("");
@@ -86,6 +90,7 @@ export default function CaseView({ code }: { code: string }) {
   const caseData = useQuery(api.cases.get, token ? { code, token } : "skip") as CaseView | null | undefined;
   const tracking = useQuery(api.googleConnect.status, token && caseData ? { code, token } : "skip") as Tracking | undefined;
   const drafts = useQuery(api.cases.drafts, token && caseData ? { code, token } : "skip") as Draft[] | undefined;
+  useEffect(()=>setAttachments([]),[drafts?.[0]?._id]);
   const events = useQuery(api.cases.timeline, token && caseData ? { code, token } : "skip") as Event[] | undefined;
   const answerQuestions = useMutation(api.cases.answerQuestions);
   const retry = useMutation(api.cases.retry);
@@ -226,7 +231,8 @@ export default function CaseView({ code }: { code: string }) {
   }
 
   function outboundBody() {
-    return drafts?.[0]?.step === "L1" && grievanceSource.trim() ? body.replace("Dear Grievance Officer,", `Dear Grievance Officer,\n\nI could not find the Grievance Officer's address on your site, so I am sending this to the address in ${grievanceSource.trim()}.`) : body;
+    const result = drafts?.[0]?.step === "L1" && grievanceSource.trim() ? body.replace("Dear Grievance Officer,", `Dear Grievance Officer,\n\nI could not find the Grievance Officer's address on your site, so I am sending this to the address in ${grievanceSource.trim()}.`) : body;
+    return drafts?.[0]?.channel==="email"?finishMail(result,code,attachments,caseData?.name):result;
   }
 
   async function openEmail() {
@@ -234,7 +240,7 @@ export default function CaseView({ code }: { code: string }) {
     const message = outboundBody();
     if (drafts?.[0]?.channel !== "email") { await copy(message); setSentPrompt(true); return; }
     if (!to.trim() || !subject.trim()) return;
-    const cc = includeCaseInbox && tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : undefined;
+    const cc = [...(drafts?.[0]?.cc??[]),...(includeCaseInbox && tracking?.inboxAddress ? [caseInboxAddress(tracking.inboxAddress, code)] : [])].join(",");
     const result = buildMailto(to, codedSubject(subject, code), message, cc);
     if (result.copyFirst) { await copy(message); setNotice("Message copied. Paste it into the email."); }
     window.location.href = result.url;
@@ -244,7 +250,7 @@ export default function CaseView({ code }: { code: string }) {
   async function openGmail() {
     if (!body.trim() || drafts?.[0]?.channel !== "email" || !to.trim() || !subject.trim()) return;
     const message = outboundBody();
-    const cc = includeCaseInbox && tracking?.inboxAddress ? caseInboxAddress(tracking.inboxAddress, code) : undefined;
+    const cc = [...(drafts?.[0]?.cc??[]),...(includeCaseInbox && tracking?.inboxAddress ? [caseInboxAddress(tracking.inboxAddress, code)] : [])].join(",");
     const result = buildGmailCompose(to, codedSubject(subject, code), message, cc);
     window.open(result.url, "_blank", "noopener,noreferrer");
     if (result.copyFirst) { await copy(message); setNotice("Message copied. Paste it into Gmail before sending."); }
@@ -503,13 +509,13 @@ export default function CaseView({ code }: { code: string }) {
         {caseData?.dueDate && <p>{caseData.facts?.ticketFormat === "physical" && caseData.route === "ACTION_NEEDED" ? "Tickets must reach them by" : "Relevant date"}: {displayDate(caseData.dueDate)}</p>}
          {drafts?.[0]?.channel === "email" && <><label>To<input type="email" readOnly={!!caseData?.demo} value={to} onChange={(event) => setTo(event.target.value)} placeholder="Support email" /></label>{caseData?.demo ? <p className="input-hint"><span className="demo-tag">Demo</span> This sends to Refund Genie’s demo desk, playing the organiser.</p> : drafts?.[0]?.to && verifiedRecipient ? <p className="input-hint">Verified on the platform&apos;s own page. Source: <a href={verifiedRecipient.source} target="_blank" rel="noreferrer">{platformRoute?.displayName ?? "platform"} contact page</a>.</p> : <p className="input-hint">{platformRoute?.chatPath ? <>We do not hold a verified email address for this step. Use <a href={platformRoute.chatPath.source} target="_blank" rel="noreferrer">{platformRoute.chatPath.value}</a>, or enter an address you checked yourself.</> : c.emailHelp}</p>}{!caseData?.demo && drafts?.[0]?.step === "L1" && !verifiedRecipient && <label>Where did they give you this address?<input value={grievanceSource} onChange={(event) => setGrievanceSource(event.target.value)} placeholder="Their message or Help page" /></label>}<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label>{tracking?.inboxAddress && <label className="input-hint"><input type="checkbox" disabled={!!caseData?.demo} checked={includeCaseInbox} onChange={(event) => setIncludeCaseInbox(event.target.checked)} /> We&apos;ve added our case inbox in CC so we see their reply. {caseData?.demo ? "Keep it in CC for the demo." : "You can remove it."}</label>}</>}
         <label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} rows={9} /></label>
-        {drafts?.[0]?.attachChecklist?.length ? <><p className="section-kicker">ATTACH THESE FROM YOUR PHONE</p><ul className="checklist">{drafts[0].attachChecklist.map((item) => <li key={item}>{item}</li>)}</ul></> : null}
+        {drafts?.[0]?.channel==="email"&&<AttachmentPicker selected={attachments} change={labels=>{setAttachments(labels);setBody(finishMail(body,code,labels,caseData?.name));}}/>}
         {drafts?.[0]?.step === "L1" && grievanceSource.trim() && <p className="input-hint">The message will say: I could not find the Grievance Officer&apos;s address on your site, so I am sending this to the address in {grievanceSource.trim()}.</p>}
         {drafts?.[0]?.channel === "bank" && <p className="input-hint">Send this from your bank app&apos;s help section, or to the customer care email on your statement. Keep the reference they give you.</p>}
         <button className="button button-primary" onClick={drafts?.[0]?.channel === "email" ? openGmail : openEmail} disabled={!body.trim() || (drafts?.[0]?.channel === "email" && (!to.trim() || !subject.trim()))}>{drafts?.[0]?.channel === "email" ? c.openEmail : drafts?.[0]?.channel === "chat" ? "Copy chat message" : "Copy my message"}</button>
         {drafts?.[0]?.channel === "email" && <button className="button button-secondary" onClick={openEmail}>Open in another email app</button>}
         {drafts?.[0]?.channel === "email" && <button className="button button-secondary" onClick={async () => { await copy(outboundBody()); setSentPrompt(true); }}>Copy message</button>}
-        {drafts?.[0]?.channel === "email" && exactInbox && includeCaseInbox && <div className="cc-copy"><span><strong>{c.ccLabel}</strong><code>{exactInbox}</code></span><button className="button button-secondary" onClick={() => copy(exactInbox)}>Copy CC address</button></div>}
+        {drafts?.[0]?.channel === "email" && <CcList addresses={[...(drafts[0].cc??[]),...(exactInbox&&includeCaseInbox?[exactInbox]:[])]} copy={()=>void copy([...(drafts?.[0]?.cc??[]),...(exactInbox&&includeCaseInbox?[exactInbox]:[])].join(","))}/>}
         {to && <button className="text-button" onClick={() => copy(to)}>Copy address</button>}
         <p className="example-source">{drafts?.[0]?.channel === "email" ? c.emailNote : "You send this yourself. Nothing is sent from Refund Genie."}</p>
         {sentPrompt && <div className="send-confirm"><p>Did you send it?</p><button className="button button-primary" onClick={markDraftSent} disabled={busy}>Yes, I&apos;ve sent it</button><button className="button button-secondary" onClick={() => setSentPrompt(false)}>Not yet</button></div>}

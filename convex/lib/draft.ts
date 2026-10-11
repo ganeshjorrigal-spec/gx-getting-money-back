@@ -17,14 +17,14 @@ export function draftForCase(read: CaseRead, today: string, step: string, dueDat
   const subject = read.bookingId ? `Refund for ${booking}${event}` : `Refund for ${read.eventName ?? "my event"}`;
   const context = `My ${booking}${event} was ${amount}. ${eventChange} ${completedLine}`.replace(/\s+/g, " ").trim();
   const closing = userName?.trim() ? `Thank you,\n${userName.trim()}` : "Thank you.";
-  let body = `Hello ${platform} team,\n\n${context}\n\n${promiseLine} Please tell me the refund status, return it to my original payment method, and share the refund reference number.\n\n${closing}`;
+  let body = `Dear ${platform} support,\n\n${context}\n\n${promiseLine} Please tell me the refund status, return it to my original payment method, and share the refund reference number.\n\n${closing}`;
   if (step === "L0_chat") body = `Hi, ${context} ${promiseLine} Please check the refund status and share the refund reference number.${userName?.trim() ? `\n\n${userName.trim()}` : ""}`;
   if (step === "L1") body = `Dear Grievance Officer,\n\n${context}\n\n${promiseLine} I contacted support and need your help resolving this. Under the Consumer Protection (E-Commerce) Rules, 2020, grievances should be acknowledged within 48 hours. Please acknowledge this complaint and tell me when the refund will arrive.\n\n${closing}`;
-  if (step === "TRACE_ask") body = `Hello ${platform} team,\n\n${context}\n\nYou said my refund was processed, but it has not reached my account. Please share the ARN or UTR, the date it was sent, and the payment method it went to.\n\n${closing}`;
-  if (step === "TRACE_bank") body = `Hello,\n\n${context}\n\n${platform} marked the refund processed, but it has not reached my account. The reference is ${read.references.arn ?? read.references.rrnOrUtr}. Please trace it and tell me when it will be credited.\n\n${closing}`;
-  if (step === "FAILED_platform") body = `Hello ${platform} team,\n\nI paid ${amount}${read.paymentDate ? ` on ${displayDate(read.paymentDate)}` : ""}${event}, but no ticket was issued and the payment showed ${read.paymentStatusShown}. Please confirm the payment status and share the payment reference. I will use that reference to ask my bank to trace it.\n\n${closing}`;
-  if (step === "NO_ROUTE_ask") body = `Hello ${platform} team,\n\n${context}\n\nPlease tell me whether I can request a refund, the deadline, and the steps to do so.\n\n${closing}`;
-  if (step === "ACTION_form") body = `Hello ${platform} team,\n\n${context}\n\nPlease confirm the steps to claim the refund, including any form or ticket delivery deadline, and where I should send proof.\n\n${closing}`;
+  if (step === "TRACE_ask") body = `Dear ${platform} support,\n\n${context}\n\nYou said my refund was processed, but it has not reached my account. Please share the ARN or UTR, the date it was sent, and the payment method it went to.\n\n${closing}`;
+  if (step === "TRACE_bank") body = `Dear Customer support,\n\n${context}\n\n${platform} marked the refund processed, but it has not reached my account. The reference is ${read.references.arn ?? read.references.rrnOrUtr}. Please trace it and tell me when it will be credited.\n\n${closing}`;
+  if (step === "FAILED_platform") body = `Dear ${platform} support,\n\nI paid ${amount}${read.paymentDate ? ` on ${displayDate(read.paymentDate)}` : ""}${event}, but no ticket was issued and the payment showed ${read.paymentStatusShown}. Please confirm the payment status and share the payment reference. I will use that reference to ask my bank to trace it.\n\n${closing}`;
+  if (step === "NO_ROUTE_ask") body = `Dear ${platform} support,\n\n${context}\n\nPlease tell me whether I can request a refund, the deadline, and the steps to do so.\n\n${closing}`;
+  if (step === "ACTION_form") body = `Dear ${platform} support,\n\n${context}\n\nPlease confirm the steps to claim the refund, including any form or ticket delivery deadline, and where I should send proof.\n\n${closing}`;
   return { subject, body, attachChecklist: ["Booking confirmation", "Organiser's refund message", ...(completed.length ? ["Form submission and courier proof"] : [])] };
 }
 

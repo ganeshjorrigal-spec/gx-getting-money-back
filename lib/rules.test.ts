@@ -1,3 +1,4 @@
+import { finishMail } from "./mail-copy";
 import { describe, expect, it } from "vitest";
 import { addDays, addWorkingDays, displayDate, todayIST } from "./dates";
 import { redact } from "./redact";
@@ -280,3 +281,5 @@ describe("user-owned actions", () => {
     expect(query.get("cu")).toBe("INR");
   });
 });
+
+it("adds the thread instruction above each event email sign-off",()=>{for(const step of ["L0_email","L1","TRACE_ask","TRACE_bank","FAILED_platform","NO_ROUTE_ask","ACTION_form"]){const draft=draftForCase(base,"2026-10-11",step,"2026-10-23");const body=finishMail(draft.body,"RG-ABC123");expect(body).toContain("keep RG-ABC123 in the subject, so my records stay in one thread.\n\nThank you.");expect(body).not.toMatch(/Refund Genie counts|our reading|holidays/i);}});
