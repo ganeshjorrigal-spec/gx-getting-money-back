@@ -1,0 +1,119 @@
+[
+  {
+    "fixture": "airline-cancelled-travel-site",
+    "action": "Mail Grievance Officer at MakeMyTrip: grievanceofficer@makemytrip.com. Ask when the airline paid the travel site, with the airline copied as the plan shows.",
+    "checklist": [
+      {
+        "id": "proof",
+        "label": "Cancellation proof",
+        "present": true,
+        "help": "Screenshot added. Check it shows the cancellation."
+      },
+      {
+        "id": "pnr",
+        "label": "PNR",
+        "present": true,
+        "help": "Find it on the booking confirmation or ticket."
+      },
+      {
+        "id": "bookingId",
+        "label": "Booking ID",
+        "present": true,
+        "help": "Find it in the travel app's booking details."
+      },
+      {
+        "id": "payment",
+        "label": "Payment method",
+        "present": true,
+        "help": "Check whether you paid by card, UPI, net banking or wallet. Never share the account or card number."
+      },
+      {
+        "id": "amount",
+        "label": "Amount",
+        "present": true,
+        "help": "Find the amount on your booking receipt or payment confirmation."
+      }
+    ],
+    "rule": "DGCA refund rule. The rule gives no start day; Refund Genie counts from your cancellation date (Refund Genie's reading). About 14 working days, Monday to Friday; holidays ignored.",
+    "contactSource": "https://makemytrip.com/legal/in/eng/user_agreement.html",
+    "readyForContact": true
+  },
+  {
+    "fixture": "passenger-cancelled-direct-23-hours",
+    "action": "Mail Nodal Officer at IndiGo: nodalofficer@goindigo.in. The airline owes the refund; ask for its status and reference.",
+    "checklist": [
+      {
+        "id": "proof",
+        "label": "Cancellation proof",
+        "present": false,
+        "help": "Find the cancellation mail or SMS, or screenshot the Cancelled screen in the IndiGo app."
+      },
+      {
+        "id": "pnr",
+        "label": "PNR",
+        "present": true,
+        "help": "Find it on the booking confirmation or ticket."
+      },
+      {
+        "id": "bookingId",
+        "label": "Booking ID",
+        "present": true,
+        "help": "Your airline booking confirmation has it; PNR may be the same reference."
+      },
+      {
+        "id": "payment",
+        "label": "Payment method",
+        "present": true,
+        "help": "Check whether you paid by card, UPI, net banking or wallet. Never share the account or card number."
+      },
+      {
+        "id": "amount",
+        "label": "Amount",
+        "present": true,
+        "help": "Find the amount on your booking receipt or payment confirmation."
+      }
+    ],
+    "rule": "You booked direct and cancelled within the look-in window: no cancellation charge under DGCA paragraph 3(e). Taxes and airport fees are always refunded, even on non-refundable and promo fares and no-shows.",
+    "contactSource": "https://goindigo.in/contact-us.html",
+    "readyForContact": true
+  },
+  {
+    "fixture": "no-proof-or-details",
+    "action": "Mail Grievance Officer at MakeMyTrip: grievanceofficer@makemytrip.com. Ask when the airline paid the travel site, with the airline copied as the plan shows.",
+    "checklist": [
+      {
+        "id": "proof",
+        "label": "Cancellation proof",
+        "present": false,
+        "help": "Find the cancellation mail or SMS, or screenshot the Cancelled screen in the IndiGo app."
+      },
+      {
+        "id": "pnr",
+        "label": "PNR",
+        "present": false,
+        "help": "Find it on the booking confirmation or ticket."
+      },
+      {
+        "id": "bookingId",
+        "label": "Booking ID",
+        "present": false,
+        "help": "Find it in the travel app's booking details."
+      },
+      {
+        "id": "payment",
+        "label": "Payment method",
+        "present": false,
+        "help": "Check whether you paid by card, UPI, net banking or wallet. Never share the account or card number."
+      },
+      {
+        "id": "amount",
+        "label": "Amount",
+        "present": false,
+        "help": "Find the amount on your booking receipt or payment confirmation."
+      }
+    ],
+    "rule": "DGCA refund rule. The rule gives no start day; Refund Genie counts from your cancellation date (Refund Genie's reading). About 14 working days, Monday to Friday; holidays ignored.",
+    "contactSource": "https://makemytrip.com/legal/in/eng/user_agreement.html",
+    "readyForContact": false
+  }
+]

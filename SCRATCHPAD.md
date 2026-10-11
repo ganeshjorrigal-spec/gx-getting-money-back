@@ -22,3 +22,8 @@ Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipie
 
 ## 11 Oct walkthrough fixes
 All four groups implemented, checked and deployed. Final type check / 114 tests pass; paid event 16/16 and flight 14/14 evals pass. Live 375px captures and full fixture draft are logged in docs/log/2026-10-11.md. RG static-link parser correction was pushed separately after live testing. Old mailbox remains connected, no settings or permissions changed. Gmail opening and physical phones are untested in this round. No milestone DONE; original M2.6 proof list above remains pending. Next: HQ review of these fixes, with restyle only on its separate prompt.
+
+## D-038 Genie chases, current work
+Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step card and screenshot logged.
+- [ ] Part 2: written authority, allow-list-only mail chase, stop and tests. Stop at WAIT before Part 3.
+- [ ] Parts 3 to 5 remain gated by the prompt's WAITs. No real-company contact without Ganesh's go.

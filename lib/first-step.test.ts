@@ -1,0 +1,7 @@
+import {it,expect} from "vitest";
+import {firstStep} from "./first-step";
+import {planFlight} from "./flight";
+import {sampleFlight} from "./flight-sample";
+it("starts a travel-site cancellation with both companies and its checklist",()=>{const read=sampleFlight(),p=firstStep(read,planFlight(read,"2026-10-11"),true);expect(p.action).toContain("MakeMyTrip");expect(p.action).toContain("when the airline paid");expect(p.checklist.every(i=>i.present)).toBe(true);expect(p.rule).toContain("14 working days");});
+it("explains direct look-in within 24 hours and tax refund",()=>{const read={...sampleFlight(),bookedVia:"direct",cancelledBy:"passenger" as const,bookingTime:"2026-09-06T10:00:00+05:30",cancellationTime:"2026-09-07T09:00:00+05:30",departureDate:"2026-09-20",paymentMethod:"credit_card" as const,taxes:1000,baseFare:4400,fuel:0,cancellationCharge:0,taxesReturned:false};const p=firstStep(read,planFlight(read,"2026-10-11"));expect(p.rule).toContain("no cancellation charge");expect(p.rule).toContain("Taxes and airport fees are always refunded");expect(firstStep({...read,bookedVia:"MakeMyTrip"},planFlight({...read,bookedVia:"MakeMyTrip"},"2026-10-11")).rule).toContain("do not promise");});
+it("never treats a typed claim as cancellation proof",()=>{const read={...sampleFlight(),pnr:null,bookingId:null,paymentMethod:"unknown" as const,amountPaid:null};const p=firstStep(read,planFlight(read,"2026-10-11"));expect(p.checklist.every(i=>!i.present)).toBe(true);expect(p.checklist[0].help).toContain("Cancelled screen");expect(p.readyForContact).toBe(false);});

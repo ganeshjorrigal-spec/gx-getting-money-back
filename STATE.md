@@ -37,4 +37,10 @@ Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before e
 - Inbox/support mailbox still tickback.cases@gmail.com; no Gmail settings changed. Gmail compose opening remains blocked by saved browser permission. Physical phone testing remains outstanding.
 - Nothing DONE. M2.6 remains ACTIVE; original proof list above is still pending.
 
-Next single action: HQ review of the walkthrough fixes; restyle awaits its separate prompt.
+## D-038 Genie chases
+- Part 1 READY FOR REVIEW: Your first step, case-derived checklist and direct look-in/tax explanation deployed. Three fixture outputs saved in docs/qa/chase-part1-fixtures-2026-10-11.json; live first-step card checked. 123 tests and type check pass.
+- Payment-answer hotfix also deployed and pushed (1ef4991), with 120 tests and live missing-facts proof logged.
+- Part 2 next, test sending only. CHASE_ALLOWLIST is not configured. Legacy inbox connection was created with read-only scope; stored scopes are not recorded, so send permission must be explicitly granted and recorded before any send. No contact with a real company authorised.
+- Parts 3 to 5 remain behind the prompt WAITs. No milestone DONE.
+
+Next single action: build the Part 2 authorisation and fail-closed test mail chase, then stop at WAIT.
