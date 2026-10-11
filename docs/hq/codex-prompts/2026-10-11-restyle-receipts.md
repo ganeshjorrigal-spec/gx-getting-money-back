@@ -19,7 +19,7 @@ Put these in one tokens file (CSS variables) and remove stray colours from compo
 
 ## Step 2: shared components
 
-- **Receipt slip**: the "who owes you" block. Mono labels on the left (WHO HAS IT, DUE BY, WRITE TO NEXT, ABOVE THEM, AMOUNT), plain values on the right, a rotated stamp "OVERDUE · N WORKING DAYS" in the corner when overdue. Rows in this order: who owes you, who to contact next, due date, above them, amount.
+- **Receipt slip**: the "who owes you" block. Mono labels on the left (WHO HAS IT, DUE BY, WRITE TO NEXT, ABOVE THEM, AMOUNT), plain values on the right, a rotated stamp "OVERDUE · N WORKING DAYS" in the corner when overdue. Rows in this order: who owes you, who to contact next, due date, above them, amount. Each fact appears once on the card (today "Next person" repeats "Who to contact next"; remove the repeat). Count overdue in the same unit as the rule: a rule in calendar days ("seven days", credit card) shows "Overdue by N days"; a rule in working days shows working days.
 - **Source line**: under any rule or date, one mono line: rule name and section, or "From <company>'s reply of <date>", or "Refund Genie's reading". Every date and every claim on screen gets one.
 - **Next move card**: the next mail with To, CC, subject and "Open in Gmail". This stays on every case card (D-037).
 - **Status badge**: amber Overdue, grey Waiting, green It's in.
