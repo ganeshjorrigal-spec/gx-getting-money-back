@@ -37,3 +37,5 @@ export function forgetCase(code: string): void {
     if (Array.isArray(previous)) localStorage.setItem(CASE_STORAGE_KEY, JSON.stringify(previous.filter((item) => item.code !== code)));
   } catch { /* The private link still controls server deletion. */ }
 }
+
+export function caseCodeFromSearch(search:string):string { const value=new URLSearchParams(search).get("code");return value&&/^(?:TB|RG)-[A-Z0-9]{6}$/.test(value)?value:""; }

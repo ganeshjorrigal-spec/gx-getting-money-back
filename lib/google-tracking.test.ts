@@ -1,3 +1,4 @@
+import { caseCodeFromSearch } from "./case-link";
 import { describe, expect, it } from "vitest";
 import { buildGmailCompose, buildMailto } from "./outbound";
 import { caseInboxAddress, caseInboxAllowed, codedSubject, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "./google-tracking";
@@ -81,3 +82,5 @@ describe("Google refresh token storage", () => {
 });
 
  it("matches new RG and old TB subjects and inbox addresses",()=>{for(const code of ["RG-A9AEFG","TB-A9AEFG"]){const input={code,to:caseInboxAddress("cases@example.com",code),subject:"Re: refund",from:"support@example.com",inbox:"cases@example.com",sentAt:1000,receivedAt:2000};expect(messageMatchesCase(input)).toBe(true);expect(messageMatchesCase({...input,to:"",subject:`Re: refund [${code}]`})).toBe(true);expect(codedSubject("Refund [TB-ABC123]",code)).toBe(`Refund [${code}]`);}});
+
+it("opens both RG and TB static case links and rejects malformed references",()=>{for(const code of ["RG-ABC123","TB-ABC123"])expect(caseCodeFromSearch(`?code=${code}&demo=1`)).toBe(code);for(const search of ["", "?code=RG-short","?code=XX-ABC123"])expect(caseCodeFromSearch(search)).toBe("");});
