@@ -60,7 +60,7 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
  if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {if(!validFlightDate(value))throw new Error("Use a valid date: YYYY-MM-DD");Object.assign(read,{[args.id]:value});}
  else if(["bookingTime","cancellationTime"].includes(args.id)){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)||!Number.isFinite(Date.parse(value+"+05:30")))throw new Error("Use YYYY-MM-DDTHH:mm");Object.assign(read,{[args.id]:value+"+05:30"});}
  else if(["airline","bookedVia"].includes(args.id)){if(value==="Other")throw new Error("Type the company name below");Object.assign(read,{[args.id]:value});}
- else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
+ else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
  else if(args.id==="supportContacted")read.supportContacted=value==="Yes";
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";

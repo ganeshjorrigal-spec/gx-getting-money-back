@@ -260,3 +260,10 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 
 .policy-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
 .policy-links a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Walkthrough: status meaning only; keep the existing visual system. */
+.neutral-chip { background: var(--surface); color: var(--ink); }
+.route-chip.caution-chip { background: #fff3cd; color: #704c00; }
+.cc-copy { overflow-wrap: anywhere; }
+
+.checkin-card { background: var(--surface); border-color: var(--line); }

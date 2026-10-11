@@ -185,7 +185,7 @@ export const caseCopy = {
   emailHelp: "We couldn't confirm where to send this. Paste the organiser's message that names the channel, or find Contact us in the app's Help section.",
   emailNote: "Gmail opens in a browser tab. Nothing is sent until you press send there.",
   trackingOn: "Reply tracking is on for this case.",
-  trackingOff: "Reply tracking is off until you mark your first message sent.",
+  trackingOff: "Once you send the mail, tap 'I sent it' and we'll watch for their reply.",
   ccLabel: "Add this address in CC",
   liveAlertNeedsCalendar: "A live reply alert needs Google Calendar permission.",
   calendarFileOneTime: "A downloaded calendar file is a one-time reminder. It cannot alert you when a reply arrives.",

@@ -1,3 +1,4 @@
+import { visibleTimeline } from "../lib/timeline";
 import { finishMail, greeting } from "../lib/mail-copy";
 import { flightMailRule } from "../lib/flight";
 import { caseTrial } from "./lib/trial";
@@ -135,7 +136,7 @@ export const timeline = query({
   handler: async (ctx, { code, token }) => {
     const item = await assertAccess(ctx, code, token);
     const rows = await ctx.db.query("caseEvents").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(30);
-    return rows.map(row => row.actor === "agent" ? {...row, summary: currentProductCopy(row.summary)} : row);
+    return visibleTimeline(rows.map(row => row.actor === "agent" ? {...row, summary: currentProductCopy(row.summary)??row.summary} : row),item.flightPlan?.nextPerson?.company??item.platform??"support");
   },
 });
 

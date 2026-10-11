@@ -1,6 +1,7 @@
 "use client";
 import { CcList, AttachmentPicker } from "./mail-tools";
 import { finishMail } from "../../lib/mail-copy";
+import { EmailCaseLink } from "./email-case-link";
 import { PolicyFooter } from "../policy-footer";
 
 import { demoSubject } from "../../lib/demo";
@@ -451,7 +452,8 @@ export default function CaseView({ code }: { code: string }) {
           {caseData.stage === "ERROR" && <article className="case-card" role="alert"><h2>{c.error}</h2><button className="button button-primary" onClick={() => token && retry({ code, token })}>{c.retry}</button></article>}
            {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><h2>Check these details</h2><p>{caseData.platform ?? "Platform unknown"} · {caseData.eventName ?? "Event unknown"} · {money(caseData.amountPaise)}</p><p>Refund date: {caseData.dueDate ? displayDate(caseData.dueDate) : "not given"}. {caseData.facts?.promise?.text ? `They said: ${caseData.facts.promise.text}` : "No refund promise found."}</p><div className="confirm-details" style={caseData.demo ? {display: "none"} : undefined}><label hidden={!!caseData.demo} htmlFor="booking-id">Booking ID <span>(if you have it)</span><input id="booking-id" value={bookingId} onChange={(event) => setBookingId(event.target.value)} maxLength={100} /></label><label hidden={!!caseData.demo} htmlFor="follow-up-contact">Phone or email <span>(optional)</span><input id="follow-up-contact" value={contact} onChange={(event) => setContact(event.target.value)} maxLength={150} autoComplete="email" /></label>{!caseData.demo && <p className="input-hint">So Ganesh can follow up if something looks wrong.</p>}</div><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => confirmCaseFacts(true)}>{caseData.demo ? "Confirm" : "Looks right"}</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={() => confirmCaseFacts(false)}>Save correction</button></div>}</article>}
           {route && !["ERROR", "CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card status-card">
-             <span className={`route-chip ${route === "OVERDUE" || route === "ACTION_NEEDED" ? "caution-chip" : ""}`}>{route === "OVERDUE" && estimated ? "Time to check" : route === "WAIT" && (estimated || !caseData.dueDate) ? "Waiting for a refund" : c.routeLabels[route]}</span>
+             <h2>Who owes you</h2><p>{caseData.platform??"The organiser"}</p><h2>Who to contact next</h2><p>{drafts?.[0]?.to??(drafts?.[0]?.channel==="chat"?"In-app support":drafts?.[0]?.channel==="bank"?"Your bank":"Support through the platform’s Help page")}</p>
+             <span className={`route-chip neutral-chip ${route === "OVERDUE" || route === "ACTION_NEEDED" ? "caution-chip" : ""}`}>{route === "OVERDUE" ? "⚠ Overdue" : route === "WAIT" && (estimated || !caseData.dueDate) ? "Waiting for a refund" : c.routeLabels[route]}</span>
             {caseData.amountPaise != null && <p className="case-amount">{money(caseData.amountPaise)}</p>}
              <h2>{needsConfirm ? "Check what we understood above first." : title}</h2>
              {caseData.dueDate && !needsConfirm && <div className="due-block"><span>{route === "ACTION_NEEDED" && caseData.facts?.ticketFormat === "physical" ? "Must reach them by" : estimated ? "Estimated check date" : "Due date"}</span><strong>{displayDate(caseData.dueDate)}</strong></div>}
@@ -484,7 +486,7 @@ export default function CaseView({ code }: { code: string }) {
             <div className="save-actions">
                {!isIOS && <button className="button button-secondary" onClick={() => addCalendar("google")}>{c.calendar}{!isAndroid ? " (Google)" : ""}</button>}
                {!isAndroid && <button className="button button-secondary" onClick={() => addCalendar("ics")}>{c.calendar}{!isIOS ? " (.ics)" : ""}</button>}
-              <button className="button button-secondary" onClick={() => copy(window.location.href)}>{c.copyLink}</button>
+              <EmailCaseLink code={code} contact={caseData.contact}/><button className="button button-secondary" onClick={() => copy(window.location.href)}>{c.copyLink}</button>
               <button className="button button-secondary" onClick={share}>{c.share}</button>
             </div>
             <p className="example-source">{c.linkNote}</p>

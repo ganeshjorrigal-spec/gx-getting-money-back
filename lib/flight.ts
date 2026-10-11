@@ -5,7 +5,7 @@ import { flightContact, flightRule, type FlightContact } from "./flight-kb";
 
 const nullable = z.string().nullable();
 export const flightReadSchema = z.object({
-  scopeIssue:z.enum(["none","failed_no_ticket","compensation_only"]).optional(), airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","unknown"]),
+  scopeIssue:z.enum(["none","failed_no_ticket","compensation_only"]).optional(), airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"]),
   cancellationDate: nullable, cancelledBy: z.enum(["airline","passenger","unknown"]), domestic: z.boolean().nullable(),
   flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), supportContacted:z.boolean().optional(), cancellationTime: nullable.optional(),
   bookingTime: nullable, departureDate: nullable, nonRefundable: z.boolean(), medicalEmergency: z.boolean(),
@@ -42,7 +42,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   if(!validFlightDate(read.cancellationDate))ask("cancellationDate","When was it cancelled? (YYYY-MM-DD)");
   if(read.domestic===null)ask("domestic","Was this a domestic flight?",["Yes","No"]);
   if(read.cancelledBy==="unknown")ask("cancelledBy","Who cancelled?",["airline","passenger"]);
-  if(direct&&read.paymentMethod==="unknown"&&!read.paymentConfirmed)ask("paymentMethod","How did you pay?",["credit_card","debit_card","upi","netbanking","cash","unknown"]);
+  if(direct&&read.paymentMethod==="unknown"&&!read.paymentConfirmed)ask("paymentMethod","How did you pay?",["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"]);
   if(read.amountPaid===null)ask("amountPaid","How much did you pay? (rupees)");
   if(plan.questions.length){plan.questions=plan.questions.slice(0,3);return plan;}
   if(read.medicalEmergency){plan.note="The medical-emergency rule still needs a full source check. Ask the airline about its terms; Refund Genie does not insist on a cash refund for this branch.";plan.nextStep="none";plan.route="OUT_OF_SCOPE";return plan;}
