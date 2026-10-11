@@ -65,7 +65,7 @@ export default function Home() {
 
       <section className="section-wrap section-block">
         <p className="section-kicker">03 / WHY IT HELPS</p>
-        <h2>{c.whyTitle}</h2>
+        <h2>{c.whyTitle}</h2><p>Genie calls and mails them for you. You only step in if they need you.</p><p>Calls are simulated for now. Mail sending needs your written permission and is limited to approved test addresses.</p>
         <div className="three-grid">
           {c.why.map(([title, body]) => <article className="value-card" key={title}><h3>{title}</h3><p>{body}</p></article>)}
         </div>

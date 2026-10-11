@@ -81,8 +81,8 @@ export const flightLandingCopy = {
   ...landingCopy,
   headerLink:"Try a flight demo", eyebrow:"For stuck domestic flight refunds in India",
   headline:"Airline or travel site: who owes your refund?",
-  sub:"Paste the cancellation mail. Refund Genie shows who owes you, the refund date with its source, and the next person to ask. You send the mail. When they reply, your next step updates.",
-  primary:"Check my flight refund",secondary:"Try a flight demo",trust:"Free first check · No sign-up · You send every mail",
+  sub:"Paste the cancellation mail. Refund Genie shows who owes you, the refund date with its source, and the next person to ask. Choose to send the mail yourself or let Genie follow up with permission. When they reply, your next step updates.",
+  primary:"Check my flight refund",secondary:"Try a flight demo",trust:"Free first check · No sign-up · You choose how Genie helps",
   example:{platform:"IndiGo · MakeMyTrip",label:"Made-up flight case",event:"Delhi → Mumbai · booked through MakeMyTrip",amount:"₹5,400",route:"Overdue",due:"Due about 25 Sep 2026",source:"Cancelled 7 Sep. DGCA: 14 working days; counting from cancellation is Refund Genie’s reading.",next:"Who owes you: IndiGo. Ask MakeMyTrip’s grievance officer, with IndiGo’s Nodal Officer in CC."},
   familiarTitle:"“We’re waiting for the airline.”",
   familiar:["The airline cancelled. The travel site says the refund is pending.","Then “refund processed”. Your bank still shows nothing.","Who has the money, and who do you ask next?"],
@@ -90,8 +90,8 @@ export const flightLandingCopy = {
   how:[
     ["Paste the cancellation mail.","Or add a screenshot. Confirm airline, booked via, cancellation date and PNR."],
     ["See who owes you.","The owner, date and rule line. Checked officer contacts, with their source page."],
-    ["Send your next mail.","Open a draft in your own Gmail. Keep the case inbox in CC so a reply can update your case."],
-    ["Come back on your date.","If it hasn’t landed, the next person and message are ready. You send and file every step."],
+    ["Choose who sends.","Open your own Gmail, or give written permission for the approved test-only mail chase. Calls are simulated for now."],
+    ["Come back on your date.","If it hasn’t landed, the next person and message are ready. Genie keeps the mail chase moving with permission; you file complaints yourself."],
   ],
   whyTitle:"A refund chase that keeps its place.",
   why:[
@@ -103,7 +103,7 @@ export const flightLandingCopy = {
   handleLine:"Domestic refunds with IndiGo, Air India, SpiceJet and Akasa Air; MakeMyTrip, Goibibo, Cleartrip and EaseMyTrip. For other companies you add the address from their own page. International flights and compensation claims are outside this version.",
   paidTitle:"Then Rs 49 a year",paidBody:"After three refunds land, one year covers every flight and event refund chase.",under300:"Free until 3 refunds land. Then Rs 49 a year.",
   questions:[
-    ["Does Refund Genie send or log in for me?","No. You send every real mail, make every call and file every complaint. Refund Genie never logs in to an airline, travel site or bank for you."],
+    ["Does Refund Genie send or log in for me?","Written permission lets Genie send and follow up to approved test addresses. Calls are simulated for now and labelled. You can send mails yourself instead and file complaints yourself. Refund Genie never logs in to an airline, travel site or bank for you."],
     ["Where do the dates come from?","DGCA refund rules, the company’s own message or policy, or a labelled Refund Genie expectation. Working days mean Monday to Friday; estimates ignore holidays."],
     ["What if the airline says it paid the travel site?","The airline stays answerable under the rule. The next mail asks the travel site for the bank reference and date it sent the refund to you, with the airline copied."],
     ["How does the demo work?","DemoTrips and Demo Air play two made-up roles. Send three demo mails from your own Gmail, watch replies update the case, then skip to the bank check date. No real booking or money."],

@@ -4,6 +4,8 @@ import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
 import { callGate, callMode, callLabel, safeTranscript, needsPassenger, phone, confirmingCallMail } from "../lib/calls";
 import { todayIST } from "../lib/dates";
+import { chaseRows,chaseNext } from "../lib/chase-view";
+import {companyDayUsed} from "../lib/chase";
 import { flightCare } from "../lib/flight-care";
 const access={code:v.string(),token:v.string()};
 export const allow=mutation({args:{...access,accepted:v.boolean()},returns:v.null(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(!item.chase?.active||!args.accepted)throw new Error("Give separate calling permission first");await ctx.db.patch(item._id,{chase:{...item.chase,callsAuthorisedAt:Date.now()}});await ctx.db.insert("caseEvents",{caseId:item._id,type:"call_authorised",summary:"You gave separate permission for calling and passenger patch-in",actor:"user",createdAt:Date.now()});return null;}});
@@ -46,3 +48,5 @@ export const prepareConfirmation=internalMutation({args:{id:v.id("calls")},retur
 export const list=query({args:access,returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);return ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(30);}});
 // Admin CLI only; never callable from the public browser.
 export const attachRecording=internalMutation({args:{id:v.id("calls"),url:v.string(),transcript:v.string()},returns:v.null(),handler:async(ctx,args)=>{const call=await ctx.db.get(args.id);const item=call?await ctx.db.get(call.caseId):null;if(!call||!item?.demo||!/^https:\/\//.test(args.url)||needsPassenger(args.transcript))throw new Error("Use a demo recording with no private verification details");await ctx.db.patch(call._id,{recordingUrl:args.url,roleplayTranscript:safeTranscript(args.transcript),recordingKind:"roleplay"});return null;}});
+
+export const chaseView=query({args:access,returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);const events=await ctx.db.query("caseEvents").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(60);const calls=await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(30);const draft=await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").first();const company=draft?.company??item.flightPlan?.nextPerson?.company??item.owner??"support";const day=item.demo?.now??todayIST();const attempts=await ctx.db.query("chaseOutbox").withIndex("by_case_day",q=>q.eq("caseId",item._id).eq("day",day)).take(10);return {next:chaseNext(item,draft,calls[0]??null,company,companyDayUsed([company],attempts)),events:chaseRows(events,company),calls};}});
