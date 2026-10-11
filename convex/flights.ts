@@ -1,3 +1,4 @@
+import { answerAvailable, answerDate, answerAmount } from "../lib/flight-answers";
 import { finishMail } from "../lib/mail-copy";
 import { internalMutation, mutation, query, type MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
@@ -53,18 +54,20 @@ export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.stri
  await ctx.db.patch(item._id,{factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string(),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
- const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight"||!item.questions?.some((q:{id:string})=>q.id===args.id))throw new Error("Question no longer available");
+ const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
+ // Live queries refresh stale questions. A delayed tap must not overwrite newer facts.
+ if(!answerAvailable(item,args.id))return null;
  const value=redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
  if(args.id==="confirmReply"){if(value!=="Looks right")throw new Error("Paste a correction to their reply below");read.replyConfirmed=true;}
  if(args.id==="transferDestination"){if(value==="Not clear")throw new Error("Paste their exact reply or a correction below");if(value!=="passenger"&&value!==read.bookedVia)throw new Error("Choose the transfer destination");read.reply.pointsAt=value;read.reply.paymentDestination=value==="passenger"?"passenger":"travel_site";read.replyConfirmed=true;}
- if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {if(!validFlightDate(value))throw new Error("Use a valid date: YYYY-MM-DD");Object.assign(read,{[args.id]:value});}
+ if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {Object.assign(read,{[args.id]:answerDate(value)});}
  else if(["bookingTime","cancellationTime"].includes(args.id)){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)||!Number.isFinite(Date.parse(value+"+05:30")))throw new Error("Use YYYY-MM-DDTHH:mm");Object.assign(read,{[args.id]:value+"+05:30"});}
  else if(["airline","bookedVia"].includes(args.id)){if(value==="Other")throw new Error("Type the company name below");Object.assign(read,{[args.id]:value});}
  else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
  else if(args.id==="supportContacted")read.supportContacted=value==="Yes";
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";
- else if(["taxes","amountPaid"].includes(args.id)){const amount=Number(value);if(!Number.isFinite(amount)||amount<0)throw new Error("Enter an amount");Object.assign(read,{[args.id]:amount});}
+ else if(["taxes","amountPaid"].includes(args.id)){Object.assign(read,{[args.id]:answerAmount(value)});}
  await ctx.db.insert("caseEvents",{caseId:item._id,type:"answered",summary:`You answered ${args.id}`,actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string(),read:v.any(),plan:v.any(),model:v.string(),latencyMs:v.number(),inputTokens:v.number(),outputTokens:v.number(),totalTokens:v.number()},returns:v.null(),handler:async(ctx,args)=>{

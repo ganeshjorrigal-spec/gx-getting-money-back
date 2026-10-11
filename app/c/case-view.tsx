@@ -1,4 +1,5 @@
 "use client";
+import { userError } from "../../lib/user-error";
 import { CcList, AttachmentPicker } from "./mail-tools";
 import { finishMail } from "../../lib/mail-copy";
 import { EmailCaseLink } from "./email-case-link";
@@ -405,7 +406,7 @@ export default function CaseView({ code }: { code: string }) {
   async function addDemoBooking() {
     if (!token || !bookingId.trim()) return;
     setBusy(true);
-    try { await demoBooking({ code, token, bookingId: bookingId.trim() }); setDemoDraftToOpen("DEMO_booking"); } catch (error) { setNotice(error instanceof Error ? error.message : c.error); } finally { setBusy(false); }
+    try { await demoBooking({ code, token, bookingId: bookingId.trim() }); setDemoDraftToOpen("DEMO_booking"); } catch (error) { setNotice(userError(error)); } finally { setBusy(false); }
   }
 
   if (caseData?.refundType === "flight" && token) return <FlightCaseView code={code} token={token} />;
@@ -430,7 +431,7 @@ export default function CaseView({ code }: { code: string }) {
             {caseData.platform === "BookMyShow" && <p className="input-hint">This demo uses email because we cannot simulate BookMyShow’s in-app chat.</p>}
             <p className="input-hint">No real booking or money. Demo clock: {displayDate(caseData.demo.now)}. Deleted after seven days.</p>
             {caseData.demo.phase.startsWith("waiting") ? <div role="status" aria-live="polite"><h2><span className="spinner" /> Waiting for {caseData.platform}’s reply…</h2><ol className="demo-steps"><li>✓ Your email marked sent</li><li>{caseData.demo.phase === "waiting_organiser" ? "◌" : "✓"} Demo desk reading your email</li><li>{caseData.demo.phase === "waiting_inbox" ? "◌" : "○"} Reply travelling to your case inbox</li><li>○ Reading reply and preparing your next step</li></ol></div>
-            : caseData.demo.phase === "timed_out" ? <><h2>The demo desk hasn’t found your email yet.</h2><p>Send from your own Gmail account, with the case inbox in CC. The demo desk cannot reply to itself or the case inbox.</p><button className="button button-primary" disabled={busy} onClick={async () => { if (!token) return; setBusy(true); try { await demoRetry({ code, token }); } catch (error) { setNotice(error instanceof Error ? error.message : "Please try again"); } finally { setBusy(false); } }}>I’ve sent it — check again</button></>
+            : caseData.demo.phase === "timed_out" ? <><h2>The demo desk hasn’t found your email yet.</h2><p>Send from your own Gmail account, with the case inbox in CC. The demo desk cannot reply to itself or the case inbox.</p><button className="button button-primary" disabled={busy} onClick={async () => { if (!token) return; setBusy(true); try { await demoRetry({ code, token }); } catch (error) { setNotice(userError(error)); } finally { setBusy(false); } }}>I’ve sent it — check again</button></>
             : caseData.stage !== "TRIAGING" && caseData.factsConfirmedAt ? <>
               {caseData.demo.round === 0 && <><h2>Your first message is ready.</h2><button className="button button-primary" onClick={() => setSendOpen(true)}>Prepare demo email</button></>}
               {caseData.demo.round === 1 && caseData.route === "WAIT" && <><h2>They asked you to wait. What if they go quiet?</h2><button className="button button-primary" disabled={busy} onClick={skipDemo}>Skip ahead 10 days</button><p className="input-hint">Move the demo clock 10 days past their promised date.</p></>}

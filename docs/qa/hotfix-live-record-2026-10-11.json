@@ -1,0 +1,14 @@
+{
+  "code": "RG-PF0XKF",
+  "stage": "READY",
+  "route": "OVERDUE",
+  "paymentMethod": "credit_card",
+  "cancellationDate": "2026-09-07",
+  "amountPaid": 6240,
+  "dueDate": "2026-09-14",
+  "questions": [],
+  "staleAnswerResult": null,
+  "staleAnswerPreservedFacts": true,
+  "liveWidth": 375,
+  "rawDiagnosticsRendered": false
+}

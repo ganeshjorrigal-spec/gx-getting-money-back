@@ -1,4 +1,5 @@
 "use client";
+import { userError } from "../../lib/user-error";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -87,7 +88,7 @@ export default function StartPage() {
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/${result.code}#k=${token}`);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Something went wrong. Your message is still here. Try again.");
+      setError(userError(caught));
       setWorking(false);
     }
   }
@@ -100,7 +101,7 @@ export default function StartPage() {
       const result = await createDemo({ platform, kind, tokenHash: await tokenHash(token), deviceId: getDeviceId() });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
-    } catch (error) { setError(error instanceof Error ? error.message : "Could not start the demo yet."); setWorking(false); }
+    } catch (error) { setError(userError(error)); setWorking(false); }
   }
 
   return <main className="case-shell">
