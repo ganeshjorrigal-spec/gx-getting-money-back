@@ -99,7 +99,8 @@ export const finishOauth = internalAction({
         : gmailTestAllowed(email, process.env.GMAIL_TEST_ACCOUNTS);
       if (!allowed) throw new Error("This account is not on the test list");
     }
-    const connectionId = await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
+    const connectionId = await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), chaseSendGranted:state.kind==="inbox"&&granted.has("https://www.googleapis.com/auth/gmail.send"), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
+    if (state.kind === "inbox" && granted.has("https://www.googleapis.com/auth/gmail.send")) await ctx.runMutation(internal.chase.resume,{});
     if (state.kind === "responses") {
       const sheetUrl = await ctx.runAction(internal.responsesActions.finishSetup, { connectionId });
       return { kind: state.kind, code: null, sheetUrl };
@@ -323,3 +324,5 @@ export const beginDemo = internalAction({
     return { url: url.toString() };
   },
 });
+
+export const beginChaseInbox = internalAction({args:{},returns:v.string(),handler:async(ctx)=>{const state=newState();await ctx.runMutation(internal.googleConnect.createState,{stateHash:await sha(state),kind:"inbox"});return authUrl(state,[GMAIL_SCOPE,"https://www.googleapis.com/auth/gmail.send"]);}});

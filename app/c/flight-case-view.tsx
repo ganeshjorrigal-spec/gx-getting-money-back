@@ -1,4 +1,5 @@
 "use client";
+import { ChaseAuthority } from "./chase-authority";
 import { firstStep } from "../../lib/first-step";
 import { questionValue, clearQuestion, questionInput, answerAmount } from "../../lib/flight-answers";
 import { userError } from "../../lib/user-error";
@@ -127,6 +128,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {plan.above&&<p>Above them: {plan.above.value} · {plan.above.role}, {plan.above.company}</p>}{plan.note&&<p>{plan.note}</p>}</section>}
 
+ {data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
  <TrialCard data={data} code={code} token={token}/>
 
  {data.factsConfirmedAt&&draft&&draft.body===null&&<section className="case-card"><h2>Your next message is ready</h2><p>The annual plan unlocks follow-ups. Your route and date remain visible.</p></section>}
@@ -139,9 +141,11 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).copyFirst)void navigator.clipboard.writeText(mailBody).catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
 
+ {draft.channel==="email"&&facts?.pnr&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+
  <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>
 
- <p>You send it yourself. Refund Genie never sends your mail.</p>{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
+ {draft.channel==="email"&&<p>Use Gmail to send it yourself, or give Genie written permission above.</p>}{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
 
  {data.demo?.kind === "flight" && data.demo.round === 3 && data.demo.phase === "ready" && data.dueDate && data.demo.now < data.dueDate && <button className="button button-primary" disabled={busy} onClick={()=>run(()=>skipDemo(args))}>Skip to the bank check date</button>}
 

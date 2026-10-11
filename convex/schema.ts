@@ -6,6 +6,7 @@ const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("
 
 export default defineSchema({
   cases: defineTable({
+    chase: v.optional(v.object({active:v.boolean(),name:v.string(),mobile:v.string(),email:v.string(),authorisedAt:v.number(),stoppedAt:v.optional(v.number()),letterId:v.id("_storage"),priorLetterIds:v.optional(v.array(v.id("_storage"))),encryptedCaseToken:v.string()})),
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),
     firstFlightSentAt: v.optional(v.number()), deviceHash: v.optional(v.string()), handHelped: v.optional(v.boolean()), refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),
     routeConfidence: v.optional(v.number()), facts: v.optional(v.any()), platform: v.optional(v.string()),
@@ -22,8 +23,10 @@ export default defineSchema({
     trackingDismissed: v.optional(v.boolean()), lastTrackedReplyAt: v.optional(v.number()),
     name: v.optional(v.string()), contact: v.optional(v.string()),
     demo: v.optional(v.object({ kind: v.optional(v.union(v.literal("flight"), v.literal("event"))), round: v.number(), now: v.string(), expiresAt: v.number(), phase: v.union(v.literal("ready"), v.literal("waiting_organiser"), v.literal("waiting_inbox"), v.literal("timed_out")), session: v.optional(v.string()), deadline: v.optional(v.number()), bankBy: v.optional(v.string()) })),
-  }).index("by_demo_expiry", ["demo.expiresAt"]).index("by_device", ["deviceHash"]).index("by_device_stage", ["deviceHash", "stage"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
+  }).index("by_chase",["chase.active"]).index("by_demo_expiry", ["demo.expiresAt"]).index("by_device", ["deviceHash"]).index("by_device_stage", ["deviceHash", "stage"]).index("by_code", ["code"]).index("by_stage", ["stage"]).index("by_stage_updated", ["stage", "updatedAt"]).index("by_purge_after", ["purgeAfter"]),
   demoReplies: defineTable({ caseId: v.id("cases"), messageId: v.string(), round: v.number(), status: v.union(v.literal("reserved"), v.literal("sent")), createdAt: v.number(), sentAt: v.optional(v.number()), receivedAt: v.optional(v.number()), sameThread: v.optional(v.boolean()) }).index("by_case", ["caseId"]).index("by_case_message", ["caseId", "messageId"]),
+  chaseNotices: defineTable({caseId:v.id("cases"),key:v.string(),state:v.union(v.literal("reserved"),v.literal("sent"),v.literal("uncertain")),createdAt:v.number()}).index("by_case",["caseId"]).index("by_key",["caseId","key"]),
+  chaseOutbox: defineTable({caseId:v.id("cases"),draftId:v.id("drafts"),company:v.string(),companies:v.array(v.string()),day:v.string(),state:v.union(v.literal("reserved"),v.literal("sent"),v.literal("uncertain")),messageId:v.string(),gmailId:v.optional(v.string()),threadId:v.optional(v.string()),createdAt:v.number()}).index("by_case",["caseId"]).index("by_draft",["draftId"]).index("by_company_day",["caseId","company","day"]).index("by_case_day",["caseId","day"]).index("by_case_state",["caseId","state"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), createdAt: v.number(),
@@ -60,7 +63,7 @@ export default defineSchema({
   }).index("by_hash", ["stateHash"]).index("by_case", ["caseId"]),
   googleConnections: defineTable({
     caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),
-    email: v.optional(v.string()), encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), connectedAt: v.number(),
+    chaseSendGranted:v.optional(v.boolean()), email: v.optional(v.string()), encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), connectedAt: v.number(),
   }).index("by_case", ["caseId"]).index("by_kind", ["kind"]),
   googleCalendarEvents: defineTable({
     caseId: v.id("cases"), connectionId: v.id("googleConnections"), eventId: v.string(), kind: v.union(v.literal("reply"), v.literal("checkin")),

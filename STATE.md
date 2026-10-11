@@ -10,7 +10,7 @@ Last updated: 11 October 2026.
 - Live: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
 - Refund Genie name, four linked policy pages and configured public support email deployed. Existing responses Sheet renamed in place.
 - Fixed paid gemini-3.5-flash-lite; token counts only. Same-day F1-F16 16/16 and FL01-FL14 14/14 paid-model reports remain in docs/qa. Not rerun for this pricing change.
-- Real inbox matching, ten-minute job, calendar alerts, Google scopes and demo ladder unchanged. Frozen Vercel config/deployment untouched.
+- Real inbox matching, ten-minute job, calendar alerts and demo ladder unchanged. D-038 adds explicitly granted sending for the founder case inbox; passenger Gmail/calendar permissions are unchanged. Frozen Vercel config/deployment untouched.
 
 ## D-035 verified checkout
 - Convex order creation, HMAC signature verification and confirmed annual pass deployed. Previous Rs 49 test payment on TB-1FQG0T is confirmed in Convex; coverage through 10 Oct 2027 survives reload. Ganesh confirmed checking its test-dashboard transaction. Safe proof and screenshots in docs/qa/razorpay-*.
@@ -40,7 +40,8 @@ Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before e
 ## D-038 Genie chases
 - Part 1 READY FOR REVIEW: Your first step, case-derived checklist and direct look-in/tax explanation deployed. Three fixture outputs saved in docs/qa/chase-part1-fixtures-2026-10-11.json; live first-step card checked. 123 tests and type check pass.
 - Payment-answer hotfix also deployed and pushed (1ef4991), with 120 tests and live missing-facts proof logged.
-- Part 2 next, test sending only. CHASE_ALLOWLIST is not configured. Legacy inbox connection was created with read-only scope; stored scopes are not recorded, so send permission must be explicitly granted and recorded before any send. No contact with a real company authorised.
+- Part 2 READY FOR REVIEW: written authority/PDF, allow-list-only mail chase, daily company caps, passenger updates and Stop deployed. Ganesh configured the allow-list and granted case-inbox read/send permission. One requested To-only permission check passed, then RG-8VX0ZA sent three mails and read three actual demo replies over ten skipped days in one thread. Money holder/next contact switched airline, travel site, bank; formal airline responsibility remains unchanged. Stop blocked another dispatch. Safe proof in docs/qa/chase-part2-mail-proof-2026-10-11.json.
+- 139 tests across 15 files, root type check and production build pass. Final deployment 619d2809-23fc-4e0c-bdac-c2d5604ac32a, 91 files. Live case checked at 375px. No real-company mail or call. The saved allow-list was never widened; Gmail plus roles match its exact base mailbox only.
 - Parts 3 to 5 remain behind the prompt WAITs. No milestone DONE.
 
-Next single action: build the Part 2 authorisation and fail-closed test mail chase, then stop at WAIT.
+Next single action: wait for Ganesh at the Part 2 WAIT before Part 3 demo-call setup. Real-company sending remains off.

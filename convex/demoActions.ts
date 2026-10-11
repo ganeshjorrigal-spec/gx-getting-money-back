@@ -31,7 +31,8 @@ export const checkOrganiser = internalAction({
         const message = await getMessage(token, candidate.id);
         const from = fromAddress(header(message, "from"));
         if (Number(message.internalDate ?? 0) < loaded.item.createdAt || ![...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))].some(address => sameDemoMailbox(address, demoAddress))) continue;
-        if (!demoMayReply({ isDemo: !!loaded.item.demo, code: loaded.item.code, subject: header(message, "subject"), from, demoAddress, inboxAddress, autoSubmitted: header(message, "auto-submitted"), precedence: header(message, "precedence"), suppress: header(message, "x-auto-response-suppress"), replies: loaded.replies.length, expired: loaded.item.demo.expiresAt <= Date.now() })) continue;
+        const chaseMail = loaded.item.demo.kind==="flight" && loaded.item.chase?.active && sameDemoMailbox(from,inboxAddress) && await ctx.runQuery(internal.chase.demoMessage,{caseId:input.caseId,messageId:header(message,"message-id")});
+        if (!demoMayReply({ isDemo: !!loaded.item.demo, code: loaded.item.code, subject: header(message, "subject"), from:chaseMail?loaded.item.chase!.email:from, demoAddress, inboxAddress, autoSubmitted: header(message, "auto-submitted"), precedence: header(message, "precedence"), suppress: header(message, "x-auto-response-suppress"), replies: loaded.replies.length, expired: loaded.item.demo.expiresAt <= Date.now() })) continue;
         const messageId = header(message, "message-id");
         if (!messageId || !/^<[^\r\n<>]+>$/.test(messageId.trim())) continue;
         const reservation: Id<"demoReplies"> | null = await ctx.runMutation(internal.demo.reserve, { ...input, messageId: message.id });
@@ -93,16 +94,17 @@ export const checkCaseInbox = internalAction({
 
 export const diagnose = internalAction({
   args: { code: v.string() }, returns: v.any(),
-  handler: async (ctx, { code }) => {
+  handler: async (ctx, { code }): Promise<unknown> => {
     const connection = await ctx.runQuery(internal.googleConnect.connectionByKind, { kind: "demo" });
     if (!connection) return { connected: false };
     try {
       const token = await accessToken(connection.encryptedRefreshToken);
       const list = await listMessages(token, `in:inbox subject:"${code}"`);
+      const chase=await ctx.runQuery(internal.chase.inspectByCode,{code});
       const flags = [];
       for (const candidate of list ?? []) {
         const m = await getMessage(token, candidate.id);
-        flags.push({ fromCaseInbox: fromAddress(header(m, "from")) === process.env.TICKBACK_INBOX_ADDRESS?.toLowerCase(), fromDemoDesk: fromAddress(header(m, "from")) === process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase(), autoReply: !!header(m, "auto-submitted") && header(m, "auto-submitted").toLowerCase() !== "no", receivedAt: Number(m.internalDate), toDemo: emailAddresses(header(m, "to")).includes(process.env.TICKBACK_DEMO_ADDRESS!.toLowerCase()), allowed: demoMayReply({ isDemo: true, code, subject: header(m, "subject"), from: fromAddress(header(m, "from")), demoAddress: process.env.TICKBACK_DEMO_ADDRESS!, inboxAddress: process.env.TICKBACK_INBOX_ADDRESS!, replies: 0, autoSubmitted: header(m, "auto-submitted"), precedence: header(m, "precedence"), suppress: header(m, "x-auto-response-suppress") }), hasMessageId: /^<[^\r\n<>]+>$/.test(header(m, "message-id").trim()) });
+        flags.push({caseMailboxMatches:sameDemoMailbox(fromAddress(header(m,"from")),process.env.TICKBACK_INBOX_ADDRESS!), demoRecipientMatches:[...emailAddresses(header(m,"to")),...emailAddresses(header(m,"cc"))].some(a=>sameDemoMailbox(a,process.env.TICKBACK_DEMO_ADDRESS!)), registeredChaseMessage:!!chase?.attempts.some((a:{messageId:string;state:string})=>a.messageId===header(m,"message-id")&&a.state==="sent"), fromCaseInbox: fromAddress(header(m, "from")) === process.env.TICKBACK_INBOX_ADDRESS?.toLowerCase(), fromDemoDesk: fromAddress(header(m, "from")) === process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase(), autoReply: !!header(m, "auto-submitted") && header(m, "auto-submitted").toLowerCase() !== "no", receivedAt: Number(m.internalDate), toDemo: emailAddresses(header(m, "to")).includes(process.env.TICKBACK_DEMO_ADDRESS!.toLowerCase()), allowed: demoMayReply({ isDemo: true, code, subject: header(m, "subject"), from: fromAddress(header(m, "from")), demoAddress: process.env.TICKBACK_DEMO_ADDRESS!, inboxAddress: process.env.TICKBACK_INBOX_ADDRESS!, replies: 0, autoSubmitted: header(m, "auto-submitted"), precedence: header(m, "precedence"), suppress: header(m, "x-auto-response-suppress") }), hasMessageId: /^<[^\r\n<>]+>$/.test(header(m, "message-id").trim()) });
       }
       return { count: list?.length ?? 0, flags };
     } catch (error) { return { error: error instanceof Error && /^(Google API request failed \(\d+\)|Google connection needs to be renewed)$/.test(error.message) ? error.message : "Demo mailbox check failed" }; }

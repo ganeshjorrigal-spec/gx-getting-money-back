@@ -91,7 +91,7 @@ export const get = query({
     const flightLocked=trial.locked;
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      cancellationProofAdded: recentInputs.some(input=>input.kind==="initial"&&input.storageIds.length>0), code: item.code, trialLanded:trial.landed, trialLimit:trial.limit, trialLocked:trial.locked, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, checkoutEnabled:!!process.env.RAZORPAY_KEY_ID, razorpayLink:!process.env.RAZORPAY_KEY_ID?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
+      chase: item.chase?{active:item.chase.active,authorisedAt:item.chase.authorisedAt,letterUrl:await ctx.storage.getUrl(item.chase.letterId)}:null, cancellationProofAdded: recentInputs.some(input=>input.kind==="initial"&&input.storageIds.length>0), code: item.code, trialLanded:trial.landed, trialLimit:trial.limit, trialLocked:trial.locked, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, checkoutEnabled:!!process.env.RAZORPAY_KEY_ID, razorpayLink:!process.env.RAZORPAY_KEY_ID?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
       dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: currentProductCopy(item.dueSourceText) ?? null,
       nextStep: item.nextStep ?? null, questions: item.questions ?? [],
@@ -179,11 +179,7 @@ export const addReply = mutation({
   },
 });
 
-export const markSent = mutation({
-  args: { ...accessArgs, draftId: v.id("drafts") },
-  returns: v.null(),
-  handler: async (ctx, { code, token, draftId }) => {
-    const item = await assertAccess(ctx, code, token);
+export async function recordDraftSent(ctx:MutationCtx,item:import("./_generated/dataModel").Doc<"cases">,draftId:Id<"drafts">,genieCompany?:string) {
     const draft = await ctx.db.get(draftId);
     if (!draft || draft.caseId !== item._id) throw new Error("Draft not found");
     if (draft.status === "sent") return null;
@@ -207,7 +203,7 @@ export const markSent = mutation({
     await clearCheckins(ctx, item._id);
     await ctx.db.patch(draftId, { status: "sent" });
     await ctx.db.patch(item._id, { stage: "WAITING", ...(item.refundType==="flight"?{firstFlightSentAt:item.firstFlightSentAt??now}:{}), updatedAt: now });
-    await ctx.db.insert("caseEvents", { caseId: item._id, type: "marked_sent", summary: `You sent the ${draft.step} message`, actor: "user", createdAt: now });
+    await ctx.db.insert("caseEvents", { caseId: item._id, type: genieCompany?"genie_mail_sent":"marked_sent", summary: genieCompany?`Genie mailed ${genieCompany}`:`You sent the ${draft.step} message`, actor: genieCompany?"agent":"user", createdAt: now });
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
     if(item.refundType === "flight") {
       const checkDate=flightSendCheckDate(draft.channel,today,item.flightPlan?.checkDate);
@@ -227,6 +223,14 @@ export const markSent = mutation({
     await ctx.scheduler.runAfter(0, internal.googleActions.syncCheckins, { caseId: item._id });
     await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId: item._id });
     return null;
+}
+
+export const markSent = mutation({
+  args: { ...accessArgs, draftId: v.id("drafts") },
+  returns: v.null(),
+  handler: async (ctx, { code, token, draftId }) => {
+    const item = await assertAccess(ctx, code, token);
+    return recordDraftSent(ctx,item,draftId);
   },
 });
 

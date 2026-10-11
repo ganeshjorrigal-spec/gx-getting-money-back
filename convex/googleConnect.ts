@@ -90,7 +90,7 @@ export const takeState = internalMutation({
 });
 
 export const store = internalMutation({
-  args: { caseId: v.optional(v.id("cases")), kind, encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), email: v.optional(v.string()) }, returns: v.id("googleConnections"),
+  args: { caseId: v.optional(v.id("cases")), kind, encryptedRefreshToken: v.string(), encryptedCaseToken: v.optional(v.string()), email: v.optional(v.string()), chaseSendGranted:v.optional(v.boolean()) }, returns: v.id("googleConnections"),
   handler: async (ctx, args) => {
     const item = args.caseId ? await ctx.db.get(args.caseId) : null;
     if (args.caseId && (!item || item.stage.startsWith("CLOSED"))) throw new Error("Case is closed");
@@ -98,7 +98,7 @@ export const store = internalMutation({
       ? await ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", args.kind)).collect()
       : await ctx.db.query("googleConnections").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).collect();
     for (const row of matches) if (row.kind === args.kind) await ctx.db.delete(row._id);
-    const connectionId = await ctx.db.insert("googleConnections", { caseId: args.caseId, kind: args.kind, encryptedRefreshToken: args.encryptedRefreshToken, encryptedCaseToken: args.encryptedCaseToken, email: args.email, connectedAt: Date.now() });
+    const connectionId = await ctx.db.insert("googleConnections", { caseId: args.caseId, kind: args.kind, encryptedRefreshToken: args.encryptedRefreshToken, encryptedCaseToken: args.encryptedCaseToken, email: args.email, chaseSendGranted:args.chaseSendGranted, connectedAt: Date.now() });
     if (args.caseId) await ctx.db.patch(args.caseId, { trackingDismissed: false });
     return connectionId;
   },

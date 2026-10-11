@@ -1,0 +1,13 @@
+{
+  "caseCode": "RG-7YUYDN",
+  "syntheticDemoIdentity": true,
+  "authorisedAt": 1791721993059,
+  "authorityPdfSaved": true,
+  "authorityPdfBytes": 5893,
+  "authorityPdfSha256": "060b9a8c377c6f62bbc3a11ec0e20ba32823a2c8c0c5761eccdfee3a8fecd0b2",
+  "statusBeforeStop": "Genie is watching the next ready mail and its date.",
+  "stopActive": false,
+  "statusAfterStop": "Genie is stopped.",
+  "threeMailsAndReplies": "Proved separately on RG-8VX0ZA",
+  "personalFieldsOmitted": true
+}

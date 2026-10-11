@@ -25,5 +25,6 @@ All four groups implemented, checked and deployed. Final type check / 114 tests 
 
 ## D-038 Genie chases, current work
 Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step card and screenshot logged.
-- [ ] Part 2: written authority, allow-list-only mail chase, stop and tests. Stop at WAIT before Part 3.
+- [x] Part 2 READY FOR REVIEW: timestamped authority/PDF, three actual demo mails/replies over ten skipped days, passenger updates, daily/recipient gates and live Stop proof. 139 tests pass; deployed.
+- [ ] WAIT for Ganesh before Part 3. No real-company sending or calling authorised.
 - [ ] Parts 3 to 5 remain gated by the prompt's WAITs. No real-company contact without Ganesh's go.

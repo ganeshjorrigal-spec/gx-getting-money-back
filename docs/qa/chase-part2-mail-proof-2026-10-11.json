@@ -1,0 +1,117 @@
+{
+  "code": "RG-8VX0ZA",
+  "mails": [
+    {
+      "caseCodeInSubject": true,
+      "company": "DemoTrips",
+      "day": "2026-10-11",
+      "fromCaseAddress": true,
+      "hasParent": false,
+      "messageIdRegistered": true,
+      "passengerInCc": true,
+      "pdfAttached": true,
+      "recipientsAllowed": true,
+      "replyToCaseAddress": true,
+      "sentAt": 1791722169000
+    },
+    {
+      "caseCodeInSubject": true,
+      "company": "Demo Air",
+      "day": "2026-10-16",
+      "fromCaseAddress": true,
+      "hasParent": true,
+      "messageIdRegistered": true,
+      "passengerInCc": true,
+      "pdfAttached": false,
+      "recipientsAllowed": true,
+      "replyToCaseAddress": true,
+      "sentAt": 1791722655000
+    },
+    {
+      "caseCodeInSubject": true,
+      "company": "DemoTrips",
+      "day": "2026-10-21",
+      "fromCaseAddress": true,
+      "hasParent": true,
+      "messageIdRegistered": true,
+      "passengerInCc": true,
+      "pdfAttached": false,
+      "recipientsAllowed": true,
+      "replyToCaseAddress": true,
+      "sentAt": 1791722716000
+    }
+  ],
+  "oneGmailThread": true,
+  "authorisedAt": 1791722167297,
+  "authorityPdfSaved": true,
+  "authorityPdfBytes": 5970,
+  "authorityPdfSha256": "3c9e696d98287d327b7b29709528111f48207c2b199fedced556334363092727",
+  "final": {
+    "stage": "READY",
+    "route": "TRACE",
+    "owner": "Demo Air",
+    "moneyWith": "bank",
+    "nextContact": null,
+    "checkDate": "2026-10-26",
+    "demoClock": "2026-10-21"
+  },
+  "rounds": [
+    {
+      "foundAt": 1791722606102,
+      "markedSentAt": 1791722170045,
+      "readyAt": 1791722620891,
+      "receivedAt": 1791722618940,
+      "round": 1,
+      "sameThread": true,
+      "sentAt": 1791722607797
+    },
+    {
+      "foundAt": 1791722658178,
+      "markedSentAt": 1791722655567,
+      "readyAt": 1791722673016,
+      "receivedAt": 1791722671161,
+      "round": 2,
+      "sameThread": true,
+      "sentAt": 1791722659968
+    },
+    {
+      "foundAt": 1791722729940,
+      "markedSentAt": 1791722716693,
+      "readyAt": 1791722745089,
+      "receivedAt": 1791722742720,
+      "round": 3,
+      "sameThread": true,
+      "sentAt": 1791722731566
+    }
+  ],
+  "replies": [
+    {
+      "receivedAt": 1791722607000,
+      "savedAt": 1791722618940,
+      "text": "Thank you for contacting us about Sample domestic flight.\n\nDemoTrips: Your refund of Rs 5400 is pending with Demo Air. We will pass it\non once the airline pays us.\n\nRefund desk, DemoTrips\n\nDemo reply from Refund Genie's demo desk, not from a real travel site or\nairline."
+    },
+    {
+      "receivedAt": 1791722659000,
+      "savedAt": 1791722671161,
+      "text": "Thank you for contacting us about Sample domestic flight.\n\nDemo Air: We paid your refund of Rs 5400 to DemoTrips on 2026-09-18. Our\nairline reference is DEMO-AIR-8VX0ZA. Please ask DemoTrips when it sent\nyour refund to you.\n\nNodal desk, Demo Air\n\nDemo reply from Refund Genie's demo desk, not from a real travel site or\nairline."
+    },
+    {
+      "receivedAt": 1791722731000,
+      "savedAt": 1791722742720,
+      "text": "Thank you for contacting us about Sample domestic flight.\n\nDemoTrips: We sent Rs 5400 to your original payment method on 2026-10-21.\nYour bank reference (UTR) is DEMO-8VX0ZA-REF. Please check your bank by\n2026-10-26. Use this reference if your bank needs to trace it.\n\nRefund desk, DemoTrips\n\nDemo reply from Refund Genie's demo desk, not from a real travel site or\nairline."
+    }
+  ],
+  "initialHeaderRepair": true,
+  "personalFieldsOmitted": true,
+  "stop": {
+    "active": false,
+    "attemptsBefore": 3,
+    "attemptsAfterExplicitDispatch": 3,
+    "status": "Genie is stopped."
+  },
+  "passengerUpdates": {
+    "sent": 6,
+    "uncertain": 0,
+    "reserved": 0
+  }
+}
