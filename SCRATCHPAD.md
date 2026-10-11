@@ -26,5 +26,6 @@ All four groups implemented, checked and deployed. Final type check / 114 tests 
 ## D-038 Genie chases, current work
 Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step card and screenshot logged.
 - [x] Part 2 READY FOR REVIEW: timestamped authority/PDF, three actual demo mails/replies over ten skipped days, passenger updates, daily/recipient gates and live Stop proof. 139 tests pass; deployed.
-- [ ] WAIT for Ganesh before Part 3. No real-company sending or calling authorised.
-- [ ] Parts 3 to 5 remain gated by the prompt's WAITs. No real-company contact without Ganesh's go.
+- [x] Ganesh authorised Part 3 simulated-only work and saved CALL_ALLOWLIST. 149 tests, both call fixtures, actual test confirming mails and 375px call proof pass. No live calling authorised.
+- [ ] Part 4: show the chase, exclude unapproved Rohan story, log/commit/push/report.
+- [ ] Part 5: public demo with simulated call, timed 375px run, log/commit/push/report.

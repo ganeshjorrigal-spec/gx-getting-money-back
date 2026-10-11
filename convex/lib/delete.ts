@@ -4,6 +4,7 @@ import { internal } from "../_generated/api";
 
 export async function deleteCaseData(ctx: MutationCtx, item: Doc<"cases">): Promise<void> {
   const caseId = item._id;
+  for(const row of await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",caseId)).take(100))await ctx.db.delete(row._id);
   for(const row of await ctx.db.query("chaseNotices").withIndex("by_case",q=>q.eq("caseId",caseId)).take(100))await ctx.db.delete(row._id);
   if(item.chase?.letterId)for(const id of [item.chase.letterId,...(item.chase.priorLetterIds??[])])await ctx.storage.delete(id);
   for(const row of await ctx.db.query("chaseOutbox").withIndex("by_case",q=>q.eq("caseId",caseId)).take(100))await ctx.db.delete(row._id);

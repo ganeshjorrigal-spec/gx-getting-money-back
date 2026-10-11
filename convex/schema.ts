@@ -6,7 +6,7 @@ const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("
 
 export default defineSchema({
   cases: defineTable({
-    chase: v.optional(v.object({active:v.boolean(),name:v.string(),mobile:v.string(),email:v.string(),authorisedAt:v.number(),stoppedAt:v.optional(v.number()),letterId:v.id("_storage"),priorLetterIds:v.optional(v.array(v.id("_storage"))),encryptedCaseToken:v.string()})),
+    chase: v.optional(v.object({active:v.boolean(),callsAuthorisedAt:v.optional(v.number()),name:v.string(),mobile:v.string(),email:v.string(),authorisedAt:v.number(),stoppedAt:v.optional(v.number()),letterId:v.id("_storage"),priorLetterIds:v.optional(v.array(v.id("_storage"))),encryptedCaseToken:v.string()})),
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),
     firstFlightSentAt: v.optional(v.number()), deviceHash: v.optional(v.string()), handHelped: v.optional(v.boolean()), refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),
     routeConfidence: v.optional(v.number()), facts: v.optional(v.any()), platform: v.optional(v.string()),
@@ -27,6 +27,8 @@ export default defineSchema({
   demoReplies: defineTable({ caseId: v.id("cases"), messageId: v.string(), round: v.number(), status: v.union(v.literal("reserved"), v.literal("sent")), createdAt: v.number(), sentAt: v.optional(v.number()), receivedAt: v.optional(v.number()), sameThread: v.optional(v.boolean()) }).index("by_case", ["caseId"]).index("by_case_message", ["caseId", "messageId"]),
   chaseNotices: defineTable({caseId:v.id("cases"),key:v.string(),state:v.union(v.literal("reserved"),v.literal("sent"),v.literal("uncertain")),createdAt:v.number()}).index("by_case",["caseId"]).index("by_key",["caseId","key"]),
   chaseOutbox: defineTable({caseId:v.id("cases"),draftId:v.id("drafts"),company:v.string(),companies:v.array(v.string()),day:v.string(),state:v.union(v.literal("reserved"),v.literal("sent"),v.literal("uncertain")),messageId:v.string(),gmailId:v.optional(v.string()),threadId:v.optional(v.string()),createdAt:v.number()}).index("by_case",["caseId"]).index("by_draft",["draftId"]).index("by_company_day",["caseId","company","day"]).index("by_case_day",["caseId","day"]).index("by_case_state",["caseId","state"]),
+  callBudgets: defineTable({day:v.string(),reserved:v.number()}).index("by_day",["day"]),
+  calls: defineTable({caseId:v.id("cases"),mode:v.union(v.literal("live"),v.literal("simulated")),label:v.string(),status:v.union(v.literal("reserved"),v.literal("queued"),v.literal("completed"),v.literal("failed")),company:v.string(),day:v.string(),startedAt:v.number(),createdAt:v.number(),endedAt:v.optional(v.number()),durationSeconds:v.number(),costUsd:v.number(),reservedUsd:v.number(),authorisedAt:v.number(),externalId:v.optional(v.string()),transcript:v.optional(v.string()),reason:v.optional(v.string()),recordingUrl:v.optional(v.string()),recordingKind:v.optional(v.literal("roleplay")),roleplayTranscript:v.optional(v.string()),patchIn:v.optional(v.boolean()),readerOutput:v.optional(v.any()),confirmingDraftId:v.optional(v.id("drafts"))}).index("by_case",["caseId"]).index("by_case_day",["caseId","day"]),
   inputs: defineTable({
     caseId: v.id("cases"), kind: v.union(v.literal("initial"), v.literal("reply"), v.literal("answer")),
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), createdAt: v.number(),
@@ -38,7 +40,7 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_case", ["caseId", "createdAt"]),
   drafts: defineTable({
-    caseId: v.id("cases"), step: v.string(), channel: v.string(), to: v.optional(v.string()),
+    caseId: v.id("cases"), company:v.optional(v.string()), step: v.string(), channel: v.string(), to: v.optional(v.string()),
     subject: v.optional(v.string()), cc: v.optional(v.array(v.string())), body: v.string(), attachChecklist: v.array(v.string()),
     status: v.union(v.literal("ready"), v.literal("opened"), v.literal("sent")), createdAt: v.number(),
   }).index("by_case", ["caseId"]),

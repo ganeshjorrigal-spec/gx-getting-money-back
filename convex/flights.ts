@@ -87,7 +87,8 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  }await ctx.db.insert("drafts",{caseId:item._id,step:plan.nextStep,channel:plan.channel,to:plan.to??undefined,cc:plan.cc,subject:demoSubject(!!item.demo,codedSubject(plan.subject,item.code)),body:plan.channel==="email"?finishMail(redact(plan.body),item.code,[],item.name):redact(plan.body),attachChecklist:item.demo?[]:["Cancellation confirmation","Booking receipt","Dated replies so far"],status:"ready",createdAt:now});await ctx.db.patch(item._id,{draftsShown:item.draftsShown+1});await ctx.db.insert("caseEvents",{caseId:item._id,type:"draft_written",summary:`Prepared ${plan.nextStep}`,actor:"agent",createdAt:now});}
  await ctx.db.insert("agentRuns",{caseId:item._id,runId:args.runId,step:"triage",model:args.model,attempt:1,status:"done",latencyMs:args.latencyMs,inputTokens:args.inputTokens,outputTokens:args.outputTokens,totalTokens:args.totalTokens,createdAt:now});
  if(item.chase?.active&&reply)await ctx.scheduler.runAfter(0,internal.chaseActions.notify,{caseId:item._id,key:`reply:${reply._id}`,what:"Genie read a new reply.",reply:redact(read.reply.summary).slice(0,240),next:`${plan.channel==="bank"?"Check your bank":plan.nextPerson?`Contact ${plan.nextPerson.company}`:"Watch for their reply"}${plan.checkDate?` · check-in ${plan.checkDate}`:""}`});
- if(item.chase?.active)await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});
+ const pendingCall=await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").first();
+ if(item.chase?.active&&!(pendingCall?.status==="completed"&&!pendingCall.confirmingDraftId))await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});
  await ctx.scheduler.runAfter(0,internal.googleActions.syncCheckins,{caseId:item._id});await ctx.scheduler.runAfter(0,internal.responsesActions.syncCase,{caseId:item._id});return null;
 }});
 

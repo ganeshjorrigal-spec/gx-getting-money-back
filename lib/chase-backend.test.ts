@@ -280,3 +280,5 @@ it("blocks a second draft on the same company day and rejects expired demos", as
     }),
   ).toBeNull();
 });
+
+it("allows a safe call confirmation when the reader needs passenger details", async()=>{const f=await fixture();await f.t.run(async ctx=>{await ctx.db.patch(f.caseId,{route:"NEED_INFO"});await ctx.db.patch(f.draftId,{step:"FLIGHT_call_confirmation",company:"Demo Air",cc:[]});});const r=await f.t.mutation(internal.chase.reserve,{caseId:f.caseId,draftId:f.draftId});expect(r?.company).toBe("Demo Air");});

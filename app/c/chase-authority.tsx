@@ -17,18 +17,21 @@ export function ChaseAuthority({
   token: string;
   company: string;
   pnr: string;
-  chase: { active: boolean; letterUrl: string | null } | null;
+  chase: { active: boolean; letterUrl: string | null; callsAuthorisedAt?: number | null } | null;
   demo: boolean;
   canSkip?: boolean;
 }) {
   const authorise = useAction(api.chaseActions.authorise),
+    allowCalls = useMutation(api.calls.allow),
+    requestCall = useMutation(api.calls.request),
     stop = useMutation(api.chase.stop),
     skip = useMutation(api.chase.skipDemo);
   const status = useQuery(
     api.chase.status,
     chase?.active ? { code, token } : "skip",
   );
-  const [show, setShow] = useState(false),
+  const [callAccepted, setCallAccepted] = useState(false),
+    [show, setShow] = useState(false),
     [name, setName] = useState(""),
     [mobile, setMobile] = useState(""),
     [email, setEmail] = useState(""),
@@ -60,6 +63,9 @@ export function ChaseAuthority({
       {chase?.active ? (
         <>
           <p>Written permission saved. {status}</p>
+          <p>Calling is simulated for now. No phone is dialled.</p>
+          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/>and to call {company}'s customer care for me, and connect me to the call if they need me</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>Save calling permission</button></> : demo && <button disabled={busy} onClick={()=>run(()=>requestCall({code,token,fixture:"reference"}))}>Run simulated demo call</button>}
+
           <button
             disabled={busy}
             className="text-button"

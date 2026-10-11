@@ -199,7 +199,7 @@ export const reserve = internalMutation({
           item.demo.round >= 3 ||
           item.demo.phase.startsWith("waiting"))) ||
       !["READY", "DUE"].includes(item.stage) ||
-      item.route === "NEED_INFO" ||
+      (item.route === "NEED_INFO" && draft.step !== "FLIGHT_call_confirmation") ||
       item.route === "WAIT" ||
       (await caseTrial(ctx, item)).locked
     )
@@ -254,7 +254,7 @@ export const reserve = internalMutation({
       .withIndex("by_draft", (q) => q.eq("draftId", args.draftId))
       .first();
     const day = item.demo?.now ?? todayIST(),
-      company = item.flightPlan?.nextPerson?.company ?? item.owner ?? "unknown";
+      company = draft.company ?? item.flightPlan?.nextPerson?.company ?? item.owner ?? "unknown";
     const companies = [
       ...new Set(
         [

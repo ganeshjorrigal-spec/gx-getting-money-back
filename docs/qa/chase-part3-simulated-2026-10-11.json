@@ -1,0 +1,90 @@
+[
+  {
+    "calls": [
+      {
+        "confirmingDraftId": "jn7fd60dpfyqahcr1pdca2tb0s8g36qy",
+        "costUsd": 0,
+        "durationSeconds": 75,
+        "label": "Simulated demo call",
+        "mode": "simulated",
+        "patchIn": false,
+        "readerOutput": {
+          "moneyWith": "DemoTrips",
+          "nextContact": "DemoTrips",
+          "nextStep": "FLIGHT_mail",
+          "owner": "Demo Air",
+          "reply": {
+            "claim": "paid_site",
+            "confidence": 1,
+            "fromCompany": "Demo Air",
+            "paidDate": "2026-10-12",
+            "paymentDestination": "travel_site",
+            "pointsAt": "DemoTrips",
+            "promisedDate": null,
+            "reference": "DEMO-AIR-RG-81342E",
+            "summary": "Demo Air stated they paid Rs 5400 to DemoTrips on 2026-10-12 with reference DEMO-AIR-RG-81342E."
+          }
+        },
+        "reason": null,
+        "status": "completed",
+        "transcript": "Genie: Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE.\nMenu: For refunds, press 2.\nGenie: [Pressed 2]\nMenu: Please hold. [Hold music, 20 seconds]\nCare: Please give the PNR.\nGenie: SAMPLE. What is the refund status, processing date, who has the money, and reference?\nCare: Demo Air paid Rs 5400 to DemoTrips on 2026-10-12. Airline reference DEMO-AIR-RG-81342E. DemoTrips now has the refund.\nGenie: Thank you. I will ask DemoTrips for the bank transfer reference. Goodbye."
+      }
+    ],
+    "code": "RG-81342E",
+    "mails": [
+      {
+        "body": "Dear Demo Air refund desk,\n\nDemo only: the following was a simulated call, not a conversation with a real company.\n\nAs told on our simulated call today at 11:00 am IST by your agent, Demo Air stated they paid Rs 5400 to DemoTrips on 2026-10-12 with reference DEMO-AIR-RG-81342E.. Please confirm in writing.\n\nPlease reply to all on this mail and keep RG-81342E in the subject, so my records stay in one thread.\n\nThank you.",
+        "company": "Demo Air",
+        "day": "2026-10-12",
+        "state": "sent",
+        "subject": "Demo: refund call confirmation [RG-81342E]"
+      }
+    ],
+    "moneyWith": "Demo Air",
+    "stage": "READY"
+  },
+  {
+    "calls": [
+      {
+        "confirmingDraftId": "jn7dj3fa7em1sh1nz27kxqf2vx8g2r4n",
+        "costUsd": 0,
+        "durationSeconds": 65,
+        "label": "Simulated demo call",
+        "mode": "simulated",
+        "patchIn": true,
+        "readerOutput": {
+          "moneyWith": "unknown",
+          "nextContact": "DemoTrips",
+          "nextStep": "FLIGHT_mail",
+          "owner": "Demo Air",
+          "reply": {
+            "claim": "asks_details",
+            "confidence": 1,
+            "fromCompany": "Demo Air",
+            "paidDate": null,
+            "paymentDestination": "unknown",
+            "pointsAt": null,
+            "promisedDate": null,
+            "reference": null,
+            "summary": "Demo Air asked for the PNR and requested an identity check."
+          }
+        },
+        "reason": null,
+        "status": "completed",
+        "transcript": "Genie: Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE.\nMenu: For refunds, press 2.\nGenie: [Pressed 2]\nMenu: Please hold. [Hold music, 20 seconds]\nCare: Please give the PNR.\nGenie: SAMPLE. What is the refund status, processing date, who has the money, and reference?\nCare: Identity check requested. No sensitive details retained.\nGenie: I'll connect the passenger now.\nTransfer: [Simulated patch-in requested, no phone dialled]\nGenie to passenger: I reached the demo airline refund desk about your PNR. They need to speak to you to verify identity. I have shared no private code.\nTransfer: [Simulated passenger did not answer]\nGenie: The passenger will call back. Thank you, goodbye."
+      }
+    ],
+    "code": "RG-BF00C4",
+    "mails": [
+      {
+        "body": "Dear Demo Air refund desk,\n\nDemo only: the following was a simulated call, not a conversation with a real company.\n\nAs told on our simulated call today at 11:00 am IST by your agent, Demo Air asked for the PNR and requested an identity check.. Please confirm in writing.\n\nPlease reply to all on this mail and keep RG-BF00C4 in the subject, so my records stay in one thread.\n\nThank you.",
+        "company": "Demo Air",
+        "day": "2026-10-12",
+        "state": "sent",
+        "subject": "Demo: refund call confirmation [RG-BF00C4]"
+      }
+    ],
+    "moneyWith": "Demo Air",
+    "stage": "READY"
+  }
+]
