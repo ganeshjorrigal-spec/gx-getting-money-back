@@ -28,6 +28,12 @@ Put these in one tokens file (CSS variables) and remove stray colours from compo
 
 Key: `OPENAI_API_KEY` in `.env` (Ganesh adds it; if missing, stop this step and list it). Use the OpenAI Images API with the current image model (check the docs for the model name; "DALL-E" is the family Ganesh means). Generate at build time with a script in `scripts/`, never at runtime. Spend cap: 40 images total.
 
+Spend rules for the script:
+- Run it once with `--dry-run` first: print how many images it will make, at what size and quality, and the estimated cost. Wait for Ganesh's go before the real run.
+- Drafts at low quality and the smallest square size. Only the logo and illustrations Ganesh picks get one final run at high quality.
+- Skip any image whose file already exists, so a rerun or a rebuild never pays twice. Keep a running count in `docs/design/image-spend.md` (images made, model, size, quality).
+- On an API error, retry once, then stop and report. Never loop. Never call the image API from tests, CI or the deploy step.
+
 - **Logo**: generate 8 mark ideas into `docs/design/logo-candidates/` (simple, works at 32px, navy on warm paper, idea: a genie lamp crossed with a receipt or a returning arrow; no text in the image). The wordmark "Refund Genie" is set in Fraunces in code, not drawn by the model. Do NOT ship a logo until Ganesh picks one: make `docs/design/logo-candidates/index.html` showing each mark beside the wordmark at 32px, 64px and header size, and list it for him. After his pick, trace or rebuild it as a clean SVG and make the favicon from it.
 - **Illustrations**: 4 scenes, one consistent flat style, warm paper background, navy and amber accents, Indian people, no text, no brand logos inside the image:
   1. A young woman at an Indian airport departures board showing "Cancelled", phone in hand.
