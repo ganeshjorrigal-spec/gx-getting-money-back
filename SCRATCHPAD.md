@@ -20,9 +20,5 @@ D-036 trial implemented, 103 tests and live counter/card proof saved. Ganesh swi
 
 Current Gmail proof: TB-795645 safe Demo-labelled draft prepared to test recipient, only case inbox CC. Reply matched by scheduled job, confirmation handled, READY / TRACE / FLIGHT_bank with 14 Oct check-in. Saved record and screenshots logged. Gmail browser access remains blocked; no workaround. Next: three timed full flight demos.
 
-## 11 Oct walkthrough fixes (current work)
-- [ ] Group 1: static policy routes, RG real-case codes with TB compatibility.
-- [ ] Group 2: greetings, plain rule citations, actual attachment line, reply-all, CC list.
-- [ ] Group 3: save link by Gmail, hero rows, overdue badge, payment question, plain deduplicated timeline, tracking copy.
-- [ ] Group 4: intake order, Gemini note, three loading steps, flight demo link, 44px targets.
-- [ ] Type check, unit tests, paid flight/event eval, deployment and 375px proof; full fixture mail in log.
+## 11 Oct walkthrough fixes
+All four groups implemented, checked and deployed. Final type check / 114 tests pass; paid event 16/16 and flight 14/14 evals pass. Live 375px captures and full fixture draft are logged in docs/log/2026-10-11.md. RG static-link parser correction was pushed separately after live testing. Old mailbox remains connected, no settings or permissions changed. Gmail opening and physical phones are untested in this round. No milestone DONE; original M2.6 proof list above remains pending. Next: HQ review of these fixes, with restyle only on its separate prompt.

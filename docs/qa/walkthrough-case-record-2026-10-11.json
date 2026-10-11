@@ -1,0 +1,15 @@
+{
+  "code": "RG-ZV5PKE",
+  "stage": "READY",
+  "route": "OVERDUE",
+  "dueDate": "2026-09-14",
+  "dueSource": "F01",
+  "amountPaise": 540000,
+  "nextStep": "FLIGHT_mail",
+  "factsConfirmedAt": 1791709336448,
+  "paymentMethod": "credit_card",
+  "cancelled": "2026-09-07",
+  "owner": "IndiGo",
+  "nextContactRole": "Nodal Officer",
+  "nextContactCompany": "IndiGo"
+}

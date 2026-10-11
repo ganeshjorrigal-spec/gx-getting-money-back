@@ -159,7 +159,7 @@ export const intakeCopy = {
 
 export const caseCopy = {
   badLink: "We can't open this case. Check you copied the whole link, including the part after the # sign.",
-  progress: ["Reading your message", "Finding your refund route", "Working out your date", "Writing your next step"],
+  progress: ["Read message", "Confirm facts", "Choose next action"],
   working: "Still working. Your message is saved.",
   error: "Something went wrong on our side. Your case is safe.",
   retry: "Try again",

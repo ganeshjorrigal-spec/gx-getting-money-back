@@ -92,7 +92,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {error&&<p role="alert" className="error-banner">{error}</p>}
 
- {waiting?<section className="case-card progress-card" role="status"><span className="spinner" aria-hidden="true"/><h2>Reading your message…</h2><ol>{["Reading your message","Finding who owes it","Working out your date","Writing your next step"].map((label,i)=><li key={label} className={i<["reading","route","date","writing"].indexOf(data.progress?.step??"reading")?"progress-done":""}>{i<["reading","route","date","writing"].indexOf(data.progress?.step??"reading")?"✓ ":""}{label}</li>)}</ol></section>:<>
+ {waiting?<section className="case-card progress-card" role="status"><span className="spinner" aria-hidden="true"/><h2>Reading your message…</h2><ol>{["Read message","Confirm facts","Choose next action"].map((label,i)=><li key={label} className={i<({reading:0,route:1,date:1,writing:2,done:3} as Record<string,number>)[data.progress?.step??"reading"]?"progress-done":""}>{i<({reading:0,route:1,date:1,writing:2,done:3} as Record<string,number>)[data.progress?.step??"reading"]?"✓ ":""}{label}</li>)}</ol></section>:<>
 
  {data.newReply&&<section className="case-card new-reply-card"><h2>New reply from {facts?.reply.fromCompany??data.platform}</h2><p>{date(todayIST(new Date(data.newReply.receivedAt)))}</p><p>{data.newReply.summary}</p><blockquote>{data.newReply.keySentence}</blockquote><p>{plan?.note||`Who owes you: ${plan?.owner}`}</p><button className="text-button" disabled={busy} onClick={()=>run(()=>seen({...args,inputId:data.newReply!._id}))}>Seen</button></section>}
 

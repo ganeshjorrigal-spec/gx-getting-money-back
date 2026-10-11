@@ -377,7 +377,7 @@ export default function CaseView({ code }: { code: string }) {
     : route === "OVERDUE" && caseData?.dueDate ? estimated ? `Time to check your ${money(caseData.amountPaise)} refund.` : `Your ${money(caseData.amountPaise)} was due by ${displayDate(caseData.dueDate)}.`
     : route ? c.routeLabels[route] : "";
   const question = caseData?.questions?.[0];
-  const stepIndex = { reading: 0, route: 1, date: 2, writing: 3, done: 4, failed: 0 }[caseData?.progress?.step ?? "reading"] ?? 0;
+  const stepIndex = { reading: 0, route: 1, date: 1, writing: 2, done: 3, failed: 0 }[caseData?.progress?.step ?? "reading"] ?? 0;
   const isIOS = ready && /iPhone|iPad|iPod/.test(navigator.userAgent);
   const isAndroid = ready && /Android/.test(navigator.userAgent);
   const messageSteps = ["L0_email", "L0_chat", "L1", "L2", "TRACE_ask", "TRACE_bank", "FAILED_platform", "NO_ROUTE_ask", "ACTION_form"];

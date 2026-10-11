@@ -1,6 +1,6 @@
 # Current state (owned by Codex)
 
-Last updated: 10 October 2026.
+Last updated: 11 October 2026.
 
 ## Milestones
 - M2.5 READY FOR REVIEW, using Ganesh's accepted 3:10.731 demo run. Not DONE.
@@ -30,4 +30,11 @@ Last updated: 10 October 2026.
 ## Other open checks
 Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before enabling, Q19 hand-helped workflow, physical Android/iPhone, manual reconciliation and budget alert. Stores, M3/M4/T1 not advanced. Details and skipped checks remain in today's append-only log.
 
-Next single action: complete three fresh timed full flight demos with user-sent emails.
+## 11 Oct cold-walkthrough fixes
+- All four requested groups implemented and deployed. Own static policy pages, RG references with TB compatibility, clean mail closing/greetings/CC, reordered case and intake screens, payment-method prompt, deduplicated timeline and 44px targets.
+- Final type check and 114 unit tests pass. Same-day paid eval F1-F16 16/16 and FL01-FL14 14/14 pass. Counting-note fixture assertion moved from mail to case-screen explanation; underlying rules unchanged.
+- Final deploy: 6fd2c71e-fe5b-470b-945c-0f42533184e0, 91 static files. Policy HTTP responses match exported bytes. Six 375px live-page captures, safe case record and full synthetic draft are in docs/qa and docs/log/2026-10-11.md.
+- Inbox/support mailbox still tickback.cases@gmail.com; no Gmail settings changed. Gmail compose opening remains blocked by saved browser permission. Physical phone testing remains outstanding.
+- Nothing DONE. M2.6 remains ACTIVE; original proof list above is still pending.
+
+Next single action: HQ review of the walkthrough fixes; restyle awaits its separate prompt.

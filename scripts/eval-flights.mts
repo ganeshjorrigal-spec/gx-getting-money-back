@@ -9,12 +9,12 @@ import {flightSystem} from "../convex/flightAgent";
 import {todayIST} from "../lib/dates";
 
 if(process.env.GEMINI_MODEL!=="gemini-3.5-flash-lite"||process.env.GEMINI_PAID_TIER!=="true"||!process.env.GOOGLE_GENERATIVE_AI_API_KEY)throw new Error("The fixed paid Gemini settings are required");
-type Fixture={id:string;input:string;prior?:FlightRead;route:string;due:string|null;check?:string|null;money?:string;to?:string|null;body?:string};
+type Fixture={id:string;input:string;prior?:FlightRead;route:string;due:string|null;check?:string|null;money?:string;to?:string|null;body?:string;screen?:string};
 const base="Domestic Delhi to Mumbai flight, IndiGo, airline cancelled on 7 Sep 2026. Paid Rs 5,400 through MakeMyTrip by UPI. PNR SAMPLE; travel-site booking ID TEST-ID. Nothing received.";
 const fixtures:Fixture[]=[
  {id:"FL01",input:base,route:"OVERDUE",due:"2026-09-25",to:"grievanceofficer@makemytrip.com"},
  {id:"FL02",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by credit card"),route:"OVERDUE",due:"2026-09-14",to:"nodalofficer@goindigo.in"},
- {id:"FL03",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by UPI"),route:"OVERDUE",due:"2026-09-28",body:"Refund Genie's expectation"},
+ {id:"FL03",input:base.replace("through MakeMyTrip by UPI","direct on IndiGo's website by UPI"),route:"OVERDUE",due:"2026-09-28",screen:"Refund Genie's expectation"},
  {id:"FL04",prior:sampleFlight(),input:"MakeMyTrip reply: Your refund is pending with IndiGo. We will pass it on when the airline pays us.",route:"OVERDUE",due:"2026-09-25",money:"IndiGo",to:"nodalofficer@goindigo.in"},
  {id:"FL05",prior:sampleFlight(),input:"IndiGo reply: We paid the refund to MakeMyTrip on 2 Oct 2026. Airline transfer reference AIR-SYNTHETIC. Please ask the travel site when it sent you the refund.",route:"OVERDUE",due:"2026-10-03",money:"MakeMyTrip",to:"grievanceofficer@makemytrip.com",body:"bank reference"},
  {id:"FL06",prior:sampleFlight(),input:"MakeMyTrip reply: We sent Rs 5,400 to your original payment method on 2 Oct 2026. UTR SYNTHETIC-UTR-001. Please check your bank by 14 Oct 2026.",route:"TRACE",due:"2026-10-14",check:"2026-10-14",money:"bank",to:null},
@@ -37,7 +37,7 @@ for(const f of fixtures.filter(f=>!process.env.FLIGHT_EVAL_ONLY||f.id===process.
   const read=groundFlightRead(flightReadSchema.parse(response.object),f.input,f.prior);
   const plan=planFlight(read,"2026-10-09");const contacts=[plan.to,...plan.cc].filter(Boolean);
   const contactsOK=contacts.every(c=>allowed.has(c));
-  const pass=plan.route===f.route&&plan.dueDate===f.due&&(f.check===undefined||plan.checkDate===f.check)&&(f.money===undefined||plan.moneyWith===f.money)&&(f.to===undefined||plan.to===f.to)&&(!f.body||plan.body?.includes(f.body))&&contactsOK;
+  const pass=plan.route===f.route&&plan.dueDate===f.due&&(f.check===undefined||plan.checkDate===f.check)&&(f.money===undefined||plan.moneyWith===f.money)&&(f.to===undefined||plan.to===f.to)&&(!f.body||plan.body?.includes(f.body))&&(f.screen===undefined||plan.dueSourceText.includes(f.screen))&&contactsOK;
   result=pass?"PASS":"FAIL";detail=`claim ${read.reply.claim}; from ${read.reply.fromCompany}; points at ${read.reply.pointsAt}; destination ${read.reply.paymentDestination}; route ${plan.route}; due ${plan.dueDate??"none"}; check ${plan.checkDate??"none"}; money with ${plan.moneyWith}; To ${plan.to??"none"}; invented contacts ${contactsOK?0:1}`;
  }catch{ /* No provider payload or secret is printed. */ }
  if(result!=="PASS")failures++;rows.push(`| ${f.id} | ${result} | ${detail} | ${Date.now()-start} |`);process.stdout.write(`${f.id} ${result}: ${detail}\n`);

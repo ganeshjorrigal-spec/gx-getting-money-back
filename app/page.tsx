@@ -23,7 +23,7 @@ export default function Home() {
           <p className="hero-sub">{c.sub}</p>
           <div className="hero-actions">
             <Link prefetch={false} className="button button-primary" href="/start">{c.primary} <span aria-hidden="true">→</span></Link>
-            <Link prefetch={false} className="button button-secondary" href="/start">{c.secondary}</Link>
+            <Link prefetch={false} className="button button-secondary" href="/start/?demo=flight">{c.secondary}</Link>
           </div>
           <p className="trust-line">{c.trust}</p>
         </div>

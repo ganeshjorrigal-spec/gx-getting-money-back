@@ -1,0 +1,23 @@
+[
+  {
+    "page": "terms",
+    "status": 200,
+    "servedUrl": "https://harmless-lyrebird-924.ap-southeast-2.convex.site/terms/index.html",
+    "matchesExport": true,
+    "sha256": "4b44cff97aaad766feef638ce90f3cc5b350012e540a60ae251275484e4de8c7"
+  },
+  {
+    "page": "refund-policy",
+    "status": 200,
+    "servedUrl": "https://harmless-lyrebird-924.ap-southeast-2.convex.site/refund-policy/index.html",
+    "matchesExport": true,
+    "sha256": "5cff2a3f72da3793fa2cc6d1610cd4c6004b28967b6a84732c54860db3e53b1a"
+  },
+  {
+    "page": "contact",
+    "status": 200,
+    "servedUrl": "https://harmless-lyrebird-924.ap-southeast-2.convex.site/contact/index.html",
+    "matchesExport": true,
+    "sha256": "473f0755ff0e6147079fbb2eb6196fba3a31a2c286fcf33e943067efec2da476"
+  }
+]
