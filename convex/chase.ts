@@ -196,6 +196,7 @@ export const reserve = internalMutation({
       draft.caseId !== args.caseId ||
       item.refundType !== "flight" ||
       draft.channel !== "email" ||
+      draft.step === "FLIGHT_status" ||
       (item.demo &&
         (item.demo.expiresAt <= Date.now() ||
           item.demo.round >= 3 ||
@@ -341,7 +342,7 @@ export const stillActive = internalQuery({
       return (
         ["READY", "DUE"].includes(item.stage) &&
         latest?._id === args.draftId &&
-        latest.status !== "sent"
+        latest.status !== "sent" && latest.step !== "FLIGHT_status"
       );
     }
     return true;

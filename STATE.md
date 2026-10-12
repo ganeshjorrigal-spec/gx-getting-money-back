@@ -73,4 +73,9 @@ Next: wait for HQ review. Further Cloudflare publishing needs Ganesh's explicit 
 - Stopped as explicitly required. No restyle step implemented; no planner/date changes, publish, deployment, call, mail, payment or key changes. Steps 3/4 and sample-case work remain deferred.
 - Safe cause proof: docs/qa/restyle-overdue-cause-2026-10-12.json. Existing-case screenshots at 375px and 1280px saved as docs/qa/restyle-blocker-*. These are blocker captures, not Phase A/regression acceptance proof. No new test/eval run because application code is unchanged.
 
-Next: Ganesh/HQ defines the correct pre-deadline pending-airline route and next action, or explicitly authorises a display-only treatment despite the saved OVERDUE route. Phase A remains stopped; nothing DONE or READY FOR REVIEW for it.
+D-042 supplies that decision. The fix below is READY FOR REVIEW; Phase A waits for HQ acceptance. Nothing DONE for Phase A.
+
+## D-042 pre-deadline route
+READY FOR REVIEW, not DONE. Pending-airline and paid-site cases now WAIT until their due date has passed, with an optional user-only FLIGHT_status mail to checked lower support contacts. Reply-driven mail/routes retained; pastDue governs Overdue labels. Real status check-ins rerun the planner at the deadline and next morning without increasing the rung; manual sends preserve the deadline. Sending guards reject status mail even on stale READY records.
+218 unit tests pass, including the original 201 unchanged; type check passes. Local static build and legacy-case screen checked. New planner proof from RG-46SHVP facts shows Waiting, due 21 Oct 2026. Missing lower email contacts and the full branch audit are in today's log; safe proof in docs/qa/pre-deadline-proof-2026-10-12.json.
+No Cloudflare publish, npm run deploy, backend push, calling/allow-list/key changes. This fix is committed code only; live backend/site unchanged. Wait for HQ review before restyle Phase A. Earlier requirement to obtain a flight decision is satisfied by D-042; restyle remains paused for this review.

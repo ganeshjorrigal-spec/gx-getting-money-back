@@ -20,8 +20,9 @@ import { useQuery,useMutation,useAction } from "convex/react";
 
 import { api } from "../../convex/_generated/api";
 
-import { flightWorkingDelay,type FlightRead,type FlightPlan } from "../../lib/flight";
+import { type FlightRead,type FlightPlan } from "../../lib/flight";
 
+import { flightStatus } from "../../lib/flight-status";
 import { compressScreenshot } from "../../lib/images";
 
 import { getDeviceId,forgetCase } from "../../lib/case-link";
@@ -75,6 +76,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  const facts=data.facts as FlightRead|null,plan=data.flightPlan as FlightPlan|null,draft=drafts?.[0];
 
+ const status=plan?flightStatus(plan,data.demo?.now??todayIST()):null;
  const inbox=tracking?.inboxAddress?caseInboxAddress(tracking.inboxAddress,code):"";
 
  const ccList=[...(draft?.cc??[]),inbox].filter(Boolean);
@@ -122,7 +124,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {correcting?<><label htmlFor="flight-correction">What should we change?</label><textarea id="flight-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(()=>confirm({...args,pnr,correction}))}>Read the correction</button></>:<><button className="button button-primary" disabled={busy||!pnr.trim()} onClick={()=>run(()=>confirm({...args,pnr,bookingId,contact}))}>Looks right</button><button className="text-button" onClick={()=>setCorrecting(true)}>Not quite</button></>}</section>}
 
- {plan&&data.route!=="NEED_INFO"&&<section className="case-card" aria-label="Who owes you"><h2>Who owes you</h2><p><strong>{plan.owner}</strong></p><h2>Who to contact next</h2><p>{plan.nextPerson?.value??(plan.channel==="bank"?"Your bank":plan.channel==="phone"?"Company support":plan.channel==="portal"?"Complaint portal":"No mail needed yet")}</p>{data.amountPaise!=null&&<p>Amount: Rs {(data.amountPaise/100).toLocaleString("en-IN")}</p>}{data.route==="OVERDUE"&&!data.stage.startsWith("CLOSED")&&<span className="route-chip caution-chip"><span aria-hidden="true">⚠ </span>Overdue</span>}<p>{facts?.bookedVia!=="direct"?"You booked on a travel site, so the airline is responsible for your refund.":"You booked direct, so the airline is responsible for your refund."}</p><h3>{data.route==="OUT_OF_SCOPE"?"Outside this flow":data.route==="TRACE"?"Left them, not with you yet":data.route==="WAIT"?"On its way":data.route==="NO_ROUTE"?"The other side is right":plan.dueSource==="estimate"?"Time to check":`Overdue by about ${flightWorkingDelay(plan.dueDate,data.demo?.now??todayIST())} working days`}</h3><p>{plan.dueDate?`Due ${date(plan.dueDate)}`:"No automatic bank date. Pick your reminder date."}</p><p><strong>{plan.dueSourceText.includes("reading")?"Refund Genie’s reading: ":""}</strong>{plan.dueSourceText}</p>{plan.ruleId&&<a className="text-link" href={plan.ruleId==="F22"?(facts?.bookedVia==="Goibibo"?"https://www.goibibo.com/info/user-agreement/":"https://www.makemytrip.com/legal/in/eng/user_agreement.html"):refundRuleUrl} target="_blank" rel="noreferrer">{plan.ruleId==="F22"?"Read the company refund terms":"Read the DGCA refund rule"}</a>}
+ {plan&&data.route!=="NEED_INFO"&&<section className="case-card" aria-label="Who owes you"><h2>Who owes you</h2><p><strong>{plan.owner}</strong></p><h2>Who to contact next</h2><p>{plan.nextPerson?.value??(plan.channel==="bank"?"Your bank":plan.channel==="phone"?"Company support":plan.channel==="portal"?"Complaint portal":plan.nextStep==="FLIGHT_status"?"Use the company's own support page":"No mail needed yet")}</p>{data.amountPaise!=null&&<p>Amount: Rs {(data.amountPaise/100).toLocaleString("en-IN")}</p>}{status?.pastDue&&!data.stage.startsWith("CLOSED")&&<span className="route-chip caution-chip"><span aria-hidden="true">⚠ </span>Overdue</span>}<p>{facts?.bookedVia!=="direct"?"You booked on a travel site, so the airline is responsible for your refund.":"You booked direct, so the airline is responsible for your refund."}</p><h3>{status?.label}</h3><p>{plan.dueDate?`Due ${date(plan.dueDate)}`:"No automatic bank date. Pick your reminder date."}</p><p><strong>{plan.dueSourceText.includes("reading")?"Refund Genie’s reading: ":""}</strong>{plan.dueSourceText}</p>{plan.ruleId&&<a className="text-link" href={plan.ruleId==="F22"?(facts?.bookedVia==="Goibibo"?"https://www.goibibo.com/info/user-agreement/":"https://www.makemytrip.com/legal/in/eng/user_agreement.html"):refundRuleUrl} target="_blank" rel="noreferrer">{plan.ruleId==="F22"?"Read the company refund terms":"Read the DGCA refund rule"}</a>}
 
  {facts?.cancelledBy==="passenger"&&plan.amountOwed!==null&&<p><strong>Refund sought: Rs {plan.amountOwed.toLocaleString("en-IN")}</strong></p>}
 
@@ -132,24 +134,24 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {plan.above&&<p>Above them: {plan.above.value} · {plan.above.role}, {plan.above.company}</p>}{plan.note&&<p>{plan.note}</p>}</section>}
 
- {data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
  <TrialCard data={data} code={code} token={token}/>
 
  {data.factsConfirmedAt&&draft&&draft.body===null&&<section className="case-card"><h2>Your next message is ready</h2><p>The annual plan unlocks follow-ups. Your route and date remain visible.</p></section>}
 
- {data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<section className="case-card"><h2>Your next {draft.channel==="email"?"mail":"step"}</h2>
+ {data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<section className="case-card"><h2>{plan?.nextStep==="FLIGHT_status"?"Your optional status mail":<>Your next {draft.channel==="email"?"mail":"step"}</>}</h2>
 
- {draft.channel==="email"&&<><p>To: {draft.to||"Paste the address from the company's own page"}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
+ {draft.channel==="email"&&<><p>To: {draft.to||(plan?.nextStep==="FLIGHT_status"?"Use the company's own support page":"Paste the address from the company's own page")}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
 
  <pre className="flight-message">{mailBody}</pre>{draft.channel==="email"&&<AttachmentPicker selected={attachments} change={setAttachments}/>}
 
  {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).copyFirst)void navigator.clipboard.writeText(mailBody).catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
 
- {draft.channel==="email"&&facts?.pnr&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {draft.channel==="email"&&facts?.pnr&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
  <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>
 
- {draft.channel==="email"&&<p>Use Gmail to send it yourself, or give Genie written permission above.</p>}{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
+ {draft.channel==="email"&&<p>{plan?.nextStep==="FLIGHT_status"?"This early status mail is optional. You send it yourself; Genie will not send it.":"Use Gmail to send it yourself, or give Genie written permission above."}</p>}{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?"I've called":"Yes, I've sent it"}</button>}</section>}
 
  {data.demo?.kind === "flight" && data.demo.round === 3 && data.demo.phase === "ready" && data.dueDate && data.demo.now < data.dueDate && <button className="button button-primary" disabled={busy} onClick={()=>run(()=>skipDemo(args))}>Skip to the bank check date</button>}
 

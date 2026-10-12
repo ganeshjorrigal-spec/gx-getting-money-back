@@ -1,0 +1,49 @@
+{
+  "mode": "Read saved synthetic facts; run new planner locally. No case mutation or deployment.",
+  "code": "RG-46SHVP",
+  "today": "2026-10-12",
+  "savedRoute": "OVERDUE",
+  "localPlan": {
+    "route": "WAIT",
+    "pastDue": false,
+    "owner": "IndiGo",
+    "moneyWith": "IndiGo",
+    "dueDate": "2026-10-21",
+    "dueSource": "F03",
+    "dueSourceText": "DGCA refund rule. The rule gives no start day; Refund Genie counts from your cancellation date (Refund Genie's reading). About 14 working days, Monday to Friday; holidays ignored.",
+    "rung": 2,
+    "nextStep": "FLIGHT_status",
+    "nextPerson": {
+      "company": "IndiGo",
+      "role": "Customer care email",
+      "value": "customer.experience@goindigo.in",
+      "email": "customer.experience@goindigo.in",
+      "url": "https://goindigo.in/contact-us.html",
+      "readAt": "2026-10-09",
+      "label": "VERIFIED"
+    },
+    "above": null,
+    "to": "customer.experience@goindigo.in",
+    "cc": [],
+    "questions": [],
+    "note": "Who owes you: still IndiGo. The rule puts the refund on the airline.",
+    "ruleId": "F03",
+    "body": "Dear Customer care email,\n\nI am the passenger requesting the refund for my IndiGo flight (PNR SAMPLE, booking ID QA-SAMPLE-5400), cancelled 1 Oct 2026, for Rs 5400.\n\nUnder DGCA refund rule, paragraph 3(c), this refund is due by 21 Oct 2026.\n\nPlease share the refund date and the payment reference (UTR or ARN).\n\nThank you.",
+    "subject": "Flight refund status",
+    "channel": "email",
+    "checkDate": "2026-10-21",
+    "amountOwed": 5400
+  },
+  "localDisplay": {
+    "pastDue": false,
+    "label": "Waiting, due 21 Oct 2026"
+  },
+  "missingCheckedLowerEmail": [
+    "Air India",
+    "MakeMyTrip",
+    "Goibibo",
+    "Cleartrip",
+    "Yatra",
+    "ixigo"
+  ]
+}

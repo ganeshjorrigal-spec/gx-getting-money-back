@@ -1,7 +1,7 @@
 import { greeting } from "./mail-copy";
 import { z } from "zod";
 import { addDays, addWorkingDays, dateValue, displayDate } from "./dates";
-import { flightContact, flightRule, type FlightContact } from "./flight-kb";
+import { flightContact, flightContacts, flightRule, type FlightContact } from "./flight-kb";
 
 const nullable = z.string().nullable();
 export const flightReadSchema = z.object({
@@ -18,7 +18,7 @@ export type FlightRead = z.infer<typeof flightReadSchema>;
 export type FlightQuestion = {id:string;text:string;options:string[]};
 export type FlightPlan = {
   route:"WAIT"|"OVERDUE"|"TRACE"|"NEED_INFO"|"NO_ROUTE"|"OUT_OF_SCOPE";
-  owner:string; moneyWith:string; dueDate:string|null; dueSource:string; dueSourceText:string;
+  pastDue?:boolean; owner:string; moneyWith:string; dueDate:string|null; dueSource:string; dueSourceText:string;
   rung:number; nextStep:string; nextPerson:FlightContact|null; above:FlightContact|null; to:string|null; cc:string[];
   questions:FlightQuestion[]; note:string; ruleId:string; body:string|null; subject:string; channel:string; checkDate:string|null; amountOwed:number|null;
 };
@@ -33,7 +33,7 @@ export function flightDue(read:FlightRead) {
 }
 export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;moneyWith?:string;dueDate?:string|null;checkDate?:string|null}, demoAddress?:string):FlightPlan {
   const due=flightDue(read), airline=read.airline??"Your airline", site=read.bookedVia??"Your travel site", direct=site==="direct";
-  const plan:FlightPlan={route:"NEED_INFO",owner:airline,moneyWith:prior?.moneyWith??"unknown",dueDate:due.date,dueSource:due.source,dueSourceText:due.text,rung:Math.max(2,prior?.rung??2),nextStep:"questions",nextPerson:null,above:flightContact(airline,"Appellate Authority"),to:null,cc:[],questions:[],note:"",ruleId:due.rule,body:null,subject:"Flight refund follow-up",channel:"email",checkDate:null,amountOwed:read.amountPaid};
+  const plan:FlightPlan={route:"NEED_INFO",pastDue:!!due.date&&due.date<today,owner:airline,moneyWith:prior?.moneyWith??"unknown",dueDate:due.date,dueSource:due.source,dueSourceText:due.text,rung:Math.max(2,prior?.rung??2),nextStep:"questions",nextPerson:null,above:flightContact(airline,"Appellate Authority"),to:null,cc:[],questions:[],note:"",ruleId:due.rule,body:null,subject:"Flight refund follow-up",channel:"email",checkDate:null,amountOwed:read.amountPaid};
   const ask=(id:string,text:string,options:string[]=[])=>plan.questions.push({id,text,options});
   if(read.scopeIssue&&read.scopeIssue!=="none"){plan.route="OUT_OF_SCOPE";plan.nextStep="none";plan.note="Refund Genie handles refunds for issued domestic flight tickets. Failed payments without a ticket and compensation-only claims are outside this flow.";return plan;}
   if(read.domestic===false){plan.route="OUT_OF_SCOPE";plan.nextStep="none";plan.note="Refund Genie handles domestic flight refunds. International flights and compensation claims are not in Refund Genie yet.";return plan;}
@@ -104,9 +104,18 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
    plan.route="OVERDUE";plan.nextStep="FLIGHT_mail";q(`My PNR is ${read.pnr??"not yet given"}${read.bookingId?`, booking ID ${read.bookingId}`:""}. Please locate this refund and share the refund date and reference. If you need bank details I will give them directly through your official channel, never through Refund Genie.`);
   }
   if(plan.rung>=4&&r.claim==="not_paid") {plan.channel="portal";plan.nextStep=plan.rung===4?"FLIGHT_airsewa":"FLIGHT_nch";plan.nextPerson=null;plan.to=null;plan.cc=[];plan.checkDate=addDays(today,30);plan.note=plan.rung===4?"You can file on the AirSewa app or portal named in the DGCA rule. The portal address needs Ganesh's check. Refund Genie's expectation: check again in 30 days, not an official deadline.":"Call National Consumer Helpline on 1915 or use consumerhelpline.gov.in. NCH says resolution may take up to 30 days. The consumer commission is a later option; Refund Genie does not file for you.";plan.body=plan.note+"\n\n"+plan.body;}
+  plan.pastDue=!!plan.dueDate&&plan.dueDate<today;
+  if(!demoAddress&&["waiting_airline","paid_site"].includes(r.claim)&&plan.dueDate&&plan.dueDate>=today&&plan.nextStep==="FLIGHT_mail"){
+    const company=r.claim==="waiting_airline"?airline:site;
+    plan.route="WAIT";plan.nextStep="FLIGHT_status";plan.checkDate=plan.dueDate;plan.channel="email";
+    plan.nextPerson=flightContacts.find(c=>c.company===company&&c.email&&c.label.startsWith("VERIFIED")&&["Customer care email","Refunds email","Customer support email","Email"].includes(c.role))??null;
+    plan.to=plan.nextPerson?.email??null;plan.cc=[];plan.above=null;plan.subject="Flight refund status";
+    const rule=plan.dueSource==="F22"?`${site}'s refund terms`:plan.dueSource==="estimate"?"Refund Genie's seven-day follow-up expectation (not a published company deadline)":plan.dueSource==="F01"?"DGCA refund rule, paragraph 3(a)":plan.dueSource==="F02"?"DGCA refund rule, paragraph 3(b)":"DGCA refund rule, paragraph 3(c)";
+    plan.body=`${greeting(plan.nextPerson,company+" support")}\n\nI am the passenger requesting the refund for my ${airline} flight (${identifier||"booking details to follow"}), cancelled ${displayDate(read.cancellationDate!)}${read.amountPaid!==null?`, for Rs ${read.amountPaid}`:""}.\n\nUnder ${rule}, this refund is due by ${displayDate(plan.dueDate)}.\n\n${r.claim==="paid_site"?"Please share the date you received the airline's refund, the refund date to my original payment method, and the payment reference (UTR or ARN).":"Please share the refund date and the payment reference (UTR or ARN)."}\n\nThank you.`;
+  }
   if(demoAddress&&plan.channel==="email"){const parts=demoAddress.split("@");const role=(name:string)=>`${parts[0]}+${name}@${parts[1]}`;const toAirline=direct||r.claim==="waiting_airline"||r.claim==="not_paid";plan.to=toAirline?role("airline"):role("travelsite");plan.cc=[toAirline?role("travelsite"):role("airline")];plan.nextPerson={company:toAirline?airline:site,role:toAirline?"Nodal Officer":"Grievance Officer",value:toAirline?"Nodal Officer, Demo Air (demo)":"Grievance Officer, DemoTrips (demo)",email:plan.to,url:null,readAt:today,label:"DEMO"};plan.above={...plan.nextPerson,company:airline,role:"Appellate Authority",value:"Appellate Authority, Demo Air (demo)"};}
-  if(plan.body&&plan.channel==="email")plan.body=plan.body.replace(/^Dear [^\n]+,/,greeting(plan.nextPerson,(direct?airline:site)+" support"));
-  if(!plan.to&&plan.channel==="email")plan.note=`We don't hold a checked address for ${plan.nextPerson?.company??(direct?airline:site)}. Paste the address from the company's own page. No address is invented.`;
+  if(plan.body&&plan.channel==="email")plan.body=plan.body.replace(/^Dear [^\n]+,/,greeting(plan.nextPerson,(plan.nextStep==="FLIGHT_status"?plan.moneyWith:direct?airline:site)+" support"));
+  if(!plan.to&&plan.channel==="email"&&plan.nextStep!=="FLIGHT_status")plan.note=`We don't hold a checked address for ${plan.nextPerson?.company??(direct?airline:site)}. Paste the address from the company's own page. No address is invented.`;
   return plan;
 }
 

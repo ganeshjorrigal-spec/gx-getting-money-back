@@ -39,6 +39,12 @@ READY FOR REVIEW: Ganesh accepted section 2b limits; log contains the two requir
 Privacy follow-ups and sample-case work stay deferred. CALL_MODE/CALL_ALLOWLIST untouched.
 
 ## Restyle Phase A (current priority, before sample case)
-- [ ] Ganesh/HQ decision on pending-airline cases before their deadline. Restyle prompt requires stopping for a flight/date-logic cause. Reproduced forced OVERDUE in lib/flight.ts; no application changes made.
+- [x] D-042 supplies the pending-airline decision. Fix built and tested below; wait for HQ review before restyle.
 - [ ] After that decision, Steps 1, 2, 5, 6, 7, one commit per step; calling copy only in app/copy.ts; preserve calls and mails hero; 375px/1280px regression proof. Steps 3/4 deferred.
 - [ ] No Cloudflare publish or npm run deploy; commit/push only, then HQ review.
+
+## D-042 priority before restyle
+- [x] Ganesh/HQ decision on pending-airline cases supplied by D-042.
+- [x] Tests first, minimal route/status mail, manual-only guards, due-date rechecks, pastDue display; original 201 tests unchanged, total 218 pass.
+- [x] Local sample proof and legacy screen recorded; no deployment, settings or keys.
+- [ ] Wait for HQ review of D-042 before resuming restyle Phase A. Nothing DONE. Sample job stays deferred.

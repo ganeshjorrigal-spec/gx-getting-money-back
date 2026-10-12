@@ -32,9 +32,9 @@ async function clearCheckins(ctx: MutationCtx, caseId: Id<"cases">) {
   }
 }
 
-async function scheduleCheckin(ctx: MutationCtx, caseId: Id<"cases">, date: string, reason: string) {
+async function scheduleCheckin(ctx: MutationCtx, caseId: Id<"cases">, date: string, reason: string, scheduledDate = date) {
   const checkinId = await ctx.db.insert("checkins", { caseId, date, reason, status: "scheduled" });
-  const at = Math.max(Date.now(), Date.parse(`${date}T04:30:00.000Z`));
+  const at = Math.max(Date.now(), Date.parse(`${scheduledDate}T04:30:00.000Z`));
   const scheduledId = await ctx.scheduler.runAt(at, internal.checkins.fire, { checkinId });
   await ctx.db.patch(checkinId, { scheduledId });
 }
@@ -208,9 +208,10 @@ export async function recordDraftSent(ctx:MutationCtx,item:import("./_generated/
     await ctx.db.insert("caseEvents", { caseId: item._id, type: genieCompany?"genie_mail_sent":"marked_sent", summary: genieCompany?`Genie mailed ${genieCompany}`:`You sent the ${draft.step} message`, actor: genieCompany?"agent":"user", createdAt: now });
     if (draft.channel === "email") await ctx.db.insert("gmailWatches", { caseId: item._id, draftId, sentAt: now });
     if(item.refundType === "flight") {
-      const checkDate=flightSendCheckDate(draft.channel,today,item.flightPlan?.checkDate);
+      const statusMail=draft.step==="FLIGHT_status";
+      const checkDate=statusMail?item.flightPlan?.dueDate:flightSendCheckDate(draft.channel,today,item.flightPlan?.checkDate);
       if(checkDate){
-        await scheduleCheckin(ctx,item._id,checkDate,"flight_refund");
+        await scheduleCheckin(ctx,item._id,checkDate,"flight_refund",statusMail&&checkDate<=today?addDays(today,1):checkDate);
         if(checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${checkDate}`,actor:"agent",createdAt:now});
         const passOn=item.facts?.reply?.claim==="paid_site"&&item.dueSource==="estimate";
         await ctx.db.patch(item._id,{flightPlan:{...item.flightPlan,checkDate,...(passOn?{dueDate:checkDate}:{})},...(passOn?{dueDate:checkDate}:{})});

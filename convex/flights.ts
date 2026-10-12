@@ -5,7 +5,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
 import { flightReadSchema, planFlight, type FlightRead, type FlightPlan, validFlightDate, flightWorkCount } from "../lib/flight";
-import { todayIST } from "../lib/dates";
+import { addDays, todayIST } from "../lib/dates";
 import { codedSubject } from "../lib/google-tracking";
 import { demoSubject } from "../lib/demo";
 import { redact } from "../lib/redact";
@@ -79,9 +79,9 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(10);
  const reply=inputs.find(i=>i.kind==="reply"&&i.runId===args.runId);if(reply)await ctx.db.patch(reply._id,{summary:redact(read.reply.summary).slice(0,240),keySentence:replyKeySentence(reply.text??"")});
  await ctx.db.insert("caseEvents",{caseId:item._id,type:reply?"reply_read":"triaged",summary:reply?redact(read.reply.summary).slice(0,180):`${plan.owner} owes the refund. ${plan.dueSourceText}`.slice(0,180),actor:"agent",createdAt:now});
- if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${plan.checkDate}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
+ if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${(plan.nextStep==="FLIGHT_status"&&plan.checkDate<=todayIST()?addDays(todayIST(),1):plan.checkDate)}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
  if(plan.body && item.factsConfirmedAt){
- if(plan.rung>=3&&plan.channel!=="bank"){
+ if(plan.rung>=3&&plan.channel!=="bank"&&plan.nextStep!=="FLIGHT_status"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
    plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.map(i=>`${todayIST(new Date(i.receivedAt??i.createdAt))} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");
  }await ctx.db.insert("drafts",{caseId:item._id,step:plan.nextStep,channel:plan.channel,to:plan.to??undefined,cc:plan.cc,subject:demoSubject(!!item.demo,codedSubject(plan.subject,item.code)),body:plan.channel==="email"?finishMail(redact(plan.body),item.code,[],item.name):redact(plan.body),attachChecklist:item.demo?[]:["Cancellation confirmation","Booking receipt","Dated replies so far"],status:"ready",createdAt:now});await ctx.db.patch(item._id,{draftsShown:item.draftsShown+1});await ctx.db.insert("caseEvents",{caseId:item._id,type:"draft_written",summary:`Prepared ${plan.nextStep}`,actor:"agent",createdAt:now});}
