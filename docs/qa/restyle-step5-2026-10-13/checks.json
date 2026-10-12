@@ -1,0 +1,98 @@
+[
+  {
+    "width": 375,
+    "screen": "landing",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 9
+  },
+  {
+    "width": 375,
+    "screen": "start",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 0
+  },
+  {
+    "width": 375,
+    "screen": "flight",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 5
+  },
+  {
+    "width": 375,
+    "screen": "mail",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 5
+  },
+  {
+    "width": 375,
+    "screen": "demo",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 3
+  },
+  {
+    "width": 375,
+    "screen": "terms",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 0
+  },
+  {
+    "width": 1280,
+    "screen": "landing",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 9
+  },
+  {
+    "width": 1280,
+    "screen": "start",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 0
+  },
+  {
+    "width": 1280,
+    "screen": "flight",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 5
+  },
+  {
+    "width": 1280,
+    "screen": "mail",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 5
+  },
+  {
+    "width": 1280,
+    "screen": "demo",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 3
+  },
+  {
+    "width": 1280,
+    "screen": "terms",
+    "greenOutsideLanded": 0,
+    "overflow": false,
+    "smallTargets": [],
+    "sourceLines": 0
+  }
+]
