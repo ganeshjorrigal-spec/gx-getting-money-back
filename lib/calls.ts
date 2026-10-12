@@ -6,9 +6,26 @@ export function phone(value:string) { const n=value.replace(/[ ()-]/g,""); retur
 export function phoneAllowed(value:string,list:string|undefined) { const n=phone(value);return !!n&&!!list?.split(/[\s,;]+/).some(v=>phone(v)===n); }
 export function officeHours(now:number) { const d=new Date(now+330*60000);return d.getUTCDay()!==0&&d.getUTCHours()>=10&&d.getUTCHours()<18; }
 export function nextOffice(now:number) { let d=new Date(now+330*60000);if(d.getUTCDay()!==0&&d.getUTCHours()<10)d.setUTCHours(10,0,0,0);else{d.setUTCDate(d.getUTCDate()+1);d.setUTCHours(10,0,0,0);}if(d.getUTCDay()===0)d.setUTCDate(d.getUTCDate()+1);return d.getTime()-330*60000; }
-export const needsPassenger=(text:string)=>/\botp\b|one[ -]?time|verification code|prove.*identity|only speak to.*passenger|password|card number|bank detail/i.test(text);
-// Remove sensitive turns before storage, model calls or confirming mail. Never keep a raw transcript.
-export function safeTranscript(text:string) { let identity=false;return text.slice(0,24000).split(/\r?\n/).map(line=>{if(needsPassenger(line)){identity=true;return "Care: Identity check requested. No sensitive details retained.";}if(identity&&/^(?:Passenger|User|Customer):/i.test(line))return "Passenger: [private response omitted]";return redact(line).replace(/\b(?:\d[ -]?){13,19}\b/g,"[number removed]");}).join("\n"); }
+export const PRIVATE_CALL_CUTOFF='Passenger was connected. Nothing after this point is kept.';
+export const MISSING_CALL_NOTE='Transcript unavailable or invalid. No transcript or recording link is kept.';
+const privateAsk=/\botp\b|one[ -]?time|verification code|prove.*identity|only speak to.*passenger|password|card number|bank detail|\bcode\b|\bdigits?\b|\bpin\b|\bcvv\b|date of birth|\bdob\b|registered (?:mobile|email)|last four|security question/i;
+const transferLine=(line:string)=>line===PRIVATE_CALL_CUTOFF||/^Transfer\s*:/i.test(line)||/\b(?:I'll|I will|I am going to) connect the passenger\b/i.test(line)||/^(?:Passenger|User|Customer)\s*:/i.test(line);
+export const needsPassenger=(text:string)=>text.split(/\r?\n/).some(line=>transferLine(line)||privateAsk.test(line));
+// Passenger speech is never retained, even if care used none of the private-ask words.
+export function safeTranscript(text:string) {
+ if(typeof text!=='string')return '';
+ const kept:string[]=[];
+ for(const line of text.slice(0,24000).split(/\r?\n/)) {
+  if(transferLine(line)){kept.push(PRIVATE_CALL_CUTOFF);break;}
+  if(/^Care\s*:/i.test(line)&&privateAsk.test(line)){kept.push('Care: Identity check requested. No sensitive details retained.');continue;}
+  kept.push(redact(line).replace(/\b(?:\d[ -]?){13,19}\b/g,'[number removed]'));
+ }
+ return kept.join('\n');
+}
+export function demoPhones(list:string|undefined) {
+ const saved=[...new Set((list??'').split(/[\s,;]+/).map(phone).filter((n):n is string=>!!n))];
+ return {passengerNumber:saved[0],number:saved[1]??saved[0],testPhoneNote:saved.length===1?'Only one test number is saved, so the patch-in cannot be tested.':undefined};
+}
 export function callGate(input:{active:boolean;authorised:boolean;demo:boolean;mode:CallMode;number:string;mobile:string;allowlist:string|undefined;now:number;dayCount:number;dailyReserved:number;budget:number;reserve:number;official:boolean}) {
  if(!input.active||!input.authorised)return "Give separate calling permission first";
  if(!phoneAllowed(input.number,input.allowlist)||!phoneAllowed(input.mobile,input.allowlist))return "Calling is limited to the saved test numbers";

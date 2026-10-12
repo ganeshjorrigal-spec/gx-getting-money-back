@@ -1,6 +1,6 @@
 # Current state (owned by Codex)
 
-Last updated: 11 October 2026.
+Last updated: 12 October 2026.
 
 ## Milestones
 - M2.5 READY FOR REVIEW, using Ganesh's accepted 3:10.731 demo run. Not DONE.
@@ -46,3 +46,11 @@ Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before e
 - Part 4 READY FOR REVIEW: live chase line, timed mail/reply/date timeline and labelled call details. 151 tests pass across 18 files; root type check and production build pass. Rohan story withheld pending exact-text approval. Part 5 READY FOR REVIEW: public flight demo, sample authority, two actual desk mails/replies and one labelled simulated care call. RG-BC9710 reached Money landed in 2:15.340 at 375px; saved/Gmail proof and all round screenshots in docs/qa. 157 tests, root type check and build pass. No visitor phone/Gmail login, no live or real-company contact. No milestone DONE.
 
 Next single action: HQ review of Parts 3–5 and the timed public demo. Live calling awaits Ganesh's explicit supervised go. Rohan story withheld until exact-text approval. Real-company sending and all live calling remain off.
+
+## 12 Oct pre-live privacy fix
+- READY FOR REVIEW. Stop retained transcripts at passenger connection, transfer events/tools or transfer-ended reasons. Keep known pre-transfer lines; if the boundary cannot be located, retain only the prescribed notice. Private asks cover all HQ trigger words. Passenger answers and recording links are removed before storage, reader input and confirming mail.
+- Missing/unparseable call evidence stores no conversation or recording link, with a visible call-record notice. An admin attachment cannot restore a recording to a private/transfer call.
+- Demo phone order uses only the saved list: first passenger, second airline. One-number fallback shows the explicit patch-in limitation. First-test instructions now require two phones.
+- Root type check and 187 tests across 20 files pass, including 30 new privacy/storage/phone checks. Four HQ probes retain no passenger answer or recording link. Both simulated fixture outcomes remain unchanged; plain PNR text is preserved.
+- No live call, real-company contact, environment/allow-list change or key file change. M2.6 remains ACTIVE; nothing marked DONE.
+- Deployed with npm run deploy: 0a0158f6-4556-4d47-af47-13ac66414415, 91 files. Live case HTML matches the export and served bundle includes both notices. Actual phone transfer remains untested.

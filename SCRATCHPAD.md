@@ -29,3 +29,6 @@ Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step ca
 - [x] Ganesh authorised Part 3 simulated-only work and saved CALL_ALLOWLIST. 149 tests, both call fixtures, actual test confirming mails and 375px call proof pass. No live calling authorised.
 - [x] Part 4 READY FOR REVIEW: show the chase, top next action, call details and honest landing promise. 151 tests pass. Rohan story withheld.
 - [x] Part 5 READY FOR REVIEW: public demo with two actual test mails/replies and one simulated call; RG-BC9710 closed in 2:15.340, all rounds captured at 375px. 157 tests, root type check and build pass. Live calls/recording/actual patch-in remain untested; no real company contacted.
+
+## 12 Oct pre-live privacy fix
+READY FOR REVIEW: four HQ probes, transfer cutoffs, malformed evidence, storage/recording guards, two-phone selection and visible notices checked. 187 tests and root type check pass. No live calls or allow-list/key changes. Next: HQ privacy review; live calling still awaits explicit supervised approval.
