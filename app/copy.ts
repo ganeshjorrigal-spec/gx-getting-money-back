@@ -1,5 +1,6 @@
+import {pricing,trialPriceLine,landingPriceLine} from '../lib/pricing';
 export { productName } from "../lib/product";
-export const guaranteeLine = "If your refund hasn't landed 30 days after its due date and you followed the steps, you get the ₹49 back.";
+export const guaranteeLine = pricing.guarantee;
 
 export const metaCopy = {
   title: "Refund Genie: who owes your flight refund?",
@@ -54,11 +55,11 @@ export const landingCopy = {
   handles: ["Event cancelled", "Postponed", "Venue changed", "Money gone, no ticket", "\"Refunded\" but not received", "Can't attend (we'll tell you honestly)"],
   handleLine: "BookMyShow, District and organisers' own ticket sites. Concerts, comedy, cricket, festivals.",
   pricingTitle: "Pricing",
-  freeTitle: "Free until 3 refunds land",
-  freeBody: "Every message, reply and follow-up is free until three refunds land on this device.",
-  paidTitle: "Then Rs 49 a year",
-  paidBody: "After three refunds land, one year covers every flight and event refund chase.",
-  under300: "Free until 3 refunds land. Then Rs 49 a year.",
+  freeTitle: `Free until ${pricing.trialLimit} refunds land`,
+  freeBody: `Every message, reply and follow-up is free until ${pricing.trialLimit} refunds land on this device.`,
+  paidTitle: `Then ${pricing.annualTitle}`,
+  paidBody: `After ${pricing.trialLimit} refunds land, one year covers every flight and event refund chase.`,
+  under300: trialPriceLine(),
   questionsTitle: "Questions",
   questions: [
     ["Do you contact the organiser for me?", "No. You send every message, from your own email or the app's chat. We write it and tell you where to send it. That keeps it real, and it keeps you in control."],
@@ -76,7 +77,7 @@ export const landingCopy = {
 };
 
 // Flight positioning is separate so the existing event screens keep their copy.
-export const annualGuaranteeLine = "If Refund Genie recovers nothing in that year, your Rs 49 comes back.";
+export const annualGuaranteeLine = pricing.guarantee;
 export const flightLandingCopy = {
  headerLink:"Try a demo",eyebrow:"For cancelled domestic flights",
  headline:"Flight cancelled. Refund still not in your account?",
@@ -102,7 +103,7 @@ export const flightLandingCopy = {
  ["You stay in control.","No login, no OTP, no bank details. Ever. If they need you on a call, Genie connects you. Stop Genie any time."],
  ["Every claim has a source.","The rule, the date, the company's own page. No guesswork."],
  ],
- priceLine:"Free until your first 3 refunds land. Then ₹49 a year.",
+ priceLine:landingPriceLine,
  realCaseTitle:"See a real case",realCaseNote:"Sample case. Made-up booking details, checked refund rules and contacts.",tryDemo:"Try the demo",
  howTitle:"How it works",
  how:[

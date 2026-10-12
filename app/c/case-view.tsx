@@ -14,10 +14,10 @@ import Link from "next/link";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { caseCopy as c, guaranteeLine, productName } from "../copy";
+import { caseCopy as c, productName } from "../copy";
 import { forgetCase, getDeviceId, saveCase } from "../../lib/case-link";
 import { addWorkingDays, displayDate, todayIST } from "../../lib/dates";
-import { buildGmailCompose, buildGoogleCalendar, buildIcs, buildMailto, buildUpiLink, checkinDate } from "../../lib/outbound";
+import { buildGmailCompose, buildGoogleCalendar, buildIcs, buildMailto, checkinDate } from "../../lib/outbound";
 import { redact } from "../../lib/redact";
 import { compressScreenshot } from "../../lib/images";
 import { caseInboxAddress, codedSubject } from "../../lib/google-tracking";
@@ -75,8 +75,6 @@ export default function CaseView({ code }: { code: string }) {
   const [waitlistContact, setWaitlistContact] = useState("");
   const [waitlistDone, setWaitlistDone] = useState(false);
   const [allEvents, setAllEvents] = useState(false);
-  const [payOpen, setPayOpen] = useState(false);
-  const [qrImage, setQrImage] = useState("");
   const [unknownAmount, setUnknownAmount] = useState("");
   const [feedbackWorth, setFeedbackWorth] = useState<boolean | null>(null);
   const [feedbackComment, setFeedbackComment] = useState("");
@@ -111,7 +109,6 @@ export default function CaseView({ code }: { code: string }) {
   const answerCheckin = useMutation(api.cases.answerCheckin);
   const removeCase = useMutation(api.cases.remove);
   const joinWaitlist = useMutation(api.waitlist.join);
-  const claimPayment = useMutation(api.payments.claim);
   const setAmount = useMutation(api.cases.setAmount);
   const sendFeedback = useMutation(api.feedback.send);
   const dismissTracking = useMutation(api.googleConnect.dismiss);
@@ -152,10 +149,6 @@ export default function CaseView({ code }: { code: string }) {
     if (!caseData?.demo || !demoDraftToOpen || !caseData.factsConfirmedAt || drafts?.[0]?.step !== demoDraftToOpen || drafts[0].status === "sent") return;
     setSendOpen(true); setDemoDraftToOpen(null);
   }, [caseData?.demo, caseData?.factsConfirmedAt, demoDraftToOpen, drafts]);
-  useEffect(() => {
-    if (!payOpen || !caseData?.upiVpa) return;
-    import("qrcode").then((qrcode) => qrcode.toDataURL(buildUpiLink(caseData.upiVpa!, caseData.upiName, code), { width: 320, margin: 2 })).then(setQrImage).catch(() => setQrImage(""));
-  }, [payOpen, caseData?.upiVpa, caseData?.upiName, code]);
   useEffect(() => {
     if (!caseData || caseData.factsConfirmedAt || detailsLoaded) return;
     setBookingId(caseData.facts?.bookingId || "");
@@ -364,13 +357,6 @@ export default function CaseView({ code }: { code: string }) {
     finally { setBusy(false); }
   }
 
-  async function paid() {
-    if (!token) return;
-    setBusy(true);
-    try { await claimPayment({ code, token }); setPayOpen(false); setNotice("Marked as paid. We will check it by hand."); }
-    catch { setNotice(c.error); }
-    finally { setBusy(false); }
-  }
 
   const invalid = ready && !token;
   const route = caseData?.route;
@@ -529,6 +515,5 @@ export default function CaseView({ code }: { code: string }) {
     {replyOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setReplyOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Their reply" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>What did they say?</h2><button className="text-button" onClick={() => setReplyOpen(false)}>Close</button></div><label>Their reply<textarea value={reply} onChange={(event) => setReply(event.target.value)} rows={8} placeholder="Paste their reply here" /></label><label>Add screenshot<input type="file" accept="image/*" onChange={(event) => setReplyImage(event.target.files?.[0] ?? null)} /></label>{replyImage && <p className="input-hint">{replyImage.name}</p>}<button className="button button-primary" onClick={submitReply} disabled={busy || (!reply.trim() && !replyImage)}>Read their reply</button></div></div>}
     {landedOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setLandedOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Money landed" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>It&apos;s in?</h2><button className="text-button" onClick={() => setLandedOpen(false)}>Close</button></div><label>How much came back? ₹<input type="number" min="0" step="0.01" value={landedAmount} onChange={(event) => setLandedAmount(event.target.value)} /></label><button className="button button-primary" disabled={busy || !landedAmount} onClick={confirmLanded}>Confirm and close case</button></div></div>}
     {deleteOpen && <div className="sheet-backdrop" role="presentation" onClick={() => setDeleteOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Delete case" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><h2>Delete this case?</h2><p>We&apos;ll remove your messages, screenshots and drafts. This can&apos;t be undone.</p><button className="button button-primary" disabled={busy} onClick={deleteCase}>Delete case</button><button className="button button-secondary" onClick={() => setDeleteOpen(false)}>Keep it</button></div></div>}
-    {payOpen && caseData?.upiVpa && <div className="sheet-backdrop" role="presentation" onClick={() => setPayOpen(false)}><div className="sample-sheet" role="dialog" aria-modal="true" aria-label="Stay on it" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><div className="sheet-heading"><h2>Stay on it till the money lands</h2><button className="text-button" onClick={() => setPayOpen(false)}>Close</button></div><p className="case-amount">₹49 for this case</p><ul className="checklist"><li>We check on the due date and tell you when to chase</li><li>Every next message is written from your case facts</li><li>Grievance officer and helpline steps, with the right rule cited</li><li>{guaranteeLine}</li></ul>{!isAndroid && qrImage && <img className="upi-qr" src={qrImage} alt="UPI payment QR for ₹49" />}{(isAndroid || isIOS) && <a className="button button-primary" href={buildUpiLink(caseData.upiVpa, caseData.upiName, code)}>Pay ₹49 by UPI</a>}{isIOS && qrImage && <a className="button button-secondary" href={qrImage} download={`refund-genie-${code}-upi.png`}>Save QR to Photos</a>}<p>UPI ID: {caseData.upiVpa} <button className="text-button" onClick={() => copy(caseData.upiVpa!)}>Copy</button></p><button className="text-button" onClick={() => copy("49.00")}>Copy amount</button><p className="input-hint">Add {code} in the payment note so we can match it.</p><button className="button button-secondary" disabled={busy} onClick={paid}>I&apos;ve paid</button><p className="example-source">We confirm payments by hand in our first weeks. If we can&apos;t find yours, we&apos;ll tell you here.</p></div></div>}
   </main>;
 }

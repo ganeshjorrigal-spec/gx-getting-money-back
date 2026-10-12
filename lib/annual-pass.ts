@@ -1,4 +1,5 @@
-export const annualGuarantee = "If Refund Genie recovers nothing in that year, your Rs 49 comes back.";
+import {pricing} from './pricing';
+export const annualGuarantee = pricing.guarantee;
 export function razorpayPaymentLink(value:string|undefined):string|null {
  try {if(!value)return null;const url=new URL(value);return url.protocol==="https:"&&!url.username&&!url.password&&(url.hostname==="rzp.io"||url.hostname==="razorpay.com"||url.hostname.endsWith(".razorpay.com"))?url.href:null;}catch{return null;}
 }
