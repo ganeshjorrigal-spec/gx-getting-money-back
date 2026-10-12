@@ -1,0 +1,2 @@
+# Keep the downloaded official logo files byte-for-byte, including on Windows.
+public/brands/* -text

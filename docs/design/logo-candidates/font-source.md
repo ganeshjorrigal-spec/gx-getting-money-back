@@ -1,0 +1,1 @@
+Fraunces Latin WOFF2 reused unchanged from the app's approved Next/Google Fonts production output (af4bf8399d1aacdf-s.p.woff2). The review page loads this local font and does not rely on a system fallback or a model-drawn wordmark. No new font family.

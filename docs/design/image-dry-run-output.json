@@ -1,0 +1,16 @@
+{
+  "mode": "dry-run",
+  "model": "gpt-image-2.5-flare",
+  "count": 12,
+  "skippedExisting": 0,
+  "size": "816x816",
+  "quality": "low",
+  "estimatedOutputUsd": 0.06156,
+  "estimatedPromptUsd": 0.018935,
+  "estimateBasis": "Official calculator output + rough characters/4 text tokens; no image inputs, retries or tax. Actual usage may differ.",
+  "maxAttempts": 24,
+  "cap": 40,
+  "spentImages": 0,
+  "source": "https://developers.openai.com/api/docs/guides/image-generation",
+  "paidRunApproved": false
+}

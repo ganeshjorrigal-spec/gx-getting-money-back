@@ -1,0 +1,15 @@
+{
+  "brandReviewCheck": {
+    "brokenImages": 0,
+    "logos": 8,
+    "overflow": false,
+    "width": 375
+  },
+  "imageReviewCheck": {
+    "generatedImages": 0,
+    "overflow": false,
+    "pendingSections": 12,
+    "width": 375,
+    "frauncesLoaded": true
+  }
+}

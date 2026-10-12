@@ -1,0 +1,66 @@
+[
+  {
+    "company": "IndiGo",
+    "file": "indigo.avif",
+    "sourcePage": "https://www.goindigo.in/",
+    "assetUrl": "https://www.goindigo.in/content/dam/s6web/in/en/assets/logo/IndiGo_logo_2x.png",
+    "sha256": "76d886ef5a3241cafb7874c26780811370fa577ddbe5c41ca9176d10e3f165ca",
+    "bytes": 16826
+  },
+  {
+    "company": "Air India",
+    "file": "air-india.svg",
+    "sourcePage": "https://www.airindia.com/",
+    "assetUrl": "https://www.airindia.com/adobe/dynamicmedia/deliver/dm-aid--3c6a707f-2e38-48d0-ac12-4751c4f554ba/AI_Logo_Red_New.svg",
+    "sha256": "ae8932a2a360f3b7b5113f561aac3aacfe46250f0591686bb5b05b042fcc6cf2",
+    "bytes": 4136
+  },
+  {
+    "company": "SpiceJet",
+    "file": "spicejet-sprite.png",
+    "sourcePage": "https://corporate.spicejet.com/SpiceMax.aspx",
+    "assetUrl": "https://corporate.spicejet.com/images/sprites_images_Corporate.png",
+    "sha256": "fca184b80f2ba43458e1258fa442d679474d193ffdfa21429b7a50c053dc760d",
+    "bytes": 101986
+  },
+  {
+    "company": "Akasa Air",
+    "file": "akasa-air.svg",
+    "sourcePage": "https://www.akasaair.com/",
+    "assetUrl": "https://assets.akasaair.com/f/167793/498x340/a2b86dbc83/akasa-orange-logo.svg",
+    "sha256": "ba0bc314fa2a576cfb9b87a43b5c03ae69eef32e5d0c9e8f9189491876d33a18",
+    "bytes": 923
+  },
+  {
+    "company": "MakeMyTrip",
+    "file": "makemytrip.avif",
+    "sourcePage": "https://www.makemytrip.com/",
+    "assetUrl": "https://promos.makemytrip.com/Growth/Images/3x/mmt_dt_header_icon_3x.png",
+    "sha256": "13476c55474505a8e855a9b2634b2d7f69029ebf6b8b460a453fc8183941771d",
+    "bytes": 8115
+  },
+  {
+    "company": "Goibibo",
+    "file": "goibibo-sprite.png",
+    "sourcePage": "https://www.goibibo.com/",
+    "assetUrl": "https://go-assets.ibcdn.com/u/GI/images/1736403968363-header-sprite.png",
+    "sha256": "95113f0a177c0437ee9b4aa931ed9f0ebdbf72b0f32e6c7875886ad9c57531be",
+    "bytes": 59027
+  },
+  {
+    "company": "Cleartrip",
+    "file": "cleartrip.svg",
+    "sourcePage": "https://www.cleartrip.com/",
+    "assetUrl": "https://www.cleartrip.com/",
+    "sha256": "d4e77d7503b667966841c1f056aadf7cd8015d15a9372843c18ad0dacf693449",
+    "bytes": 3823
+  },
+  {
+    "company": "EaseMyTrip",
+    "file": "easemytrip.svg",
+    "sourcePage": "https://www.easemytrip.com/",
+    "assetUrl": "https://images.emtcontent.com/brandlogo/emtlogo_new8.svg",
+    "sha256": "612ff176adda43f9bd445c9ee470b095dcd2da28240631f3b6ecd608e4377c63",
+    "bytes": 14730
+  }
+]
