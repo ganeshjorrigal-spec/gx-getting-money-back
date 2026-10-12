@@ -6,6 +6,7 @@ export const pricing = {
  annualTitle:'Rs 49 a year',
  payYear:'Pay Rs 49 for a year',
  loadPay:'Load payment and pay Rs 49',
+ landingGuarantee:'Nothing recovered in that year? You get the ₹49 back.',
  guarantee:'If Refund Genie recovers nothing in that year, your Rs 49 comes back.',
 };
 export const trialPriceLine=(limit=pricing.trialLimit)=>`Free until ${limit} refunds land. Then Rs ${pricing.annualRupees} a year.`;

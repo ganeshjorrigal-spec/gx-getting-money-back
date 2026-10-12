@@ -1,0 +1,18 @@
+[
+  {
+    "width": 375,
+    "greenInsideLanded": 4,
+    "greenOutsideLanded": 0,
+    "label": "It's in",
+    "overdueStamps": 0,
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "greenInsideLanded": 4,
+    "greenOutsideLanded": 0,
+    "label": "It's in",
+    "overdueStamps": 0,
+    "overflow": false
+  }
+]

@@ -1,3 +1,4 @@
+import {callingCopy} from '../app/copy';
 import {displayDate,todayIST,addDays} from './dates';
 import {visibleTimeline} from './timeline';
 import {callLabel} from './calls';
@@ -6,7 +7,7 @@ export function chaseNext(item:{stage:string;route?:string;chase?:{active:boolea
  if(item.stage.startsWith('CLOSED'))return 'The chase is closed.';
  if(item.flightPlan?.nextStep==='FLIGHT_status')return 'Waiting until the due date. You can send the optional status mail yourself below; Genie will not send it.';
  if(!item.chase?.active)return 'Genie is stopped. You can keep sending from your own Gmail.';
- if(call?.status==='queued'||call?.status==='reserved')return `Genie is on it. Next: ${callLabel(call.mode).toLowerCase()} with ${call.company}.`;
+ if(call?.status==='queued'||call?.status==='reserved')return callingCopy.nextCall(callLabel(call.mode),call.company);
  if(item.stage==='TRIAGING')return 'Genie is on it. Next: read their reply and choose the next step.';
  if(item.route==='TRACE')return `Genie is on it. Next: check your bank${item.flightPlan?.checkDate?` on ${displayDate(item.flightPlan.checkDate)}`:''}.`;
  if(item.demo?.phase.startsWith('waiting')||['ACTED','WAITING'].includes(item.stage))return `Genie is on it. Next: watch for ${company}'s reply.`;

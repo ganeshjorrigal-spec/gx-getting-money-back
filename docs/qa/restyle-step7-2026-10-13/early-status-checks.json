@@ -1,0 +1,30 @@
+[
+  {
+    "width": 375,
+    "name": "waiting",
+    "overdueStamps": 0,
+    "overflow": false,
+    "status": "Waiting, due 21 Oct 2026"
+  },
+  {
+    "width": 375,
+    "name": "followup",
+    "overdueStamps": 0,
+    "overflow": false,
+    "status": "Follow-up ready"
+  },
+  {
+    "width": 1280,
+    "name": "waiting",
+    "overdueStamps": 0,
+    "overflow": false,
+    "status": "Waiting, due 21 Oct 2026"
+  },
+  {
+    "width": 1280,
+    "name": "followup",
+    "overdueStamps": 0,
+    "overflow": false,
+    "status": "Follow-up ready"
+  }
+]

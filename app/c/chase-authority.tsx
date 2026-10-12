@@ -1,4 +1,5 @@
 "use client";
+import {callingCopy} from '../copy';
 import { useState } from "react";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -64,8 +65,8 @@ export function ChaseAuthority({
       {chase?.active ? (
         <>
           <p>Written permission saved. {status}</p>
-          <p>{mode==="live"?"Live calls can use only approved test numbers and separate permission.":"Calling is simulated for now. No phone is dialled."}</p>
-          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/>and to call {company}'s customer care for me, and connect me to the call if they need me</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>Save calling permission</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?"Start approved live test call":"Run simulated demo call"}</button>}
+          <p>{mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
+          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/>{callingCopy.permission(company)}</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
 
           <button
             disabled={busy}

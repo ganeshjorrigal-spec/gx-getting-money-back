@@ -1,84 +1,35 @@
-# Current state (owned by Codex)
+# Current state, 13 October 2026
 
-Last updated: 12 October 2026.
+## Priority and review gate
+M2.6 remains ACTIVE. D-042 mail fixes and restyle Phase A are READY FOR REVIEW, not DONE. Wait for HQ review. Ganesh must explicitly authorise any further Cloudflare publish. No deployment in this run.
 
-## Milestones
-- M2.5 READY FOR REVIEW, using Ganesh's accepted 3:10.731 demo run. Not DONE.
-- M2.6 ACTIVE. Flight build and addenda deployed; morning Gmail/demo proofs still pending.
+## D-042
+HQ accepted the pre-deadline route with two mail fixes. Implemented both with tests first and pushed 8cc942d: source-specific timing for F01/F02/F03/F22 and both estimates; company-support greetings for address contacts. The direct estimate says about 15 working days and explicitly is not DGCA/company deadline; only the travel-site pass-on estimate uses seven-day expectation. Officer greetings retained. Original route, due-date and manual-only sending guards retained.
 
-## Working release
-- Live frontend: https://refundgenie.app/ (Cloudflare); existing Convex address remains available.
-- Refund Genie name, four linked policy pages and configured public support email deployed. Existing responses Sheet renamed in place.
-- Fixed paid gemini-3.5-flash-lite; token counts only. Same-day F1-F16 16/16 and FL01-FL14 14/14 paid-model reports remain in docs/qa. Not rerun for this pricing change.
-- Real inbox matching, ten-minute job, calendar alerts and demo ladder unchanged. D-038 adds explicitly granted sending for the founder case inbox; passenger Gmail/calendar permissions are unchanged. Frozen Vercel config/deployment untouched.
+## Restyle Phase A
+Implemented Steps 1, 2, 5, 6 and 7, one commit each. Shared token palette, Fraunces/Public Sans/JetBrains Mono, receipt/source/next-move/status components, ordered flight landing, one annual price/guarantee config, remaining screens and policies. Main hero retains calls and mails them for you; editorial calling wording is in app/copy.ts and simulated/test-only notices remain visible.
 
-## D-035 verified checkout
-- Convex order creation, HMAC signature verification and confirmed annual pass deployed. Previous Rs 49 test payment on TB-1FQG0T is confirmed in Convex; coverage through 10 Oct 2027 survives reload. Ganesh confirmed checking its test-dashboard transaction. Safe proof and screenshots in docs/qa/razorpay-*.
-- Ganesh switched both Convex and .env.local to live Razorpay keys and explicitly requested redeployment. Safe configuration check confirms configured=true, keyMatches=true, testMode=false, publicIdIsLive=true. No keys printed or changed by Codex; previous mismatch is resolved. Rebuilt/deployed 91 files (24a40637-5774-4ca6-848f-7c777372121a); live post-trial Pay button enabled and setup error gone. Screenshot in docs/qa/razorpay-live-card-2026-10-10.jpg. No live order/payment created.
+D-042 labels preserved: Waiting, due <date>; Follow-up ready; Overdue only after due date. Overdue display uses source units. Estimates and chosen reminders are not labelled as official deadlines. Old unreachable per-case UPI sheet removed; backend payment/trial rules and annual checkout handlers unchanged.
 
-## D-036 free trial
-- Three landed refunds per device across flights and events are free. Every draft is prepared; after the allowance, unsent drafts require the existing annual checkout. An active annual pass skips payment. Demos and hand-helped cases never count or see the card. FREE_LANDED_REFUNDS defaults to 3; counter caps at the allowance.
-- Shared trial counter/payment card, landing, Terms and Refund policy copy deployed. Event annual recovery records join the unchanged paid-year guarantee.
-- 103 tests pass; type check and production build pass. npm run deploy pushed Convex functions/index and 91 static files. Live 0/3 and 3/3 screens checked. Safe query proof and screenshots in docs/qa/free-trial-*.
-- Synthetic fixture TB-37ECCC is past the trial and retained as a QA fixture. Checkout now uses live keys; the fixture is not a test-mode payment link. It has no recipient and must not be emailed. Fixtures have no AI/mail/Sheet side effects; private fixture links remain only in ignored files/browser.
+## Verification
+- 234 unit tests across 27 files pass; original 218 unchanged.
+- Type check and production static export pass.
+- Paid event eval 16/16 and flight eval 14/14 pass after every Phase A step.
+- Six required screens at 375px and 1280px, plus loading, all policies, public chase demo, pre-deadline states and landed state. No horizontal scroll, targets below 44px or green outside landed.
+- Built Start page flight/event controls and Privacy link checked. No form submit or real-company contact.
+- Proof index: docs/qa/restyle-step7-2026-10-13/README.md. Checkpoint folders for Steps 1, 2, 5 and 6. Full append-only evidence: docs/log/2026-10-13.md.
 
-## Morning proof list
-1. Gmail flight reply proof PASSED on TB-795645: scheduled job matched one test-account reply, live banner without reload, unknown sender confirmation, bank next step and 14 Oct check-in. Safe saved record and three screenshots in docs/qa/flight-gmail-*. No synthetic complaints to real companies.
-2. Three fresh complete timed flight demos: actual three replies, each round time and total, screenshots, bank Skip, It's in, work count and Demo Sheet row.
-3. Post-trial Rs 49 TEST payment proof remains outstanding. Ganesh has switched the current deployment to live keys; do not treat its checkout as test mode or switch keys back without his instruction. Previous pre-trial payment does not replace this test.
+## Hosting and restrictions
+First Cloudflare publish was reviewed earlier; refundgenie.app uses the existing Convex backend. PUBLIC_APP_URL supplies user-facing links. Ganesh accepted fresh domain trials/manual paid-year restore from an old active private case. Restore button is hidden on closed cases and carry-over rules remain undefined. No storage copying or limit change.
 
-## Other open checks
-Q10 AirSewa address, Q11 officer spot-check, Q17 full medical paragraph before enabling, Q19 hand-helped workflow, physical Android/iPhone, manual reconciliation and budget alert. Stores, M3/M4/T1 not advanced. Details and skipped checks remain in today's append-only log.
+This run made no Cloudflare publish, npm run deploy, backend push, calling-setting/allow-list/key change, live call or company mail. Existing Vercel demo stays frozen.
 
-## 11 Oct cold-walkthrough fixes
-- All four requested groups implemented and deployed. Own static policy pages, RG references with TB compatibility, clean mail closing/greetings/CC, reordered case and intake screens, payment-method prompt, deduplicated timeline and 44px targets.
-- Final type check and 114 unit tests pass. Same-day paid eval F1-F16 16/16 and FL01-FL14 14/14 pass. Counting-note fixture assertion moved from mail to case-screen explanation; underlying rules unchanged.
-- Final deploy: 6fd2c71e-fe5b-470b-945c-0f42533184e0, 91 static files. Policy HTTP responses match exported bytes. Six 375px live-page captures, safe case record and full synthetic draft are in docs/qa and docs/log/2026-10-11.md.
-- Inbox/support mailbox still tickback.cases@gmail.com; no Gmail settings changed. Gmail compose opening remains blocked by saved browser permission. Physical phone testing remains outstanding.
-- Nothing DONE. M2.6 remains ACTIVE; original proof list above is still pending.
+## Outstanding work
+- HQ review of Phase A; Phase B Steps 3/4 require dry run/go and logo/illustration approval. No asset generation/spend yet.
+- Sample-case job and privacy follow-ups deferred behind review.
+- Original M2.6 three timed flight demos and post-trial Rs 49 TEST payment proof remain outstanding; current payment setup uses Ganesh's live keys, so do not switch or pretend a fixture payment is test mode.
+- Gmail reply proof was recorded previously for TB-795645; not repeated for this restyle.
+- Missing checked lower support addresses for six companies, medical-rule source checks, physical Android/iPhone and other launch checks remain as recorded in earlier logs.
+- D-038 Parts 1–5 and pre-live privacy fix were previously READY FOR REVIEW with test-only mail/simulated-call evidence. No new live calling authority is inferred from this UI work.
 
-## D-038 Genie chases
-- Part 1 READY FOR REVIEW: Your first step, case-derived checklist and direct look-in/tax explanation deployed. Three fixture outputs saved in docs/qa/chase-part1-fixtures-2026-10-11.json; live first-step card checked. 123 tests and type check pass.
-- Payment-answer hotfix also deployed and pushed (1ef4991), with 120 tests and live missing-facts proof logged.
-- Part 2 READY FOR REVIEW: written authority/PDF, allow-list-only mail chase, daily company caps, passenger updates and Stop deployed. Ganesh configured the allow-list and granted case-inbox read/send permission. One requested To-only permission check passed, then RG-8VX0ZA sent three mails and read three actual demo replies over ten skipped days in one thread. Money holder/next contact switched airline, travel site, bank; formal airline responsibility remains unchanged. Stop blocked another dispatch. Safe proof in docs/qa/chase-part2-mail-proof-2026-10-11.json.
-- 139 tests across 15 files, root type check and production build pass. Final deployment 619d2809-23fc-4e0c-bdac-c2d5604ac32a, 91 files. Live case checked at 375px. No real-company mail or call. The saved allow-list was never widened; Gmail plus roles match its exact base mailbox only.
-- Part 3 READY FOR REVIEW as simulated work only under D-040. Default/fallback simulated transport, separate call permission, exact phone allow-list, office hours, two/day cap, cost reservation, safe transcripts, passenger patch-in fixture, normal reply reader and actual test-only confirming mails verified. 149 tests pass; root type check and build pass. No Vapi request or live call. Proof: docs/qa/chase-part3-simulated-2026-10-11.json and 375px call screenshot.
-- Part 4 READY FOR REVIEW: live chase line, timed mail/reply/date timeline and labelled call details. 151 tests pass across 18 files; root type check and production build pass. Rohan story withheld pending exact-text approval. Part 5 READY FOR REVIEW: public flight demo, sample authority, two actual desk mails/replies and one labelled simulated care call. RG-BC9710 reached Money landed in 2:15.340 at 375px; saved/Gmail proof and all round screenshots in docs/qa. 157 tests, root type check and build pass. No visitor phone/Gmail login, no live or real-company contact. No milestone DONE.
-
-Next single action: HQ review of Parts 3–5 and the timed public demo. Live calling awaits Ganesh's explicit supervised go. Rohan story withheld until exact-text approval. Real-company sending and all live calling remain off.
-
-## 12 Oct pre-live privacy fix
-- READY FOR REVIEW. Stop retained transcripts at passenger connection, transfer events/tools or transfer-ended reasons. Keep known pre-transfer lines; if the boundary cannot be located, retain only the prescribed notice. Private asks cover all HQ trigger words. Passenger answers and recording links are removed before storage, reader input and confirming mail.
-- Missing/unparseable call evidence stores no conversation or recording link, with a visible call-record notice. An admin attachment cannot restore a recording to a private/transfer call.
-- Demo phone order uses only the saved list: first passenger, second airline. One-number fallback shows the explicit patch-in limitation. First-test instructions now require two phones.
-- Root type check and 187 tests across 20 files pass, including 30 new privacy/storage/phone checks. Four HQ probes retain no passenger answer or recording link. Both simulated fixture outcomes remain unchanged; plain PNR text is preserved.
-- No live call, real-company contact, environment/allow-list change or key file change. M2.6 remains ACTIVE; nothing marked DONE.
-- Deployed with npm run deploy: 0a0158f6-4556-4d47-af47-13ac66414415, 91 files. Live case HTML matches the export and served bundle includes both notices. Actual phone transfer remains untested.
-
-
-## Cloudflare first publish
-- READY FOR REVIEW. First Cloudflare publish completed: refundgenie.app and www custom domains, www 308 redirect. Worker version f7951deb-35d8-46a4-abee-8f4f557fb24a. Static site only; same Convex backend.
-- deploy:web builds the static export and publishes it with pinned Wrangler. Existing deploy command remains for Convex. PUBLIC_APP_URL was set by Ganesh and drives private case, calendar, demo-share and chase-update links; server callback/webhook addresses remain on Convex.
-- Old Convex frontend updated with the moved notice and exact saved-cases sentence; upload 398020fd-ef60-4ed0-9707-8bd3e882d8d1, 92 files. Old case links work on both addresses. No cross-address storage copying.
-- Ganesh accepts fresh trials and manual paid-year restore from active cases; limit rules unchanged. Closed cases hide the restore button; trial/paid carry-over rules remain undefined. Two lines recorded under For HQ.
-- 201 tests across 22 files, type check, export build and Wrangler dry run pass. Live six-page HEAD/HTML proof, synthetic flight creation/booking confirmation/draft/case card, observed Gmail compose URL and old-case proof recorded in docs/qa/cloudflare-*. Both saved-list and moved notices checked in browser.
-- Existing synthetic case displays Overdue with a future due date. Logged for HQ; flight logic was outside this job and was not changed.
-- No keys/tokens, calls, allow-list changes or live payments. Nothing DONE.
-
-Next: wait for HQ review. Further Cloudflare publishing needs Ganesh's explicit chat instruction. Privacy follow-ups and sample-case job remain deferred. Ganesh still needs the Razorpay website and Google consent-screen URL updates listed in today's log.
-
-## Restyle Phase A: stopped at the flight-logic gate (12 Oct)
-- Pulled 58d55d5 and read the updated restyle prompt and required decisions. Cloudflare first publish was accepted by HQ in the pulled review.
-- Reproduced the saved synthetic RG-46SHVP case on 12 Oct: waiting_airline reply, route OVERDUE, due 21 Oct, zero working days late. The same facts with no reply produce WAIT and no next mail. lib/flight.ts waiting_airline branch unconditionally overrides the due-date route and schedules an early mail/check-in; this is flight logic, not only display wording.
-- Stopped as explicitly required. No restyle step implemented; no planner/date changes, publish, deployment, call, mail, payment or key changes. Steps 3/4 and sample-case work remain deferred.
-- Safe cause proof: docs/qa/restyle-overdue-cause-2026-10-12.json. Existing-case screenshots at 375px and 1280px saved as docs/qa/restyle-blocker-*. These are blocker captures, not Phase A/regression acceptance proof. No new test/eval run because application code is unchanged.
-
-D-042 supplies that decision. The fix below is READY FOR REVIEW; Phase A waits for HQ acceptance. Nothing DONE for Phase A.
-
-## D-042 pre-deadline route
-READY FOR REVIEW, not DONE. Pending-airline and paid-site cases now WAIT until their due date has passed, with an optional user-only FLIGHT_status mail to checked lower support contacts. Reply-driven mail/routes retained; pastDue governs Overdue labels. Real status check-ins rerun the planner at the deadline and next morning without increasing the rung; manual sends preserve the deadline. Sending guards reject status mail even on stale READY records.
-218 unit tests pass, including the original 201 unchanged; type check passes. Local static build and legacy-case screen checked. New planner proof from RG-46SHVP facts shows Waiting, due 21 Oct 2026. Missing lower email contacts and the full branch audit are in today's log; safe proof in docs/qa/pre-deadline-proof-2026-10-12.json.
-No Cloudflare publish, npm run deploy, backend push, calling/allow-list/key changes. This fix is committed code only; live backend/site unchanged. Wait for HQ review before restyle Phase A. Earlier requirement to obtain a flight decision is satisfied by D-042; restyle remains paused for this review.
-
-## 13 Oct HQ mail fixes and Phase A
-HQ accepted D-042 with two mail fixes. Both are fixed with tests first: source-specific timing and company-support greeting. 229 tests and type check pass. Phase A Steps 1, 2, 5, 6, 7 now authorised directly by Ganesh; build only, no Cloudflare/npm run deploy/backend push, calling settings or keys. Nothing DONE; review at the end of Phase A.
+Next: HQ review. Nothing marked DONE.
