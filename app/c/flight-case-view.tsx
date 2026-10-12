@@ -148,7 +148,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {plan&&data.route!=="NEED_INFO"&&<ReceiptSlip
 
-  status={<StatusBadge kind={data.stage==='CLOSED_LANDED'?'landed':status?.pastDue?'overdue':data.route==='WAIT'?'waiting':'ready'} label={data.stage==='CLOSED_LANDED'?"It's in":status?.pastDue?'Overdue':status?.label??'Follow-up ready'}/>}
+  status={status?.pastDue&&data.stage!=='CLOSED_LANDED'?undefined:<StatusBadge kind={data.stage==='CLOSED_LANDED'?'landed':status?.pastDue?'overdue':data.route==='WAIT'?'waiting':'ready'} label={data.stage==='CLOSED_LANDED'?"It's in":status?.pastDue?'Overdue':status?.label??'Follow-up ready'}/>}
 
   stamp={status?.pastDue&&!data.stage.startsWith('CLOSED')?`OVERDUE · ${status.delay} ${status.delayUnit.toUpperCase()}`:undefined}
 
@@ -166,7 +166,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
   ]}>
 
-  <p className='receipt-status'>{status?.label}</p>
+  {!status?.pastDue&&<p className='receipt-status'>{status?.label}</p>}
 
   <p>{facts?.bookedVia!=='direct'?'You booked on a travel site, so the airline is responsible for your refund.':'You booked direct, so the airline is responsible for your refund.'}</p><SourceLine href={refundRuleUrl}>DGCA refund rule, responsibility for refund</SourceLine>
 
