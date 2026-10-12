@@ -54,3 +54,7 @@ Next single action: HQ review of Parts 3–5 and the timed public demo. Live cal
 - Root type check and 187 tests across 20 files pass, including 30 new privacy/storage/phone checks. Four HQ probes retain no passenger answer or recording link. Both simulated fixture outcomes remain unchanged; plain PNR text is preserved.
 - No live call, real-company contact, environment/allow-list change or key file change. M2.6 remains ACTIVE; nothing marked DONE.
 - Deployed with npm run deploy: 0a0158f6-4556-4d47-af47-13ac66414415, 91 files. Live case HTML matches the export and served bundle includes both notices. Actual phone transfer remains untested.
+
+## Cloudflare first publish: waiting for Ganesh (12 Oct)
+- Pulled facee70 and read the updated domain prompt. Section 2b stops this job before publishing: a new device ID resets new-case trial/rate counts and does not automatically restore an old paid year. Old linked cases still reopen; the paid-year restore button is hidden on closed cases.
+- Asked Ganesh to choose whether to accept this behavior for first publish or wait for HQ's carry-over instructions. Cloudflare setup/login, web publish and PUBLIC_APP_URL changes remain pending. No application/deployment, calling, allow-list or key changes. Nothing marked DONE.
