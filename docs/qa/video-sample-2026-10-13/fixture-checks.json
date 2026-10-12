@@ -1,0 +1,26 @@
+[
+  {
+    "state": "videoInitial",
+    "forbidden": false,
+    "mailButtonLast": true,
+    "offer": false,
+    "overdue": 1,
+    "overflow": false
+  },
+  {
+    "state": "videoSent",
+    "forbidden": false,
+    "mailButtonLast": false,
+    "offer": false,
+    "overdue": 1,
+    "overflow": false
+  },
+  {
+    "state": "videoReply",
+    "forbidden": false,
+    "mailButtonLast": true,
+    "offer": false,
+    "overdue": 1,
+    "overflow": false
+  }
+]

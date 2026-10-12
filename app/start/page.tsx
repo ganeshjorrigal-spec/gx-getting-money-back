@@ -1,4 +1,5 @@
 "use client";
+import {isVideoDemoEntry} from '../../lib/video-demo';
 import {callingCopy} from '../copy';
 import { userError } from "../../lib/user-error";
 
@@ -24,7 +25,8 @@ export default function StartPage() {
   const [demoPicker, setDemoPicker] = useState(false);
   const [pasteHint, setPasteHint] = useState("");
   const autoDemoStarted=useRef(false);
-  useEffect(()=>{if(new URLSearchParams(location.search).get("demo")==="flight"&&!autoDemoStarted.current){autoDemoStarted.current=true;void startDemo("district","flight");}},[]);
+  const [videoEntry,setVideoEntry]=useState(false);
+  useEffect(()=>{const video=isVideoDemoEntry(location.search);if((video||new URLSearchParams(location.search).get("demo")==="flight")&&!autoDemoStarted.current){autoDemoStarted.current=true;setVideoEntry(video);void startDemo("district","flight",video);}},[]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const create = useMutation(api.cases.create);
@@ -95,18 +97,19 @@ export default function StartPage() {
     }
   }
 
-  async function startDemo(platform: "bookmyshow" | "district", kind: "flight"|"event" = "event") {
+  async function startDemo(platform: "bookmyshow" | "district", kind: "flight"|"event" = "event", selfSend=false) {
     if (working) return;
     setWorking(true); setError("");
     try {
       const token = makeToken();
       const hash=await tokenHash(token),deviceId=getDeviceId();
-      const result = kind==="flight"?await createChaseDemo({tokenHash:hash,deviceId}):await createDemo({ platform, kind, tokenHash:hash,deviceId });
+      const result = kind==="flight"&&!selfSend?await createChaseDemo({tokenHash:hash,deviceId}):await createDemo({ platform, kind, tokenHash:hash,deviceId });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
     } catch (error) { setError(userError(error)); setWorking(false); }
   }
 
+  if(videoEntry&&working)return <main className="case-shell"><p>Demo · sample flight</p><h1>Reading your message…</h1><span className="spinner"/><ol><li>Read message</li><li>Confirm facts</li><li>Choose next action</li></ol></main>;
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><button className="text-button" disabled={working} onClick={()=>startDemo("district","flight")}>See a real case</button></header>
     <div className="case-wrap intake-page">

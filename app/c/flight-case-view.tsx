@@ -1,4 +1,5 @@
 "use client";
+import {isSelfSendFlightDemo,demoCcRoles} from '../../lib/video-demo';
 import {airIndiaPortalFields} from '../../lib/flight-portal';
 import {callingCopy} from '../copy';
 
@@ -97,6 +98,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  const inbox=tracking?.inboxAddress?caseInboxAddress(tracking.inboxAddress,code):"";
 
+ const selfSendDemo=isSelfSendFlightDemo(data.demo);
  const ccList=[...(draft?.cc??[]),inbox].filter(Boolean);
 
  const cc=ccList.join(",");
@@ -117,7 +119,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  return <main className="case-shell flight-case"><header className="site-header"><Link className="wordmark" href="/">Refund Genie<span className="wordmark-dot">.</span></Link><Link className="text-link" href="/start">Start another case</Link></header><div className="case-wrap">
 
- <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{data.chase&&<p role="status">{chaseView?.next}</p>}
+ <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&data.chase&&<p role="status">{chaseView?.next}</p>}
 
  <EmailCaseLink code={code} contact={data.contact} link={privateCaseUrl(data.publicAppUrl || location.origin, code, token)}/>
 
@@ -143,7 +145,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {facts.bookedVia!=="direct"&&<><label htmlFor="flight-booking">Travel-site booking ID (if you have it)</label><input id="flight-booking" value={bookingId} onChange={e=>setBooking(e.target.value)}/></>}
 
- <label htmlFor="flight-contact">Phone or email (optional)</label><input id="flight-contact" value={contact} onChange={e=>setContact(e.target.value)}/><p>So Ganesh can follow up.</p>
+ {!selfSendDemo&&<><label htmlFor="flight-contact">Phone or email (optional)</label><input id="flight-contact" value={contact} onChange={e=>setContact(e.target.value)}/><p>So Ganesh can follow up.</p></>}
 
  {correcting?<><label htmlFor="flight-correction">What should we change?</label><textarea id="flight-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(()=>confirm({...args,pnr,correction}))}>Read the correction</button></>:<><button className="button button-primary" disabled={busy||!pnr.trim()} onClick={()=>run(()=>confirm({...args,pnr,bookingId,contact}))}>Looks right</button><button className="text-button" onClick={()=>setCorrecting(true)}>Not quite</button></>}</section>}
 
@@ -179,7 +181,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  </ReceiptSlip>}
 
- {data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {!selfSendDemo&&data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
  {plan?.portal&&facts&&<NextMoveCard title="Your refund form">
  <p>{plan.portal.subcategory?`Choose “${plan.portal.subcategory}”.`:'Already requested a refund? Choose “Status Check on Pending Refund”. No request made? Choose “New Refund Request”.'}</p>
@@ -195,18 +197,19 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {data.factsConfirmedAt&&draft&&!plan?.portal&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<NextMoveCard title={plan?.nextStep==="FLIGHT_status"?"Your optional status mail":`Your next ${draft.channel==="email"?"mail":"step"}`}>
 
- {draft.channel==="email"&&<><p>To: {draft.to||(plan?.nextStep==="FLIGHT_status"?"Use the company's own support page":"Paste the address from the company's own page")}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
+ {draft.channel==="email"&&<><p>To: {draft.to||(plan?.nextStep==="FLIGHT_status"?"Use the company's own support page":"Paste the address from the company's own page")}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList roles={selfSendDemo?demoCcRoles(ccList):undefined} addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
 
- <pre className="flight-message">{mailBody}</pre>{draft.channel==="email"&&<AttachmentPicker selected={attachments} change={setAttachments}/>}
+ <pre className="flight-message">{mailBody}</pre>{!selfSendDemo&&draft.channel==="email"&&<AttachmentPicker selected={attachments} change={setAttachments}/>}
 
  {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).copyFirst)void navigator.clipboard.writeText(mailBody).catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
 
- {draft.channel==="email"&&facts?.pnr&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {!selfSendDemo&&draft.channel==="email"&&facts?.pnr&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
- <button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>
+ {!selfSendDemo&&<button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>}
 
- {draft.channel==="email"&&<p>{plan?.nextStep==="FLIGHT_status"?"This early status mail is optional. You send it yourself; Genie will not send it.":"Use Gmail to send it yourself, or give Genie written permission above."}</p>}{!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?callingCopy.calledButton:"Yes, I've sent it"}</button>}</NextMoveCard>}
+ {!selfSendDemo&&draft.channel==="email"&&<p>{plan?.nextStep==="FLIGHT_status"?"This early status mail is optional. You send it yourself; Genie will not send it.":"Use Gmail to send it yourself, or give Genie written permission above."}</p>}{!selfSendDemo&&!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?callingCopy.calledButton:"Yes, I've sent it"}</button>}</NextMoveCard>}
 
+ {selfSendDemo&&data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&data.demo?.round!==3&&<button className="button button-primary" disabled={busy||!opened} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>Yes, I've sent it</button>}
  {data.demo?.kind === "flight" && data.demo.round === 3 && data.demo.phase === "ready" && data.dueDate && data.demo.now < data.dueDate && <button className="button button-primary" disabled={busy} onClick={()=>run(()=>skipDemo(args))}>Skip to the bank check date</button>}
 
  {data.demo?.phase === "timed_out" && <section className="case-card"><p>The demo check stopped after its time limit.</p><button disabled={busy} onClick={()=>run(()=>retryDemo(args))}>Check again</button></section>}
@@ -225,7 +228,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {data.stage==="ERROR"&&<button disabled={busy} onClick={()=>run(()=>retry(args))}>Try again</button>}
 
- <section className="case-card"><h2>Your messages</h2>{replyHistory?.map((row:{_id:string;text:string;summary:string;date:string})=><details key={row._id} id={`flight-reply-${row._id}`}><summary>Reply · {date(row.date)} · {row.summary||"Read the original"}</summary><SourceLine>From the company’s saved reply</SourceLine><pre className="flight-message">{row.text}</pre></details>)}{drafts?.map((row:{_id:string;subject?:string;body:string|null;createdAt:number;status:string})=><details key={row._id}><summary>{row.subject} · {date(todayIST(new Date(row.createdAt)))} · {row.status}</summary><SourceLine>Prepared from your saved case facts on the date shown</SourceLine><pre className="flight-message">{row.body??"Annual plan unlocks this follow-up."}</pre></details>)}{facts?.reply.claim!=="none"&&<button className="text-button" disabled={busy} onClick={()=>setCorrecting(!correcting)}>Not quite: correct the reply read</button>}{correcting&&data.route!=="NEED_INFO"&&data.factsConfirmedAt&&<><label htmlFor="history-correction">What should we change?</label><textarea id="history-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(async()=>{await confirm({...args,pnr,correction});setCorrecting(false);setCorrection("");})}>Read my correction</button></>}</section><CallHistory {...args}/><section className="case-timeline"><h2>The chase</h2><ol>{(chaseView?.events??timeline)?.map((row:any)=><li key={row._id}>{row.summary} · <time dateTime={new Date(row.createdAt).toISOString()}>{new Date(row.createdAt).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})} IST</time><SourceLine>Recorded in this case’s activity history</SourceLine></li>)}</ol></section><footer className="case-footer-actions"><PolicyFooter /><button className="text-button danger-text" disabled={busy} onClick={()=>{if(window.confirm("Delete this case and its saved messages?"))void run(async()=>{await remove(args);forgetCase(code);window.location.assign("/start");});}}>Delete this case</button></footer>
+ <section className="case-card"><h2>Your messages</h2>{replyHistory?.map((row:{_id:string;text:string;summary:string;date:string})=><details key={row._id} id={`flight-reply-${row._id}`}><summary>Reply · {date(row.date)} · {row.summary||"Read the original"}</summary><SourceLine>From the company’s saved reply</SourceLine><pre className="flight-message">{row.text}</pre></details>)}{drafts?.map((row:{_id:string;subject?:string;body:string|null;createdAt:number;status:string})=><details key={row._id}><summary>{row.subject} · {date(todayIST(new Date(row.createdAt)))} · {row.status}</summary><SourceLine>Prepared from your saved case facts on the date shown</SourceLine><pre className="flight-message">{row.body??"Annual plan unlocks this follow-up."}</pre></details>)}{facts?.reply.claim!=="none"&&<button className="text-button" disabled={busy} onClick={()=>setCorrecting(!correcting)}>Not quite: correct the reply read</button>}{correcting&&data.route!=="NEED_INFO"&&data.factsConfirmedAt&&<><label htmlFor="history-correction">What should we change?</label><textarea id="history-correction" value={correction} onChange={e=>setCorrection(e.target.value)}/><button disabled={busy||!correction.trim()} onClick={()=>run(async()=>{await confirm({...args,pnr,correction});setCorrecting(false);setCorrection("");})}>Read my correction</button></>}</section>{!selfSendDemo&&<CallHistory {...args}/>}<section className="case-timeline"><h2>The chase</h2><ol>{(chaseView?.events??timeline)?.map((row:any)=><li key={row._id}>{row.summary} · <time dateTime={new Date(row.createdAt).toISOString()}>{new Date(row.createdAt).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})} IST</time><SourceLine>Recorded in this case’s activity history</SourceLine></li>)}</ol></section><footer className="case-footer-actions"><PolicyFooter /><button className="text-button danger-text" disabled={busy} onClick={()=>{if(window.confirm("Delete this case and its saved messages?"))void run(async()=>{await remove(args);forgetCase(code);window.location.assign("/start");});}}>Delete this case</button></footer>
 
  </>}
 

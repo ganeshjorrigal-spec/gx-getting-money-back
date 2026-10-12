@@ -31,5 +31,13 @@ export function renderProof(){
  pages.chaseDemo=renderToStaticMarkup(<PublicChaseDemo code='RG-QATEST' token='visual-fixture' data={demoData}/>);
  setProofData({item:{...item,stage:'CLOSED_LANDED',recoveredPaise:624000},drafts:[]});pages.landed=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
  const airIndia={...r,airline:'Air India',bookedVia:'direct',cancellationDate:'2026-10-10',supportContacted:false};const aip=planFlight(airIndia,'2026-10-13');setProofData({item:{...item,stage:'WAITING',route:aip.route,name:'Sample Flyer',facts:airIndia,flightPlan:aip},drafts:[]});pages.airIndiaPortal=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
+ const videoFacts={...r,airline:'Demo Air',bookedVia:'DemoTrips'};
+ const vp=planFlight(videoFacts,'2026-10-13',undefined,'demo@example.invalid');
+ const vd={...item,stage:'READY',facts:videoFacts,flightPlan:vp,demo:{kind:'flight',round:0,phase:'ready',now:'2026-10-13',expiresAt:Date.now()+86400000}};
+ const videoDraft=(p:any)=>[{...drafts[0],to:p.to,cc:p.cc,subject:'Demo: Flight refund follow-up [RG-QATEST]',body:finishMail(p.body,'RG-QATEST')}];
+ setProofData({item:vd,drafts:videoDraft(vp)});pages.videoInitial=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
+ setProofData({item:{...vd,stage:'SENT',demo:{...vd.demo,round:1,phase:'waiting_desk'}},drafts:[{...videoDraft(vp)[0],status:'sent'}]});pages.videoSent=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
+ const replyFacts={...videoFacts,reply:{...videoFacts.reply,claim:'waiting_airline' as const,fromCompany:'DemoTrips',pointsAt:'Demo Air'}};const rp=planFlight(replyFacts,'2026-10-13',undefined,'demo@example.invalid');
+ setProofData({item:{...vd,facts:replyFacts,flightPlan:rp,newReply:{_id:'fixture-reply',receivedAt:Date.parse('2026-10-13T00:00:00Z'),summary:'DemoTrips says the refund is pending with Demo Air.',keySentence:'The refund is pending with Demo Air.'},demo:{...vd.demo,round:1}},drafts:videoDraft(rp)});pages.videoReply=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
  return pages;
 }
