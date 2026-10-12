@@ -1,4 +1,5 @@
-export function greeting(contact?:{value:string;role:string}|null, fallback="Support team") {
+export function greeting(contact?:{value:string;role:string;company?:string}|null, fallback="Support team") {
+ if(contact&&["Customer care email","Refunds email","Customer support email","Email"].includes(contact.role))return `Dear ${contact.company?contact.company+" support":fallback},`;
  const candidate=contact?.value.split(",")[0].trim();
  const named=candidate&&candidate!==contact?.role&&!/@|\d{5}|demo|https?:/i.test(candidate);
  return `Dear ${named?candidate:contact?.role??fallback},`;
