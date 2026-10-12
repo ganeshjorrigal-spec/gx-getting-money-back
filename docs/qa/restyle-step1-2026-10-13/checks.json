@@ -1,0 +1,98 @@
+[
+  {
+    "width": 375,
+    "screen": "landing",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 375,
+    "screen": "start",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 375,
+    "screen": "flight",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 375,
+    "screen": "mail",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 375,
+    "screen": "demo",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 375,
+    "screen": "terms",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "landing",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "start",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "flight",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "mail",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "demo",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  },
+  {
+    "width": 1280,
+    "screen": "terms",
+    "bg": "rgb(247, 246, 241)",
+    "font": "\"Public Sans\", \"Public Sans Fallback\", sans-serif",
+    "overflow": false,
+    "smallTargets": []
+  }
+]

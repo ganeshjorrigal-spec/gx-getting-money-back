@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Newsreader } from "next/font/google";
+import { Fraunces, Public_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { metaCopy } from "./copy";
 import { DomainNotice } from "./domain-notice";
 
-const geist = Geist({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-geist",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-newsreader",
-  weight: ["500", "600"],
-});
+const fraunces = Fraunces({ subsets: ["latin", "latin-ext"], variable: "--font-fraunces", weight: ["500", "700"] });
+const publicSans = Public_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-public-sans", weight: ["400", "600"] });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin", "latin-ext"], variable: "--font-jetbrains-mono", weight: "400" });
 
 export const metadata: Metadata = {
   title: metaCopy.title,
@@ -25,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-IN" className={`${geist.variable} ${newsreader.variable}`}>
+    <html lang="en-IN" className={`${fraunces.variable} ${publicSans.variable} ${jetbrainsMono.variable}`}>
       <head>{process.env.CONVEX_STATIC_EXPORT === "1" && <script dangerouslySetInnerHTML={{ __html: "(()=>{const m=location.pathname.match(/^\\/c\\/((?:TB|RG)-[A-Z0-9]{6})\\/?$/);if(m)location.replace('/c/index.html?code='+m[1]+location.hash)})()" }} />}</head>
       <body><DomainNotice />{children}</body>
     </html>
