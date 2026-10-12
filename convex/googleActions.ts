@@ -7,6 +7,7 @@ import { v } from "convex/values";
 import { encryptToken, decryptToken } from "../lib/token-crypto";
 import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAddress, caseInboxAllowed, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "../lib/google-tracking";
 import { todayIST } from "../lib/dates";
+import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 
 const siteUrl = () => {
   if (!process.env.CONVEX_SITE_URL) throw new Error("Convex site URL is missing");
@@ -79,7 +80,7 @@ export async function googleJson<T>(url: string, token: string, init?: RequestIn
 
 export const finishOauth = internalAction({
   args: { code: v.string(), state: v.string() }, returns: v.any(),
-  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; sheetUrl?: string }> => {
+  handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; sheetUrl?: string; caseUrl?: string }> => {
     const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
     const tokens = await exchangeCode(args.code);
@@ -106,7 +107,7 @@ export const finishOauth = internalAction({
       return { kind: state.kind, code: null, sheetUrl };
     }
     if (state.caseId) { try { await ctx.runAction(internal.googleActions.syncCheckins, { caseId: state.caseId }); } catch { /* The next poll will retry calendar sync. */ } }
-    return { kind: state.kind, code: state.code ?? null };
+    return { kind: state.kind, code: state.code ?? null, ...(state.code && state.encryptedCaseToken ? { caseUrl: privateCaseUrl(publicAppUrl(process.env), state.code, await decryptToken(state.encryptedCaseToken)) } : {}) };
   },
 });
 
@@ -214,7 +215,7 @@ async function calendarRequest(token: string, eventId: string | null, method: "P
   throw new Error(`Calendar request failed (${response.status})`);
 }
 const eventId = async (source: string) => `tb${(await sha(source)).slice(0, 36)}`;
-const caseLink = async (connection: { encryptedCaseToken?: string }, code: string) => connection.encryptedCaseToken ? `${siteUrl()}/c/index.html?code=${encodeURIComponent(code)}#k=${await decryptToken(connection.encryptedCaseToken)}` : siteUrl();
+const caseLink = async (connection: { encryptedCaseToken?: string }, code: string) => connection.encryptedCaseToken ? privateCaseUrl(publicAppUrl(process.env), code, await decryptToken(connection.encryptedCaseToken)) : publicAppUrl(process.env);
 
 export const syncCheckins = internalAction({
   args: { caseId: v.id("cases") }, returns: v.null(),

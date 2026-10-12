@@ -1,4 +1,5 @@
 "use client";
+import { privateCaseUrl } from "../../lib/app-url";
 import { userError } from "../../lib/user-error";
 import { CcList, AttachmentPicker } from "./mail-tools";
 import { finishMail } from "../../lib/mail-copy";
@@ -24,6 +25,7 @@ import { routeFor, verifiedEmailFor } from "../../lib/route-kb";
 import { replyNextStepLabel } from "../../lib/reply-banner";
 
 type CaseView = TrialData & {
+  publicAppUrl: string;
   refundType?: string;
   code: string; stage: string; route: keyof typeof c.routeLabels | null; routeConfidence: number | null;
   platform: string | null; eventName: string | null; amountPaise: number | null; dueDate: string | null;
@@ -189,7 +191,7 @@ export default function CaseView({ code }: { code: string }) {
     const date = data.route === "OVERDUE" || (data.dueDate && data.dueDate < todayIST()) ? addWorkingDays(todayIST(), checkAgainDays) : data.checkin?.date && data.checkin.date > todayIST() ? data.checkin.date : data.dueDate ? checkinDate(data.dueDate) : addWorkingDays(todayIST(), 2);
     const amount = money(data.amountPaise);
     const eventName = data.eventName ?? "your event";
-    const link = window.location.href;
+    const link = privateCaseUrl(caseData?.publicAppUrl || window.location.origin, code, token || "");
     return { date, title: c.calendarTitle(amount, eventName), description: c.calendarDescription(amount, eventName, link) };
   }
 
@@ -208,7 +210,7 @@ export default function CaseView({ code }: { code: string }) {
   }
 
   async function share() {
-    const link = window.location.href;
+    const link = privateCaseUrl(caseData?.publicAppUrl || window.location.origin, code, token || "");
     try {
       if (navigator.share) await navigator.share({ title: productName, text: `My refund case for ${caseData?.eventName ?? "my event"}: ${link}`, url: link });
       else await copy(link);
@@ -216,8 +218,8 @@ export default function CaseView({ code }: { code: string }) {
   }
 
   async function shareLanded() {
-    const link = `${location.origin}/?ref=landed`;
-    const text = caseData?.demo ? `I tried a simulated refund chase with Refund Genie. No real money moved. Try the demo: ${location.origin}/start/` : `Got my ${money(caseData?.recoveredPaise ?? null)} ticket refund back. Refund Genie helped me track the date and next steps: ${link}`;
+    const link = `${caseData?.publicAppUrl || location.origin}/?ref=landed`;
+    const text = caseData?.demo ? `I tried a simulated refund chase with Refund Genie. No real money moved. Try the demo: ${caseData?.publicAppUrl || location.origin}/start/` : `Got my ${money(caseData?.recoveredPaise ?? null)} ticket refund back. Refund Genie helped me track the date and next steps: ${link}`;
     try {
       if (navigator.share) await navigator.share({ title: productName, text, url: link });
       else await copy(text);
@@ -487,7 +489,7 @@ export default function CaseView({ code }: { code: string }) {
             <div className="save-actions">
                {!isIOS && <button className="button button-secondary" onClick={() => addCalendar("google")}>{c.calendar}{!isAndroid ? " (Google)" : ""}</button>}
                {!isAndroid && <button className="button button-secondary" onClick={() => addCalendar("ics")}>{c.calendar}{!isIOS ? " (.ics)" : ""}</button>}
-              <EmailCaseLink code={code} contact={caseData.contact}/><button className="button button-secondary" onClick={() => copy(window.location.href)}>{c.copyLink}</button>
+              <EmailCaseLink code={code} contact={caseData.contact} link={privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || "")}/><button className="button button-secondary" onClick={() => copy(privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || ""))}>{c.copyLink}</button>
               <button className="button button-secondary" onClick={share}>{c.share}</button>
             </div>
             <p className="example-source">{c.linkNote}</p>

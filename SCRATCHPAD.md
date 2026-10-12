@@ -34,6 +34,6 @@ Part 1 READY FOR REVIEW: fixtures, 123 tests, type check, deployed first-step ca
 READY FOR REVIEW: four HQ probes, transfer cutoffs, malformed evidence, storage/recording guards, two-phone selection and visible notices checked. 187 tests and root type check pass. No live calls or allow-list/key changes. Next: HQ privacy review; live calling still awaits explicit supervised approval.
 
 ## Cloudflare first publish (current priority)
-- [ ] Ganesh's section 2b decision: accept fresh trials/manual paid-year restore, or HQ defines carry-over first. Existing restore button is hidden on closed paid cases.
-- [ ] After that decision, resume the domain prompt in order: Cloudflare login/setup, static hosting, user-facing URL change, proofs, commit/push and HQ review. No subsequent Cloudflare publish without a new chat instruction.
+READY FOR REVIEW: Ganesh accepted section 2b limits; log contains the two required For HQ lines. Cloudflare logins, deploy:web, both domains/redirect, PUBLIC_APP_URL links, notices on both origins, live proof and old-link check complete.
+- [ ] Wait for HQ review. No subsequent Cloudflare publish without a new chat instruction from Ganesh.
 Privacy follow-ups and sample-case work stay deferred. CALL_MODE/CALL_ALLOWLIST untouched.

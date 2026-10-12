@@ -1,0 +1,55 @@
+[
+  {
+    "url": "https://refundgenie.app/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Refund Genie: who owes your flight refund?",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://refundgenie.app/terms/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Terms | Refund Genie",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://refundgenie.app/refund-policy/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Refund and cancellation policy | Refund Genie",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://refundgenie.app/contact/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Contact | Refund Genie",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://refundgenie.app/privacy/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Privacy | Refund Genie",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://refundgenie.app/start/",
+    "headStatus": "HTTP/1.1 200 OK",
+    "title": "Refund Genie: who owes your flight refund?",
+    "matchesExport": true,
+    "canonicalOnNewDomain": true,
+    "openGraphOnNewDomain": true
+  },
+  {
+    "url": "https://www.refundgenie.app/start/?demo=flight",
+    "headStatus": "HTTP/1.1 308 Permanent Redirect",
+    "location": "https://refundgenie.app/start/?demo=flight"
+  }
+]

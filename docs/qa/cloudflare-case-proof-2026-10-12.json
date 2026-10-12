@@ -1,0 +1,26 @@
+{
+  "code": "RG-46SHVP",
+  "refundType": "flight",
+  "stage": "READY",
+  "platform": "MakeMyTrip",
+  "amountPaise": 540000,
+  "confirmed": true,
+  "bookingId": "QA-SAMPLE-5400",
+  "publicAppUrl": "https://refundgenie.app",
+  "draftCount": 1,
+  "emailLink": {
+    "host": "mail.google.com",
+    "caseLinkOnNewDomain": true,
+    "caseKeyOnlyInFragment": true,
+    "browserComposeUrlObserved": true
+  },
+  "oldCase": {
+    "code": "RG-ZV5PKE",
+    "openedOnConvex": true,
+    "openedOnNewDomain": true,
+    "movedNoticeObserved": true
+  },
+  "storageMigrationAttempted": false,
+  "messagesSent": 0,
+  "callsMade": 0
+}

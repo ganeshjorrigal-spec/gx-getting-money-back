@@ -51,6 +51,7 @@ import type * as qaTrial from "../qaTrial.js";
 import type * as responsesActions from "../responsesActions.js";
 import type * as responsesData from "../responsesData.js";
 import type * as retention from "../retention.js";
+import type * as site from "../site.js";
 import type * as waitlist from "../waitlist.js";
 
 import type {
@@ -103,6 +104,7 @@ declare const fullApi: ApiFromModules<{
   responsesActions: typeof responsesActions;
   responsesData: typeof responsesData;
   retention: typeof retention;
+  site: typeof site;
   waitlist: typeof waitlist;
 }>;
 

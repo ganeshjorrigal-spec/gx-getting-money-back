@@ -7,7 +7,7 @@ Last updated: 12 October 2026.
 - M2.6 ACTIVE. Flight build and addenda deployed; morning Gmail/demo proofs still pending.
 
 ## Working release
-- Live: https://harmless-lyrebird-924.ap-southeast-2.convex.site/
+- Live frontend: https://refundgenie.app/ (Cloudflare); existing Convex address remains available.
 - Refund Genie name, four linked policy pages and configured public support email deployed. Existing responses Sheet renamed in place.
 - Fixed paid gemini-3.5-flash-lite; token counts only. Same-day F1-F16 16/16 and FL01-FL14 14/14 paid-model reports remain in docs/qa. Not rerun for this pricing change.
 - Real inbox matching, ten-minute job, calendar alerts and demo ladder unchanged. D-038 adds explicitly granted sending for the founder case inbox; passenger Gmail/calendar permissions are unchanged. Frozen Vercel config/deployment untouched.
@@ -55,6 +55,14 @@ Next single action: HQ review of Parts 3–5 and the timed public demo. Live cal
 - No live call, real-company contact, environment/allow-list change or key file change. M2.6 remains ACTIVE; nothing marked DONE.
 - Deployed with npm run deploy: 0a0158f6-4556-4d47-af47-13ac66414415, 91 files. Live case HTML matches the export and served bundle includes both notices. Actual phone transfer remains untested.
 
-## Cloudflare first publish: waiting for Ganesh (12 Oct)
-- Pulled facee70 and read the updated domain prompt. Section 2b stops this job before publishing: a new device ID resets new-case trial/rate counts and does not automatically restore an old paid year. Old linked cases still reopen; the paid-year restore button is hidden on closed cases.
-- Asked Ganesh to choose whether to accept this behavior for first publish or wait for HQ's carry-over instructions. Cloudflare setup/login, web publish and PUBLIC_APP_URL changes remain pending. No application/deployment, calling, allow-list or key changes. Nothing marked DONE.
+
+## Cloudflare first publish
+- READY FOR REVIEW. First Cloudflare publish completed: refundgenie.app and www custom domains, www 308 redirect. Worker version f7951deb-35d8-46a4-abee-8f4f557fb24a. Static site only; same Convex backend.
+- deploy:web builds the static export and publishes it with pinned Wrangler. Existing deploy command remains for Convex. PUBLIC_APP_URL was set by Ganesh and drives private case, calendar, demo-share and chase-update links; server callback/webhook addresses remain on Convex.
+- Old Convex frontend updated with the moved notice and exact saved-cases sentence; upload 398020fd-ef60-4ed0-9707-8bd3e882d8d1, 92 files. Old case links work on both addresses. No cross-address storage copying.
+- Ganesh accepts fresh trials and manual paid-year restore from active cases; limit rules unchanged. Closed cases hide the restore button; trial/paid carry-over rules remain undefined. Two lines recorded under For HQ.
+- 201 tests across 22 files, type check, export build and Wrangler dry run pass. Live six-page HEAD/HTML proof, synthetic flight creation/booking confirmation/draft/case card, observed Gmail compose URL and old-case proof recorded in docs/qa/cloudflare-*. Both saved-list and moved notices checked in browser.
+- Existing synthetic case displays Overdue with a future due date. Logged for HQ; flight logic was outside this job and was not changed.
+- No keys/tokens, calls, allow-list changes or live payments. Nothing DONE.
+
+Next: wait for HQ review. Further Cloudflare publishing needs Ganesh's explicit chat instruction. Privacy follow-ups and sample-case job remain deferred. Ganesh still needs the Razorpay website and Google consent-screen URL updates listed in today's log.

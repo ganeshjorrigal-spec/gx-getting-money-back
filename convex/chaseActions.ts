@@ -1,4 +1,5 @@
 "use node";
+import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
@@ -379,7 +380,7 @@ export const notify = internalAction({
         process.env.TICKBACK_INBOX_ADDRESS!,
         loaded.item.code,
       );
-      const url = `${process.env.PUBLIC_APP_URL ?? process.env.CONVEX_SITE_URL}/c/index.html?code=${loaded.item.code}#k=${await decryptToken(loaded.item.chase.encryptedCaseToken)}`;
+      const url = privateCaseUrl(publicAppUrl(process.env), loaded.item.code, await decryptToken(loaded.item.chase.encryptedCaseToken));
       const body = [
         args.what,
         args.reply ? `Their reply: ${args.reply}` : "",

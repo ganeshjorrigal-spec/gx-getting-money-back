@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Newsreader } from "next/font/google";
 import "./globals.css";
 import { metaCopy } from "./copy";
+import { DomainNotice } from "./domain-notice";
 
 const geist = Geist({
   subsets: ["latin", "latin-ext"],
@@ -17,13 +18,16 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: metaCopy.title,
   description: metaCopy.description,
+  metadataBase: new URL("https://refundgenie.app"),
+  alternates: { canonical: "https://refundgenie.app" },
+  openGraph: { title: metaCopy.title, description: metaCopy.description, url: "https://refundgenie.app" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-IN" className={`${geist.variable} ${newsreader.variable}`}>
       <head>{process.env.CONVEX_STATIC_EXPORT === "1" && <script dangerouslySetInnerHTML={{ __html: "(()=>{const m=location.pathname.match(/^\\/c\\/((?:TB|RG)-[A-Z0-9]{6})\\/?$/);if(m)location.replace('/c/index.html?code='+m[1]+location.hash)})()" }} />}</head>
-      <body>{children}</body>
+      <body><DomainNotice />{children}</body>
     </html>
   );
 }
