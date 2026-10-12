@@ -1,10 +1,14 @@
 # Codex prompt: put Refund Genie on refundgenie.app (Cloudflare)
 
-Ganesh bought refundgenie.app on Cloudflare (11 Oct). Run this when Codex is between parts of the chase build (it touches deploy, not features). Paste everything below the line.
+Ganesh bought refundgenie.app on Cloudflare (11 Oct). Updated by HQ on 12 Oct: Ganesh chose to do this FIRST, before the privacy follow-ups and the sample-case job. Due Thu 15 Oct at the latest. It touches deploy, not features. Paste everything below the line.
 
 ---
 
 git pull, then the AGENTS.md start-of-session order. Goal: https://refundgenie.app serves the same site that is live on the Convex site today, with the Convex backend unchanged.
+
+Two rules for this job:
+- Deploy only what this prompt asks for: the static site to Cloudflare, and the small Convex change in section 2. Do not deploy anything else, and do not run `npm run deploy` for unreviewed feature work. Commit and push, then wait for HQ review.
+- Live calling and Vobiz are not part of this job. Leave CALL_MODE and CALL_ALLOWLIST alone.
 
 ## 0. Set up Cloudflare tools (once)
 
@@ -24,6 +28,14 @@ Follow Cloudflare's agent setup for Codex (https://developers.cloudflare.com/age
 - Old Convex site links keep working (people already have them). The Convex site may show a small line "We've moved to refundgenie.app" with a link; do not break case pages there.
 - Canonical URL and Open Graph tags point to refundgenie.app.
 
+## 2b. Browser storage does not carry over (HQ note, 12 Oct)
+
+Saved cases and the device ID live in the browser's storage, and browser storage is per address. Someone who used the Convex site will open refundgenie.app and see an empty list, and a new device ID. Do not try to copy storage across addresses. Instead:
+- Find out exactly what is stored in the browser today (saved case list, device ID, anything else) and whether a case link alone is enough to reopen a case on the new domain. Write the answer in today's log in two lines.
+- If a case link reopens the case anywhere, keep that working on both addresses.
+- On the new domain, where saved cases are listed, add one plain line: "Cases you saved on the old address stay there. Open them from your case link, or from the old address." On the old Convex site, the "We've moved" line should say the same in the same words.
+- Check that nothing in the app treats a new device ID as a new person in a way that breaks a case (limits, free check count, demo state). If something does, stop and tell Ganesh. Do not decide it yourself.
+
 ## 3. For Ganesh (list these, do not do them)
 
 - Razorpay dashboard: change the website URL to https://refundgenie.app (Terms, Refund policy, Contact pages live there).
@@ -38,3 +50,9 @@ Follow Cloudflare's agent setup for Codex (https://developers.cloudflare.com/age
 - grep shows no hard-coded convex.site in user-facing copy.
 
 Mark nothing DONE. Update STATE.md, append the log, commit and push.
+
+## Short paste block for Codex
+
+```
+git pull. Read docs/hq/codex-prompts/2026-10-11-cloudflare-domain.md (updated 12 Oct) and do it, in order, now. It comes before the privacy follow-ups and the sample-case job. Deploy only what that file asks for. Mark nothing DONE. Update STATE.md, append the log, commit and push, then wait for HQ review.
+```
