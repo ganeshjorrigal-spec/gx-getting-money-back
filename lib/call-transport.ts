@@ -21,7 +21,15 @@ const transferEvent=(value:unknown):boolean=>{
 export function safeCallResult(value:unknown) {
  let data=object(value);
  if(typeof value==='string'){try{data=object(JSON.parse(value));}catch{/* Safe default below. */}}
- const artifact=object(data?.artifact),raw=artifact?.transcript??data?.transcript;
+ if(object(data?.message)?.type==='end-of-call-report')data=object(data?.message);
+ const artifact=object(data?.artifact),source=artifact?.transcript??data?.transcript;
+ // Vapi user is the original phone-answerer, not the transferred passenger.
+ // Retain the existing fail-closed rules for missing transfer boundaries.
+ const roleName=(role:unknown)=>role==='assistant'||role==='bot'?'Genie':role==='user'?'Care':role==='passenger'?'Passenger':undefined;
+ const structured=Array.isArray(source)?source.map(entry=>{const row=object(entry),label=roleName(row?.role);return label&&typeof row?.message==='string'?`${label}: ${row.message}`:null;}):undefined;
+ const normalized=structured?.every(line=>line!==null)?structured.join('\n'):source;
+ const vapiLabels=!!artifact&&typeof normalized==='string';
+ const raw=vapiLabels?(normalized as string).replace(/^(AI|Assistant|User|Customer)\s*:/gim,(_,role:string)=>/AI|Assistant/i.test(role)?'Genie:':'Care:'):normalized;
  const reason=typeof data?.endedReason==='string'?data.endedReason:'';
  const failed=!!reason&&/error|failed|authentication|unavailable|not.answer|busy|rejected|max.duration|stopped/i.test(reason);
  const base={status:failed?'failed' as const:'completed' as const,reason:safeTranscript(reason).slice(0,500),cost:typeof data?.cost==='number'&&Number.isFinite(data.cost)?Math.max(0,data.cost):0};

@@ -86,3 +86,29 @@ it('uses second saved test phone as airline and first as passenger without alter
 it('keeps one-number fallback and saves the explicit patch-in test limitation',async()=>{
  const {t,caseId}=await fixture('+910000000001');const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'identity'});expect(r!.number).toBe('+910000000001');expect(r!.passengerNumber).toBe('+910000000001');const record=await t.run(ctx=>ctx.db.get(r!.callId));expect(record!.testPhoneNote).toBe('Only one test number is saved, so the patch-in cannot be tested.');
 });
+
+it.each(['Care: Your refund reference code is ABC12345.','Care: Your complaint reference is ABC12345.','Care: The refund has a reference code ABC12345.'])('keeps ordinary refund references and recording: %s',line=>{
+ const result=safeCallResult({transcript:line,recordingUrl:'https://example.invalid/reference.wav'});
+ expect(result.transcript).toBe(line);expect(result.patchIn).toBe(false);expect(result.recordingUrl).toBe('https://example.invalid/reference.wav');
+});
+it('a requested code still drops its answer and recording',()=>{
+ const result=safeCallResult({transcript:'Care: Please read out the code we sent.\nPassenger: private answer',recordingUrl:'https://example.invalid/private.wav'});
+ expect(result.patchIn).toBe(true);expect(result.transcript).not.toContain('private answer');expect(result.recordingUrl).toBeUndefined();
+});
+it('maps Vapi end-report assistant and phone-answerer to Genie and Care',()=>{
+ const result=safeCallResult({message:{type:'end-of-call-report',endedReason:'hangup',artifact:{transcript:'AI: Hello.\nUser: Your refund reference code is ABC12345.',messages:[{role:'assistant',message:'Hello.'},{role:'user',message:'Your refund reference code is ABC12345.'}],recordingUrl:'https://example.invalid/reference.wav'}}});
+ expect(result.transcript).toBe('Genie: Hello.\nCare: Your refund reference code is ABC12345.');expect(result.recordingUrl).toBeTruthy();expect(result.patchIn).toBe(false);
+});
+it('Vapi transfer cuts before any later user speech',()=>{
+ const result=safeCallResult({artifact:{transcript:'AI: Hello.\nUser: Refund pending.\nUser: private passenger answer',messages:[{role:'assistant',message:'Hello.'},{role:'user',message:'Refund pending.'},{role:'tool_calls',toolCalls:[{function:{name:'transferCall'}}]},{role:'user',message:'private passenger answer'}],recordingUrl:'https://example.invalid/private.wav'}});
+ expect(result.transcript).toBe('Genie: Hello.\nCare: Refund pending.\n'+marker);expect(result.recordingUrl).toBeUndefined();
+});
+it('Vapi structured transcript roles preserve care but cut on explicit passenger',()=>{
+ const result=safeCallResult({artifact:{transcript:[{role:'assistant',message:'Hello.'},{role:'user',message:'Please read out the code we sent.'},{role:'passenger',message:'private answer'}],recordingUrl:'https://example.invalid/private.wav'}});
+ expect(result.transcript).toContain('Genie: Hello.');expect(result.transcript).not.toContain('private answer');expect(result.recordingUrl).toBeUndefined();
+});
+
+it('cuts Vapi user answers after a care verification request even without a transfer event',()=>{
+ const result=safeCallResult({artifact:{transcript:'AI: Hello.\nUser: Please read out the code we sent.\nUser: 482913',recordingUrl:'https://example.invalid/private.wav'}});
+ expect(result.transcript).not.toContain('482913');expect(result.recordingUrl).toBeUndefined();expect(result.transcript).toContain(marker);
+});
