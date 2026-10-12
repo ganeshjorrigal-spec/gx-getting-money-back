@@ -1,10 +1,21 @@
 # Codex prompt: restyle to "Receipts + Calm ledger", with logo, visuals and brand logos (D-037)
 
-Run AFTER `2026-10-11-walkthrough-fixes.md` is committed and deployed. Paste everything below the line.
+Walkthrough fixes are done and deployed (11 Oct log). Updated by HQ on 12 Oct after Ganesh's answers: restyle goes FIRST, before the sample-case job; it runs in two phases; the hero keeps "calls and mails". Paste everything below the line.
 
 ---
 
-git pull, then the AGENTS.md start-of-session order. Read D-033, D-036 and D-037. This is a look and copy change. Do not change flight or event logic, dates, playbook data, reply reading, demos or payment rules. One clean commit per step.
+git pull, then the AGENTS.md start-of-session order. Read D-033, D-036, D-037, D-038 and D-040. This is a look and copy change. Do not change flight or event logic, dates, playbook data, reply reading, demos or payment rules. One clean commit per step.
+
+## Phases (Ganesh's call, 12 Oct)
+
+- **Phase A, do now:** Steps 1, 2, 5, 6, 7. Needs nothing from Ganesh. Until Phase B, the header uses the wordmark "Refund Genie" set in Fraunces in code, and the hero, logo strip and "Sound familiar?" sections keep their layout with clean empty slots (no grey boxes, no broken images). Stop after Phase A, show screenshots, and wait for HQ review.
+- **Phase B, after HQ review of Phase A:** Steps 3 and 4 (logo, 4 illustrations, brand logos), then drop them into the slots. `OPENAI_API_KEY` is already in `.env` and Ganesh accepts the 40-image cap. Still do the `--dry-run` first and wait for Ganesh's go before the real run. Ganesh still has to pick the logo and approve the illustrations.
+
+## Rules for this job
+
+- Do not publish to Cloudflare and do not run `npm run deploy`. Commit and push, then wait for HQ review. Ganesh will say in chat when to publish.
+- The hero keeps the D-038 wording "calls and mails them for you" (Ganesh's call). Calls are still simulated until the Vobiz decision on Tue 13 Oct (D-040). Keep every sentence about calling in `app/copy.ts` only, in one place, so HQ can change it in one edit if the live call does not work. A simulated call is never shown as live anywhere.
+- The overdue stamp: the sample case shows "Overdue by about 0 working days" while its due date is 21 Oct 2026. In Step 2, find the cause. If it is only wording or display, fix it with the unit rule in Step 2. If it comes from flight or date logic, do not change the logic: stop and tell Ganesh.
 
 ## Step 1: design tokens (one file, everything uses it)
 
@@ -90,3 +101,9 @@ Screenshots at 375px and 1280px of these 6 screens: Landing, Start, flight case 
 - Anything skipped and why.
 
 Mark nothing DONE. Update STATE.md, append the log, commit and push.
+
+## Short paste block for Codex (Phase A)
+
+```
+git pull. Read docs/hq/codex-prompts/2026-10-11-restyle-receipts.md (updated 12 Oct) and do Phase A now: Steps 1, 2, 5, 6, 7 and the regression net. This goes before the sample-case job. Do not do Steps 3 and 4 yet. Keep the hero wording "calls and mails them for you", with every calling sentence in app/copy.ts only. Find the cause of "Overdue by about 0 working days" on the sample case and fix it if it is display only, otherwise stop and tell Ganesh. Do not publish to Cloudflare and do not run npm run deploy. Mark nothing DONE. Update STATE.md, append the log with the 375px and 1280px screenshots, commit and push, then wait for HQ review.
+```
