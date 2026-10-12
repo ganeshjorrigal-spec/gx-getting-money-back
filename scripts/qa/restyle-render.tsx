@@ -30,5 +30,6 @@ export function renderProof(){
  setProofData({demoView:{events:[],calls:[],mails:2,replies:[],simulatedCalls:1,realCalls:0}});
  pages.chaseDemo=renderToStaticMarkup(<PublicChaseDemo code='RG-QATEST' token='visual-fixture' data={demoData}/>);
  setProofData({item:{...item,stage:'CLOSED_LANDED',recoveredPaise:624000},drafts:[]});pages.landed=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
+ const airIndia={...r,airline:'Air India',bookedVia:'direct',cancellationDate:'2026-10-10',supportContacted:false};const aip=planFlight(airIndia,'2026-10-13');setProofData({item:{...item,stage:'WAITING',route:aip.route,name:'Sample Flyer',facts:airIndia,flightPlan:aip},drafts:[]});pages.airIndiaPortal=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
  return pages;
 }

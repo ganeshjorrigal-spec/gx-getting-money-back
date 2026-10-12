@@ -1,4 +1,5 @@
 "use client";
+import {airIndiaPortalFields} from '../../lib/flight-portal';
 import {callingCopy} from '../copy';
 
 import {ReceiptSlip,SourceLine,StatusBadge,NextMoveCard} from "../components/receipts";
@@ -180,11 +181,19 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
+ {plan?.portal&&facts&&<NextMoveCard title="Your refund form">
+ <p>{plan.portal.subcategory?`Choose “${plan.portal.subcategory}”.`:'Already requested a refund? Choose “Status Check on Pending Refund”. No request made? Choose “New Refund Request”.'}</p>
+ <p>You fill and submit this on Air India. Genie does not submit forms.</p>
+ <dl>{airIndiaPortalFields(facts,{name:data.name??undefined},plan.body??'').map(field=><div key={field.label}><dt>{field.label}</dt><dd>{field.value}</dd></div>)}</dl>
+ <p>For a new request, have your boarding pass and ticket copy ready. Attach reference documents for a status check.</p>
+ <a className="button button-primary" href={plan.portal.url} target="_blank" rel="noreferrer">Open Air India refund form</a>
+ <SourceLine href={plan.portal.url}>Company’s own page, checked 13 Oct 2026</SourceLine>
+ </NextMoveCard>}
  <TrialCard data={data} code={code} token={token}/>
 
  {data.factsConfirmedAt&&draft&&draft.body===null&&<section className="case-card"><h2>Your next message is ready</h2><p>The annual plan unlocks follow-ups. Your route and date remain visible.</p></section>}
 
- {data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<NextMoveCard title={plan?.nextStep==="FLIGHT_status"?"Your optional status mail":`Your next ${draft.channel==="email"?"mail":"step"}`}>
+ {data.factsConfirmedAt&&draft&&!plan?.portal&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&<NextMoveCard title={plan?.nextStep==="FLIGHT_status"?"Your optional status mail":`Your next ${draft.channel==="email"?"mail":"step"}`}>
 
  {draft.channel==="email"&&<><p>To: {draft.to||(plan?.nextStep==="FLIGHT_status"?"Use the company's own support page":"Paste the address from the company's own page")}</p>{!draft.to&&<input aria-label="Company address" type="email" value={recipient} onChange={e=>setRecipient(e.target.value)}/>}<CcList addresses={ccList} copy={()=>void navigator.clipboard.writeText(cc)} /><p>{draft.subject}</p></>}
 

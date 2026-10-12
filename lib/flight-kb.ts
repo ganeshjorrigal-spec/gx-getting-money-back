@@ -459,6 +459,53 @@ export const flightContacts: FlightContact[] = [
     "label": "NOT CHECKED"
   }
 ];
+flightContacts.push(...[
+  {
+    "company": "Cleartrip",
+    "role": "Customer support email",
+    "value": "customersupport@cleartrip.com",
+    "email": "customersupport@cleartrip.com",
+    "url": "https://www.cleartrip.com/faq/flights/",
+    "readAt": "2026-10-13",
+    "label": "VERIFIED"
+  },
+  {
+    "company": "Cleartrip",
+    "role": "Refunds email",
+    "value": "wecare@cleartrip.com",
+    "email": "wecare@cleartrip.com",
+    "url": "https://www.cleartrip.com/faq/flights/",
+    "readAt": "2026-10-13",
+    "label": "VERIFIED"
+  },
+  {
+    "company": "Yatra",
+    "role": "Customer support email",
+    "value": "support@yatra.com",
+    "email": "support@yatra.com",
+    "url": "https://www.yatra.com/support?act=home",
+    "readAt": "2026-10-13",
+    "label": "VERIFIED"
+  },
+  {
+    "company": "ixigo",
+    "role": "Customer support email",
+    "value": "customersupport@ixigo.com",
+    "email": "customersupport@ixigo.com",
+    "url": "https://rocket.ixigo.com/investors/Le%20Travenues%20Technology%20Limited%20-%20Annual%20Report%20FY%202024-25.pdf",
+    "readAt": "2026-10-13",
+    "label": "VERIFIED"
+  },
+  {
+    "company": "Air India",
+    "role": "Refund portal",
+    "value": "Air India refund support portal",
+    "email": null,
+    "url": "https://www.airindia.com/in/en/contact-us/customer-support-portal/refunds.html",
+    "readAt": "2026-10-13",
+    "label": "VERIFIED"
+  }
+]);
 export const refundRuleUrl = "https://www.dgca.gov.in/digigov-portal/Upload?flag=iframeAttachView&attachId=cuYJ%2FdQQ6Gx93z%2Fwchd5xw%3D%3D";
 export function flightContact(company:string, role:string):FlightContact|null {
   return flightContacts.find(c => c.company.toLowerCase() === company.toLowerCase() && c.role === role && c.email && c.label.startsWith("VERIFIED")) ?? null;

@@ -20,7 +20,7 @@ export type FlightPlan = {
   route:"WAIT"|"OVERDUE"|"TRACE"|"NEED_INFO"|"NO_ROUTE"|"OUT_OF_SCOPE";
   pastDue?:boolean; owner:string; moneyWith:string; dueDate:string|null; dueSource:string; dueSourceText:string;
   rung:number; nextStep:string; nextPerson:FlightContact|null; above:FlightContact|null; to:string|null; cc:string[];
-  questions:FlightQuestion[]; note:string; ruleId:string; body:string|null; subject:string; channel:string; checkDate:string|null; amountOwed:number|null;
+  portal?:{url:string;subcategory:string|null;documents:string[]}; questions:FlightQuestion[]; note:string; ruleId:string; body:string|null; subject:string; channel:string; checkDate:string|null; amountOwed:number|null;
 };
 export function validFlightDate(value:string|null|undefined):string|null { try { if(value) {dateValue(value);return value;} } catch {} return null; }
 export function isFlightText(text:string) {return /\b(flight|airline|pnr|indigo|spicejet|akasa|air india|makemytrip|goibibo|cleartrip|easemytrip)\b/i.test(text);}
@@ -60,7 +60,10 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
   if(site==="Cleartrip" && due.date&&due.date<today && !read.supportContactDate){plan.route="OVERDUE";plan.rung=1;plan.nextStep="FLIGHT_call";plan.channel="phone";plan.note="Cleartrip asks you to contact support first. Call +91 9595333333, quote your Trip ID, and keep the complaint reference. Its own process allows 72 hours before grievance escalation.";plan.body=plan.note;plan.dueSourceText=flightRule("F23").sentence;return plan;}
   if(site==="Cleartrip" && read.supportContactDate && addDays(read.supportContactDate,3)>today){plan.route="WAIT";plan.nextStep="none";plan.checkDate=addDays(read.supportContactDate,3);plan.note="Cleartrip's support window is 72 hours from your call (company policy).";return plan;}
   plan.route=due.date&&due.date>=today?"WAIT":"OVERDUE";plan.nextStep=plan.route==="WAIT"?"none":"FLIGHT_mail";plan.checkDate=plan.route==="WAIT"?due.date:null;
-  if(plan.route==="WAIT"&&read.reply.claim==="none")return plan;
+  if(plan.route==="WAIT"&&read.reply.claim==="none"){
+    if(!demoAddress&&airline==='Air India'&&direct)airIndiaPortal(plan,read);
+    return plan;
+  }
   const nodal=flightContact(airline,"Nodal Officer"), grievance=flightContact(site,"Grievance Officer");
   plan.nextPerson=direct?nodal:grievance;plan.to=plan.nextPerson?.email??null;plan.cc=direct?[]:[nodal?.email].filter((s):s is string=>!!s);
   if(plan.rung===3){plan.nextPerson=plan.above;plan.to=plan.above?.email??null;plan.cc=direct?[]:[grievance?.email].filter((s):s is string=>!!s);}
@@ -114,6 +117,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
     const timing=plan.dueSource==="F01"?"Credit card refunds are due within seven days of cancellation.":plan.dueSource==="F02"?"Cash refunds are due immediately at the airline office where bought.":plan.dueSource==="F03"?"The airline must complete travel-site refunds within 14 working days.":plan.dueSource==="F22"?"The company tries to pass refunds on within 24 hours of receiving them from the airline.":"";
     plan.body=`${greeting(plan.nextPerson,company+" support")}\n\nI am the passenger requesting the refund for my ${airline} flight (${identifier||"booking details to follow"}), cancelled ${displayDate(read.cancellationDate!)}${read.amountPaid!==null?`, for Rs ${read.amountPaid}`:""}.\n\nUnder ${rule}, this refund is due by ${displayDate(plan.dueDate)}.${timing?" "+timing:""}\n\n${r.claim==="paid_site"?"Please share the date you received the airline's refund, the refund date to my original payment method, and the payment reference (UTR or ARN).":"Please share the refund date and the payment reference (UTR or ARN)."}\n\nThank you.`;
   }
+  if(!demoAddress&&airline==='Air India'&&direct&&plan.nextStep==='FLIGHT_status')airIndiaPortal(plan,read);
   if(demoAddress&&plan.channel==="email"){const parts=demoAddress.split("@");const role=(name:string)=>`${parts[0]}+${name}@${parts[1]}`;const toAirline=direct||r.claim==="waiting_airline"||r.claim==="not_paid";plan.to=toAirline?role("airline"):role("travelsite");plan.cc=[toAirline?role("travelsite"):role("airline")];plan.nextPerson={company:toAirline?airline:site,role:toAirline?"Nodal Officer":"Grievance Officer",value:toAirline?"Nodal Officer, Demo Air (demo)":"Grievance Officer, DemoTrips (demo)",email:plan.to,url:null,readAt:today,label:"DEMO"};plan.above={...plan.nextPerson,company:airline,role:"Appellate Authority",value:"Appellate Authority, Demo Air (demo)"};}
   if(plan.body&&plan.channel==="email")plan.body=plan.body.replace(/^Dear [^\n]+,/,greeting(plan.nextPerson,(plan.nextStep==="FLIGHT_status"?plan.moneyWith:direct?airline:site)+" support"));
   if(!plan.to&&plan.channel==="email"&&plan.nextStep!=="FLIGHT_status")plan.note=`We don't hold a checked address for ${plan.nextPerson?.company??(direct?airline:site)}. Paste the address from the company's own page. No address is invented.`;
@@ -147,4 +151,13 @@ export function flightMailRule(source:string,due:string|null) {
  if(source==="F01")return `DGCA refund rule, paragraph 3(a): credit card refunds must be made within seven days of cancellation.${date}`;
  if(source==="F02")return "DGCA refund rule, paragraph 3(b): cash refunds must be made immediately at the airline office where bought.";
  return "Please confirm the refund date and status.";
+}
+
+function airIndiaPortal(plan:FlightPlan,read:FlightRead){
+ const contact=flightContacts.find(c=>c.company==='Air India'&&c.role==='Refund portal'&&c.label==='VERIFIED');
+ if(!contact?.url)return;
+ plan.channel='portal';plan.nextStep='FLIGHT_status';plan.to=null;plan.cc=[];plan.nextPerson=contact;plan.above=null;
+ plan.portal={url:contact.url,subcategory:read.reply.claim!=='none'?'Status Check on Pending Refund':null,documents:['Boarding pass','Ticket copy']};
+ plan.note='Use Air India’s refund form yourself. Genie does not fill or submit the form. For a travel-agent booking, Air India asks you to contact your travel agent.';
+ if(!plan.body)plan.body=`Please check my Air India refund${read.pnr?` (PNR ${read.pnr})`:''}${read.amountPaid!==null?` for Rs ${read.amountPaid}`:''}, cancelled ${displayDate(read.cancellationDate!)}. Please share the refund date and payment reference.`;
 }
