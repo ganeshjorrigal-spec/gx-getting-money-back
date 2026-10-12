@@ -66,3 +66,11 @@ Next single action: HQ review of Parts 3–5 and the timed public demo. Live cal
 - No keys/tokens, calls, allow-list changes or live payments. Nothing DONE.
 
 Next: wait for HQ review. Further Cloudflare publishing needs Ganesh's explicit chat instruction. Privacy follow-ups and sample-case job remain deferred. Ganesh still needs the Razorpay website and Google consent-screen URL updates listed in today's log.
+
+## Restyle Phase A: stopped at the flight-logic gate (12 Oct)
+- Pulled 58d55d5 and read the updated restyle prompt and required decisions. Cloudflare first publish was accepted by HQ in the pulled review.
+- Reproduced the saved synthetic RG-46SHVP case on 12 Oct: waiting_airline reply, route OVERDUE, due 21 Oct, zero working days late. The same facts with no reply produce WAIT and no next mail. lib/flight.ts waiting_airline branch unconditionally overrides the due-date route and schedules an early mail/check-in; this is flight logic, not only display wording.
+- Stopped as explicitly required. No restyle step implemented; no planner/date changes, publish, deployment, call, mail, payment or key changes. Steps 3/4 and sample-case work remain deferred.
+- Safe cause proof: docs/qa/restyle-overdue-cause-2026-10-12.json. Existing-case screenshots at 375px and 1280px saved as docs/qa/restyle-blocker-*. These are blocker captures, not Phase A/regression acceptance proof. No new test/eval run because application code is unchanged.
+
+Next: Ganesh/HQ defines the correct pre-deadline pending-airline route and next action, or explicitly authorises a display-only treatment despite the saved OVERDUE route. Phase A remains stopped; nothing DONE or READY FOR REVIEW for it.

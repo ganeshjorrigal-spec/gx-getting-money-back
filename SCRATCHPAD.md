@@ -37,3 +37,8 @@ READY FOR REVIEW: four HQ probes, transfer cutoffs, malformed evidence, storage/
 READY FOR REVIEW: Ganesh accepted section 2b limits; log contains the two required For HQ lines. Cloudflare logins, deploy:web, both domains/redirect, PUBLIC_APP_URL links, notices on both origins, live proof and old-link check complete.
 - [ ] Wait for HQ review. No subsequent Cloudflare publish without a new chat instruction from Ganesh.
 Privacy follow-ups and sample-case work stay deferred. CALL_MODE/CALL_ALLOWLIST untouched.
+
+## Restyle Phase A (current priority, before sample case)
+- [ ] Ganesh/HQ decision on pending-airline cases before their deadline. Restyle prompt requires stopping for a flight/date-logic cause. Reproduced forced OVERDUE in lib/flight.ts; no application changes made.
+- [ ] After that decision, Steps 1, 2, 5, 6, 7, one commit per step; calling copy only in app/copy.ts; preserve calls and mails hero; 375px/1280px regression proof. Steps 3/4 deferred.
+- [ ] No Cloudflare publish or npm run deploy; commit/push only, then HQ review.

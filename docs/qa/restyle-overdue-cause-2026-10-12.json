@@ -1,0 +1,23 @@
+{
+  "code": "RG-46SHVP",
+  "today": "2026-10-12",
+  "saved": {
+    "route": "OVERDUE",
+    "dueDate": "2026-10-21",
+    "replyClaim": "waiting_airline",
+    "dueSource": "F03"
+  },
+  "reproduced": {
+    "route": "OVERDUE",
+    "dueDate": "2026-10-21",
+    "workingDelay": 0,
+    "nextStep": "FLIGHT_mail",
+    "checkDate": "2026-10-19"
+  },
+  "sameFactsWithoutReply": {
+    "route": "WAIT",
+    "dueDate": "2026-10-21",
+    "nextStep": "none"
+  },
+  "conclusion": "Flight planner overrides WAIT with OVERDUE for waiting_airline before the deadline. Display reads that route; day counter correctly returns zero for a future due date."
+}
