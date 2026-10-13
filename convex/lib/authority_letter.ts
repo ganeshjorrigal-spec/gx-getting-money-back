@@ -23,7 +23,7 @@ export async function makeAuthorityLetter(details: {
     "Letter of authority",
     `Case: ${details.code}`,
     `Passenger: ${details.name}`,
-    `Mobile: ${details.mobile}`,
+    ...(details.mobile.trim() ? [`Mobile: ${details.mobile}`] : []),
     `Email: ${details.email}`,
     authorityLine(details.company, details.pnr),
     `Authorised: ${new Date(details.authorisedAt).toISOString()}`,

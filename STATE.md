@@ -1,6 +1,6 @@
 # D-045 current job, 13 October 2026
 
-Part 1 implemented for review, performance gate remains OPEN: median performance72/accessibility100 before and final72/100 after three runs each. FCP2.167s to2.658s, LCP5.320s to4.862s; old79/1.3s/3.9s not fully restored. Immediate visible hero/rows, post-paint motion, swap/limited preloads and deferred lower image implemented. Static export/type check/288 tests pass. Parts2-4 pending. No publication; nothing DONE.
+Part 1 implemented for review, performance gate remains OPEN: median performance72/accessibility100 before and final72/100 after three runs each. FCP2.167s to2.658s, LCP5.320s to4.862s; old79/1.3s/3.9s not fully restored. Immediate visible hero/rows, post-paint motion, swap/limited preloads and deferred lower image implemented. Static export/type check/288 tests pass. Part2 READY FOR REVIEW: mail-only name/email, separately consented mobile, honest promise; 291 tests/38files and type check pass. Parts3-4 pending. No publication; nothing DONE.
 
 # Current state, 13 October 2026
 

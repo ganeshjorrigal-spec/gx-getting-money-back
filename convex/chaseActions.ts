@@ -179,7 +179,7 @@ export const authorise = action({
   args: {
     ...access,
     name: v.string(),
-    mobile: v.string(),
+    mobile: v.optional(v.string()),
     email: v.string(),
     accepted: v.boolean(),
   },
@@ -190,12 +190,11 @@ export const authorise = action({
       args.name.trim().length < 3 ||
       args.name.length > 100 ||
       /[\r\n]/.test(args.name) ||
-      !/^\+?[0-9 ()-]{7,20}$/.test(args.mobile) ||
       args.email.length > 254 ||
       !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(args.email)
     )
       throw new Error(
-        "Add your full name, mobile and email and tick the permission line",
+        "Add your full name and email and tick the permission line",
       );
     const item = await ctx.runQuery(internal.chase.loadAccess, {
       code: args.code,
@@ -205,7 +204,7 @@ export const authorise = action({
     const bytes = await makeAuthorityLetter({
       code: item.code,
       name: args.name.trim(),
-      mobile: args.mobile.trim(),
+      mobile: "",
       email: args.email.trim(),
       company: [
         item.facts.airline,
@@ -224,7 +223,7 @@ export const authorise = action({
         code: args.code,
         token: args.token,
         name: args.name.trim(),
-        mobile: args.mobile.trim(),
+        mobile: "",
         email: args.email.trim().toLowerCase(),
         letterId,
         authorisedAt,

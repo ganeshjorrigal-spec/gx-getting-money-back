@@ -21,7 +21,7 @@ export function ChaseAuthority({
   token: string;
   company: string;
   pnr: string;
-  chase: { active: boolean; letterUrl: string | null; callsAuthorisedAt?: number | null } | null;
+  chase: { active: boolean; letterUrl: string | null; callsAuthorisedAt?: number | null; mobile?:string } | null;
   demo: boolean;
   saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
@@ -39,7 +39,7 @@ export function ChaseAuthority({
   const [callAccepted, setCallAccepted] = useState(false),
     [show, setShow] = useState(false),
     [name, setName] = useState(""),
-    [mobile, setMobile] = useState(""),
+    [mobile, setMobile] = useState(chase?.mobile || intakeIdentity(saved).mobile),
     [email, setEmail] = useState(""),
     [accepted, setAccepted] = useState(false),
     [busy, setBusy] = useState(false),
@@ -70,7 +70,7 @@ export function ChaseAuthority({
         <>
           <p>Written permission saved. {status}</p>
           <p>{mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
-          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
+          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label>{callAccepted&&<label>{callingCopy.mobileLabel}<input required type="tel" value={mobile} onChange={e=>setMobile(e.target.value)}/><WhyAsk field="mobile" personal/></label>}<button disabled={busy||!callAccepted||!/^\+?[0-9 ()-]{7,20}$/.test(mobile)} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted,mobile}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
 
           <button
             disabled={busy}
@@ -110,7 +110,7 @@ export function ChaseAuthority({
           onSubmit={(e) => {
             e.preventDefault();
             void run(() =>
-              authorise({ code, token, name, mobile, email, accepted }),
+              authorise({ code, token, name, email, accepted }),
             );
           }}
         >
@@ -121,15 +121,6 @@ export function ChaseAuthority({
               value={name}
               onChange={(e) => setName(e.target.value)}
             /><WhyAsk field="name" personal/>
-          </label>
-          <label>
-            Mobile number
-            <input
-              required
-              type="tel"
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-            /><WhyAsk field="mobile" personal/>
           </label>
           <label>
             Your email (copied on every mail)
@@ -150,7 +141,7 @@ export function ChaseAuthority({
           </label>
           <p>
             This permission and its time are saved. The first mail includes your
-            letter of authority, name, mobile, email and PNR. Stop Genie ends
+            letter of authority, name, email and PNR. Stop Genie ends
             future sending.
           </p>
           <button
