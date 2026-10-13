@@ -1,0 +1,1424 @@
+{
+  "inputs": {
+    "lib/case-link.ts": {
+      "bytes": 1972,
+      "imports": [],
+      "format": "esm"
+    },
+    "lib/app-url.ts": {
+      "bytes": 548,
+      "imports": [],
+      "format": "esm"
+    },
+    "lib/domain-notice.ts": {
+      "bytes": 653,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/index.js": {
+      "bytes": 81,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/base64.js": {
+      "bytes": 3251,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/common/index.js": {
+      "bytes": 1936,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/value.js": {
+      "bytes": 10045,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/base64.js",
+          "kind": "import-statement",
+          "original": "./base64.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../common/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/validators.js": {
+      "bytes": 13168,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/validator.js": {
+      "bytes": 8089,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/validators.js",
+          "kind": "import-statement",
+          "original": "./validators.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/errors.js": {
+      "bytes": 796,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/compare_utf8.js": {
+      "bytes": 2034,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/compare.js": {
+      "bytes": 3289,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/compare_utf8.js",
+          "kind": "import-statement",
+          "original": "./compare_utf8.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/size.js": {
+      "bytes": 2300,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../common/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/values/index.js": {
+      "bytes": 374,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/validator.js",
+          "kind": "import-statement",
+          "original": "./validator.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/base64.js",
+          "kind": "import-statement",
+          "original": "./base64.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/errors.js",
+          "kind": "import-statement",
+          "original": "./errors.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/compare.js",
+          "kind": "import-statement",
+          "original": "./compare.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/size.js",
+          "kind": "import-statement",
+          "original": "./size.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/logging.js": {
+      "bytes": 3563,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js": {
+      "bytes": 1159,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/local_state.js": {
+      "bytes": 8668,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js",
+          "kind": "import-statement",
+          "original": "./udf_path_utils.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/request_manager.js": {
+      "bytes": 7146,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/logging.js",
+          "kind": "import-statement",
+          "original": "../logging.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/functionName.js": {
+      "bytes": 111,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/components/paths.js": {
+      "bytes": 1106,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/functionName.js",
+          "kind": "import-statement",
+          "original": "../functionName.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/api.js": {
+      "bytes": 2584,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/functionName.js",
+          "kind": "import-statement",
+          "original": "./functionName.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "./components/paths.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/optimistic_updates_impl.js": {
+      "bytes": 5135,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/api.js",
+          "kind": "import-statement",
+          "original": "../../server/api.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/logging.js",
+          "kind": "import-statement",
+          "original": "../logging.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js",
+          "kind": "import-statement",
+          "original": "./udf_path_utils.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/errors.js",
+          "kind": "import-statement",
+          "original": "../../values/errors.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/vendor/long.js": {
+      "bytes": 2503,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/remote_query_set.js": {
+      "bytes": 3036,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/vendor/long.js",
+          "kind": "import-statement",
+          "original": "../../vendor/long.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/logging.js",
+          "kind": "import-statement",
+          "original": "../logging.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/protocol.js": {
+      "bytes": 1759,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/vendor/long.js",
+          "kind": "import-statement",
+          "original": "../../vendor/long.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/web_socket_manager.js": {
+      "bytes": 22509,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/protocol.js",
+          "kind": "import-statement",
+          "original": "./protocol.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/session.js": {
+      "bytes": 302,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/vendor/jwt-decode/index.js": {
+      "bytes": 1634,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/authentication_manager.js": {
+      "bytes": 13198,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/vendor/jwt-decode/index.js",
+          "kind": "import-statement",
+          "original": "../../vendor/jwt-decode/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/metrics.js": {
+      "bytes": 977,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/client.js": {
+      "bytes": 26101,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/logging.js",
+          "kind": "import-statement",
+          "original": "../logging.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/local_state.js",
+          "kind": "import-statement",
+          "original": "./local_state.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/request_manager.js",
+          "kind": "import-statement",
+          "original": "./request_manager.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/optimistic_updates_impl.js",
+          "kind": "import-statement",
+          "original": "./optimistic_updates_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/remote_query_set.js",
+          "kind": "import-statement",
+          "original": "./remote_query_set.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js",
+          "kind": "import-statement",
+          "original": "./udf_path_utils.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/web_socket_manager.js",
+          "kind": "import-statement",
+          "original": "./web_socket_manager.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/session.js",
+          "kind": "import-statement",
+          "original": "./session.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/authentication_manager.js",
+          "kind": "import-statement",
+          "original": "./authentication_manager.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/metrics.js",
+          "kind": "import-statement",
+          "original": "./metrics.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/errors.js",
+          "kind": "import-statement",
+          "original": "../../values/errors.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/vendor/jwt-decode/index.js",
+          "kind": "import-statement",
+          "original": "../../vendor/jwt-decode/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/pagination.js": {
+      "bytes": 568,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/sync/paginated_query_client.js": {
+      "bytes": 12074,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js",
+          "kind": "import-statement",
+          "original": "./udf_path_utils.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/pagination.js",
+          "kind": "import-statement",
+          "original": "./pagination.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/vendor/long.js",
+          "kind": "import-statement",
+          "original": "../../vendor/long.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/simple_client.js": {
+      "bytes": 13515,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/api.js",
+          "kind": "import-statement",
+          "original": "../server/api.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/client.js",
+          "kind": "import-statement",
+          "original": "./sync/client.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/paginated_query_client.js",
+          "kind": "import-statement",
+          "original": "./sync/paginated_query_client.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js",
+          "kind": "import-statement",
+          "original": "./sync/udf_path_utils.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/http_client.js": {
+      "bytes": 15649,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/api.js",
+          "kind": "import-statement",
+          "original": "../server/api.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/logging.js",
+          "kind": "import-statement",
+          "original": "./logging.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/query_options.js": {
+      "bytes": 122,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/browser/index.js": {
+      "bytes": 262,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/browser/sync/client.js",
+          "kind": "import-statement",
+          "original": "./sync/client.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/simple_client.js",
+          "kind": "import-statement",
+          "original": "./simple_client.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/http_client.js",
+          "kind": "import-statement",
+          "original": "./http_client.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/query_options.js",
+          "kind": "import-statement",
+          "original": "./query_options.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/database.js": {
+      "bytes": 51,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/syscall.js": {
+      "bytes": 1560,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/errors.js",
+          "kind": "import-statement",
+          "original": "../../values/errors.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/validate.js": {
+      "bytes": 680,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/actions_impl.js": {
+      "bytes": 1609,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "../components/paths.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/vector_search.js": {
+      "bytes": 642,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/vector_search_impl.js": {
+      "bytes": 3056,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/vector_search.js",
+          "kind": "import-statement",
+          "original": "../vector_search.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/authentication_impl.js": {
+      "bytes": 304,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/filter_builder.js": {
+      "bytes": 637,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/filter_builder_impl.js": {
+      "bytes": 2977,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/filter_builder.js",
+          "kind": "import-statement",
+          "original": "../filter_builder.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/index_range_builder.js": {
+      "bytes": 535,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/index_range_builder_impl.js": {
+      "bytes": 2347,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/index_range_builder.js",
+          "kind": "import-statement",
+          "original": "../index_range_builder.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/search_filter_builder.js": {
+      "bytes": 541,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/search_filter_builder_impl.js": {
+      "bytes": 1818,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/search_filter_builder.js",
+          "kind": "import-statement",
+          "original": "../search_filter_builder.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/query_impl.js": {
+      "bytes": 8019,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/filter_builder_impl.js",
+          "kind": "import-statement",
+          "original": "./filter_builder_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/index_range_builder_impl.js",
+          "kind": "import-statement",
+          "original": "./index_range_builder_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/search_filter_builder_impl.js",
+          "kind": "import-statement",
+          "original": "./search_filter_builder_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/database_impl.js": {
+      "bytes": 4967,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/query_impl.js",
+          "kind": "import-statement",
+          "original": "./query_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/value.js",
+          "kind": "import-statement",
+          "original": "../../values/value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/scheduler_impl.js": {
+      "bytes": 3065,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "../components/paths.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/storage_impl.js": {
+      "bytes": 1653,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/validate.js",
+          "kind": "import-statement",
+          "original": "./validate.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/meta_impl.js": {
+      "bytes": 2252,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/impl/registration_impl.js": {
+      "bytes": 10102,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/actions_impl.js",
+          "kind": "import-statement",
+          "original": "./actions_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/vector_search_impl.js",
+          "kind": "import-statement",
+          "original": "./vector_search_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/authentication_impl.js",
+          "kind": "import-statement",
+          "original": "./authentication_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/database_impl.js",
+          "kind": "import-statement",
+          "original": "./database_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/query_impl.js",
+          "kind": "import-statement",
+          "original": "./query_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/scheduler_impl.js",
+          "kind": "import-statement",
+          "original": "./scheduler_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/storage_impl.js",
+          "kind": "import-statement",
+          "original": "./storage_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/validator.js",
+          "kind": "import-statement",
+          "original": "../../values/validator.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "../components/paths.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/meta_impl.js",
+          "kind": "import-statement",
+          "original": "./meta_impl.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/pagination.js": {
+      "bytes": 775,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/validator.js",
+          "kind": "import-statement",
+          "original": "../values/validator.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/storage.js": {
+      "bytes": 50,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/cron.js": {
+      "bytes": 8904,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/api.js",
+          "kind": "import-statement",
+          "original": "../server/api.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/common/index.js",
+          "kind": "import-statement",
+          "original": "../common/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/index.js",
+          "kind": "import-statement",
+          "original": "../values/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "./components/paths.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/router.js": {
+      "bytes": 7101,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./impl/syscall.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/components/index.js": {
+      "bytes": 9424,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "../impl/syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "./paths.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/values/validator.js",
+          "kind": "import-statement",
+          "original": "../../values/validator.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/paths.js",
+          "kind": "import-statement",
+          "original": "./paths.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/logVars.js": {
+      "bytes": 976,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/audit_logging.js": {
+      "bytes": 1201,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "../index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/syscall.js",
+          "kind": "import-statement",
+          "original": "./impl/syscall.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/logVars.js",
+          "kind": "import-statement",
+          "original": "./logVars.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/log.js": {
+      "bytes": 167,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/audit_logging.js",
+          "kind": "import-statement",
+          "original": "./audit_logging.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/logVars.js",
+          "kind": "import-statement",
+          "original": "./logVars.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/schema.js": {
+      "bytes": 9649,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/values/validator.js",
+          "kind": "import-statement",
+          "original": "../values/validator.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/convex/dist/esm/server/index.js": {
+      "bytes": 997,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/database.js",
+          "kind": "import-statement",
+          "original": "./database.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/registration_impl.js",
+          "kind": "import-statement",
+          "original": "./impl/registration_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/impl/actions_impl.js",
+          "kind": "import-statement",
+          "original": "./impl/actions_impl.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/pagination.js",
+          "kind": "import-statement",
+          "original": "./pagination.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/search_filter_builder.js",
+          "kind": "import-statement",
+          "original": "./search_filter_builder.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/storage.js",
+          "kind": "import-statement",
+          "original": "./storage.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/cron.js",
+          "kind": "import-statement",
+          "original": "./cron.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/router.js",
+          "kind": "import-statement",
+          "original": "./router.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/api.js",
+          "kind": "import-statement",
+          "original": "./api.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/index.js",
+          "kind": "import-statement",
+          "original": "./components/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/index.js",
+          "kind": "import-statement",
+          "original": "./components/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/components/index.js",
+          "kind": "import-statement",
+          "original": "./components/index.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/log.js",
+          "kind": "import-statement",
+          "original": "./log.js"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/server/schema.js",
+          "kind": "import-statement",
+          "original": "./schema.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "convex/_generated/api.js": {
+      "bytes": 480,
+      "imports": [
+        {
+          "path": "node_modules/convex/dist/esm/server/index.js",
+          "kind": "import-statement",
+          "original": "convex/server"
+        }
+      ],
+      "format": "esm"
+    },
+    "scripts/landing-browser.ts": {
+      "bytes": 3087,
+      "imports": [
+        {
+          "path": "lib/case-link.ts",
+          "kind": "import-statement",
+          "original": "../lib/case-link"
+        },
+        {
+          "path": "lib/app-url.ts",
+          "kind": "import-statement",
+          "original": "../lib/app-url"
+        },
+        {
+          "path": "lib/domain-notice.ts",
+          "kind": "import-statement",
+          "original": "../lib/domain-notice"
+        },
+        {
+          "path": "node_modules/convex/dist/esm/browser/index.js",
+          "kind": "dynamic-import",
+          "original": "convex/browser"
+        },
+        {
+          "path": "convex/_generated/api.js",
+          "kind": "dynamic-import",
+          "original": "../convex/_generated/api"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "out/landing/entry-T6TRRE43.js": {
+      "imports": [
+        {
+          "path": "out/landing/chunk-WOT6VMZA.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "out/landing/chunk-NXA3A72R.js",
+          "kind": "dynamic-import"
+        },
+        {
+          "path": "out/landing/chunk-I333FOPX.js",
+          "kind": "dynamic-import"
+        }
+      ],
+      "exports": [],
+      "entryPoint": "scripts/landing-browser.ts",
+      "inputs": {
+        "lib/case-link.ts": {
+          "bytesInOutput": 23
+        },
+        "lib/app-url.ts": {
+          "bytesInOutput": 111
+        },
+        "lib/domain-notice.ts": {
+          "bytesInOutput": 266
+        },
+        "scripts/landing-browser.ts": {
+          "bytesInOutput": 2198
+        }
+      },
+      "bytes": 2627
+    },
+    "out/landing/chunk-NXA3A72R.js": {
+      "imports": [
+        {
+          "path": "out/landing/chunk-7Y2KV3QY.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "out/landing/chunk-WOT6VMZA.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "BaseConvexClient",
+        "ConvexClient",
+        "ConvexHttpClient",
+        "convexQueryOptions"
+      ],
+      "entryPoint": "node_modules/convex/dist/esm/browser/index.js",
+      "inputs": {
+        "node_modules/convex/dist/esm/browser/logging.js": {
+          "bytesInOutput": 1893
+        },
+        "node_modules/convex/dist/esm/browser/sync/udf_path_utils.js": {
+          "bytesInOutput": 448
+        },
+        "node_modules/convex/dist/esm/browser/sync/local_state.js": {
+          "bytesInOutput": 4668
+        },
+        "node_modules/convex/dist/esm/browser/sync/request_manager.js": {
+          "bytesInOutput": 3454
+        },
+        "node_modules/convex/dist/esm/browser/sync/optimistic_updates_impl.js": {
+          "bytesInOutput": 1849
+        },
+        "node_modules/convex/dist/esm/vendor/long.js": {
+          "bytesInOutput": 1196
+        },
+        "node_modules/convex/dist/esm/browser/sync/remote_query_set.js": {
+          "bytesInOutput": 1476
+        },
+        "node_modules/convex/dist/esm/browser/sync/protocol.js": {
+          "bytesInOutput": 775
+        },
+        "node_modules/convex/dist/esm/browser/sync/web_socket_manager.js": {
+          "bytesInOutput": 12698
+        },
+        "node_modules/convex/dist/esm/browser/sync/session.js": {
+          "bytesInOutput": 169
+        },
+        "node_modules/convex/dist/esm/vendor/jwt-decode/index.js": {
+          "bytesInOutput": 929
+        },
+        "node_modules/convex/dist/esm/browser/sync/authentication_manager.js": {
+          "bytesInOutput": 7597
+        },
+        "node_modules/convex/dist/esm/browser/sync/metrics.js": {
+          "bytesInOutput": 552
+        },
+        "node_modules/convex/dist/esm/browser/sync/client.js": {
+          "bytesInOutput": 10220
+        },
+        "node_modules/convex/dist/esm/browser/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/convex/dist/esm/browser/sync/pagination.js": {
+          "bytesInOutput": 215
+        },
+        "node_modules/convex/dist/esm/browser/sync/paginated_query_client.js": {
+          "bytesInOutput": 4753
+        },
+        "node_modules/convex/dist/esm/browser/simple_client.js": {
+          "bytesInOutput": 4575
+        },
+        "node_modules/convex/dist/esm/browser/http_client.js": {
+          "bytesInOutput": 5687
+        },
+        "node_modules/convex/dist/esm/browser/query_options.js": {
+          "bytesInOutput": 24
+        }
+      },
+      "bytes": 63394
+    },
+    "out/landing/chunk-I333FOPX.js": {
+      "imports": [
+        {
+          "path": "out/landing/chunk-7Y2KV3QY.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "out/landing/chunk-WOT6VMZA.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "api",
+        "components",
+        "internal"
+      ],
+      "entryPoint": "convex/_generated/api.js",
+      "inputs": {
+        "node_modules/convex/dist/esm/server/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/convex/dist/esm/server/pagination.js": {
+          "bytesInOutput": 231
+        },
+        "node_modules/convex/dist/esm/server/components/index.js": {
+          "bytesInOutput": 364
+        },
+        "node_modules/convex/dist/esm/server/logVars.js": {
+          "bytesInOutput": 196
+        },
+        "node_modules/convex/dist/esm/server/schema.js": {
+          "bytesInOutput": 4011
+        },
+        "convex/_generated/api.js": {
+          "bytesInOutput": 21
+        }
+      },
+      "bytes": 4963
+    },
+    "out/landing/chunk-7Y2KV3QY.js": {
+      "imports": [
+        {
+          "path": "out/landing/chunk-WOT6VMZA.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l"
+      ],
+      "inputs": {
+        "node_modules/convex/dist/esm/server/functionName.js": {
+          "bytesInOutput": 33
+        },
+        "node_modules/convex/dist/esm/server/components/paths.js": {
+          "bytesInOutput": 327
+        },
+        "node_modules/convex/dist/esm/server/api.js": {
+          "bytesInOutput": 1037
+        },
+        "node_modules/convex/dist/esm/index.js": {
+          "bytesInOutput": 16
+        },
+        "node_modules/convex/dist/esm/common/index.js": {
+          "bytesInOutput": 1174
+        },
+        "node_modules/convex/dist/esm/values/base64.js": {
+          "bytesInOutput": 1504
+        },
+        "node_modules/convex/dist/esm/values/value.js": {
+          "bytesInOutput": 4848
+        },
+        "node_modules/convex/dist/esm/values/validators.js": {
+          "bytesInOutput": 5548
+        },
+        "node_modules/convex/dist/esm/values/validator.js": {
+          "bytesInOutput": 845
+        },
+        "node_modules/convex/dist/esm/values/errors.js": {
+          "bytesInOutput": 351
+        },
+        "node_modules/convex/dist/esm/values/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/convex/dist/esm/values/compare_utf8.js": {
+          "bytesInOutput": 56
+        }
+      },
+      "bytes": 15881
+    },
+    "out/landing/chunk-WOT6VMZA.js": {
+      "imports": [],
+      "exports": [
+        "a"
+      ],
+      "inputs": {},
+      "bytes": 106
+    }
+  }
+}

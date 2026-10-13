@@ -16,3 +16,6 @@
 
 ## Live and remaining work
 Live remains authorised source4990087 on refundgenie.app and Convex. These fixes and earlier D-044/D-045 changes are unpublished; release requires Ganesh's chat instruction. HQ review next, including remaining performance gap and fresh-profile/live-Gmail proof. Prior timed flight demos/post-trial TEST payment and launch-video fresh-profile/calendar proof remain outstanding; current keys live, no switch. MMT triphelp/Goibibo travel own-page email sources missing, never guess. Domain carry-over limits unchanged (fresh trial, paid restore from old active case; closed restore hidden). D-038/privacy work remains READY FOR REVIEW with simulated evidence, no live calling authority.
+
+## D-047 Part1, current session
+READY FOR REVIEW: lean static landing, matching-export Lighthouse median73→97, accessibility100,316 tests/42files/type check. Proof docs/qa/finals-speed-2026-10-13. No publication. Part2 approved finals next, ledger31/40 before finals.

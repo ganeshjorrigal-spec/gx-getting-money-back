@@ -14,5 +14,7 @@ const result = spawnSync(process.execPath, [require.resolve("next/dist/bin/next"
 if (result.status === 0 && env.CONVEX_STATIC_EXPORT === "1") {
   const { addStaticFontPreloads } = await import('./static-font-preloads.mjs');
   await addStaticFontPreloads();
+  const {addStaticLanding} = await import('./static-landing.mjs');
+  await addStaticLanding();
 }
 process.exit(result.status ?? 1);

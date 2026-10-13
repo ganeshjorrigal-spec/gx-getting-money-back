@@ -6,3 +6,5 @@
 - [ ] Full current Goibibo in-app support path and own-page MMT triphelp/Goibibo travel email sources missing; do not guess.
 - [ ] Prior launch-video Gmail/fresh-profile/calendar proof and timed flight demos/post-trial test payment proof. Current keys live, no switch.
 - [ ] Explicit Ganesh chat instruction before any backend/Cloudflare publish. No calling settings, allow-list or key changes.
+
+- [ ] Ganesh authorised finals-and-speed Parts1/2: speed then D-047 finals, commit/push each, no deployment/settings/keys, nothing DONE.
