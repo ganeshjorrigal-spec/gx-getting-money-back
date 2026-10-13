@@ -1,4 +1,6 @@
 "use client";
+import {intakeIdentity} from "../../lib/intake-identity";
+import {WhyAsk} from "../components/why-ask";
 import {callingCopy} from '../copy';
 import { useState } from "react";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -12,6 +14,7 @@ export function ChaseAuthority({
   pnr,
   chase,
   demo,
+  saved,
   canSkip = false,
 }: {
   code: string;
@@ -20,6 +23,7 @@ export function ChaseAuthority({
   pnr: string;
   chase: { active: boolean; letterUrl: string | null; callsAuthorisedAt?: number | null } | null;
   demo: boolean;
+  saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
 }) {
   const authorise = useAction(api.chaseActions.authorise),
@@ -66,7 +70,7 @@ export function ChaseAuthority({
         <>
           <p>Written permission saved. {status}</p>
           <p>{mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
-          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/>{callingCopy.permission(company)}</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
+          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label><button disabled={busy||!callAccepted} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
 
           <button
             disabled={busy}
@@ -90,7 +94,7 @@ export function ChaseAuthority({
           </p>
         </>
       ) : (
-        <button className="button button-primary" onClick={() => setShow(true)}>
+        <button className="button button-primary" onClick={() => {const held=intakeIdentity(saved);setName(held.name||name);setEmail(held.email||email);setMobile(held.mobile||mobile);setShow(true);}}>
           Let Genie send and follow up
         </button>
       )}
@@ -116,7 +120,7 @@ export function ChaseAuthority({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-            />
+            /><WhyAsk field="name" personal/>
           </label>
           <label>
             Mobile number
@@ -125,7 +129,7 @@ export function ChaseAuthority({
               type="tel"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
-            />
+            /><WhyAsk field="mobile" personal/>
           </label>
           <label>
             Your email (copied on every mail)
@@ -134,14 +138,14 @@ export function ChaseAuthority({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
+            /><WhyAsk field="email" personal/>
           </label>
           <label>
             <input
               type="checkbox"
               checked={accepted}
               onChange={(e) => setAccepted(e.target.checked)}
-            />
+            /><WhyAsk field="consent"/>
             {authorityLine(company, pnr)}
           </label>
           <p>

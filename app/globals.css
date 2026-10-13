@@ -607,3 +607,5 @@ button:disabled {cursor:default;opacity:.6;}
 .case-timeline li {padding-block:var(--space-3);}
 .phone-frame img {display:block;width:100%;height:auto;border-radius:var(--radius-slip);}
 @media(prefers-reduced-motion:reduce) {html {scroll-behavior:auto;}.spinner {animation:none;} * {transition:none!important;}}
+
+.why-ask { display:block; font-size:var(--text-small); line-height:1.5; margin-block:var(--space-2) var(--space-3); color:var(--muted); }.why-ask .input-safety { display:block; font-size:inherit; margin:0; }

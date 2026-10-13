@@ -1,4 +1,5 @@
 "use client";
+import {WhyAsk} from "../components/why-ask";
 import {isVideoDemoEntry} from '../../lib/video-demo';
 import {callingCopy} from '../copy';
 import { userError } from "../../lib/user-error";
@@ -117,9 +118,9 @@ export default function StartPage() {
       <h1>{c.title}</h1>
       <form onSubmit={submit}>
         <label className="sr-only" htmlFor="refund-message">{c.title}</label>
-        <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={refundType==="flight"?"Paste your flight cancellation mail or the travel site’s reply…":c.placeholder} />
+        <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={refundType==="flight"?"Paste your flight cancellation mail or the travel site’s reply…":c.placeholder} /><WhyAsk field="message" personal/>
         <p>What was cancelled?</p>
-      <div className="situation-list"><button className="situation-chip" aria-pressed={refundType==="flight"} onClick={()=>setRefundType("flight")}>Flight refund</button><button className="situation-chip" aria-pressed={refundType==="event"} onClick={()=>setRefundType("event")}>Event ticket</button></div>
+      <div className="situation-list"><button type="button" className="situation-chip" aria-pressed={refundType==="flight"} onClick={()=>setRefundType("flight")}>Flight refund</button><button type="button" className="situation-chip" aria-pressed={refundType==="event"} onClick={()=>setRefundType("event")}>Event ticket</button></div>
         <div className="intake-tools">
           <button type="button" className="text-button" onClick={paste}>{c.paste}</button>
           <button type="button" className="text-button" onClick={() => fileRef.current?.click()}>{c.screenshot}</button>
@@ -143,8 +144,8 @@ export default function StartPage() {
         </div>}
         {!message.trim() && pictures.length === 0 && selected.length === 0 && <p className="input-hint">{c.disabled}</p>}
         <label className="intake-name" htmlFor="customer-name">Your name <span>(optional)</span></label>
-        <input id="customer-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" />
-        <p className="input-hint">We use it only to sign the messages you choose to send.</p>
+        <input id="customer-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" /><WhyAsk field="name" personal/>
+        
       <article className="case-card demo-intake">
         <p className="section-kicker">Demo</p>
         <h2>Feel a full refund chase in 3 minutes.</h2>

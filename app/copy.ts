@@ -232,3 +232,45 @@ export const callingCopy = {
  demoShare:(origin:string)=>`I tried Refund Genie's demo: two test mails and one simulated care call, all in one chase. No real company was contacted. ${origin}/start/?demo=flight`,
  nextCall:(label:string,company:string)=>`Genie is on it. Next: ${label.toLowerCase()} with ${company}.`,
 };
+
+// Intake reasons are shared by flight, event, permission and reply screens.
+export const intakeReasons = {
+ message: "So Genie can read what happened and fill your case.",
+ screenshot: "So Genie can read the message you cannot paste.",
+ name: "So your drafts and permission use your name.",
+ pnr: "So every company can find your booking without asking you again.",
+ bookingId: "Travel sites look up refunds by this.",
+ company: "So we choose the right company and checked contact.",
+ amount: "So the draft and recovered amount match your refund.",
+ date: "So we can work out the refund date and next check-in.",
+ paymentMethod: "So we show the rule for how you paid.",
+ contact: "Optional. Only used about this case.",
+ mobile: "So the permission letter identifies you to customer care.",
+ email: "So you receive a copy of every permitted mail.",
+ recipient: "So your mail goes to the address you checked.",
+ subject: "So replies stay with your case reference.",
+ reply: "So Genie can read their answer and prepare the next step.",
+ correction: "So we correct your saved case facts.",
+ taxes: "So we can separate refundable fees from the fare.",
+ fare: "So we can check any excess cancellation charge.",
+ received: "So the closed case records what actually landed.",
+ review: "So we can learn whether this case helped you.",
+ reminder: "So your reminder uses the date you choose.",
+ consent: "So we record exactly what you allow Genie to do.",
+ attachments: "So the mail lists only files you will attach.",
+ source: "So we record where you checked this address.",
+ waitlist: "So we can tell you once when this refund type is ready.",
+ default: "So your next step uses the right case details.",
+};
+export const personalSafetyLine = "No OTP, card or bank details, or login. Ever.";
+export function reasonForQuestion(id: string) {
+ if (/pnr/i.test(id)) return intakeReasons.pnr;
+ if (/bookingId/i.test(id)) return intakeReasons.bookingId;
+ if (/airline|bookedVia|platform/i.test(id)) return intakeReasons.company;
+ if (/amount/i.test(id)) return intakeReasons.amount;
+ if (/date|time|deadline/i.test(id)) return intakeReasons.date;
+ if (/payment/i.test(id)) return intakeReasons.paymentMethod;
+ if (/tax/i.test(id)) return intakeReasons.taxes;
+ if (/reply|destination/i.test(id)) return intakeReasons.reply;
+ return intakeReasons.default;
+}
