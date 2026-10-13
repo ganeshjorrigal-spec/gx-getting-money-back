@@ -1,3 +1,4 @@
+import {mmtEarlyPortal} from "./flight-portal";
 import { greeting } from "./mail-copy";
 import { z } from "zod";
 import { addDays, addWorkingDays, dateValue, displayDate } from "./dates";
@@ -7,7 +8,7 @@ const nullable = z.string().nullable();
 export const flightReadSchema = z.object({
   scopeIssue:z.enum(["none","failed_no_ticket","compensation_only"]).optional(), airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"]),
   cancellationDate: nullable, cancelledBy: z.enum(["airline","passenger","unknown"]), domestic: z.boolean().nullable(),
-  flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), supportContacted:z.boolean().optional(), cancellationTime: nullable.optional(),
+  flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), supportContacted:z.boolean().optional(), eTicketNumber:nullable.optional(), airIndiaRefundRequested:z.boolean().optional(), cancellationTime: nullable.optional(),
   bookingTime: nullable, departureDate: nullable, nonRefundable: z.boolean(), medicalEmergency: z.boolean(),
   taxes: z.number().nonnegative().nullable(), baseFare: z.number().nonnegative().nullable(), fuel: z.number().nonnegative().nullable(),
   cancellationCharge: z.number().nonnegative().nullable(), taxesReturned: z.boolean().nullable(), supportContactDate: nullable,
@@ -20,7 +21,7 @@ export type FlightPlan = {
   route:"WAIT"|"OVERDUE"|"TRACE"|"NEED_INFO"|"NO_ROUTE"|"OUT_OF_SCOPE";
   pastDue?:boolean; owner:string; moneyWith:string; dueDate:string|null; dueSource:string; dueSourceText:string;
   rung:number; nextStep:string; nextPerson:FlightContact|null; above:FlightContact|null; to:string|null; cc:string[];
-  portal?:{url:string;subcategory:string|null;documents:string[]}; questions:FlightQuestion[]; note:string; ruleId:string; body:string|null; subject:string; channel:string; checkDate:string|null; amountOwed:number|null;
+  portal?:{url:string;subcategory:string|null;documents:string[];kind?:"air_india"|"support";company?:string;path?:string;sourceUrl?:string;checkedAt?:string;eTicketNumber?:string}; questions:FlightQuestion[]; note:string; ruleId:string; body:string|null; subject:string; channel:string; checkDate:string|null; amountOwed:number|null;
 };
 export function validFlightDate(value:string|null|undefined):string|null { try { if(value) {dateValue(value);return value;} } catch {} return null; }
 export function isFlightText(text:string) {return /\b(flight|airline|pnr|indigo|spicejet|akasa|air india|makemytrip|goibibo|cleartrip|easemytrip)\b/i.test(text);}
@@ -118,6 +119,7 @@ export function planFlight(read:FlightRead, today:string, prior?:{rung?:number;m
     plan.body=`${greeting(plan.nextPerson,company+" support")}\n\nI am the passenger requesting the refund for my ${airline} flight (${identifier||"booking details to follow"}), cancelled ${displayDate(read.cancellationDate!)}${read.amountPaid!==null?`, for Rs ${read.amountPaid}`:""}.\n\nUnder ${rule}, this refund is due by ${displayDate(plan.dueDate)}.${timing?" "+timing:""}\n\n${r.claim==="paid_site"?"Please share the date you received the airline's refund, the refund date to my original payment method, and the payment reference (UTR or ARN).":"Please share the refund date and the payment reference (UTR or ARN)."}\n\nThank you.`;
   }
   if(!demoAddress&&airline==='Air India'&&direct&&plan.nextStep==='FLIGHT_status')airIndiaPortal(plan,read);
+  if(!demoAddress&&plan.nextStep==='FLIGHT_status'&&plan.moneyWith==='MakeMyTrip'){plan.channel='portal';plan.to=null;plan.cc=[];plan.portal={...mmtEarlyPortal,subcategory:null,documents:[]};plan.nextPerson={company:'MakeMyTrip',role:'Support portal',value:'MakeMyTrip My Trips, Support',email:null,url:mmtEarlyPortal.sourceUrl,readAt:mmtEarlyPortal.checkedAt,label:'VERIFIED'};plan.note=mmtEarlyPortal.path;}
   if(demoAddress&&plan.channel==="email"){const parts=demoAddress.split("@");const role=(name:string)=>`${parts[0]}+${name}@${parts[1]}`;const toAirline=direct||r.claim==="waiting_airline"||r.claim==="not_paid";plan.to=toAirline?role("airline"):role("travelsite");plan.cc=[toAirline?role("travelsite"):role("airline")];plan.nextPerson={company:toAirline?airline:site,role:toAirline?"Nodal Officer":"Grievance Officer",value:toAirline?"Nodal Officer, Demo Air (demo)":"Grievance Officer, DemoTrips (demo)",email:plan.to,url:null,readAt:today,label:"DEMO"};plan.above={...plan.nextPerson,company:airline,role:"Appellate Authority",value:"Appellate Authority, Demo Air (demo)"};}
   if(plan.body&&plan.channel==="email")plan.body=plan.body.replace(/^Dear [^\n]+,/,greeting(plan.nextPerson,(plan.nextStep==="FLIGHT_status"?plan.moneyWith:direct?airline:site)+" support"));
   if(!plan.to&&plan.channel==="email"&&plan.nextStep!=="FLIGHT_status")plan.note=`We don't hold a checked address for ${plan.nextPerson?.company??(direct?airline:site)}. Paste the address from the company's own page. No address is invented.`;
@@ -157,7 +159,10 @@ function airIndiaPortal(plan:FlightPlan,read:FlightRead){
  const contact=flightContacts.find(c=>c.company==='Air India'&&c.role==='Refund portal'&&c.label==='VERIFIED');
  if(!contact?.url)return;
  plan.channel='portal';plan.nextStep='FLIGHT_status';plan.to=null;plan.cc=[];plan.nextPerson=contact;plan.above=null;
- plan.portal={url:contact.url,subcategory:read.reply.claim!=='none'?'Status Check on Pending Refund':null,documents:['Boarding pass','Ticket copy']};
+ if(!read.eTicketNumber||!/^\d{13}$/.test(read.eTicketNumber))plan.questions.push({id:'eTicketNumber',text:'What is your Air India e-ticket number? (13 digits, printed on the ticket; not the PNR)',options:[]});
+ if(read.airIndiaRefundRequested===undefined)plan.questions.push({id:'airIndiaRefundRequested',text:'Have you already asked Air India for this refund?',options:['Yes','No']});
+ if(plan.questions.length){plan.route='NEED_INFO';plan.nextStep='questions';plan.body=null;plan.note='Answer these once to prepare your Air India refund form.';return;}
+ plan.portal={kind:'air_india',company:'Air India',url:contact.url,subcategory:read.airIndiaRefundRequested?'Status Check on Pending Refund':'New Refund Request',documents:['Boarding pass','Ticket copy'],eTicketNumber:read.eTicketNumber!,sourceUrl:contact.url,checkedAt:'2026-10-13'};
  plan.note='Use Air India’s refund form yourself. Genie does not fill or submit the form. For a travel-agent booking, Air India asks you to contact your travel agent.';
  if(!plan.body)plan.body=`Please check my Air India refund${read.pnr?` (PNR ${read.pnr})`:''}${read.amountPaid!==null?` for Rs ${read.amountPaid}`:''}, cancelled ${displayDate(read.cancellationDate!)}. Please share the refund date and payment reference.`;
 }

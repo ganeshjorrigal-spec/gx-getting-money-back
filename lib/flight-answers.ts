@@ -1,6 +1,8 @@
 import { validFlightDate } from "./flight";
 
-export function answerAvailable(item:{questions?:{id:string}[];facts?:{paymentMethod?:string}|null},id:string) {
+export function answerAvailable(item:{questions?:{id:string}[];facts?:{paymentMethod?:string;eTicketNumber?:string|null;airIndiaRefundRequested?:boolean}|null},id:string) {
+ if(id==='eTicketNumber'&&item.facts?.eTicketNumber&&/^\d{13}$/.test(item.facts.eTicketNumber))return false;
+ if(id==='airIndiaRefundRequested'&&typeof item.facts?.airIndiaRefundRequested==='boolean')return false;
  return !!item.questions?.some(q=>q.id===id)||(id==="paymentMethod"&&item.facts?.paymentMethod==="unknown");
 }
 export function answerDate(value:string) {

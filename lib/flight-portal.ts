@@ -7,7 +7,9 @@ export function airIndiaPortalFields(read:FlightRead,known:{name?:string;email?:
   {label:'Phone',value:known.phone||'Enter your phone with country code'},
   {label:'Booking channel',value:read.bookedVia==='direct'?'Choose Website, Mobile App, Call Centre or Booking Office':read.bookedVia||'Choose your booking channel'},
   // PNR and booking ID are not e-ticket numbers.
-  {label:'E-ticket number',value:'Enter from your ticket'},
+  {label:'E-ticket number',value:read.eTicketNumber||'Answer the e-ticket question on your case'},
   {label:'Comment',value:comment||`Please check my Air India refund${read.pnr?` for PNR ${read.pnr}`:''}.`},
  ];
 }
+
+export const mmtEarlyPortal={kind:'support' as const,company:'MakeMyTrip',url:'https://www.makemytrip.com/',path:'Open MakeMyTrip, My Trips, this booking, Support',sourceUrl:'https://www.makemytrip.com/support/contact-us.php',checkedAt:'2026-10-13'};

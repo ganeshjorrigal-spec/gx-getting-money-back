@@ -1,16 +1,9 @@
-# D-045 current job
-
-- [ ] Part 1 landing first paint/fonts and three-run before/after medians.
-- [ ] Part 2 mail-only versus calling mobile permission and honest ask-once copy.
-- [ ] Part 3 approved 12 low drafts, review page/PDF; no finals or placement.
-- [ ] Part 4 Air India ticket/refund portal and verified travel-site support paths.
-
 # Pending review, 13 Oct 2026
 
-- [ ] HQ review of D-044 landing/audit/demo/image draft work. Nothing DONE; no publish in this job.
-- [ ] Ganesh's logo pick and illustration approval before finals, SVG, favicon or page placement. Twelve drafts explicitly approved; final selection is still pending.
-- [ ] Audit questions: mobile for mail-only authority, waitlist contact reuse, timestamp precision, company identity checks despite ask-once promise.
-- [ ] Own-company sources for MMT triphelp and Goibibo travel. Do not guess.
-- [ ] Launch-video sample actual Gmail/fresh-profile/reply/calendar proof. Do not work around saved browser permissions.
-- [ ] Original timed flight demos/post-trial test-payment proof; keys are live, do not switch.
-- [ ] Explicit Ganesh publish instruction before any further Cloudflare/backend release. No calling settings, allow-list or key changes.
+- [ ] HQ review of D-045 four-part work; landing performance target still unmet. Nothing DONE.
+- [ ] Ganesh's refined smoke-logo and mascot picks before finals/SVG/favicon/product placement.31of40image attempts used; no more paid work without authorised next picks.
+- [ ] D-046 urgent demo/disclosure prompt: newly merged HQ docs, not part of this job.
+- [ ] Confirm a complete current Goibibo in-app support path before replacing fallback.
+- [ ] Own-company sources for MMT triphelp/Goibibo travel, do not guess.
+- [ ] Prior launch-video actual Gmail/fresh-profile/reply/calendar proof and original timed flight demos/post-trial test-payment proof. Respect saved browser blocks; current keys live, do not switch.
+- [ ] Explicit Ganesh chat instruction before any further Cloudflare/backend publish. No calling settings, allow-list or key changes.

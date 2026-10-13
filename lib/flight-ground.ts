@@ -8,6 +8,9 @@ export function groundFlightRead(value:FlightRead,text:string,prior?:FlightRead|
  const read=flightReadSchema.parse(value);
  read.replyConfirmed=false;
  read.supportContacted=prior?.supportContacted;
+ read.airIndiaRefundRequested=prior?.airIndiaRefundRequested;
+ const ticket=read.eTicketNumber;
+ read.eTicketNumber=prior?.eTicketNumber??(ticket&&/^\d{13}$/.test(ticket)&&(hasImage||text.includes(ticket))?ticket:null);
  const supported=(date:string|null|undefined,previous?:string|null,source=text)=>{
    if(!date||!validFlightDate(date))return null;
    if(date===previous||hasImage)return date;

@@ -128,6 +128,8 @@ export const intakeReasons = {
  name: "So your drafts and permission use your name.",
  pnr: "So every company can find your booking without asking you again.",
  bookingId: "Travel sites look up refunds by this.",
+ eTicketNumber: "Air India's refund form asks for it.",
+ airIndiaRefundRequested: "So we choose the right refund form category.",
  company: "So we choose the right company and checked contact.",
  amount: "So the draft and recovered amount match your refund.",
  date: "So we can work out the refund date and next check-in.",
@@ -152,6 +154,8 @@ export const intakeReasons = {
 };
 export const personalSafetyLine = "No OTP, card or bank details, or login. Ever.";
 export function reasonForQuestion(id: string) {
+ if(id==='eTicketNumber')return intakeReasons.eTicketNumber;
+ if(id==='airIndiaRefundRequested')return intakeReasons.airIndiaRefundRequested;
  if (/pnr/i.test(id)) return intakeReasons.pnr;
  if (/bookingId/i.test(id)) return intakeReasons.bookingId;
  if (/airline|bookedVia|platform/i.test(id)) return intakeReasons.company;
@@ -306,3 +310,5 @@ export const landingSections = {
 };
 
 export const demoEscalationCopy = {title:"You send this one from your Gmail",note:"Demo officer step. Genie prepares it; you send it in your own name."};
+
+export const portalCopy={statusTitle:'Your status request',refundTitle:'Your refund form',copy:'Copy status request',copied:'Status request copied',ticketError:'Enter the 13 digits from your Air India ticket, not the PNR.',userSends:'You open the company app, paste the request and send it. Genie does not submit it.',open:(company:string)=>`Open ${company}`,source:(day:string)=>`Company's own page, checked ${day}`};

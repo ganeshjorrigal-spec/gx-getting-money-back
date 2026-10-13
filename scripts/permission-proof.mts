@@ -1,6 +1,7 @@
 import {build} from 'esbuild';import {mkdir,writeFile,readFile,readdir} from 'node:fs/promises';import {resolve} from 'node:path';
-await mkdir('out/proof-permission',{recursive:true});await mkdir('docs/qa/permission-2026-10-13',{recursive:true});
-await build({entryPoints:['scripts/qa/permission-render.tsx'],bundle:true,platform:'browser',format:'esm',jsx:'automatic',outfile:'out/proof-permission/entry.js',define:{'process.env.NODE_ENV':'"production"'},alias:{'convex/react':resolve('scripts/qa/restyle-query-fixture.ts')}});
+const portal=process.argv.includes('--portal'),folder=portal?'out/proof-portal-copy':'out/proof-permission';
+await mkdir(folder,{recursive:true});await mkdir('docs/qa/permission-2026-10-13',{recursive:true});
+await build({entryPoints:[portal?'scripts/qa/portal-render.tsx':'scripts/qa/permission-render.tsx'],bundle:true,platform:'browser',format:'esm',jsx:'automatic',outfile:folder+'/entry.js',define:{'process.env.NODE_ENV':'"production"'},alias:{'convex/react':resolve('scripts/qa/restyle-query-fixture.ts'),'next/link':resolve('scripts/qa/restyle-link-fixture.tsx')}});
 const css=(await Promise.all((await readdir('out/_next/static/css')).filter(f=>f.endsWith('.css')).map(f=>readFile('out/_next/static/css/'+f,'utf8')))).join('\n');const home=await readFile('out/index.html','utf8');const fontClass=home.match(/<html[^>]*class="([^"]+)"/)?.[1]??'';
-await writeFile('out/proof-permission/index.html',`<!doctype html><html class="${fontClass}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local permission proof</title><style>${css}</style></head><body><div id="root"></div><script type="module" src="entry.js"></script></body></html>`);
+await writeFile(folder+'/index.html',`<!doctype html><html class="${fontClass}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local permission proof</title><style>${css}</style></head><body><div id="root"></div><script type="module" src="entry.js"></script></body></html>`);
 console.log('Interactive permission fixtures built. Actions throw; no backend access.');

@@ -58,13 +58,15 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
  // Live queries refresh stale questions. A delayed tap must not overwrite newer facts.
  if(!answerAvailable(item,args.id))return null;
- const value=redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
+ const value=args.id==="eTicketNumber"?args.value.trim():redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
  if(args.id==="confirmReply"){if(value!=="Looks right")throw new Error("Paste a correction to their reply below");read.replyConfirmed=true;}
  if(args.id==="transferDestination"){if(value==="Not clear")throw new Error("Paste their exact reply or a correction below");if(value!=="passenger"&&value!==read.bookedVia)throw new Error("Choose the transfer destination");read.reply.pointsAt=value;read.reply.paymentDestination=value==="passenger"?"passenger":"travel_site";read.replyConfirmed=true;}
  if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {Object.assign(read,{[args.id]:answerDate(value)});}
  else if(["bookingTime","cancellationTime"].includes(args.id)){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)||!Number.isFinite(Date.parse(value+"+05:30")))throw new Error("Use YYYY-MM-DDTHH:mm");Object.assign(read,{[args.id]:value+"+05:30"});}
  else if(["airline","bookedVia"].includes(args.id)){if(value==="Other")throw new Error("Type the company name below");Object.assign(read,{[args.id]:value});}
  else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
+ else if(args.id==='eTicketNumber'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!/^\d{13}$/.test(value))throw new Error('Use the 13 digits from your Air India ticket, not a PNR or card number');read.eTicketNumber=value;}
+ else if(args.id==='airIndiaRefundRequested'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!['Yes','No'].includes(value))throw new Error('Choose Yes or No for your Air India refund request');read.airIndiaRefundRequested=value==='Yes';}
  else if(args.id==="supportContacted")read.supportContacted=value==="Yes";
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";

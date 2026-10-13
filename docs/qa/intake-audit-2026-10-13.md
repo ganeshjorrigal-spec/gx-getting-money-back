@@ -33,10 +33,10 @@ Sources: app/start/page.tsx; app/c/{flight-case-view,case-view,event-question,ch
 | Model-selected event clarification: company, situation, refund option, ticket format, completion dates, bank trace/reference | Event: NEED_INFO (max questions per run) | Conditional | Disambiguates current evidence | Dynamic question set; no static exhaustive wording possible; saved facts supplied to reader |
 | Steps completed date | Event: action needed | Required when marking done | Starts post-action window | Different from original message date |
 | Full booking name | Flight: written mail permission | Required for permission | Authority letter identity | NOW prefilled from saved optional name; user confirms spelling |
-| Mobile | Flight: written mail permission | Required for permission | Authority letter identity | NOW prefills held phone contact; missing phone remains a new fact |
+| Mobile | Flight: separate calling permission | Required only when calls allowed | Passenger patch-in | Prefills held phone; absent from mail-only permission (HQ answer, D-045) |
 | Passenger email | Flight: written mail permission | Required for permission | Copies passenger on mail | NOW prefills held email contact; missing email remains a new fact |
 | Mail permission checkbox | Flight / public demo: authority | Required for automatic support mail | Records scope | New consent, not repeated facts; officers user-sent |
-| Call permission checkbox | Flight: active permission / demo | Separate optional consent | Permits simulated/test call | No extra PNR/company/mobile entry; uses held permission identity |
+| Call permission checkbox | Flight: active permission / demo | Separate optional consent | Permits simulated/test call | No extra PNR/company; mobile collected here only if not held |
 | Company To address | Both: draft when unknown / event editable | Required to email | Checked recipient | Verified/saved To already filled; user may edit |
 | Address source | Event: unverified grievance To | Required for unverified route | Explains user-provided address | New source evidence; not company repeated |
 | Subject and draft message | Event: draft editor | Prefilled, editable | Carries case in thread | Confirmation only; no need to rewrite |
@@ -59,8 +59,18 @@ Sources: app/start/page.tsx; app/c/{flight-case-view,case-view,event-question,ch
 
 ## For HQ
 - Full name at permission is needed for the letter, but Start name is optional; prefill avoids duplicate typing without deciding to make it required earlier.
-- Permission requires both mobile and email whereas Confirm permits one optional contact. The missing second value is a new fact, retained. Is mobile still needed for mail-only authority?
+- Resolved by HQ/D-045: mail-only permission requires name/email, not mobile. Mobile is required for separate calling consent and prefilled if held.
 - Cancellation date versus full timestamp is extra precision for the look-in rule, retained.
 - Event model questions have flexible wording; an unconditional promise that no company will ask anything again cannot be enforced. Landing copy uses HQ's prescribed promise; companies may still request identity checks (no OTP through Genie).
 - Waitlist contact is a separate optional subscription purpose; do we want to reuse an existing contact for it? Left unchanged.
 - Actual received amount, reply/correction, consent and reminder dates are new information, not repeat questions; retained.
+
+
+## D-045 portal additions
+
+| Field | Screen / step | Required or optional | Why | Other places / duplicate finding |
+|---|---|---|---|---|
+| E-ticket number (13 digits, not PNR) | Air India direct: prepare its refund portal | Required for this portal only | Air India's refund form asks for it. | Once saved, portal card displays it; reply rereading preserves it and stale taps cannot replace it. No other airline/agent request. |
+| Already asked Air India for this refund? | Air India direct: prepare portal | Yes/No once | Chooses new-request or pending-status category | Saved explicit answer, not inferred from ordinary support contact; portal shows selected category. Never re-asked on reply. |
+
+The earlier unconditional company promise has been replaced by HQ's honest wording in D-045. Date precision, waitlist purpose and new reply/received information remain unchanged.
