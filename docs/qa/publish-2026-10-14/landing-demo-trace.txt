@@ -1,0 +1,126 @@
+The chase
+₹5,400 landed
+
+12:31:08 am IST
+
+Recorded in this demo’s activity history
+
+Demo clock moved to the bank check date
+
+12:30:47 am IST
+
+Recorded in this demo’s activity history
+
+Bank tracing message ready
+
+12:29:47 am IST
+
+Recorded in this demo’s activity history
+
+Check-in set for 2026-10-28
+
+12:29:47 am IST
+
+Recorded in this demo’s activity history
+
+Demo Air states they have processed Rs 5400 to your original payment method on 2026-10-24 with UTR DEMO-C26261-REF and bank check date by 2026-10-28.
+
+12:29:47 am IST
+
+Recorded in this demo’s activity history
+
+Their reply arrived; preparing your next step
+
+12:29:44 am IST
+
+Recorded in this demo’s activity history
+
+Genie mailed Demo Air
+
+12:29:17 am IST
+
+Recorded in this demo’s activity history
+
+Confirming mail to Demo Air ready after simulated demo call
+
+12:28:40 am IST
+
+Recorded in this demo’s activity history
+
+Mail draft ready
+
+12:28:40 am IST
+
+Recorded in this demo’s activity history
+
+Check-in set for 2026-10-31
+
+12:28:40 am IST
+
+Recorded in this demo’s activity history
+
+Demo Air states they paid Rs 5400 to DemoTrips on 2026-10-24 with reference DEMO-AIR-RG-C26261.
+
+12:28:40 am IST
+
+Recorded in this demo’s activity history
+
+Simulated demo call · Demo Air · 75 seconds
+
+12:28:37 am IST
+
+Recorded in this demo’s activity history
+
+Demo clock moved ahead 10 days to the next office session. Simulated care call next.
+
+12:28:37 am IST
+
+Recorded in this demo’s activity history
+
+Mail draft ready
+
+12:27:48 am IST
+
+Recorded in this demo’s activity history
+
+DemoTrips states the refund is pending with Demo Air and will be passed on once received from the airline.
+
+12:27:48 am IST
+
+Recorded in this demo’s activity history
+
+Their reply arrived; preparing your next step
+
+12:27:45 am IST
+
+Recorded in this demo’s activity history
+
+Check-in set for 2026-10-21
+
+12:27:19 am IST
+
+Recorded in this demo’s activity history
+
+Genie mailed DemoTrips
+
+12:27:19 am IST
+
+Recorded in this demo’s activity history
+
+Sample permission saved for simulated calls only. No visitor phone is used.
+
+12:27:17 am IST
+
+Recorded in this demo’s activity history
+
+You gave written permission for Genie to mail and follow up
+
+12:27:17 am IST
+
+Recorded in this demo’s activity history
+
+Demo started. No real booking, company or money.
+
+12:26:39 am IST
+
+Recorded in this demo’s activity history

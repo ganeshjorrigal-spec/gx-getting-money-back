@@ -1,0 +1,27 @@
+{
+  "profile": "Fresh Chrome profile supplied by Ganesh, confirmed ready",
+  "deployedCommit": "44c942b",
+  "landing": {
+    "code": "RG-C26261",
+    "rounds": 3,
+    "landed": true,
+    "testMails": 2,
+    "replyInputsIncludingSimulatedCall": 3,
+    "simulatedCalls": 1,
+    "realCalls": 0
+  },
+  "direct": {
+    "rounds": 3,
+    "landed": true,
+    "testMails": 2,
+    "replyInputsIncludingSimulatedCall": 3,
+    "simulatedCalls": 1,
+    "realCalls": 0
+  },
+  "escalation": {
+    "code": "RG-9F3379",
+    "selfSendVisible": true,
+    "automaticPermissionButtons": 0
+  },
+  "navigationNote": "Initial wait was interrupted by document replacement; current case then displayed permission correctly."
+}

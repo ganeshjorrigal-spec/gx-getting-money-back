@@ -1,16 +1,10 @@
-# Current state, 13 October 2026
+# Current state, 14 October 2026
 
-## D-047 speed and finals: READY FOR REVIEW, unpublished
-Part1 pushed1d06b31. Static landing uses a small browser entry, no Next hydration/provider/case code. Hostname-first old-site notice retained with tests; no client/query on new domain. Start/case Next exports intact. Same-machine three-run375px medians: before73, speed97. Part2 final99, accessibility100 all final runs. Final FCP1.345s, LCP2.033s. Target79 passes; placement does not lower Part1. Local uncompressed export only, no live/Cloudflare claim.
+## Published main, READY FOR REVIEW
+Ganesh's new prompt replaces the conflicted demo-only release. Cherry-pick aborted; release/2026-10-13-demo left unmerged at4990087. Main pulled to44c942b, published to Convex then Cloudflare with no source edits afterec86aa2 (HQ docs only). Worker version7e11e739-025e-49d7-b0de-3de2a3ef3a02. No key/settings/allow-list/model/permission change; Vercel frozen. Nothing DONE.
+319tests/42files, type check, explicit static build and saved12step local demo gate pass. Fresh Chrome supplied by Ganesh: landing and direct flight demo each play all3rounds to Money landed,2test mails/3reply inputs including1simulated call,0real calls. Older officer demo self-send line visible; no automatic sending permission there. All6public routes200; old Convex move notice and oldTB case link work. One live375px Lighthouse91/accessibility100,FCP2.457s,LCP3.043s. Proof docs/qa/publish-2026-10-14 and today's log. Actual test-desk mail transport, no real-company mail or phone call. No new timed speed claim.
 
-Finals follow Ganesh's D-047 picks: hand-traced navy transparent full SmokeLogo2 SVG with Fraunces wordmark; loop-only SVG and16/32/180/512PNG, ICO, apple icon and manifest. Mascot6 high-quality transparent final and64px head; airport, revised on-hold, revised refund-coming and family finals. API script/ledger37images and37attempts of40, including one rejected extra-sign mascot and targeted correction. No automatic retries, local compression/crops/icons cost no image calls. Final mascot19,604bytes/head2,804; scenes24,240–30,992bytes, all within limits.
+## Next: three landing polish items, unpublished
+Hide empty Your cases and move saved cases below hero; deliberate corner mascot without text overlap; final green It's in/reply inside sample receipt, no orphan labels. Do on main, test/local screenshots, commit/push, wait for HQ review. Publishing again is not authorised.
 
-Header mark across public product pages; lazy mascot beside hero sample (small above on phone), empty/loading states and landed cards. Never inside receipt or mail. Four scenes below fold, official original logo files/sprite regions and not-affiliated line. Final scene alt/calling copy in app/copy.ts. Inline mark avoids a network request. Homepage strips unused language font faces only, uses local glyph fallback, retains Latin500/700,400/600, Mono400 on demand and swap. A partial-opacity sample text contrast failure was corrected with visible/hidden steps.
-
-## Proof
-319 tests/42files, type check and explicit production static export pass. Saved12-step isolated demo passes at375/1280 through Money landed. No real Gmail/call transport. Phone/desktop landing and landed screenshots, full brand review, nine initial/final Lighthouse reports plus corrected final3, bundle graphs and design scan in docs/qa/finals-speed-2026-10-13. Final viewport checks375/1280, no overflow, all scenes loaded, no mascot in receipt. Source/prompts/rejected mascot retained under docs/design/finals; review HTML there linked from prior gallery. No paid AI eval in this UI task. Nothing DONE.
-
-## Other work and live
-Urgent33fcc76/f457201 source fixes remain READY FOR REVIEW and unpublished. Remote HQ docs integrated385c2b9; prior D-045 permission and portals accepted, not DONE. Missing current Goibibo app path and own-page MMT/Goibibo emails still never guessed. Earlier timed flight demos/post-trial TEST payment and launch-video fresh-profile/calendar proof remain outstanding. Current keys live, no switch. Live remains4990087 on refundgenie.app and Convex; Vercel frozen. No deploy/publish, backend, rules, payment, calling settings, allow-list, permissions or key changes. D-038/privacy and domain carry-over limits unchanged.
-
-Next: wait for HQ review, including authorised future release and actual fresh-profile/Gmail proof.
+D-047 finals37/40cap and accepted speed work unchanged. Prior missing Goibibo app path/own-page emails, sample-video/calendar and old timed flight/post-trial TEST-payment proof remain as logged. Current keys live, no switch. Domain carry-over rules/limits and D-038 simulated-only safeguards unchanged.

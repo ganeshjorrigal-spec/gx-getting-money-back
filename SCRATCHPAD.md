@@ -5,3 +5,5 @@
 - [ ] Current Goibibo in-app path and own-page MMT triphelp/Goibibo travel emails missing; never guess.
 - [ ] Prior launch-video Gmail/fresh-profile/calendar proof and timed flight demos/post-trial TEST payment proof. Current keys live; no switch.
 - [ ] Explicit Ganesh chat instruction before any publish. No calling settings, allow-list or key changes.
+
+- [ ] Ganesh authorises current-main publish under2026-10-14-publish-main.md after tests/type/staticbuild/savedwalk; stop on failure. Then three landing polish items on main WITHOUT publishing.
