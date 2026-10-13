@@ -4,6 +4,7 @@ import {internal} from './_generated/api';
 import {assertAccess} from './lib/access';
 import {takeRate} from './lib/rate';
 import {sampleFlight} from '../lib/flight-sample';
+import {publicDemoPlan} from '../lib/public-demo-plan';
 import {planFlight} from '../lib/flight';
 import {todayIST,addDays} from '../lib/dates';
 import {nextOffice,officeHours} from '../lib/calls';
@@ -16,7 +17,7 @@ export const create=mutation({args:{tokenHash:v.string(),deviceId:v.string()},re
  if(!connection?.chaseSendGranted||!process.env.TICKBACK_DEMO_ADDRESS||!await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','demo')).first())throw new Error('The demo desk is not connected yet');
  await takeRate(ctx,`demo:${args.deviceId}`,5,3600000);await takeRate(ctx,'demo:global',200,86400000);
  let code='';for(let i=0;i<5;i++){code=`RG-${crypto.randomUUID().replaceAll('-','').slice(0,6).toUpperCase()}`;if(!await ctx.db.query('cases').withIndex('by_code',q=>q.eq('code',code)).first())break;if(i===4)throw new Error('Please try again');}
- const now=Date.now(),day=todayIST(),facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips',flightName:'Sample domestic flight',cancellationDate:addDays(day,-30)},plan=planFlight(facts,day,{},process.env.TICKBACK_DEMO_ADDRESS);
+ const now=Date.now(),day=todayIST(),facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips',flightName:'Sample domestic flight',cancellationDate:addDays(day,-30)},plan=publicDemoPlan(planFlight(facts,day,{},process.env.TICKBACK_DEMO_ADDRESS));
  if(!plan.body||!plan.to)throw new Error('Demo mail could not be prepared');
  const caseId=await ctx.db.insert('cases',{code,tokenHash:args.tokenHash,refundType:'flight',stage:'READY',factsConfirmedAt:now,ladderLevel:0,draftsShown:1,tier:'free_check',paidState:'none',createdAt:now,updatedAt:now,facts,flightPlan:plan,owner:plan.owner,moneyWith:plan.moneyWith,route:plan.route,amountPaise:540000,eventName:'Sample domestic flight',name:'Demo Passenger',demo:{kind:'flight',chaseStory:true,chasePhase:'authority',round:0,phase:'ready',now:day,expiresAt:now+7*86400000}});
  await ctx.db.insert('inputs',{caseId,kind:'initial',text:`Made-up domestic Delhi to Mumbai flight, Demo Air via DemoTrips. Airline cancelled ${facts.cancellationDate}. Rs 5400 paid by UPI. PNR SAMPLE, booking TEST-ID. Full refund not received.`,storageIds:[],createdAt:now});

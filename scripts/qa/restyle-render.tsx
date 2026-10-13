@@ -12,6 +12,7 @@ import FlightCase from '../../app/c/flight-case-view';
 import {setProofData} from './restyle-query-fixture';
 import {sampleFlight} from '../../lib/flight-sample';
 import {planFlight} from '../../lib/flight';
+import {publicDemoPlan} from '../../lib/public-demo-plan';
 import {finishMail} from '../../lib/mail-copy';
 export function renderProof(){
  const r=sampleFlight();r.airline='SpiceJet';r.cancellationDate='2026-09-11';r.amountPaid=6240;
@@ -43,5 +44,6 @@ export function renderProof(){
  pages.skillboxDeadline=renderToStaticMarkup(<main className="case-shell"><div className="case-wrap"><p>Sample SkillBox case</p><EventQuestion question={{id:"refund_deadline",text:"What timeframe or deadline did SkillBox give for receiving the refund?",options:[]}} busy={false} earlier={false} answer="" onEarlier={()=>{}} onAnswer={()=>{}} onChange={()=>{}}/></div></main>);
  const dateFacts={...r,cancellationDate:null};setProofData({item:{...item,stage:"NEED_INFO",route:"NEED_INFO",facts:dateFacts,questions:[{id:"bookingDate",text:"When did you book?",options:[]},{id:"cancellationDate",text:"When was it cancelled?",options:[]}]},drafts:[]});pages.dateQuestions=renderToStaticMarkup(<FlightCase code="RG-QATEST" token="visual-fixture"/>);
  setProofData({drafts:videoDraft(vp),demoView:{events:[],calls:[],mails:0,replies:[],simulatedCalls:0,realCalls:0}});pages.chaseDemoEscalation=renderToStaticMarkup(<PublicChaseDemo code="RG-QATEST" token="visual-fixture" data={{...vd,refundType:"flight",chase:null,demo:{...vd.demo,chaseStory:true,chasePhase:"authority"}}}/>);
+ const support=publicDemoPlan(vp);setProofData({drafts:videoDraft(support),demoView:{events:[],calls:[],mails:0,replies:[],simulatedCalls:0,realCalls:0}});pages.chaseDemoSupport=renderToStaticMarkup(<PublicChaseDemo code="RG-QATEST" token="visual-fixture" data={{...vd,refundType:"flight",flightPlan:support,chase:null,demo:{...vd.demo,chaseStory:true,chasePhase:"authority"}}}/>);
  return pages;
 }

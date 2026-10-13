@@ -1,3 +1,4 @@
+import {publicDemoPlan} from '../lib/public-demo-plan';
 import { answerAvailable, answerDate, answerAmount } from "../lib/flight-answers";
 import { finishMail } from "../lib/mail-copy";
 import { internalMutation, mutation, query, type MutationCtx } from "./_generated/server";
@@ -72,7 +73,7 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
 }});
 export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string(),read:v.any(),plan:v.any(),model:v.string(),latencyMs:v.number(),inputTokens:v.number(),outputTokens:v.number(),totalTokens:v.number()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await ctx.db.get(args.caseId);if(!item||item.latestRunId!==args.runId)return null;
- const read=args.read as FlightRead,plan=args.plan as FlightPlan,now=Date.now();
+ const read=args.read as FlightRead,plan=item.demo?.chaseStory?publicDemoPlan(args.plan as FlightPlan):args.plan as FlightPlan,now=Date.now();
  const old=await ctx.db.query("checkins").withIndex("by_case",q=>q.eq("caseId",item._id)).take(50);
  for(const c of old)if(c.status==="scheduled"){if(c.scheduledId)await ctx.scheduler.cancel(c.scheduledId);await ctx.db.patch(c._id,{status:"cancelled"});}
  await ctx.db.patch(item._id,{refundType:"flight",owner:plan.owner,moneyWith:plan.moneyWith,flightPlan:plan,facts:read,platform:read.bookedVia==="direct"?read.airline??undefined:read.bookedVia??undefined,eventName:read.flightName??`${read.airline??"Your"} flight`,amountPaise:read.amountPaid===null?undefined:Math.round(read.amountPaid*100),route:plan.route,routeConfidence:read.reply.confidence,ladderLevel:plan.rung,dueDate:plan.dueDate??undefined,dueSource:plan.dueSource,dueSourceText:plan.dueSourceText,nextStep:plan.nextStep,questions:plan.questions,stage:plan.route==="NEED_INFO"?"NEED_INFO":plan.route==="OUT_OF_SCOPE"?"CLOSED_OUT_OF_SCOPE":plan.route==="NO_ROUTE"?"CLOSED_NO_ROUTE":plan.route==="WAIT"?"WAITING":"READY",progress:{step:"done",at:now},updatedAt:now});

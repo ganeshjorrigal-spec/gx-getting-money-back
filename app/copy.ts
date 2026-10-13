@@ -303,3 +303,5 @@ export const landingSections = {
  ["Can I stop Genie?","Yes. Stop Genie ends queued and future sending. A mail already accepted by Gmail cannot be recalled."],
  ],
 };
+
+export const demoEscalationCopy = {title:"You send this one from your Gmail",note:"Demo officer step. Genie prepares it; you send it in your own name."};
