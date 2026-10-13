@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-13T14:32:33.167062+00:00",
+  "pages": [
+    {
+      "path": "/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Refund Genie: who owes your flight refund?",
+      "heading": "Flight cancelled. Refund still not in your account?"
+    },
+    {
+      "path": "/terms/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Terms | Refund Genie",
+      "heading": "Terms"
+    },
+    {
+      "path": "/refund-policy/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Refund and cancellation policy | Refund Genie",
+      "heading": "Refund and cancellation policy"
+    },
+    {
+      "path": "/contact/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Contact | Refund Genie",
+      "heading": "Contact"
+    },
+    {
+      "path": "/privacy/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Privacy | Refund Genie",
+      "heading": "Privacy"
+    },
+    {
+      "path": "/start/",
+      "HEAD": "200",
+      "GET": "200",
+      "title": "Refund Genie: who owes your flight refund?",
+      "heading": "What did they tell you?"
+    }
+  ]
+}
