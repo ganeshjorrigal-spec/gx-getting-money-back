@@ -1,9 +1,7 @@
-# Pending review, 13 Oct 2026
+# Pending review, 14 Oct 2026
 
-- [ ] HQ review of D-047 Parts1/2. Speed target now passes locally;37/40 image cap. Nothing published or DONE.
-- [ ] HQ review of URGENT Parts1/2; live unchanged. Fresh-profile/live Gmail proof requires the approved future release.
-- [ ] Current Goibibo in-app path and own-page MMT triphelp/Goibibo travel emails missing; never guess.
-- [ ] Prior launch-video Gmail/fresh-profile/calendar proof and timed flight demos/post-trial TEST payment proof. Current keys live; no switch.
-- [ ] Explicit Ganesh chat instruction before any publish. No calling settings, allow-list or key changes.
-
-- [ ] Ganesh authorises current-main publish under2026-10-14-publish-main.md after tests/type/staticbuild/savedwalk; stop on failure. Then three landing polish items on main WITHOUT publishing.
+- [ ] Resume unpublished landing polish: local proof fixture command failed with Windows quoting. Source draft uncommitted,321tests/type/staticbuild pass; browser proof remains unverified. Stop honoured. No second publish.
+- [ ] HQ review of published44c942b: fresh-profile landing/direct demos complete to Money landed,6routes200, old notice/legacy link, live mobile91/accessibility100. Proof pushed2f8e806.
+- [ ] Current Goibibo path and own-page MMT/Goibibo email sources missing; never guess.
+- [ ] Prior timed flight demos/post-trial TEST payment/sample-video-calendar evidence remain as logged. Current keys live, no switch.
+- [ ] No calling settings, allow-list or key changes. Further deployment needs Ganesh's chat authorisation.

@@ -8,3 +8,6 @@ Ganesh's new prompt replaces the conflicted demo-only release. Cherry-pick abort
 Hide empty Your cases and move saved cases below hero; deliberate corner mascot without text overlap; final green It's in/reply inside sample receipt, no orphan labels. Do on main, test/local screenshots, commit/push, wait for HQ review. Publishing again is not authorised.
 
 D-047 finals37/40cap and accepted speed work unchanged. Prior missing Goibibo app path/own-page emails, sample-video/calendar and old timed flight/post-trial TEST-payment proof remain as logged. Current keys live, no switch. Domain carry-over rules/limits and D-038 simulated-only safeguards unchanged.
+
+## Polish checkpoint, stopped
+Three source changes are uncommitted and unpublished.321tests/43files/type/staticbuild pass, but the local saved-case fixture creation command failed with Windows quoting. Browser polish checks remain unverified; NOT READY FOR REVIEW. Stopped as instructed. Next repair fixture setup and finish the bounded local proof; no publishing authorised.
