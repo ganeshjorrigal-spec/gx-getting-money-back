@@ -18,3 +18,24 @@ it('existing self-send demo officer route remains unchanged',()=>{const facts={.
 
 it('public story still sends officer/rung-three escalations only through the passenger',()=>{const facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips'};const officer=planFlight(facts,'2026-10-13',{rung:3},'refundgenie.fixture.desk@gmail.com');const same=publicDemoPlan(officer);expect(same).toBe(officer);expect(isPassengerEscalation({refundType:'flight',flightPlan:same},{channel:'email',to:same.to,recipientRole:same.nextPerson?.role,rung:same.rung})).toBe(true);});
 it('public confirming mail keeps a support snapshot and passes the same dispatch guards',async()=>{const {t,item}=await created();await t.run(async ctx=>{const letterId=await ctx.storage.store(new Blob(['synthetic authority']));await ctx.db.patch(item._id,{chase:{active:true,name:'Demo Passenger',mobile:'0000000000',email:'passenger@example.invalid',authorisedAt:1,letterId,encryptedCaseToken:'synthetic'},demo:{...item.demo!,round:1,chasePhase:'call'}});});const id=await t.run(ctx=>ctx.db.insert('calls',{caseId:item._id,mode:'simulated',label:'Simulated demo call',status:'completed',company:'Demo Air',day:item.demo!.now,startedAt:1,createdAt:1,durationSeconds:1,costUsd:0,reservedUsd:0,authorisedAt:1}));const draftId=await t.mutation(internal.calls.prepareConfirmation,{id});expect(draftId).not.toBeNull();const draft=await t.run(ctx=>ctx.db.get(draftId!));expect(draft!.recipientRole).toBe('Customer care');await t.run(ctx=>ctx.db.patch(item._id,{demo:{...item.demo!,round:1,chasePhase:'confirm_mail'}}));expect(await t.mutation(internal.chase.reserve,{caseId:item._id,draftId:draftId!})).not.toBeNull();});
+
+it('full public story crosses every backend gate to Money landed with transport held',async()=>{
+ const {t,item,draft,token}=await created();vi.stubEnv('CALL_ALLOWLIST','+910000000001');vi.stubEnv('CALL_MODE','simulated');
+ await t.run(async ctx=>{const letterId=await ctx.storage.store(new Blob(['synthetic permission']));await ctx.db.patch(item._id,{chase:{active:true,name:'Demo Passenger',mobile:'0000000000',email:'passenger@example.invalid',authorisedAt:1,letterId,encryptedCaseToken:'synthetic'}});});
+ await t.mutation(internal.chaseDemo.authorised,{code:item.code,token});
+ expect(await t.mutation(internal.chase.reserve,{caseId:item._id,draftId:draft._id})).not.toBeNull();
+ const applyReply=async(round:number,read:any)=>{const runId='synthetic-round-'+round;await t.run(async ctx=>{const held=await ctx.db.get(item._id);await ctx.db.patch(item._id,{latestRunId:runId,demo:{...held!.demo!,round,phase:'ready'}});await ctx.db.insert('inputs',{caseId:item._id,kind:'reply',text:'Made-up demo desk reply',storageIds:[],runId,createdAt:Date.now()});});await t.mutation(internal.flights.apply,{caseId:item._id,runId,read,plan:planFlight(read,item.demo!.now,{},'refundgenie.fixture.desk@gmail.com'),model:'fixture',latencyMs:0,inputTokens:0,outputTokens:0,totalTokens:0});};
+ await applyReply(1,{...item.facts,reply:{...item.facts.reply,claim:'waiting_airline',fromCompany:'DemoTrips',pointsAt:'Demo Air',summary:'Pending with Demo Air.'}});
+ expect((await t.run(ctx=>ctx.db.get(item._id)))!.demo!.chasePhase).toBe('ready_call');
+ await t.mutation(api.chaseDemo.advance,{code:item.code,token});
+ const reserved=await t.mutation(internal.calls.reserve,{caseId:item._id,fixture:'reference'});expect(reserved!.mode).toBe('simulated');
+ await t.run(ctx=>ctx.db.patch(reserved!.callId,{status:'completed'}));
+ const confirmation=await t.mutation(internal.calls.prepareConfirmation,{id:reserved!.callId});
+ await t.mutation(api.chaseDemo.advance,{code:item.code,token});
+ expect(await t.mutation(internal.chase.reserve,{caseId:item._id,draftId:confirmation!})).not.toBeNull();
+ await applyReply(2,{...item.facts,reply:{...item.facts.reply,claim:'processed_reference',fromCompany:'Demo Air',pointsAt:'passenger',reference:'DEMO-REF',paidDate:'2026-10-13',promisedDate:'2026-10-16',summary:'Processed to original payment method.'}});
+ expect((await t.run(ctx=>ctx.db.get(item._id)))!.demo!.chasePhase).toBe('bank');
+ await t.mutation(api.chaseDemo.advance,{code:item.code,token});
+ await t.mutation(api.cases.answerCheckin,{code:item.code,token,answer:'landed',amountPaise:540000});
+ expect((await t.run(ctx=>ctx.db.get(item._id)))!.stage).toBe('CLOSED_LANDED');
+});

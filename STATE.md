@@ -16,9 +16,10 @@ Intake audit updated with the two portal facts and HQ mobile answer. Full eviden
 ## Live release and remaining work
 - Earlier authorised13Oct publish at source4990087 remains live on refundgenie.app and existing Convex. This job and D-044 changes are not published. Vercel demo frozen. Further publish requires Ganesh chat authorisation.
 - HQ performance review before publish; Ganesh's refined logo/mascot picks before finals/placement.
-- D-046 urgent demo/disclosure prompt arrived in GitHub during this job; merged docs only, not implemented outside this request.
+- URGENT Part1 source demo fix and full isolated browser/backend regression READY FOR REVIEW;304 tests. Live source remains broken/unpublished. Fresh-profile and live mail proof limitations in log. D-046 Part2 now in progress.
 - MMT triphelp/Goibibo travel own-page email sources still missing; never auto-fill them.
 - Prior launch-video sample actual Gmail/fresh-profile/calendar proof remains unverified; saved post-reply visuals are fixtures. Original three timed flight demos/post-trial Rs49 TEST payment proof remains outstanding. Current keys live; no switch authorised. Earlier TB-795645 Gmail evidence retained.
 - D-038 Parts1-5 and privacy fix previously READY FOR REVIEW with simulated/test proof, no live calling authority. Domain carry-over accepted with fresh trial/manual paid restore on old active case; closed-case restore hidden and future carry-over rules still undefined. Limits unchanged.
 
 Next: HQ review. Mark nothing DONE.
+

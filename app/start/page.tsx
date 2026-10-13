@@ -1,5 +1,6 @@
 "use client";
 import {WhyAsk} from "../components/why-ask";
+import {openCase} from '../../lib/case-navigation';
 import {isVideoDemoEntry} from '../../lib/video-demo';
 import {callingCopy} from '../copy';
 import { userError } from "../../lib/user-error";
@@ -91,7 +92,7 @@ export default function StartPage() {
       const eventMessage = /bookmyshow|district|concert|event ticket|ticketgenie|skillbox/i.test(message);
       const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId, name: name.trim() || undefined, refundType:eventMessage?"event":refundType });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
-      window.location.assign(`/c/${result.code}#k=${token}`);
+      openCase(`/c/${result.code}#k=${token}`);
     } catch (caught) {
       setError(userError(caught));
       setWorking(false);
@@ -106,7 +107,7 @@ export default function StartPage() {
       const hash=await tokenHash(token),deviceId=getDeviceId();
       const result = kind==="flight"&&!selfSend?await createChaseDemo({tokenHash:hash,deviceId}):await createDemo({ platform, kind, tokenHash:hash,deviceId });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
-      window.location.assign(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
+      openCase(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
     } catch (error) { setError(userError(error)); setWorking(false); }
   }
 

@@ -1,0 +1,14 @@
+[
+ {"action":"click","role":"link","name":"See a 3-minute demo"},
+ {"action":"assert","role":"heading","name":"Let Genie send and follow up"},
+ {"action":"check","role":"checkbox"},
+ {"action":"click","role":"button","name":"Let Genie send and follow up"},
+ {"action":"assert","role":"heading","name":"Round 1 · DemoTrips replied"},
+ {"action":"click","role":"button","name":"Skip ahead 10 days"},
+ {"action":"assert","role":"button","name":"Continue to the confirming mail"},
+ {"action":"click","role":"button","name":"Continue to the confirming mail"},
+ {"action":"assert","role":"heading","name":"Round 3 · Refund processed"},
+ {"action":"click","role":"button","name":"Skip to the bank check date"},
+ {"action":"click","role":"button","name":"Money landed"},
+ {"action":"assert","role":"heading","name":"Money landed · demo"}
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "entry": "Header Try a demo",
+    "passed": true
+  },
+  {
+    "entry": "See a real case section",
+    "passed": true
+  },
+  {
+    "entry": "/start/?demo=flight",
+    "passed": true
+  },
+  {
+    "entry": "/start/?demo=flight-self",
+    "passed": true,
+    "proof": "confirm then own-Gmail compose; no send"
+  },
+  {
+    "entry": "Start See a real case",
+    "passed": true
+  }
+]
