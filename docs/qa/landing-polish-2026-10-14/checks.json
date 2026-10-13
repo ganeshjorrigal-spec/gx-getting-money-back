@@ -1,0 +1,62 @@
+[
+  {
+    "belowHero": true,
+    "finished": true,
+    "landedOpacity": "1",
+    "links": 1,
+    "mailDisplay": "none",
+    "mascotWidth": 64,
+    "messageInside": true,
+    "overflow": false,
+    "receiptPresent": true,
+    "replyVisibility": "visible",
+    "savedVisible": true,
+    "sections": 1,
+    "width": 375
+  },
+  {
+    "belowHero": true,
+    "finished": true,
+    "landedOpacity": "1",
+    "links": 1,
+    "mailDisplay": "none",
+    "mascotWidth": 120,
+    "messageInside": true,
+    "overflow": false,
+    "receiptPresent": true,
+    "replyVisibility": "visible",
+    "savedVisible": true,
+    "sections": 1,
+    "width": 1280
+  },
+  {
+    "belowHero": true,
+    "finished": true,
+    "landedOpacity": "1",
+    "links": 0,
+    "mailDisplay": "none",
+    "mascotWidth": 120,
+    "messageInside": true,
+    "overflow": false,
+    "receiptPresent": true,
+    "replyVisibility": "visible",
+    "savedVisible": false,
+    "sections": 1,
+    "width": 1280
+  },
+  {
+    "belowHero": true,
+    "finished": true,
+    "landedOpacity": "1",
+    "links": 0,
+    "mailDisplay": "none",
+    "mascotWidth": 64,
+    "messageInside": true,
+    "overflow": false,
+    "receiptPresent": true,
+    "replyVisibility": "visible",
+    "savedVisible": false,
+    "sections": 1,
+    "width": 375
+  }
+]

@@ -2,17 +2,19 @@
 import {CASE_STORAGE_KEY} from '../lib/case-link';
 import {savedCasesNotice} from '../lib/app-url';
 import {readDomainMove} from '../lib/domain-notice';
+import {landingCases} from '../lib/landing-cases';
+import {playSample} from '../lib/sample-animation';
 
 const savedList=document.querySelector('.saved-cases>div');
 try {
- const saved=JSON.parse(localStorage.getItem(CASE_STORAGE_KEY)||'[]');
- if(Array.isArray(saved)) for(const item of saved.slice(0,3)) {
-  if(!/^(?:TB|RG)-[A-Z0-9]{6}$/.test(item?.code)||typeof item.token!=='string')continue;
+ const saved=landingCases(localStorage.getItem(CASE_STORAGE_KEY));
+ for(const item of saved) {
   const link=document.createElement('a');link.className='saved-case';
   link.href=`/c/index.html?code=${encodeURIComponent(item.code)}#k=${encodeURIComponent(item.token)}`;
-  const title=document.createElement('span');title.textContent=item.title||item.code;
+  const title=document.createElement('span');title.textContent=typeof item.title==='string'&&item.title?item.title:item.code;
   const open=document.createElement('span');open.textContent='Open →';link.append(title,open);savedList?.append(link);
  }
+ const section=document.querySelector<HTMLElement>('.saved-cases');if(section)section.hidden=!savedList?.childElementCount;
 }catch{/* Storage can be blocked or malformed. Existing private links still work. */}
 const hero=document.getElementById('hero'),sticky=document.querySelector('.sticky-cta');
 const observer=new IntersectionObserver(entries=>{for(const entry of entries){
@@ -22,7 +24,7 @@ const observer=new IntersectionObserver(entries=>{for(const entry of entries){
 document.querySelectorAll('[data-reveal]').forEach(node=>{node.classList.add('reveal-ready');observer.observe(node);});
 document.querySelectorAll('img[data-lazy-src],[data-lazy-background]').forEach(node=>observer.observe(node));
 if(hero)observer.observe(hero);
-const animate=()=>document.querySelector('.animated-sample')?.classList.add('sample-playing');
+const animate=()=>playSample(document.querySelector('.animated-sample'),matchMedia('(prefers-reduced-motion: reduce)').matches);
 const start=()=>{'requestIdleCallback' in window?window.requestIdleCallback(animate,{timeout:1500}):setTimeout(animate,0);};
 document.readyState==='complete'?start():window.addEventListener('load',start,{once:true});
 // Import only on the old address. No client/provider, query or case-page code on the new domain.
