@@ -1,0 +1,26 @@
+{
+  "viewports": [
+    {
+      "open": true,
+      "overflow": false,
+      "tapHeight": 44,
+      "width": 375
+    },
+    {
+      "open": true,
+      "overflow": false,
+      "tapHeight": 44,
+      "width": 1280
+    }
+  ],
+  "keyboardDisclosure": true,
+  "openSurvivesTyping": true,
+  "savedTickVisibleThenHidden": true,
+  "savedLifetimeMs": 1500,
+  "actualNameEditShown": true,
+  "mailReviewBeforePermission": true,
+  "callReviewBeforePermission": true,
+  "finalPermissionNotSubmitted": true,
+  "demoStepsPassed": 12,
+  "transport": "isolated; no mail/call"
+}

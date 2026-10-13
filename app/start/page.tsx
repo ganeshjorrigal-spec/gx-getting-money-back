@@ -1,4 +1,5 @@
 "use client";
+import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {WhyAsk} from "../components/why-ask";
 import {openCase} from '../../lib/case-navigation';
 import {isVideoDemoEntry} from '../../lib/video-demo';
@@ -17,6 +18,7 @@ import { redact } from "../../lib/redact";
 type Picture = { file: File; preview: string };
 
 export default function StartPage() {
+  const {saved,markSaved}=useSavedAnswer();
   const [refundType,setRefundType] = useState<"flight"|"event">("flight");
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
@@ -92,6 +94,8 @@ export default function StartPage() {
       const eventMessage = /bookmyshow|district|concert|event ticket|ticketgenie|skillbox/i.test(message);
       const result = await create({ text: redact(message.trim()) || undefined, storageIds, chips: selected, tokenHash: hash, deviceId, name: name.trim() || undefined, refundType:eventMessage?"event":refundType });
       saveCase({ code: result.code, token, updatedAt: Date.now() });
+      markSaved('Your message');
+      await new Promise(resolve=>setTimeout(resolve,1500));
       openCase(`/c/${result.code}#k=${token}`);
     } catch (caught) {
       setError(userError(caught));
@@ -117,6 +121,7 @@ export default function StartPage() {
     <div className="case-wrap intake-page">
       <p className="section-kicker">START YOUR CASE</p>
       <h1>{c.title}</h1>
+      <AnswerStep step={1}/><SharedSummary screen="start" items={[{label:"Message",value:message||"Not yet shared"},{label:"Name",value:name||"Not given"},{label:"Screenshots",value:pictures.length}]}/><SavedTick field={saved}/>
       <form onSubmit={submit}>
         <label className="sr-only" htmlFor="refund-message">{c.title}</label>
         <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={refundType==="flight"?"Paste your flight cancellation mail or the travel site’s reply…":c.placeholder} /><WhyAsk field="message" personal/>

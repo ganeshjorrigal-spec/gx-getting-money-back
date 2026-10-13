@@ -4,10 +4,14 @@ import {sampleFlight} from '../../lib/flight-sample';
 import {planFlight} from '../../lib/flight';
 import {publicDemoPlan} from '../../lib/public-demo-plan';
 let revision=0;const listeners=new Set<()=>void>();
-export let route=new URLSearchParams(location.search).has('demo')?'start':'landing';
+const query=new URLSearchParams(location.search);
+export let route=query.has('flow')?'case':query.has('demo')?'start':'landing';
 const facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips'};
 const plan=publicDemoPlan(planFlight(facts,'2026-10-13',{},'desk@example.invalid'));
-export let item:any={refundType:'flight',stage:'READY',facts,flightPlan:plan,name:'Demo Passenger',dueDate:'2026-10-16',chase:null,demo:{kind:'flight',chaseStory:true,chasePhase:'authority',phase:'ready',now:'2026-10-13',round:0}};
+export let item:any={trialLanded:0,trialLimit:3,trialLocked:false,annualPaid:false,refundType:'flight',stage:'READY',facts,flightPlan:plan,name:'Demo Passenger',dueDate:'2026-10-16',chase:null,demo:{kind:'flight',chaseStory:true,chasePhase:'authority',phase:'ready',now:'2026-10-13',round:0}};
+if(query.get('flow')==='questions'){
+ const r={...facts,airline:'Air India',bookedVia:'direct',cancellationDate:'2026-10-10',eTicketNumber:null,airIndiaRefundRequested:undefined};const p=planFlight(r,'2026-10-13');item={...item,demo:null,facts:r,flightPlan:p,questions:p.questions,route:'NEED_INFO',stage:'NEED_INFO',factsConfirmedAt:null};
+}else if(query.get('flow')==='confirm'){item={...item,demo:null,route:plan.route,questions:[],factsConfirmedAt:null};}
 let call:any=null;
 export let draft:any={_id:'fixture',createdAt:Date.now(),status:'ready',channel:'email',recipientRole:plan.nextPerson?.role,rung:plan.rung,to:plan.to,body:plan.body,subject:'Demo [RG-QATEST]'};
 function emit(){revision++;listeners.forEach(fn=>fn());}
@@ -17,8 +21,8 @@ export function navigate(url:string){route=url.includes('/c/')?'case':url.includ
 export const openCase=navigate;
 export const makeToken=()=> 'x'.repeat(43),tokenHash=async()=> '0'.repeat(64),getDeviceId=()=> 'fixture-device-id',saveCase=()=>{},forgetCase=()=>{};
 export const CASE_STORAGE_KEY='fixture-unused';
-export function useQuery(ref:any){useSyncExternalStore(subscribe,snapshot,snapshot);const name=getFunctionName(ref);if(name==='cases:get')return item;if(name==='cases:drafts')return [draft];if(name==='chaseDemo:view')return {calls:call?[call]:[],events:[],mails:item.demo.round,replies:[],simulatedCalls:call?1:0,realCalls:0};return undefined;}
-export function useMutation(ref:any){return async()=>{const name=getFunctionName(ref);if(name==='chaseDemo:create'||name==='demo:create'){if(name==='demo:create'){const selfPlan=planFlight(facts,'2026-10-13',{},'desk@example.invalid');item={...item,questions:[],factsConfirmedAt:null,flightPlan:selfPlan,demo:{...item.demo,chaseStory:false}};draft={...draft,to:selfPlan.to,cc:selfPlan.cc,body:selfPlan.body};}return {code:'RG-QATEST'};} if(name==='flights:confirm'){item={...item,factsConfirmedAt:1};emit();return;}
+export function useQuery(ref:any){useSyncExternalStore(subscribe,snapshot,snapshot);const name=getFunctionName(ref);if(name==='cases:get')return item;if(name==='calls:mode')return 'simulated';if(name==='cases:drafts')return [draft];if(name==='chaseDemo:view')return {calls:call?[call]:[],events:[],mails:item.demo.round,replies:[],simulatedCalls:call?1:0,realCalls:0};return undefined;}
+export function useMutation(ref:any){return async(args:any)=>{const name=getFunctionName(ref);if(name==='chaseDemo:create'||name==='demo:create'){if(name==='demo:create'){const selfPlan=planFlight(facts,'2026-10-13',{},'desk@example.invalid');item={...item,questions:[],factsConfirmedAt:null,flightPlan:selfPlan,demo:{...item.demo,chaseStory:false}};draft={...draft,to:selfPlan.to,cc:selfPlan.cc,body:selfPlan.body};}return {code:'RG-QATEST'};} if(name==='flights:answer'){const value=args.id==='airIndiaRefundRequested'?args.value==='Yes':args.value;const read={...item.facts,[args.id]:value};const p=planFlight(read,'2026-10-13');item={...item,facts:read,flightPlan:p,questions:p.questions,route:p.route,stage:p.route==='NEED_INFO'?'NEED_INFO':'READY'};emit();return;} if(name==='flights:editFact'){item={...item,facts:{...item.facts,[args.field]:args.value},...(args.field==='name'?{name:args.value}:{}),factsConfirmedAt:null};emit();return;} if(name==='flights:confirm'){item={...item,factsConfirmedAt:1};emit();return;}
 if(name==='chaseActions:authoriseDemo'){item={...item,chase:{active:true},demo:{...item.demo,chasePhase:'first_mail'}};emit();setTimeout(()=>{item={...item,facts:{...facts,reply:{...facts.reply,summary:'DemoTrips says the refund is pending with Demo Air.'}},demo:{...item.demo,chasePhase:'ready_call',round:1}};emit();},250);return;}
 if(name==='chaseDemo:advance'){
 if(item.demo.chasePhase==='ready_call'){item={...item,demo:{...item.demo,chasePhase:'call'}};emit();setTimeout(()=>{call={label:'Simulated demo call',durationSeconds:30,transcript:'Demo Air paid DemoTrips. Reference DEMO-REF.',readerOutput:{reply:{summary:'Airline gave the payment reference.',reference:'DEMO-REF'}}};item={...item,demo:{...item.demo,chasePhase:'confirm_ready'}};emit();},250);}

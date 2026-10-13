@@ -646,3 +646,13 @@ button:disabled {cursor:default;opacity:.6;}
 @media(prefers-reduced-motion:reduce){.animated-sample:not(.sample-playing) .sample-mail,.animated-sample:not(.sample-playing) .sample-reply,.animated-sample:not(.sample-playing) .sample-landed,.animated-sample:not(.sample-playing) .sample-sent {visibility:visible;}}
 
 @keyframes sample-stage {from{opacity:0;visibility:hidden;transform:translateY(8px)}to{opacity:1;visibility:visible;transform:none}}
+
+/* D-046: plain disclosure and progress, using the existing palette. */
+.answer-step{margin:16px 0}.answer-step p{margin:0 0 6px;font-size:.8rem;color:var(--muted)}
+.answer-step-track{height:3px;background:var(--line,#d8d1c7)}.answer-step-track span{display:block;height:3px;background:var(--ink,#15263d)}
+.shared-summary{margin:8px 0 20px}.shared-summary>summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:.88rem;text-decoration:underline;text-underline-offset:3px;background:none;border:0;list-style:none}
+.shared-summary>summary::before{content:'+';margin-right:8px}.shared-summary[open]>summary::before{content:'−'}
+.shared-facts{margin:8px 0}.shared-facts>div{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;border-bottom:1px solid var(--line,#d8d1c7)}.shared-facts dt{font-weight:600;min-width:120px}.shared-facts dd{margin:0;flex:1;overflow-wrap:anywhere}
+.summary-edit{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;background:none;border:0;text-decoration:underline;font-size:.8rem;color:inherit;cursor:pointer}
+.saved-answer{display:inline-block;min-height:24px;color:var(--ink,#15263d);font-size:.85rem;margin:4px 8px}
+@media(prefers-reduced-motion:reduce){.saved-answer,.answer-step-track span{animation:none;transition:none}}

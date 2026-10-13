@@ -17,3 +17,17 @@ it('actual answer saves both portal facts and ignores stale repeat taps',async()
 it('actual answer rejects PNR-length and card-length ticket input',async()=>{const {t,token}=await savedCase();for(const value of ['SAMPLE','123456','0000000000000000'])await expect(t.mutation(api.flights.answer,{code:'RG-QATEST',token,id:'eTicketNumber',value})).rejects.toThrow(/13 digits/);});
 
 it('ticket validation shows a plain repair instruction',()=>{const log=vi.spyOn(console,'error').mockImplementation(()=>{});try{expect(userError(new Error('Use the 13 digits from your Air India ticket, not a PNR or card number'))).toBe('Enter the 13 digits from your Air India ticket, not the PNR.');}finally{log.mockRestore();}});
+
+it('review edits are explicit, validated, and leave delayed-question guards intact',async()=>{
+ const {t,id,token}=await savedCase();await t.mutation(api.flights.answer,{code:'RG-QATEST',token,id:'eTicketNumber',value:'0000000000000'});
+ await t.mutation(api.flights.editFact,{code:'RG-QATEST',token,field:'eTicketNumber',value:'1111111111111'});
+ await t.mutation(api.flights.answer,{code:'RG-QATEST',token,id:'eTicketNumber',value:'2222222222222'});
+ expect((await t.run(ctx=>ctx.db.get(id)))!.facts.eTicketNumber).toBe('1111111111111');
+ await expect(t.mutation(api.flights.editFact,{code:'RG-QATEST',token,field:'eTicketNumber',value:'0000000000000000'})).rejects.toThrow(/13 digits/);
+ await expect(t.mutation(api.flights.editFact,{code:'RG-QATEST',token:'wrong',field:'name',value:'Sample'})).rejects.toThrow();
+});
+it('review edit saves the existing name field and rejects edits under active authority',async()=>{
+ const {t,id,token}=await savedCase();await t.mutation(api.flights.editFact,{code:'RG-QATEST',token,field:'name',value:'Sample Passenger'});expect((await t.run(ctx=>ctx.db.get(id)))!.name).toBe('Sample Passenger');
+ await t.run(async ctx=>{const letterId=await ctx.storage.store(new Blob(['synthetic']));await ctx.db.patch(id,{chase:{active:true,name:'Sample Passenger',mobile:'',email:'sample@example.invalid',authorisedAt:1,letterId,encryptedCaseToken:'synthetic'}});});
+ await expect(t.mutation(api.flights.editFact,{code:'RG-QATEST',token,field:'airline',value:'SpiceJet'})).rejects.toThrow(/Stop Genie/);
+});

@@ -264,20 +264,21 @@ export const markActionDone = mutation({
 });
 
 export const confirmFacts = mutation({
-  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()), bookingId: v.optional(v.string()), contact: v.optional(v.string()) }, returns: v.null(),
-  handler: async (ctx, { code, token, looksRight, correction, bookingId, contact }) => {
+  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()), bookingId: v.optional(v.string()), contact: v.optional(v.string()), name:v.optional(v.string()) }, returns: v.null(),
+  handler: async (ctx, { code, token, looksRight, correction, bookingId, contact, name }) => {
     const item = await assertAccess(ctx, code, token);
+    const savedName=name===undefined?item.name:cleanLine(name,80);
     const savedContact = contact === undefined ? item.contact : cleanLine(contact, 150);
     if (savedContact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(savedContact) && savedContact.replace(/\D/g, "").length < 7) throw new Error("Enter a phone number or email");
     const previousFacts = item.facts as CaseRead | undefined;
     const savedBookingId = bookingId === undefined ? previousFacts?.bookingId : cleanLine(bookingId, 100) ?? null;
     const facts = previousFacts ? { ...previousFacts, bookingId: savedBookingId ?? null } : previousFacts;
     if (looksRight) {
-      await ctx.db.patch(item._id, { facts, contact: savedContact, factsConfirmedAt: Date.now(), updatedAt: Date.now() });
+      await ctx.db.patch(item._id, { facts, name:savedName, contact: savedContact, factsConfirmedAt: Date.now(), updatedAt: Date.now() });
       if (facts && item.nextStep) {
         const latestDraft = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").first();
         if (latestDraft && latestDraft.status !== "sent") {
-          const updated = draftForCase(facts, todayIST(), item.nextStep, item.dueDate ?? null, item.name);
+          const updated = draftForCase(facts, todayIST(), item.nextStep, item.dueDate ?? null, savedName);
           await ctx.db.patch(latestDraft._id, {
             subject: latestDraft.channel === "email" ? demoSubject(!!item.demo, codedSubject(updated.subject, item.code)) : updated.subject,
             body: updated.body,

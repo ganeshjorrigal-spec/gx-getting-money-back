@@ -1,4 +1,5 @@
 "use client";
+import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {intakeIdentity} from "../../lib/intake-identity";
 import {WhyAsk} from "../components/why-ask";
 import {callingCopy} from '../copy';
@@ -26,6 +27,8 @@ export function ChaseAuthority({
   saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
 }) {
+  const {saved:recentSaved,markSaved}=useSavedAnswer();
+  const [review,setReview]=useState(false),[callReview,setCallReview]=useState(false);
   const authorise = useAction(api.chaseActions.authorise),
     allowCalls = useMutation(api.calls.allow),
     requestCall = useMutation(api.calls.request),
@@ -44,11 +47,12 @@ export function ChaseAuthority({
     [accepted, setAccepted] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const backToDetails=()=>{setReview(false);setAccepted(false);};
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
     setError("");
     try {
-      await fn();
+      await fn();markSaved("Permission");
       setShow(false);
     } catch (e) {
       setError(userError(e));
@@ -58,7 +62,8 @@ export function ChaseAuthority({
   };
   return (
     <section className="case-card">
-      <h2>Let Genie send and follow up</h2>
+      <h2>Let Genie send and follow up</h2><SavedTick field={recentSaved}/>
+      {!show&&!chase?.active&&<SharedSummary screen="chase-permission" items={[{label:"Company",value:company},{label:"PNR",value:pnr}]}/>}
       <p>You can keep sending from your own Gmail instead.</p>
       <p>
         Test release: Genie can mail only approved test addresses. Real-company
@@ -70,7 +75,7 @@ export function ChaseAuthority({
         <>
           <p>Written permission saved. {status}</p>
           <p>{mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
-          {!chase.callsAuthorisedAt ? <><label><input type="checkbox" checked={callAccepted} onChange={e=>setCallAccepted(e.target.checked)}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label>{callAccepted&&<label>{callingCopy.mobileLabel}<input required type="tel" value={mobile} onChange={e=>setMobile(e.target.value)}/><WhyAsk field="mobile" personal/></label>}<button disabled={busy||!callAccepted||!/^\+?[0-9 ()-]{7,20}$/.test(mobile)} onClick={()=>run(()=>allowCalls({code,token,accepted:callAccepted,mobile}))}>{callingCopy.savePermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
+          {!chase.callsAuthorisedAt ? <><AnswerStep step={callReview?2:1} total={2}/>{callReview?<SharedSummary screen="call-confirm" confirm items={[{label:"Company",value:company},{label:"PNR",value:pnr},{label:"Mobile",value:mobile,edit:()=>setCallReview(false)}]}/>:<SharedSummary screen="call-question" items={[{label:"Company",value:company},{label:"PNR",value:pnr}]}/>}<label><input id="calling-consent" type="checkbox" checked={callAccepted} onChange={e=>{setCallAccepted(e.target.checked);setCallReview(false);}}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label>{callAccepted&&!callReview&&<label>{callingCopy.mobileLabel}<input required type="tel" value={mobile} onChange={e=>setMobile(e.target.value)}/><WhyAsk field="mobile" personal/></label>}<button disabled={busy||!callAccepted||!/^\+?[0-9 ()-]{7,20}$/.test(mobile)} onClick={()=>callReview?run(()=>allowCalls({code,token,accepted:callAccepted,mobile})):setCallReview(true)}>{callReview?callingCopy.savePermission:"Review calling permission"}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
 
           <button
             disabled={busy}
@@ -94,7 +99,7 @@ export function ChaseAuthority({
           </p>
         </>
       ) : (
-        <button className="button button-primary" onClick={() => {const held=intakeIdentity(saved);setName(held.name||name);setEmail(held.email||email);setMobile(held.mobile||mobile);setShow(true);}}>
+        <button className="button button-primary" onClick={() => {const held=intakeIdentity(saved);setName(held.name||name);setEmail(held.email||email);setMobile(held.mobile||mobile);setReview(false);setShow(true);}}>
           Let Genie send and follow up
         </button>
       )}
@@ -109,12 +114,14 @@ export function ChaseAuthority({
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            if(!review){setReview(true);return;}
             void run(() =>
               authorise({ code, token, name, email, accepted }),
             );
           }}
         >
-          <label>
+          <AnswerStep step={review?2:1} total={2}/>{review?<SharedSummary screen="mail-confirm" confirm items={[{label:"Company",value:company},{label:"PNR",value:pnr},{label:"Name",value:name,edit:backToDetails},{label:"Email",value:email,edit:backToDetails}]}/>:<SharedSummary screen="mail-question" items={[{label:"Company",value:company},{label:"PNR",value:pnr},{label:"Name",value:name||"Not yet shared"},{label:"Email",value:email||"Not yet shared"}]}/>}
+          <div hidden={review}><label>
             Full name (as on your booking)
             <input
               required
@@ -131,7 +138,7 @@ export function ChaseAuthority({
               onChange={(e) => setEmail(e.target.value)}
             /><WhyAsk field="email" personal/>
           </label>
-          <label>
+          </div><div hidden={!review}><label>
             <input
               type="checkbox"
               checked={accepted}
@@ -143,13 +150,14 @@ export function ChaseAuthority({
             This permission and its time are saved. The first mail includes your
             letter of authority, name, email and PNR. Stop Genie ends
             future sending.
-          </p>
+          </p></div>
           <button
             className="button button-primary"
-            disabled={busy || !accepted}
+            disabled={busy || (review&&!accepted)}
           >
-            Save permission
+            {review?"Save permission":"Review permission"}
           </button>
+          {review&&<button type="button" className="text-button" onClick={backToDetails}>Back to details</button>}
           <button
             type="button"
             className="text-button"
