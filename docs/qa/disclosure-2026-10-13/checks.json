@@ -1,18 +1,19 @@
 {
   "viewports": [
     {
-      "open": true,
       "overflow": false,
-      "tapHeight": 44,
+      "stepBarHeight": 3,
+      "summaryHeight": 44,
       "width": 375
     },
     {
-      "open": true,
       "overflow": false,
-      "tapHeight": 44,
+      "stepBarHeight": 3,
+      "summaryHeight": 44,
       "width": 1280
     }
   ],
+  "staticExportExplicit": true,
   "keyboardDisclosure": true,
   "openSurvivesTyping": true,
   "savedTickVisibleThenHidden": true,

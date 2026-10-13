@@ -1,0 +1,86 @@
+{
+  "conditions": "Matching static exports;375x812;uncompressed local HTTP;3 runs per version;no publication",
+  "discarded": "before/after files used stale out; do not use as source comparison",
+  "export-before": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 70,
+        "accessibility": 100,
+        "fcpMs": 1385.7270567306666,
+        "lcpMs": 4720.454113461334,
+        "convexQueries": 2,
+        "jsBytes": 466652,
+        "cpu": 1930.5
+      },
+      {
+        "run": 2,
+        "performance": 73,
+        "accessibility": 100,
+        "fcpMs": 2670.8470762364223,
+        "lcpMs": 5129.355321978275,
+        "convexQueries": 2,
+        "jsBytes": 466652,
+        "cpu": 2031
+      },
+      {
+        "run": 3,
+        "performance": 65,
+        "accessibility": 100,
+        "fcpMs": 3138.6274999999996,
+        "lcpMs": 5270.333320000001,
+        "convexQueries": 2,
+        "jsBytes": 466652,
+        "cpu": 2024
+      }
+    ],
+    "median": {
+      "performance": 70,
+      "accessibility": 100,
+      "fcpMs": 2670.8470762364223,
+      "lcpMs": 5129.355321978275,
+      "jsBytes": 466652
+    }
+  },
+  "export-after": {
+    "runs": [
+      {
+        "run": 1,
+        "performance": 73,
+        "accessibility": 100,
+        "fcpMs": 1378.3807000000002,
+        "lcpMs": 4202.761399999999,
+        "convexQueries": 0,
+        "jsBytes": 381519,
+        "cpu": 2086.5
+      },
+      {
+        "run": 2,
+        "performance": 74,
+        "accessibility": 100,
+        "fcpMs": 3128.8995,
+        "lcpMs": 4610.4392,
+        "convexQueries": 0,
+        "jsBytes": 381519,
+        "cpu": 2013.5
+      },
+      {
+        "run": 3,
+        "performance": 77,
+        "accessibility": 100,
+        "fcpMs": 2675.037,
+        "lcpMs": 4592.459200000001,
+        "convexQueries": 0,
+        "jsBytes": 381519,
+        "cpu": 1832
+      }
+    ],
+    "median": {
+      "performance": 74,
+      "accessibility": 100,
+      "fcpMs": 2675.037,
+      "lcpMs": 4592.459200000001,
+      "jsBytes": 381519
+    }
+  }
+}

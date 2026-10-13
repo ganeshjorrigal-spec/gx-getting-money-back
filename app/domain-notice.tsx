@@ -1,20 +1,12 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "../convex/_generated/api";
-import { savedCasesNotice } from "../lib/app-url";
-
-export function DomainNotice() {
-  const [moved, setMoved] = useState(false);
-  useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_CONVEX_URL;
-    if (!url) return;
-    let active = true;
-    void new ConvexHttpClient(url).query(api.site.urls, {}).then(({ app, oldApp }) => {
-      if (active && app && oldApp && new URL(app).origin !== new URL(oldApp).origin && location.origin === new URL(oldApp).origin) setMoved(true);
-    }).catch(() => {});
-    return () => { active = false; };
-  }, []);
-  return moved ? <aside className="section-wrap" aria-label="New address"><p>We've moved to <a href="https://refundgenie.app">refundgenie.app</a>.</p><p>{savedCasesNotice}</p></aside> : null;
+import {useEffect,useState} from 'react';
+import {savedCasesNotice} from '../lib/app-url';
+import {readDomainMove} from '../lib/domain-notice';
+export function DomainNotice(){
+ const [moved,setMoved]=useState(false);
+ useEffect(()=>{let active=true;void readDomainMove(location.origin,process.env.NEXT_PUBLIC_CONVEX_URL,async()=>{
+  const [{ConvexHttpClient},{api}]=await Promise.all([import('convex/browser'),import('../convex/_generated/api')]);
+  const client=new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);return ()=>client.query(api.site.urls,{});
+ }).then(value=>{if(active)setMoved(value);});return ()=>{active=false;};},[]);
+ return moved?<aside className="section-wrap" aria-label="New address"><p>We've moved to <a href="https://refundgenie.app">refundgenie.app</a>.</p><p>{savedCasesNotice}</p></aside>:null;
 }
