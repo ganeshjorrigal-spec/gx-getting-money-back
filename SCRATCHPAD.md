@@ -1,3 +1,8 @@
+# Current authorised walkthrough fixes
+
+- [ ] Items 2-4 in order: primary date Continue; generic contact copy; D-043 backend escalation send guard and screen.
+- [ ] Log, STATE, tests, one commit/push per item; no publish/settings/keys; wait for HQ.
+
 # Pending work
 
 - [ ] HQ review of 13 Oct overnight queue changes. Item 3 sources and item 4 actual mail proof remain incomplete; see STATE.md and today's log.

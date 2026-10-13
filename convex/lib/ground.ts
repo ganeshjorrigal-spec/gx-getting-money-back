@@ -3,7 +3,7 @@ import { dateValue, todayIST } from "../../lib/dates";
 import { latestReplyText } from "../../lib/reply-banner";
 
 const months: Record<string, string> = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
-function dateFromText(text: string, today: string): string | null {
+export function dateFromText(text: string, today: string): string | null {
   const iso = /\b\d{4}-\d{2}-\d{2}\b/.exec(text)?.[0];
   if (iso) { try { dateValue(iso); return iso; } catch { return null; } }
   const found = /\b(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*(\d{4})?\b/i.exec(text);

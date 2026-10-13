@@ -1,4 +1,5 @@
 "use client";
+import { EventQuestion } from "./event-question";
 import {SourceLine,StatusBadge,ReceiptSlip} from '../components/receipts';
 import { privateCaseUrl } from "../../lib/app-url";
 import { userError } from "../../lib/user-error";
@@ -453,11 +454,7 @@ export default function CaseView({ code }: { code: string }) {
             {estimated&&<SourceLine>Refund Genie's reading: an estimate, not a date they promised</SourceLine>}
             {caseData.routeConfidence!=null&&caseData.routeConfidence<0.6&&<p className="input-hint">We think this is {c.routeLabels[route]}. Is that right?</p>}
           </ReceiptSlip>}
-          {!caseData.demo && caseData.stage === "NEED_INFO" && question && <article className="case-card">
-            <p className="section-kicker">{c.needInfo}</p><h2>{question.text}</h2>
-            <div className="answer-options">{question.options.map((option) => <button className="situation-chip" key={option} onClick={() => option === "Earlier" ? setEarlier(true) : submitAnswer(option)} disabled={busy}>{option}</button>)}</div>
-            {(earlier || question.options.length === 0) && <div className="answer-form"><label htmlFor="case-answer">{earlier ? "Choose the date" : "Your answer"}</label><input id="case-answer" type={earlier ? "date" : "text"} value={answer} onChange={(event) => setAnswer(event.target.value)} /><button className="button button-primary" onClick={() => submitAnswer()} disabled={!answer || busy}>{c.continue}</button></div>}
-          </article>}
+          {!caseData.demo && caseData.stage === "NEED_INFO" && question && <EventQuestion question={question} busy={busy} earlier={earlier} answer={answer} onEarlier={()=>setEarlier(true)} onAnswer={submitAnswer} onChange={setAnswer}/> }
            {route === "WAIT" && !["CLOSED_LANDED", "TRIAGING"].includes(caseData.stage) && <article className="case-card">
              <p className="section-kicker">THE NEXT STEP</p><h2>{c.waitNext}</h2><p>{caseData.dueDate && !estimated ? `Their promised date: ${displayDate(caseData.dueDate)}.` : "They have not promised a refund date."} Our check-in date: {displayDate(caseData.checkin?.date ?? addWorkingDays(todayIST(), 2))}. Add it to your calendar so you don&apos;t miss it.</p>
           </article>}

@@ -100,7 +100,7 @@ export function planCase(input: {
         : null;
       dueDate = addWorkingDays(anchor, known?.days ?? 10);
       dueSource = known?.confidence === "verified" ? "platform_policy_verified" : known?.confidence === "reported" ? "platform_policy_reported" : "estimate";
-      dueSourceText = known?.source ?? "Estimate: 10 working days from the message date. The organiser has not given a firm date.";
+      dueSourceText = known?.source ?? "Refund Genie's estimate: 10 working days from the message date. The organiser has not given a firm date.";
     }
     if (dueDate) {
       route = dueDate < today || read.userSaysLate ? "OVERDUE" : "WAIT";

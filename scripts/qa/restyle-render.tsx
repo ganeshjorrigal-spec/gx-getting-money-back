@@ -1,3 +1,4 @@
+import {EventQuestion} from "../../app/c/event-question";
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import Home from '../../app/page';
@@ -39,5 +40,7 @@ export function renderProof(){
  setProofData({item:{...vd,stage:'SENT',demo:{...vd.demo,round:1,phase:'waiting_desk'}},drafts:[{...videoDraft(vp)[0],status:'sent'}]});pages.videoSent=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
  const replyFacts={...videoFacts,reply:{...videoFacts.reply,claim:'waiting_airline' as const,fromCompany:'DemoTrips',pointsAt:'Demo Air'}};const rp=planFlight(replyFacts,'2026-10-13',undefined,'demo@example.invalid');
  setProofData({item:{...vd,facts:replyFacts,flightPlan:rp,newReply:{_id:'fixture-reply',receivedAt:Date.parse('2026-10-13T00:00:00Z'),summary:'DemoTrips says the refund is pending with Demo Air.',keySentence:'The refund is pending with Demo Air.'},demo:{...vd.demo,round:1}},drafts:videoDraft(rp)});pages.videoReply=renderToStaticMarkup(<FlightCase code='RG-QATEST' token='visual-fixture'/>);
+ pages.skillboxDeadline=renderToStaticMarkup(<main className="case-shell"><div className="case-wrap"><p>Sample SkillBox case</p><EventQuestion question={{id:"refund_deadline",text:"What timeframe or deadline did SkillBox give for receiving the refund?",options:[]}} busy={false} earlier={false} answer="" onEarlier={()=>{}} onAnswer={()=>{}} onChange={()=>{}}/></div></main>);
+ const dateFacts={...r,cancellationDate:null};setProofData({item:{...item,stage:"NEED_INFO",route:"NEED_INFO",facts:dateFacts,questions:[{id:"bookingDate",text:"When did you book?",options:[]},{id:"cancellationDate",text:"When was it cancelled?",options:[]}]},drafts:[]});pages.dateQuestions=renderToStaticMarkup(<FlightCase code="RG-QATEST" token="visual-fixture"/>);
  return pages;
 }

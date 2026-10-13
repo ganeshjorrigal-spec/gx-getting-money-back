@@ -3,6 +3,9 @@
 ## Priority and review gate
 M2.6 remains ACTIVE. HQ accepted D-042 mail fixes and restyle Phase A in review-2026-10-13-restyle-phase-a.md. The 13 Oct overnight queue has been worked in order; its new work awaits HQ review. Nothing marked DONE. No deployment in this run; Ganesh must explicitly authorise any further publish.
 
+## Current walkthrough fixes (D-043)
+Item 1 SkillBox deadline answer is READY FOR REVIEW: explicit unknown choices, deterministic saving/triage, existing labelled estimate and chat route. 263 tests/type check pass; 16 event fixtures pass across initial run and targeted F10 retry (initial request error logged). Items 2-4 next. No deployment.
+
 ## Overnight queue
 1. Restyle polish: READY FOR REVIEW. Single overdue stamp, no repeated badge/heading; airline-responsibility sentence retained. 375/1280 component screenshots. Commit 3761e32.
 2. Privacy follow-ups: READY FOR REVIEW. Refund/complaint reference codes retained, private code asks still cut subsequent answers/recording. Current Vapi wrapper/assistant-user mapping checked on official docs and tested. No live call. Commit 4cef0ae.

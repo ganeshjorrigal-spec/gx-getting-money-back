@@ -1,10 +1,11 @@
+import { knownEventAnswer } from "../lib/event-answers";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
-import { addDays, addWorkingDays, todayIST } from "../lib/dates";
+import { addWorkingDays, todayIST } from "../lib/dates";
 import { caseReadSchema, type CaseRead } from "./lib/read";
 import { planCase } from "./lib/plan";
 import { TRIAGE_SYSTEM } from "./lib/prompts";
@@ -16,20 +17,6 @@ import { isFlightText } from "../lib/flight";
 
 const draftSchema = z.object({ subject: z.string().nullable(), body: z.string(), attachChecklist: z.array(z.string()) });
 const draftSystem = `Write one short refund message from the saved facts. You do not send it. For L0_chat write a chat line under 80 words; otherwise write an email under 160 words. Never call a moved or postponed event cancelled. Include every completed step and its date, the amount, booking ID, and a promised refund date when supplied. Dates must look like 5 Oct 2026. Omit unknown details entirely; never use placeholders such as {name}. No invented contacts, links, rules or legal threats. Polite, firm, first person. Return the JSON schema only. No "to" field.`;
-
-function knownAnswer(previous: CaseRead | undefined, answer: string | undefined, today: string, question: string | undefined): CaseRead | null {
-  if (!previous || !answer) return null;
-  const value = answer.trim();
-  if (question === "messageDate") {
-    const date = value.toLowerCase() === "today" ? today : value.toLowerCase() === "yesterday" ? addDays(today, -1) : /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
-    if (date) return { ...previous, route: "WAIT", messageDate: date, questions: [] };
-  }
-  if (question === "paymentStatusShown") {
-    const status = value.toLowerCase();
-    if (["failed", "pending", "successful"].includes(status)) return { ...previous, route: "FAILED_PAYMENT", paymentStatusShown: status === "successful" ? "success" : status as "failed" | "pending", questions: [] };
-  }
-  return null;
-}
 
 export const triage = internalAction({
   args: { caseId: v.id("cases"), runId: v.string(), autoRetry: v.optional(v.boolean()), reuseFacts: v.optional(v.boolean()) },
@@ -44,7 +31,7 @@ export const triage = internalAction({
     const today = loaded.item.demo?.now ?? todayIST();
     const latest = loaded.inputs.at(-1);
     const previous = loaded.item.facts as CaseRead | undefined;
-    let read = reuseFacts && previous ? previous : latest?.kind === "answer" ? knownAnswer(previous, latest.text, today, loaded.item.questions?.[0]?.id) : null;
+    let read = reuseFacts && previous ? previous : latest?.kind === "answer" ? knownEventAnswer(previous, latest.text, today, loaded.item.questions?.[0]) : null;
     let usedModel = "code";
     let latencyMs = 0;
     let triageUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
