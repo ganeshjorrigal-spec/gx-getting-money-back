@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { landingCopy as c } from "./copy";
+import { flightLandingCopy as c } from "./copy";
 import { CASE_STORAGE_KEY, type SavedCase } from "../lib/case-link";
 import { savedCasesNotice } from "../lib/app-url";
 
@@ -17,7 +17,8 @@ export function LandingEnhancements() {
     } catch { /* Older or malformed storage should not hide the landing page. */ }
     const hero = document.getElementById("hero");
     if (!hero) return;
-    const observer = new IntersectionObserver(([entry]) => setShowSticky(!entry.isIntersecting), { threshold: 0 });
+    const observer = new IntersectionObserver(entries => { for(const entry of entries){if(entry.target===hero)setShowSticky(!entry.isIntersecting);else if(entry.isIntersecting){entry.target.classList.add("is-revealed");observer.unobserve(entry.target);}} }, { threshold: 0 });
+    document.querySelectorAll("[data-reveal]").forEach(node=>{node.classList.add("reveal-ready");observer.observe(node);});
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);

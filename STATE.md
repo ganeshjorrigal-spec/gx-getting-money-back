@@ -1,6 +1,6 @@
 # D-044 landing job, 13 Oct 2026
 
-Part 1 READY FOR REVIEW: intake audit and saved identity/contact prefill, shared reasons; 280 tests/35 files and type check pass. Parts 2-4 in progress. No deployment authorised for this job. Nothing DONE.
+Part 1 READY FOR REVIEW: intake audit and saved identity/contact prefill, shared reasons; 280 tests/35 files and type check pass. Part 2 READY FOR REVIEW: landing sections, 375/1280/motion proof; Lighthouse79→74 performance,100→100 accessibility (all runs retained). Parts 3-4 in progress. No deployment authorised for this job. Nothing DONE.
 
 # Current state, 13 October 2026
 

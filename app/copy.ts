@@ -76,14 +76,100 @@ export const landingCopy = {
   contactLink: "Contact",
 };
 
+// All editorial calling text lives here; persisted call evidence remains data.
+export const callingCopy = {
+ landingSub:"Refund Genie is an AI agent for stuck flight refunds in India. Tell it once what happened. Genie finds who has your money and the date they had to pay by under DGCA rules, then calls and mails them for you, and keeps at it till the money lands. You only step in if they need you.",
+ landingRelease:"Calls are simulated for now. Mail sending needs your written permission and is limited to approved test addresses.",
+ tellWhy:"So every mail and call already has it.",
+ landingOnce:"Genie carries every mail and call.",
+ landingControl:"No OTP, bank details or login.",
+ faqQuestion:"Does Genie call the airline?",
+ faqAnswer:"Calling is simulated for now; no phone is dialled. Live calls need separate permission and approved test numbers.",
+ startDemo: "Genie sends two test mails and plays a simulated care call. Watch the chase update live. No phone number, Gmail sign-in or real booking needed.",
+ calledButton: "I've called",
+ liveTestOnly: "Live calls can use only approved test numbers and separate permission.",
+ simulatedNotice: "Calling is simulated for now. No phone is dialled.",
+ startLiveTest: "Start approved live test call",
+ runSimulation: "Run simulated demo call",
+ savePermission: "Save calling permission",
+ nextDemoCall: "Genie is on it. Next: simulated demo call to Demo Air.",
+ nextConfirm: "Genie is on it. Next: mail Demo Air to confirm what care said.",
+ speechUnavailable: "Speech playback is unavailable in this browser. Read the simulated transcript below.",
+ speechStopped: "Playback stopped. You can read the simulated transcript below.",
+ readingCall: "Reading the simulated care call…",
+ readingAnswer: "Reading care’s answer…",
+ playDemoCall: "Play simulated demo call",
+ stopPlayback: "Stop playback",
+ demoNotice: "Demo, nothing is sent to a real company. Mails go to our test desk. The call is simulated; no phone rings or call credits are used.",
+ samplePermission: "Use the sample permission for test mails and a simulated call. I can stop this demo any time.",
+ demoRecording: "Role-play recording. No real company was called.",
+ browserReading: "Saved fixture read aloud by your browser; not a live call or a recorded person.",
+ demoTranscript: "Read the simulated call transcript",
+ callFailed: "The call could not connect. Genie will follow up by mail.",
+ patchSimulated: "Passenger patch-in simulated. No phone rang.",
+ patchRequested: "Passenger patch-in requested.",
+ roleplayRecording: "Role-play recording. This is not a live company call.",
+ callRecording: "Call recording",
+ historyTitle: "Calls in this case",
+ termsControl: "You can send messages yourself or give written permission for Genie to send and follow up, with your email copied and a letter of authority attached to the first mail. You can stop future sending at any time; already accepted mail cannot be recalled. This release enables only approved test recipients. Calling is simulated in this release; no phone is dialled. Separate permission is required for calling and connecting you if identity checks are needed. Live calls, when enabled by the founder, are made by an AI assistant and recorded. We store the call mode, time, duration, cost, safe transcript and recording link. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts. You file complaints yourself. Refund Genie never logs in to an airline, travel site, bank or payment account for you. It never asks for an OTP, password or bank details.",
+ privacyChase: "Optional written permission lets Genie send refund mails from its case inbox and copy your email. We store your full name, mobile, email, permission timestamp, PDF letter of authority and outgoing mail record. The first mail attaches that letter. Your email gets a short update when Genie sends a mail or reads a reply. Recipients follow the checked playbook or a known company’s own reply. Stop Genie ends queued and future sending; a mail already accepted by Gmail cannot be recalled. The current release sends only to approved test addresses. Real-company sending is off. Calling is simulated in this release; no phone is dialled. Separate permission is required for calling and connecting you if identity checks are needed. Live calls, when enabled by the founder, are made by an AI assistant and recorded. We store the call mode, time, duration, cost, safe transcript and recording link. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts.",
+ permission:(company:string)=>`and to call ${company}'s customer care for me, and connect me to the call if they need me`,
+ transcript:(mode:string)=>`Read the ${mode==='simulated'?'simulated ':''}call transcript`,
+ demoWork:(mails:number,replies:number,simulated:number,real:number)=>`Genie sent ${mails} test mails, read ${replies} replies (including the simulated call), and ran ${simulated} simulated demo call. Real company calls: ${real}.`,
+ demoShare:(origin:string)=>`I tried Refund Genie's demo: two test mails and one simulated care call, all in one chase. No real company was contacted. ${origin}/start/?demo=flight`,
+ nextCall:(label:string,company:string)=>`Genie is on it. Next: ${label.toLowerCase()} with ${company}.`,
+};
+
+// Intake reasons are shared by flight, event, permission and reply screens.
+export const intakeReasons = {
+ message: "So Genie can read what happened and fill your case.",
+ screenshot: "So Genie can read the message you cannot paste.",
+ name: "So your drafts and permission use your name.",
+ pnr: "So every company can find your booking without asking you again.",
+ bookingId: "Travel sites look up refunds by this.",
+ company: "So we choose the right company and checked contact.",
+ amount: "So the draft and recovered amount match your refund.",
+ date: "So we can work out the refund date and next check-in.",
+ paymentMethod: "So we show the rule for how you paid.",
+ contact: "Optional. Only used about this case.",
+ mobile: "So the permission letter identifies you to customer care.",
+ email: "So you receive a copy of every permitted mail.",
+ recipient: "So your mail goes to the address you checked.",
+ subject: "So replies stay with your case reference.",
+ reply: "So Genie can read their answer and prepare the next step.",
+ correction: "So we correct your saved case facts.",
+ taxes: "So we can separate refundable fees from the fare.",
+ fare: "So we can check any excess cancellation charge.",
+ received: "So the closed case records what actually landed.",
+ review: "So we can learn whether this case helped you.",
+ reminder: "So your reminder uses the date you choose.",
+ consent: "So we record exactly what you allow Genie to do.",
+ attachments: "So the mail lists only files you will attach.",
+ source: "So we record where you checked this address.",
+ waitlist: "So we can tell you once when this refund type is ready.",
+ default: "So your next step uses the right case details.",
+};
+export const personalSafetyLine = "No OTP, card or bank details, or login. Ever.";
+export function reasonForQuestion(id: string) {
+ if (/pnr/i.test(id)) return intakeReasons.pnr;
+ if (/bookingId/i.test(id)) return intakeReasons.bookingId;
+ if (/airline|bookedVia|platform/i.test(id)) return intakeReasons.company;
+ if (/amount/i.test(id)) return intakeReasons.amount;
+ if (/date|time|deadline/i.test(id)) return intakeReasons.date;
+ if (/payment/i.test(id)) return intakeReasons.paymentMethod;
+ if (/tax/i.test(id)) return intakeReasons.taxes;
+ if (/reply|destination/i.test(id)) return intakeReasons.reply;
+ return intakeReasons.default;
+}
+
 // Flight positioning is separate so the existing event screens keep their copy.
 export const annualGuaranteeLine = pricing.guarantee;
 export const flightLandingCopy = {
  headerLink:"Try a demo",eyebrow:"For cancelled domestic flights",
  headline:"Flight cancelled. Refund still not in your account?",
- sub:"Refund Genie is an AI agent for stuck flight refunds in India. Tell it once what happened. Genie finds who has your money and the date they had to pay by under DGCA rules, then calls and mails them for you, and keeps at it till the money lands. You only step in if they need you.",
+ sub:callingCopy.landingSub,
  primary:"Check my refund",secondary:"See a 3-minute demo",
- releaseNote:"Calls are simulated for now. Mail sending needs your written permission and is limited to approved test addresses.",
+ releaseNote:callingCopy.landingRelease,
  brandTitle:"Works for refunds from",companies:["IndiGo","Air India","SpiceJet","Akasa Air","MakeMyTrip","Goibibo","Cleartrip","EaseMyTrip"],
  notAffiliated:"Refund Genie is not linked to or endorsed by these companies. Names and logos belong to their owners.",
  familiarTitle:"Sound familiar?",
@@ -98,10 +184,10 @@ export const flightLandingCopy = {
  ],
  whyTitle:"Why Genie",
  why:[
- ["Made for India.","DGCA rules, Indian airlines and travel sites, the real grievance officers. Checked against the official text."],
- ["Tell your story once.","Genie keeps your case, calls and mails them, and updates you. No more explaining it again to a new person every time."],
- ["You stay in control.","No login, no OTP, no bank details. Ever. If they need you on a call, Genie connects you. Stop Genie any time."],
- ["Every claim has a source.","The rule, the date, the company's own page. No guesswork."],
+ ["Made for India.","Official DGCA rules and checked contacts."],
+ ["Tell your story once.",callingCopy.landingOnce],
+ ["You stay in control.",callingCopy.landingControl],
+ ["Every claim has a source.","The rule, date and company page."],
  ],
  priceLine:landingPriceLine,
  realCaseTitle:"See a real case",realCaseNote:"Sample case. Made-up booking details, checked refund rules and contacts.",tryDemo:"Try the demo",
@@ -196,81 +282,24 @@ export const caseCopy = {
 };
 
 
-// All editorial calling text lives here; persisted call evidence remains data.
-export const callingCopy = {
- startDemo: "Genie sends two test mails and plays a simulated care call. Watch the chase update live. No phone number, Gmail sign-in or real booking needed.",
- calledButton: "I've called",
- liveTestOnly: "Live calls can use only approved test numbers and separate permission.",
- simulatedNotice: "Calling is simulated for now. No phone is dialled.",
- startLiveTest: "Start approved live test call",
- runSimulation: "Run simulated demo call",
- savePermission: "Save calling permission",
- nextDemoCall: "Genie is on it. Next: simulated demo call to Demo Air.",
- nextConfirm: "Genie is on it. Next: mail Demo Air to confirm what care said.",
- speechUnavailable: "Speech playback is unavailable in this browser. Read the simulated transcript below.",
- speechStopped: "Playback stopped. You can read the simulated transcript below.",
- readingCall: "Reading the simulated care call…",
- readingAnswer: "Reading care’s answer…",
- playDemoCall: "Play simulated demo call",
- stopPlayback: "Stop playback",
- demoNotice: "Demo, nothing is sent to a real company. Mails go to our test desk. The call is simulated; no phone rings or call credits are used.",
- samplePermission: "Use the sample permission for test mails and a simulated call. I can stop this demo any time.",
- demoRecording: "Role-play recording. No real company was called.",
- browserReading: "Saved fixture read aloud by your browser; not a live call or a recorded person.",
- demoTranscript: "Read the simulated call transcript",
- callFailed: "The call could not connect. Genie will follow up by mail.",
- patchSimulated: "Passenger patch-in simulated. No phone rang.",
- patchRequested: "Passenger patch-in requested.",
- roleplayRecording: "Role-play recording. This is not a live company call.",
- callRecording: "Call recording",
- historyTitle: "Calls in this case",
- termsControl: "You can send messages yourself or give written permission for Genie to send and follow up, with your email copied and a letter of authority attached to the first mail. You can stop future sending at any time; already accepted mail cannot be recalled. This release enables only approved test recipients. Calling is simulated in this release; no phone is dialled. Separate permission is required for calling and connecting you if identity checks are needed. Live calls, when enabled by the founder, are made by an AI assistant and recorded. We store the call mode, time, duration, cost, safe transcript and recording link. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts. You file complaints yourself. Refund Genie never logs in to an airline, travel site, bank or payment account for you. It never asks for an OTP, password or bank details.",
- privacyChase: "Optional written permission lets Genie send refund mails from its case inbox and copy your email. We store your full name, mobile, email, permission timestamp, PDF letter of authority and outgoing mail record. The first mail attaches that letter. Your email gets a short update when Genie sends a mail or reads a reply. Recipients follow the checked playbook or a known company’s own reply. Stop Genie ends queued and future sending; a mail already accepted by Gmail cannot be recalled. The current release sends only to approved test addresses. Real-company sending is off. Calling is simulated in this release; no phone is dialled. Separate permission is required for calling and connecting you if identity checks are needed. Live calls, when enabled by the founder, are made by an AI assistant and recorded. We store the call mode, time, duration, cost, safe transcript and recording link. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts.",
- permission:(company:string)=>`and to call ${company}'s customer care for me, and connect me to the call if they need me`,
- transcript:(mode:string)=>`Read the ${mode==='simulated'?'simulated ':''}call transcript`,
- demoWork:(mails:number,replies:number,simulated:number,real:number)=>`Genie sent ${mails} test mails, read ${replies} replies (including the simulated call), and ran ${simulated} simulated demo call. Real company calls: ${real}.`,
- demoShare:(origin:string)=>`I tried Refund Genie's demo: two test mails and one simulated care call, all in one chase. No real company was contacted. ${origin}/start/?demo=flight`,
- nextCall:(label:string,company:string)=>`Genie is on it. Next: ${label.toLowerCase()} with ${company}.`,
-};
 
-// Intake reasons are shared by flight, event, permission and reply screens.
-export const intakeReasons = {
- message: "So Genie can read what happened and fill your case.",
- screenshot: "So Genie can read the message you cannot paste.",
- name: "So your drafts and permission use your name.",
- pnr: "So every company can find your booking without asking you again.",
- bookingId: "Travel sites look up refunds by this.",
- company: "So we choose the right company and checked contact.",
- amount: "So the draft and recovered amount match your refund.",
- date: "So we can work out the refund date and next check-in.",
- paymentMethod: "So we show the rule for how you paid.",
- contact: "Optional. Only used about this case.",
- mobile: "So the permission letter identifies you to customer care.",
- email: "So you receive a copy of every permitted mail.",
- recipient: "So your mail goes to the address you checked.",
- subject: "So replies stay with your case reference.",
- reply: "So Genie can read their answer and prepare the next step.",
- correction: "So we correct your saved case facts.",
- taxes: "So we can separate refundable fees from the fare.",
- fare: "So we can check any excess cancellation charge.",
- received: "So the closed case records what actually landed.",
- review: "So we can learn whether this case helped you.",
- reminder: "So your reminder uses the date you choose.",
- consent: "So we record exactly what you allow Genie to do.",
- attachments: "So the mail lists only files you will attach.",
- source: "So we record where you checked this address.",
- waitlist: "So we can tell you once when this refund type is ready.",
- default: "So your next step uses the right case details.",
+export const landingSections = {
+ sample:"Sample case", sampleCompany:"SpiceJet", sampleDate:"1 Oct 2026", sampleNext:"MakeMyTrip grievance officer", sampleAmount:"₹6,240",
+ receiptLabels:["WHO HAS IT","DUE BY","WRITE TO NEXT","AMOUNT"], overdue:"Overdue", landed:"It's in",
+ mailReady:"Next mail ready", sent:"Sent", reply:"Refund processed. Reference UTR 4021…", sampleNote:"Made-up booking, refund and reference. This is an illustration of the chase.",
+ familiar:[["You","Where is my refund?"],["MakeMyTrip","Please contact the airline."],["Airline","We already paid MakeMyTrip."],["Customer care","Please hold…"]],
+ what:[["Reads your mail","Finds your booking details."],["Knows the rules","Shows the rule and date."],["Writes and follows up","Keeps your next step ready."]],
+ how:[["Paste or upload","Share the cancellation message."],["Confirm once","Check the booking details."],["Choose how to send","Use Gmail or permit support follow-ups."],["Follow the reply","Your next step updates."]],
+ tellTitle:"Tell us once.", tellLine:"We ask your PNR and booking ID once for each case. After that nobody asks you again, not us and not the next customer-care person. Genie carries your case.",
+ tellAskTitle:"What we ask",tellAsk:"PNR, booking ID, the company, your name.",tellWhyTitle:"Why",tellNeverTitle:"What we never ask",tellNever:"OTP, card, bank details, login.",
+ swipeHint:"Swipe to see the next step.", faqTitle:"Your questions",
+ faq:[
+ ["Why do you need my PNR?","So every company can find your booking without asking you again."],
+ ["Will you ever ask for an OTP or bank details?","No. Never share OTPs, card or bank details, or a login with Genie."],
+ ["Who sends the mails?","With written permission, Genie sends support-level follow-ups to approved test addresses. Escalations to officers go from your own Gmail."],
+ [callingCopy.faqQuestion,callingCopy.faqAnswer],
+ ["What does it cost?",`${landingPriceLine} ${pricing.landingGuarantee}`],
+ ["Is Refund Genie linked to these airlines?","No. Refund Genie is not linked to or endorsed by the airlines or travel sites."],
+ ["Can I stop Genie?","Yes. Stop Genie ends queued and future sending. A mail already accepted by Gmail cannot be recalled."],
+ ],
 };
-export const personalSafetyLine = "No OTP, card or bank details, or login. Ever.";
-export function reasonForQuestion(id: string) {
- if (/pnr/i.test(id)) return intakeReasons.pnr;
- if (/bookingId/i.test(id)) return intakeReasons.bookingId;
- if (/airline|bookedVia|platform/i.test(id)) return intakeReasons.company;
- if (/amount/i.test(id)) return intakeReasons.amount;
- if (/date|time|deadline/i.test(id)) return intakeReasons.date;
- if (/payment/i.test(id)) return intakeReasons.paymentMethod;
- if (/tax/i.test(id)) return intakeReasons.taxes;
- if (/reply|destination/i.test(id)) return intakeReasons.reply;
- return intakeReasons.default;
-}
