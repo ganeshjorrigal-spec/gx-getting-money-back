@@ -1,3 +1,10 @@
+# D-045 current job
+
+- [ ] Part 1 landing first paint/fonts and three-run before/after medians.
+- [ ] Part 2 mail-only versus calling mobile permission and honest ask-once copy.
+- [ ] Part 3 approved 12 low drafts, review page/PDF; no finals or placement.
+- [ ] Part 4 Air India ticket/refund portal and verified travel-site support paths.
+
 # Pending review, 13 Oct 2026
 
 - [ ] HQ review of D-044 landing/audit/demo/image draft work. Nothing DONE; no publish in this job.

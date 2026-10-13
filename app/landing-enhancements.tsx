@@ -15,12 +15,23 @@ export function LandingEnhancements() {
       const saved = JSON.parse(localStorage.getItem(CASE_STORAGE_KEY) || "[]");
       if (Array.isArray(saved)) setCases(saved.slice(0, 3));
     } catch { /* Older or malformed storage should not hide the landing page. */ }
+    // The server paints the full hero first; the optional story starts only after load and an idle turn.
+    let idle: number | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const start = () => {
+      const animate = () => document.querySelector('.animated-sample')?.classList.add('sample-playing');
+      if ('requestIdleCallback' in window) idle = window.requestIdleCallback(animate, { timeout: 1500 });
+      else timer = setTimeout(animate, 0);
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
     const hero = document.getElementById("hero");
     if (!hero) return;
-    const observer = new IntersectionObserver(entries => { for(const entry of entries){if(entry.target===hero)setShowSticky(!entry.isIntersecting);else if(entry.isIntersecting){entry.target.classList.add("is-revealed");observer.unobserve(entry.target);}} }, { threshold: 0 });
+    const observer = new IntersectionObserver(entries => { for(const entry of entries){if(entry.target===hero)setShowSticky(!entry.isIntersecting);else if(entry.isIntersecting){if(entry.target instanceof HTMLImageElement&&entry.target.dataset.lazySrc){entry.target.src=entry.target.dataset.lazySrc;}else entry.target.classList.add("is-revealed");observer.unobserve(entry.target);}} }, { threshold: 0 });
     document.querySelectorAll("[data-reveal]").forEach(node=>{node.classList.add("reveal-ready");observer.observe(node);});
+    document.querySelectorAll("img[data-lazy-src]").forEach(node=>observer.observe(node));
     observer.observe(hero);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); window.removeEventListener('load', start); if(idle!==undefined)window.cancelIdleCallback(idle); if(timer!==undefined)clearTimeout(timer); };
   }, []);
   return <>
     <section className="saved-cases section-wrap" aria-label="Your cases">

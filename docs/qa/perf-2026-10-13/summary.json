@@ -1,0 +1,174 @@
+{
+  "before": {
+    "runs": [
+      {
+        "file": "before-1.json",
+        "performance": 76,
+        "accessibility": 100,
+        "fcpMs": 2148.745007188407,
+        "lcpMs": 5316.496671458937,
+        "benchmarkIndex": 1214.5
+      },
+      {
+        "file": "before-2.json",
+        "performance": 69,
+        "accessibility": 100,
+        "fcpMs": 2167.1308499999996,
+        "lcpMs": 5483.253900000001,
+        "benchmarkIndex": 1953.5
+      },
+      {
+        "file": "before-3.json",
+        "performance": 72,
+        "accessibility": 100,
+        "fcpMs": 2166.969,
+        "lcpMs": 5320.146000000001,
+        "benchmarkIndex": 1845
+      }
+    ],
+    "median": {
+      "performance": 72,
+      "accessibility": 100,
+      "fcpMs": 2166.969,
+      "lcpMs": 5320.146000000001
+    }
+  },
+  "after": {
+    "runs": [
+      {
+        "file": "after-1.json",
+        "performance": 79,
+        "accessibility": 100,
+        "fcpMs": 2073.680015833994,
+        "lcpMs": 5042.303079861661,
+        "benchmarkIndex": 2997.5
+      },
+      {
+        "file": "after-2.json",
+        "performance": 80,
+        "accessibility": 100,
+        "fcpMs": 1967.3977553846935,
+        "lcpMs": 4902.875155384693,
+        "benchmarkIndex": 3116
+      },
+      {
+        "file": "after-3.json",
+        "performance": 80,
+        "accessibility": 95,
+        "fcpMs": 1818.5099999999998,
+        "lcpMs": 4977.34,
+        "benchmarkIndex": 3225
+      }
+    ],
+    "median": {
+      "performance": 80,
+      "accessibility": 100,
+      "fcpMs": 1967.3977553846935,
+      "lcpMs": 4977.34
+    }
+  },
+  "final": {
+    "runs": [
+      {
+        "file": "final-1.json",
+        "performance": 75,
+        "accessibility": 100,
+        "fcpMs": 2512.1216,
+        "lcpMs": 4936.21211,
+        "benchmarkIndex": 2868.5
+      },
+      {
+        "file": "final-2.json",
+        "performance": 73,
+        "accessibility": 100,
+        "fcpMs": 2558.6826,
+        "lcpMs": 5198.35156,
+        "benchmarkIndex": 1824
+      },
+      {
+        "file": "final-3.json",
+        "performance": 62,
+        "accessibility": 95,
+        "fcpMs": 2742.4524,
+        "lcpMs": 5545.69905,
+        "benchmarkIndex": 2547.5
+      }
+    ],
+    "median": {
+      "performance": 73,
+      "accessibility": 100,
+      "fcpMs": 2558.6826,
+      "lcpMs": 5198.35156
+    }
+  },
+  "inline": {
+    "runs": [
+      {
+        "file": "inline-1.json",
+        "performance": 81,
+        "accessibility": 100,
+        "fcpMs": 1534.5545000000002,
+        "lcpMs": 4847.83175,
+        "benchmarkIndex": 3097
+      },
+      {
+        "file": "inline-2.json",
+        "performance": 70,
+        "accessibility": 100,
+        "fcpMs": 3153.813875,
+        "lcpMs": 5212.3022,
+        "benchmarkIndex": 2905
+      },
+      {
+        "file": "inline-3.json",
+        "performance": 72,
+        "accessibility": 95,
+        "fcpMs": 3070.8358749999998,
+        "lcpMs": 5190.7374,
+        "benchmarkIndex": 2720
+      }
+    ],
+    "median": {
+      "performance": 72,
+      "accessibility": 100,
+      "fcpMs": 3070.8358749999998,
+      "lcpMs": 5190.7374
+    }
+  },
+  "complete": {
+    "runs": [
+      {
+        "file": "complete-1.json",
+        "performance": 72,
+        "accessibility": 100,
+        "fcpMs": 1314.1965140686057,
+        "lcpMs": 4684.196514068606,
+        "benchmarkIndex": 3303
+      },
+      {
+        "file": "complete-2.json",
+        "performance": 78,
+        "accessibility": 100,
+        "fcpMs": 2657.659875,
+        "lcpMs": 4861.8558,
+        "benchmarkIndex": 3290.5
+      },
+      {
+        "file": "complete-3.json",
+        "performance": 72,
+        "accessibility": 100,
+        "fcpMs": 3116.149578218631,
+        "lcpMs": 5125.039325149809,
+        "benchmarkIndex": 3258.5
+      }
+    ],
+    "median": {
+      "performance": 72,
+      "accessibility": 100,
+      "fcpMs": 2657.659875,
+      "lcpMs": 4861.8558
+    }
+  },
+  "targetMet": false,
+  "method": "Lighthouse 13.5, static Python localhost, uncompressed,375x812, same machine and command. Before three runs, final complete three runs. Intermediate sets retained."
+}

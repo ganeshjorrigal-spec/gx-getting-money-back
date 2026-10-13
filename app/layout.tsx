@@ -4,9 +4,9 @@ import "./globals.css";
 import { metaCopy } from "./copy";
 import { DomainNotice } from "./domain-notice";
 
-const fraunces = Fraunces({ subsets: ["latin", "latin-ext"], variable: "--font-fraunces", weight: ["500", "700"] });
-const publicSans = Public_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-public-sans", weight: ["400", "600"] });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin", "latin-ext"], variable: "--font-jetbrains-mono", weight: "400" });
+const fraunces = Fraunces({ subsets: ["latin"], display: "swap", variable: "--font-fraunces", weight: ["500", "700"] });
+const publicSans = Public_Sans({ subsets: ["latin"], display: "swap", variable: "--font-public-sans", weight: ["400", "600"] });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], display: "swap", variable: "--font-jetbrains-mono", weight: "400", preload: false });
 
 export const metadata: Metadata = {
   title: metaCopy.title,

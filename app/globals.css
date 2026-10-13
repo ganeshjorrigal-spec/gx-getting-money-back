@@ -614,17 +614,20 @@ button:disabled {cursor:default;opacity:.6;}
 .home-shell .hero {display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--space-10);align-items:center;}
 .animated-sample {min-width:0;max-width:530px;}
 .animated-sample .receipt-slip {box-shadow:0 12px 30px rgba(20,33,61,.09);}
-.animated-sample .receipt-row {animation:sample-row .7s cubic-bezier(.16,1,.3,1) both;}
-.animated-sample .receipt-row:nth-child(2){animation-delay:.6s}.animated-sample .receipt-row:nth-child(3){animation-delay:1.2s}.animated-sample .receipt-row:nth-child(4){animation-delay:1.8s}
+.animated-sample.sample-playing .receipt-row {animation:sample-row .7s cubic-bezier(.16,1,.3,1) both;}
+.animated-sample.sample-playing .receipt-row:nth-child(2){animation-delay:.6s}.animated-sample.sample-playing .receipt-row:nth-child(3){animation-delay:1.2s}.animated-sample.sample-playing .receipt-row:nth-child(4){animation-delay:1.8s}
 .sample-stamps {position:relative;height:44px;margin-top:16px;}
 .sample-overdue,.sample-landed {position:absolute;right:0;top:0;}
-.sample-overdue {animation:sample-overdue 8s both;}
-.sample-landed {animation:sample-final .6s 7.2s both;}
-.sample-mail {display:flex;gap:12px;position:relative;align-items:center;background:var(--surface);padding:18px;border:1px solid var(--line);border-radius:12px;animation:sample-row .6s 3.2s both;}
-.sample-ready {animation:sample-ready 8s both;}.sample-sent {position:absolute;left:52px;animation:sample-final .4s 5s both;}
-.sample-reply {margin:16px 0 0 32px;padding:16px;background:var(--waiting-fill);border-radius:12px;animation:sample-row .7s 6s both;}
+.sample-playing .sample-overdue {animation:sample-overdue 8s both;}
+.sample-playing .sample-landed {animation:sample-final .6s 7.2s both;}
+.sample-mail {display:flex;gap:12px;position:relative;align-items:center;background:var(--surface);padding:18px;border:1px solid var(--line);border-radius:12px;}
+.sample-playing .sample-mail {animation:sample-stage .6s 3.2s both;}
+.sample-playing .sample-ready {animation:sample-ready 8s both;}.sample-sent {position:absolute;left:52px;}
+.sample-playing .sample-sent {animation:sample-final .4s 5s both;}
+.sample-reply {margin:16px 0 0 32px;padding:16px;background:var(--waiting-fill);border-radius:12px;}
+.sample-playing .sample-reply {animation:sample-stage .7s 6s both;}
 .sample-note {margin-top:16px;line-height:1.6;}
-@keyframes sample-row {from{opacity:0;transform:translateY(12px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
+@keyframes sample-row {from{transform:translateY(8px)}to{transform:none}}
 @keyframes sample-overdue {0%,27%{opacity:0;transform:rotate(-3deg) scale(.9)}33%,87%{opacity:1;transform:rotate(-3deg)}100%{opacity:0;visibility:hidden}}
 @keyframes sample-final {from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes sample-ready {0%,60%{opacity:1}66%,100%{opacity:0;visibility:hidden}}
@@ -634,3 +637,12 @@ button:disabled {cursor:default;opacity:.6;}
 .tell-once {background:var(--waiting-fill);border-radius:16px;padding:32px;}.tell-line{max-width:68ch;line-height:1.7}.tell-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:24px}.tell-grid article{padding-top:16px;border-top:1px solid var(--line)}.tell-grid h3{font-size:1.2rem}.tell-grid p{line-height:1.6}.landing-faq{max-width:850px}.landing-faq details{border-top:1px solid var(--line);padding:12px 0}.landing-faq summary{cursor:pointer;display:list-item;line-height:1.5;font-weight:600;padding:12px 4px}.landing-faq details p{line-height:1.7;margin:8px 4px 16px;max-width:65ch;}
 @media(max-width:760px){.home-shell .hero{grid-template-columns:1fr;gap:32px}.animated-sample{max-width:none}.snap-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;padding:4px 0 12px}.snap-cards .value-card{flex:0 0 84%;scroll-snap-align:start;min-width:0}.swipe-hint{display:block;font-size:var(--text-small);color:var(--muted)}.tell-grid{grid-template-columns:1fr;gap:12px}.tell-once{padding:24px}.story-grid{display:block}.story-grid>h2{margin-bottom:32px}.chat-bubble{width:90%;box-sizing:border-box}}
 @media(prefers-reduced-motion:reduce){.animated-sample *,.is-revealed *{animation:none!important;transform:none!important;clip-path:none!important;opacity:1!important}.animated-sample .sample-overdue,.animated-sample .sample-ready{display:none}.reveal-ready .chat-bubble,.reveal-ready .genie-answer{opacity:1!important}}
+
+/* Immediate first paint: all receipt rows and hero copy stay visible before motion. */
+.hero-copy,.animated-sample .receipt-row {opacity:1;}
+.animated-sample:not(.sample-playing) .sample-mail,.animated-sample:not(.sample-playing) .sample-reply,.animated-sample:not(.sample-playing) .sample-landed,.animated-sample:not(.sample-playing) .sample-sent {visibility:hidden;}
+.animated-sample:not(.sample-playing) .sample-overdue {opacity:1;}
+.home-shell > .section-block,.home-shell > .story-band,.home-shell > .sample-showcase,.home-shell > .brand-section {content-visibility:auto;contain-intrinsic-size:auto 450px;}
+@media(prefers-reduced-motion:reduce){.animated-sample:not(.sample-playing) .sample-mail,.animated-sample:not(.sample-playing) .sample-reply,.animated-sample:not(.sample-playing) .sample-landed,.animated-sample:not(.sample-playing) .sample-sent {visibility:visible;}}
+
+@keyframes sample-stage {from{opacity:0;visibility:hidden;transform:translateY(8px)}to{opacity:1;visibility:visible;transform:none}}
