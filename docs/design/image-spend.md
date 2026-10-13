@@ -1,7 +1,7 @@
 # Image spend
 
-Images made: 12
-API attempts reserved/made: 12 / 40
+Images made: 31
+API attempts reserved/made: 31 / 40
 
 Errors and interrupted attempts also consume cap room. No raw API response, prompt, key or personal data is logged.
 
@@ -19,3 +19,22 @@ Errors and interrupted attempts also consume cap room. No raw API response, prom
 | on-hold-draft | gpt-image-2.5-flare | 816x816 | low | file saved |
 | refund-coming-draft | gpt-image-2.5-flare | 816x816 | low | file saved |
 | family-draft | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-logo-1 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-logo-2 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-logo-3 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-logo-4 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-1 | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-mascot-2 | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-mascot-3 | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-mascot-4 | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-mascot-5 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-6 | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-on-hold | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-refund-coming | gpt-image-2.5-flare | 816x816 | low | rejected draft: skin/hair constraints; source retained |
+| d045-mascot-1 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-2 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-3 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-4 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-mascot-6 | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-on-hold | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d045-refund-coming | gpt-image-2.5-flare | 816x816 | low | file saved |

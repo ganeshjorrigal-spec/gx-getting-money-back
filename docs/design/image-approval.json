@@ -1,5 +1,6 @@
 {
   "paidRunApproved": true,
-  "pickedLogo": null,
-  "illustrationsApproved": false
+  "pickedLogo": 5,
+  "illustrationsApproved": false,
+  "d045DraftsApproved": true
 }

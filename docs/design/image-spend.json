@@ -1,6 +1,6 @@
 {
-  "attempts": 12,
-  "images": 12,
+  "attempts": 31,
+  "images": 31,
   "entries": [
     {
       "id": "logo-1-draft",
@@ -81,6 +81,139 @@
     },
     {
       "id": "family-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-logo-1",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-logo-2",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-logo-3",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-logo-4",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-1",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-mascot-2",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-mascot-3",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-mascot-4",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-mascot-5",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-6",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-on-hold",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-refund-coming",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "rejected draft: skin/hair constraints; source retained"
+    },
+    {
+      "id": "d045-mascot-1",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-2",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-3",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-4",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-mascot-6",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-on-hold",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d045-refund-coming",
       "model": "gpt-image-2.5-flare",
       "size": "816x816",
       "quality": "low",

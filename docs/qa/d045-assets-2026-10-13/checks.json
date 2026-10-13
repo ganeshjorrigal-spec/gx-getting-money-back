@@ -1,0 +1,17 @@
+{
+  "attemptsTotal": 31,
+  "imagesTotal": 31,
+  "cap": 40,
+  "transportRetries": 0,
+  "rejectedReplaced": 7,
+  "currentNewCandidates": 12,
+  "pdfPages": 25,
+  "mascotHeadPx": 64,
+  "galleryWidths": [
+    375,
+    1280
+  ],
+  "brokenImages": 0,
+  "overflow": false,
+  "published": false
+}

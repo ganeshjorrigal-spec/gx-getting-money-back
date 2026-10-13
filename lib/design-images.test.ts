@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { assets, pendingAssets, assertCapacity, assertPaidApproval, generateOnceWithRetry, main } from "../scripts/design-images.mjs";
+import { d045Assets, assets, pendingAssets, assertCapacity, assertPaidApproval, generateOnceWithRetry, main } from "../scripts/design-images.mjs";
 
 const locked = { paidRunApproved: false, pickedLogo: null, illustrationsApproved: false };
 describe("manual build-time images", () => {
@@ -59,3 +59,5 @@ describe("manual build-time images", () => {
     } finally { output.mockRestore(); vi.unstubAllGlobals(); rmSync(root, { recursive: true }); }
   });
 });
+
+it('D-045 plans only twelve new low drafts and original-character constraints',()=>{const list=d045Assets('paper');expect(list).toHaveLength(12);expect(list.filter(a=>a.id.includes('logo'))).toHaveLength(4);expect(list.filter(a=>a.id.includes('mascot'))).toHaveLength(6);expect(list.every(a=>a.quality==='low'&&a.size==='816x816'&&a.path.startsWith('docs/design/'))).toBe(true);expect(list.every(a=>a.prompt.includes('no reference image copied'))).toBe(true);expect(list.filter(a=>a.id.includes('on-hold')||a.id.includes('refund-coming')).every(a=>/no airport/i.test(a.prompt))).toBe(true);expect(()=>assertCapacity({attempts:12,images:12,entries:[]},list.length)).not.toThrow();});
