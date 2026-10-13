@@ -1,5 +1,90 @@
 {
-  "attempts": 0,
-  "images": 0,
-  "entries": []
+  "attempts": 12,
+  "images": 12,
+  "entries": [
+    {
+      "id": "logo-1-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-2-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-3-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-4-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-5-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-6-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-7-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "logo-8-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "airport-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "on-hold-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "refund-coming-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "family-draft",
+      "model": "gpt-image-2.5-flare",
+      "size": "816x816",
+      "quality": "low",
+      "status": "file saved"
+    }
+  ]
 }

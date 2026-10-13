@@ -1,16 +1,9 @@
-# Walkthrough fixes: review pending
+# Pending review, 13 Oct 2026
 
-- [ ] HQ review of four item commits; 278 tests/type check/static build pass. Nothing DONE.
-- [ ] HQ decision on public automatic chase demo: D-043 blocks its initial officer mail. Revised support-level or user-send story needed; no exception invented.
-- [ ] Explicit publication instruction before site or backend release. Live code remains unchanged.
-
-# Pending work
-
-- [ ] HQ review of 13 Oct overnight queue changes. Item 3 sources and item 4 actual mail proof remain incomplete; see STATE.md and today's log.
-- [ ] Own-company pages displaying requested MakeMyTrip and Goibibo lower email addresses; do not guess.
-- [ ] Gmail permission and fresh-profile video proof, including actual compose/reply time/calendar. Do not work around saved browser blocks.
-- [ ] Ganesh's go for 12 paid image drafts, then logo/illustration picks before finals and page placement. Current spend zero.
-- [ ] Explicit publish instruction; no Cloudflare publish or npm run deploy for this request.
-- [ ] Preserve original outstanding timed flight demos/post-trial test-payment proof. No calling settings, allow-list or key changes.
-
-Queue items worked in order, checked and pushed with stated gaps; nothing DONE. Next is HQ review.
+- [ ] HQ review of D-044 landing/audit/demo/image draft work. Nothing DONE; no publish in this job.
+- [ ] Ganesh's logo pick and illustration approval before finals, SVG, favicon or page placement. Twelve drafts explicitly approved; final selection is still pending.
+- [ ] Audit questions: mobile for mail-only authority, waitlist contact reuse, timestamp precision, company identity checks despite ask-once promise.
+- [ ] Own-company sources for MMT triphelp and Goibibo travel. Do not guess.
+- [ ] Launch-video sample actual Gmail/fresh-profile/reply/calendar proof. Do not work around saved browser permissions.
+- [ ] Original timed flight demos/post-trial test-payment proof; keys are live, do not switch.
+- [ ] Explicit Ganesh publish instruction before any further Cloudflare/backend release. No calling settings, allow-list or key changes.

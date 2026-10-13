@@ -1,0 +1,18 @@
+{
+  "imagesGenerated": 12,
+  "attempts": 12,
+  "cap": 40,
+  "retries": 0,
+  "galleryElements": 28,
+  "viewportWidths": [
+    375,
+    1280
+  ],
+  "overflow": false,
+  "brokenImages": 0,
+  "typeCheck": "pass",
+  "tests": 286,
+  "testFiles": 36,
+  "draftsOnly": true,
+  "published": false
+}
