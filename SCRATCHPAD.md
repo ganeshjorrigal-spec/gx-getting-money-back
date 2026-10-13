@@ -1,7 +1,8 @@
-# Current authorised walkthrough fixes
+# Walkthrough fixes: review pending
 
-- [ ] Items 2-4 in order: primary date Continue; generic contact copy; D-043 backend escalation send guard and screen.
-- [ ] Log, STATE, tests, one commit/push per item; no publish/settings/keys; wait for HQ.
+- [ ] HQ review of four item commits; 278 tests/type check/static build pass. Nothing DONE.
+- [ ] HQ decision on public automatic chase demo: D-043 blocks its initial officer mail. Revised support-level or user-send story needed; no exception invented.
+- [ ] Explicit publication instruction before site or backend release. Live code remains unchanged.
 
 # Pending work
 

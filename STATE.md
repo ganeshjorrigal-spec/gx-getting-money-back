@@ -4,7 +4,15 @@
 M2.6 remains ACTIVE. HQ accepted D-042 mail fixes and restyle Phase A in review-2026-10-13-restyle-phase-a.md. The 13 Oct overnight queue has been worked in order; its new work awaits HQ review. Nothing marked DONE. No deployment in this run; Ganesh must explicitly authorise any further publish.
 
 ## Current walkthrough fixes (D-043)
-Item 1 SkillBox deadline answer is READY FOR REVIEW: explicit unknown choices, deterministic saving/triage, existing labelled estimate and chat route. 263 tests/type check pass; 16 event fixtures pass across initial run and targeted F10 retry (initial request error logged). Item 2 date Continue styling is READY FOR REVIEW with before/after 375px proof; both buttons 49.6px tall. Item 3 generic contact/payment/privacy wording is READY FOR REVIEW; legal Contact/Refund policy names retained and logged. Item 4 sending guard next. No deployment.
+Items 1-4 are READY FOR REVIEW, not DONE:
+1. SkillBox: refund deadline has explicit no-date/unknown choices and deterministic saving/triage. Existing 10-working-day estimate, labelled Refund Genie's estimate; chat-first route/no invented email. Seven new tests use actual in-memory answer/triage functions.
+2. Date Continue buttons: shared primary tokens; 375px before/after screenshots, both 49.6px high.
+3. Generic contact/payment/privacy hints; app grep leaves only Contact and Refund policy legal/support names, logged.
+4. Passenger-name escalations: reserve and final dispatch guards for officer To/roles and flight rung >=3; additive optional draft role/rung snapshot protects stale drafts. Permission blocks/hint hidden; normal Open in Gmail unchanged, no chase prefix. Support-level automatic follow-ups and user-only early status unchanged.
+
+Verification: 278 tests across 34 files, type check and production static export pass. Flight eval 14/14. Events all 16 passed across initial run + F10 request-error retry; not one uninterrupted green run. Screenshots and saved HTML: docs/qa/observations-2026-10-13, restyle-observations1/2/3/4-2026-10-13. Full evidence in today's log.
+
+For HQ: D-043 invalidates the public automatic chase demo's initial officer mail. Backend blocks it; dedicated demo now shows manual notice and hides permission/false waiting. Its previous automatic replay cannot complete; HQ must decide its revised support-level or user-send story. No bypass invented. Normal/self-send Gmail path remains available. No live proof or deployment claimed; live site/backend remain on their previous releases.
 
 ## Overnight queue
 1. Restyle polish: READY FOR REVIEW. Single overdue stamp, no repeated badge/heading; airline-responsibility sentence retained. 375/1280 component screenshots. Commit 3761e32.

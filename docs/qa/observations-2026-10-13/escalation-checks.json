@@ -1,0 +1,15 @@
+{
+  "escalationChecks": {
+    "manualLine": true,
+    "overflow": false,
+    "permission": false,
+    "gmailLink": true,
+    "stalePermissionHint": false
+  },
+  "demoEscalationChecks": {
+    "manualLine": true,
+    "overflow": false,
+    "permission": false,
+    "spinner": 0
+  }
+}

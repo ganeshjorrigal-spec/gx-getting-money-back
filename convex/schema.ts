@@ -40,7 +40,7 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_case", ["caseId", "createdAt"]),
   drafts: defineTable({
-    caseId: v.id("cases"), company:v.optional(v.string()), step: v.string(), channel: v.string(), to: v.optional(v.string()),
+    caseId: v.id("cases"), company:v.optional(v.string()), recipientRole:v.optional(v.string()), rung:v.optional(v.number()), step: v.string(), channel: v.string(), to: v.optional(v.string()),
     subject: v.optional(v.string()), cc: v.optional(v.array(v.string())), body: v.string(), attachChecklist: v.array(v.string()),
     status: v.union(v.literal("ready"), v.literal("opened"), v.literal("sent")), createdAt: v.number(),
   }).index("by_case", ["caseId"]),

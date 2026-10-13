@@ -1,4 +1,5 @@
 "use client";
+import { isPassengerEscalation, escalationSendLine } from "../../lib/chase-escalation";
 import {isSelfSendFlightDemo,demoCcRoles} from '../../lib/video-demo';
 import {airIndiaPortalFields} from '../../lib/flight-portal';
 import {callingCopy} from '../copy';
@@ -99,6 +100,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  const inbox=tracking?.inboxAddress?caseInboxAddress(tracking.inboxAddress,code):"";
 
  const selfSendDemo=isSelfSendFlightDemo(data.demo);
+ const passengerEscalation=isPassengerEscalation(data,draft);
  const ccList=[...(draft?.cc??[]),inbox].filter(Boolean);
 
  const cc=ccList.join(",");
@@ -119,7 +121,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  return <main className="case-shell flight-case"><header className="site-header"><Link className="wordmark" href="/">Refund Genie<span className="wordmark-dot">.</span></Link><Link className="text-link" href="/start">Start another case</Link></header><div className="case-wrap">
 
- <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&data.chase&&<p role="status">{chaseView?.next}</p>}
+ <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&!passengerEscalation&&data.chase&&<p role="status">{chaseView?.next}</p>}
 
  <EmailCaseLink code={code} contact={data.contact} link={privateCaseUrl(data.publicAppUrl || location.origin, code, token)}/>
 
@@ -181,7 +183,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  </ReceiptSlip>}
 
- {!selfSendDemo&&data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {!selfSendDemo&&!passengerEscalation&&data.factsConfirmedAt&&facts?.pnr&&!data.stage.startsWith("CLOSED")&&!(draft?.channel==="email"&&draft.status!=="sent"&&draft.body!==null&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO")&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
  {plan?.portal&&facts&&<NextMoveCard title="Your refund form">
  <p>{plan.portal.subcategory?`Choose “${plan.portal.subcategory}”.`:'Already requested a refund? Choose “Status Check on Pending Refund”. No request made? Choose “New Refund Request”.'}</p>
@@ -203,11 +205,12 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  {draft.channel==="email"&&<a className="button button-primary" aria-disabled={!draft.to&&!recipient} href={draft.to||recipient?buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).url:undefined} target="_blank" rel="noreferrer" onClick={()=>{if(buildGmailCompose(draft.to||recipient,draft.subject??"",mailBody,cc).copyFirst)void navigator.clipboard.writeText(mailBody).catch(()=>setError("Copy the message before opening Gmail, then paste it."));setOpened(true);void openedDraft({...args,draftId:draft._id}).catch(()=>setError("Could not record opening the draft."));}}>Open in Gmail</a>}
 
- {!selfSendDemo&&draft.channel==="email"&&facts?.pnr&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
+ {passengerEscalation&&draft.channel==="email"&&<p className="input-hint">{escalationSendLine}</p>}
+ {!selfSendDemo&&!passengerEscalation&&draft.channel==="email"&&facts?.pnr&&plan?.nextStep!=="FLIGHT_status"&&<ChaseAuthority code={code} token={token} company={[facts.airline,facts.bookedVia!=="direct"?facts.bookedVia:null].filter(Boolean).join(" and ")} pnr={facts.pnr} chase={data.chase} demo={!!data.demo} canSkip={!!data.demo&&data.demo.round>=1&&data.demo.round<=2&&data.demo.phase==="ready"&&data.stage==="READY"}/>}
 
  {!selfSendDemo&&<button className="text-button" onClick={()=>run(async()=>{await navigator.clipboard.writeText(mailBody);await openedDraft({...args,draftId:draft._id});setOpened(true);})}>Copy message</button>}
 
- {!selfSendDemo&&draft.channel==="email"&&<p>{plan?.nextStep==="FLIGHT_status"?"This early status mail is optional. You send it yourself; Genie will not send it.":"Use Gmail to send it yourself, or give Genie written permission above."}</p>}{!selfSendDemo&&!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?callingCopy.calledButton:"Yes, I've sent it"}</button>}</NextMoveCard>}
+ {!selfSendDemo&&!passengerEscalation&&draft.channel==="email"&&<p>{plan?.nextStep==="FLIGHT_status"?"This early status mail is optional. You send it yourself; Genie will not send it.":"Use Gmail to send it yourself, or give Genie written permission above."}</p>}{!selfSendDemo&&!(data.demo&&data.demo.round===3)&&<button className="button button-primary" disabled={busy||(draft.channel==="email"&&!opened)} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>{draft.channel==="phone"?callingCopy.calledButton:"Yes, I've sent it"}</button>}</NextMoveCard>}
 
  {selfSendDemo&&data.factsConfirmedAt&&draft&&draft.body!==null&&draft.status!=="sent"&&plan?.nextStep!=="none"&&data.route!=="NEED_INFO"&&data.demo?.round!==3&&<button className="button button-primary" disabled={busy||!opened} onClick={()=>run(()=>sent({...args,draftId:draft._id}))}>Yes, I've sent it</button>}
  {data.demo?.kind === "flight" && data.demo.round === 3 && data.demo.phase === "ready" && data.dueDate && data.demo.now < data.dueDate && <button className="button button-primary" disabled={busy} onClick={()=>run(()=>skipDemo(args))}>Skip to the bank check date</button>}

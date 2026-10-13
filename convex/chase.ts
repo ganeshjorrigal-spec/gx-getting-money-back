@@ -1,3 +1,4 @@
+import { isPassengerEscalation, escalationSendLine } from "../lib/chase-escalation";
 import {
   query,
   mutation,
@@ -197,6 +198,7 @@ export const reserve = internalMutation({
       item.refundType !== "flight" ||
       draft.channel !== "email" ||
       draft.step === "FLIGHT_status" ||
+      isPassengerEscalation(item, draft) ||
       (item.demo &&
         (item.demo.expiresAt <= Date.now() ||
           item.demo.round >= 3 ||
@@ -342,7 +344,7 @@ export const stillActive = internalQuery({
       return (
         ["READY", "DUE"].includes(item.stage) &&
         latest?._id === args.draftId &&
-        latest.status !== "sent" && latest.step !== "FLIGHT_status"
+        latest.status !== "sent" && latest.step !== "FLIGHT_status" && !isPassengerEscalation(item, latest)
       );
     }
     return true;
@@ -557,6 +559,7 @@ export const status = query({
       .withIndex("by_case", (q) => q.eq("caseId", item._id))
       .order("desc")
       .first();
+    if (isPassengerEscalation(item, draft)) return escalationSendLine;
     if (draft && draft.channel !== "email")
       return "Follow the next step on your case; Genie cannot send a portal form or make a call in this release.";
     if (
