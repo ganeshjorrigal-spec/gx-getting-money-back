@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: metaCopy.title,
   description: metaCopy.description,
   metadataBase: new URL("https://refundgenie.app"),
+  icons: {icon:[{url:'/favicon.ico'},{url:'/images/icon-16.png',sizes:'16x16',type:'image/png'},{url:'/images/icon-32.png',sizes:'32x32',type:'image/png'}],apple:[{url:'/images/icon-180.png',sizes:'180x180'}]},
+  manifest:'/manifest.webmanifest',
   alternates: { canonical: "https://refundgenie.app" },
   openGraph: { title: metaCopy.title, description: metaCopy.description, url: "https://refundgenie.app" },
 };

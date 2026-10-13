@@ -1,3 +1,4 @@
+import {BrandMark} from '../components/brand';
 import {callingCopy} from '../copy';
 import {pricing} from '../../lib/pricing';
 import { PolicyFooter } from "../policy-footer";
@@ -10,7 +11,7 @@ export const metadata = { title: "Privacy | Refund Genie" };
 export default function PrivacyPage() {
   const paidTier = process.env.GEMINI_PAID_TIER === "true";
   return <main className="case-shell">
-    <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><Link className="text-link" href="/">Home</Link></header>
+    <header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><Link className="text-link" href="/">Home</Link></header>
     <div className="case-wrap privacy-content">
       <p className="section-kicker">HOW IT WORKS</p>
       <h1>Privacy</h1>

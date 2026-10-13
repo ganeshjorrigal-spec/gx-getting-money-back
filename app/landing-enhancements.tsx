@@ -27,9 +27,9 @@ export function LandingEnhancements() {
     else window.addEventListener('load', start, { once: true });
     const hero = document.getElementById("hero");
     if (!hero) return;
-    const observer = new IntersectionObserver(entries => { for(const entry of entries){if(entry.target===hero)setShowSticky(!entry.isIntersecting);else if(entry.isIntersecting){if(entry.target instanceof HTMLImageElement&&entry.target.dataset.lazySrc){entry.target.src=entry.target.dataset.lazySrc;}else entry.target.classList.add("is-revealed");observer.unobserve(entry.target);}} }, { threshold: 0 });
+    const observer = new IntersectionObserver(entries => { for(const entry of entries){if(entry.target===hero)setShowSticky(!entry.isIntersecting);else if(entry.isIntersecting){if(entry.target instanceof HTMLImageElement&&entry.target.dataset.lazySrc){entry.target.src=entry.target.dataset.lazySrc;}else if(entry.target instanceof HTMLElement&&entry.target.dataset.lazyBackground)entry.target.style.backgroundImage=`url(${entry.target.dataset.lazyBackground})`;else entry.target.classList.add("is-revealed");observer.unobserve(entry.target);}} }, { threshold: 0 });
     document.querySelectorAll("[data-reveal]").forEach(node=>{node.classList.add("reveal-ready");observer.observe(node);});
-    document.querySelectorAll("img[data-lazy-src]").forEach(node=>observer.observe(node));
+    document.querySelectorAll("img[data-lazy-src],[data-lazy-background]").forEach(node=>observer.observe(node));
     observer.observe(hero);
     return () => { observer.disconnect(); window.removeEventListener('load', start); if(idle!==undefined)window.cancelIdleCallback(idle); if(timer!==undefined)clearTimeout(timer); };
   }, []);

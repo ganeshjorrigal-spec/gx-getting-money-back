@@ -1,7 +1,7 @@
 # Image spend
 
-Images made: 31
-API attempts reserved/made: 31 / 40
+Images made: 37
+API attempts reserved/made: 37 / 40
 
 Errors and interrupted attempts also consume cap room. No raw API response, prompt, key or personal data is logged.
 
@@ -38,3 +38,9 @@ Errors and interrupted attempts also consume cap room. No raw API response, prom
 | d045-mascot-6 | gpt-image-2.5-flare | 816x816 | low | file saved |
 | d045-on-hold | gpt-image-2.5-flare | 816x816 | low | file saved |
 | d045-refund-coming | gpt-image-2.5-flare | 816x816 | low | file saved |
+| d047-mascot | gpt-image-2.5-flare | 1024x1024 | high | rejected: extra cancellation board; superseded by mascot-clean |
+| d047-airport | gpt-image-2.5-flare | 1024x1024 | high | file saved |
+| d047-on-hold | gpt-image-2.5-flare | 1024x1024 | high | file saved |
+| d047-refund-coming | gpt-image-2.5-flare | 1024x1024 | high | file saved |
+| d047-family | gpt-image-2.5-flare | 1024x1024 | high | file saved |
+| d047-mascot-clean | gpt-image-2.5-flare | 1024x1024 | high | file saved |

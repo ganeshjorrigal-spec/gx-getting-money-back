@@ -1,6 +1,6 @@
 {
-  "attempts": 31,
-  "images": 31,
+  "attempts": 37,
+  "images": 37,
   "entries": [
     {
       "id": "logo-1-draft",
@@ -217,6 +217,48 @@
       "model": "gpt-image-2.5-flare",
       "size": "816x816",
       "quality": "low",
+      "status": "file saved"
+    },
+    {
+      "id": "d047-mascot",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
+      "status": "rejected: extra cancellation board; superseded by mascot-clean"
+    },
+    {
+      "id": "d047-airport",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
+      "status": "file saved"
+    },
+    {
+      "id": "d047-on-hold",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
+      "status": "file saved"
+    },
+    {
+      "id": "d047-refund-coming",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
+      "status": "file saved"
+    },
+    {
+      "id": "d047-family",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
+      "status": "file saved"
+    },
+    {
+      "id": "d047-mascot-clean",
+      "model": "gpt-image-2.5-flare",
+      "size": "1024x1024",
+      "quality": "high",
       "status": "file saved"
     }
   ]

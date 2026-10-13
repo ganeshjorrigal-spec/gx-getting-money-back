@@ -4,7 +4,8 @@ import {build} from 'esbuild';
 import nextEnv from '@next/env';
 export function staticLandingHtml(html,entry){
  // Keep server-rendered content. Replace homepage-only hydration/flight data with the small entry.
- return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')
+ return html.replace(/<style data-landing-critical>([\s\S]*?)<\/style>/,(_,css)=>`<style data-landing-critical>${css.replace(/@font-face\{([^}]+)\}/g,(rule,body)=>/font-family:(?:Fraunces|Public Sans|JetBrains Mono);/.test(body)&&body.includes('unicode-range:')&&!body.includes('u+00??')?'':rule)}</style>`)
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')
   .replace(/<link\b[^>]*(?:rel="(?:preload|modulepreload)"[^>]*as="script"|as="script"[^>]*rel="(?:preload|modulepreload)")[^>]*>/gi,'')
   .replace('</body>',`<script type="module" src="/${entry}"></script></body>`);
 }

@@ -1,4 +1,5 @@
 "use client";
+import {Mascot,BrandMark} from "../components/brand";
 import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {WhyAsk} from "../components/why-ask";
 import {openCase} from '../../lib/case-navigation';
@@ -115,14 +116,14 @@ export default function StartPage() {
     } catch (error) { setError(userError(error)); setWorking(false); }
   }
 
-  if(videoEntry&&working)return <main className="case-shell"><p>Demo · sample flight</p><h1>Reading your message…</h1><span className="spinner"/><ol><li>Read message</li><li>Confirm facts</li><li>Choose next action</li></ol></main>;
+  if(videoEntry&&working)return <main className="case-shell"><p>Demo · sample flight</p><Mascot head/><h1>Reading your message…</h1><span className="spinner"/><ol><li>Read message</li><li>Confirm facts</li><li>Choose next action</li></ol></main>;
   return <main className="case-shell">
-    <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><button className="text-button" disabled={working} onClick={()=>startDemo("district","flight")}>See a real case</button></header>
+    <header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><button className="text-button" disabled={working} onClick={()=>startDemo("district","flight")}>See a real case</button></header>
     <div className="case-wrap intake-page">
       <p className="section-kicker">START YOUR CASE</p>
       <h1>{c.title}</h1>
       <AnswerStep step={1}/><SharedSummary screen="start" items={[{label:"Message",value:message||"Not yet shared"},{label:"Name",value:name||"Not given"},{label:"Screenshots",value:pictures.length}]}/><SavedTick field={saved}/>
-      <form onSubmit={submit}>
+      {!message&&!working&&<Mascot head className="empty-mascot"/>}<form onSubmit={submit}>
         <label className="sr-only" htmlFor="refund-message">{c.title}</label>
         <textarea id="refund-message" ref={inputRef} value={message} onChange={(event) => setMessage(event.target.value)} maxLength={8000} rows={5} placeholder={refundType==="flight"?"Paste your flight cancellation mail or the travel site’s reply…":c.placeholder} /><WhyAsk field="message" personal/>
         <p>What was cancelled?</p>
@@ -145,7 +146,7 @@ export default function StartPage() {
         {error && <p className="error-banner" role="alert">{error}</p>}
         <button className="button button-primary intake-submit" disabled={working || (!message.trim() && pictures.length === 0 && selected.length === 0)}>{working ? <><span className="spinner" aria-hidden="true" /> Reading your message…</> : c.submit}</button>
         {working && <div className="case-card progress-card intake-progress" role="status" aria-live="polite">
-          <div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>Reading your message…</strong></div>
+          <Mascot head/><div className="progress-lead"><span className="spinner" aria-hidden="true" /><strong>Reading your message…</strong></div>
           <ol>{caseCopy.progress.map((step, index) => <li className={index === 0 ? "progress-current" : ""} key={step}><span>{index + 1}</span>{step}</li>)}</ol>
         </div>}
         {!message.trim() && pictures.length === 0 && selected.length === 0 && <p className="input-hint">{c.disabled}</p>}

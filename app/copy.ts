@@ -313,3 +313,9 @@ export const landingSections = {
 export const demoEscalationCopy = {title:"You send this one from your Gmail",note:"Demo officer step. Genie prepares it; you send it in your own name."};
 
 export const portalCopy={statusTitle:'Your status request',refundTitle:'Your refund form',copy:'Copy status request',copied:'Status request copied',ticketError:'Enter the 13 digits from your Air India ticket, not the PNR.',userSends:'You open the company app, paste the request and send it. Genie does not submit it.',open:(company:string)=>`Open ${company}`,source:(day:string)=>`Company's own page, checked ${day}`};
+export const brandArtCopy = {
+ airport:'A traveller checks her phone beside a cancelled-flight symbol at an airport.',
+ 'on-hold':'A traveller waits on hold with customer care at home.',
+ 'refund-coming':'A small genie hands a refund receipt to a relieved traveller at home.',
+ family:'A family checks a travel update together beside their bags.',
+};

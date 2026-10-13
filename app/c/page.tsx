@@ -1,4 +1,5 @@
 "use client";
+import {Mascot} from "../components/brand";
 
 import { useEffect, useState } from "react";
 import CaseProvider from "../convex-provider";
@@ -10,7 +11,7 @@ export default function StaticCasePage() {
   useEffect(() => {
     setCode(caseCodeFromSearch(window.location.search));
   }, []);
-  if (code === null) return <main className="case-shell"><p>Opening your case…</p></main>;
+  if (code === null) return <main className="case-shell"><Mascot head/><p>Opening your case…</p></main>;
   if (!code) return <main className="case-shell"><h1>This case link is missing its code.</h1></main>;
   return <CaseProvider><CaseView code={code} /></CaseProvider>;
 }

@@ -1,4 +1,6 @@
 "use client";
+import {BrandMark} from '../components/brand';
+
 
 import { useState } from "react";
 import Link from "next/link";
@@ -18,7 +20,7 @@ export default function SampleInteractive({ copy: c, productName }: { copy: Samp
     "The match moved from Ahmedabad to Chennai.",
   ];
   return <main className="case-shell">
-    <header className="site-header"><Link className="wordmark" href="/">{productName}<span className="wordmark-dot">.</span></Link><span className="case-code">SAMPLE</span></header>
+    <header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><span className="case-code">SAMPLE</span></header>
     <div className="sample-banner"><div className="case-wrap"><p>{c.banner}</p><Link href="/start">{c.start} →</Link></div></div>
     <div className="case-wrap">
       <div className="case-heading"><p className="section-kicker">A real refund journey</p><h1>{c.event}</h1><p>{c.platform}</p></div>

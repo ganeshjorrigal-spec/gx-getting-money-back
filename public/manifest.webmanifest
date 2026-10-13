@@ -1,0 +1,22 @@
+{
+  "name": "Refund Genie",
+  "short_name": "Refund Genie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f1",
+  "theme_color": "#14213d",
+  "icons": [
+    {
+      "src": "/images/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

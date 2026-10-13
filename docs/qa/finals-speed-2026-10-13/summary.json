@@ -1,0 +1,79 @@
+{
+  "conditions": "Lighthouse13.5 mobile375x812, three runs, same machine and local uncompressed HTTP, no publication",
+  "before": {
+    "scores": [
+      73,
+      74,
+      72
+    ],
+    "median": 73,
+    "fcp": 3153.7302499999996,
+    "lcp": 4623.426745366181,
+    "a11y": [
+      100,
+      100,
+      100
+    ],
+    "jsBytes": [
+      381519,
+      381519,
+      381519
+    ]
+  },
+  "speed": {
+    "scores": [
+      98,
+      97,
+      97
+    ],
+    "median": 97,
+    "fcp": 1468.4776577276764,
+    "lcp": 1955.582126182141,
+    "a11y": [
+      100,
+      100,
+      100
+    ],
+    "jsBytes": [
+      3118,
+      3118,
+      3118
+    ]
+  },
+  "exploratory": {
+    "scores": [
+      97,
+      96,
+      96
+    ],
+    "median": 96,
+    "fcp": 1639.5098750000002,
+    "lcp": 2259.416139978517,
+    "a11y": [
+      100,
+      95,
+      95
+    ],
+    "jsBytes": [
+      3279,
+      3279,
+      3279
+    ]
+  },
+  "finals": {
+    "scores": [
+      97,
+      99,
+      99
+    ],
+    "median": 99,
+    "fcp": 1345.321477779832,
+    "lcp": 2032.5126,
+    "a11y": [
+      100,
+      100,
+      100
+    ]
+  },
+  "note": "Initial art pass96/contrast95 was corrected, not accepted. Final99/100 uses inline mark and Latin-only landing font faces; extra glyphs use local fallback."
+}

@@ -17,10 +17,10 @@ try {
 const hero=document.getElementById('hero'),sticky=document.querySelector('.sticky-cta');
 const observer=new IntersectionObserver(entries=>{for(const entry of entries){
  if(entry.target===hero){const visible=!entry.isIntersecting;sticky?.classList.toggle('is-visible',visible);sticky?.setAttribute('aria-hidden',String(!visible));sticky?.querySelector('a')?.setAttribute('tabindex',visible?'0':'-1');}
- else if(entry.isIntersecting){if(entry.target instanceof HTMLImageElement&&entry.target.dataset.lazySrc)entry.target.src=entry.target.dataset.lazySrc;else entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}
+ else if(entry.isIntersecting){if(entry.target instanceof HTMLImageElement&&entry.target.dataset.lazySrc)entry.target.src=entry.target.dataset.lazySrc;else if(entry.target instanceof HTMLElement&&entry.target.dataset.lazyBackground)entry.target.style.backgroundImage=`url(${entry.target.dataset.lazyBackground})`;else entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}
 }},{threshold:0});
 document.querySelectorAll('[data-reveal]').forEach(node=>{node.classList.add('reveal-ready');observer.observe(node);});
-document.querySelectorAll('img[data-lazy-src]').forEach(node=>observer.observe(node));
+document.querySelectorAll('img[data-lazy-src],[data-lazy-background]').forEach(node=>observer.observe(node));
 if(hero)observer.observe(hero);
 const animate=()=>document.querySelector('.animated-sample')?.classList.add('sample-playing');
 const start=()=>{'requestIdleCallback' in window?window.requestIdleCallback(animate,{timeout:1500}):setTimeout(animate,0);};

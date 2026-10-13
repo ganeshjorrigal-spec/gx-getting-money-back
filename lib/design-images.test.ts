@@ -2,9 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { d045Assets, assets, pendingAssets, assertCapacity, assertPaidApproval, generateOnceWithRetry, main } from "../scripts/design-images.mjs";
+import { d045Assets, d047Assets,assertFinalCapacity,assets, pendingAssets, assertCapacity, assertPaidApproval, generateOnceWithRetry, main } from "../scripts/design-images.mjs";
 
 const locked = { paidRunApproved: false, pickedLogo: null, illustrationsApproved: false };
+it('D-047 edits only the five selected drafts at high quality, with transparency only for the mascot',()=>{const list=d047Assets('paper');expect(list).toHaveLength(5);expect(list.filter(a=>a.transparent).map(a=>a.id)).toEqual(['mascot']);expect(list[0].reference).toBe('d045-mascot-6.webp.source.png');expect(list.every(a=>a.prompt.includes('preserve composition'))).toBe(true);expect(list.some(a=>a.id.includes('logo'))).toBe(false);});
+it('one-attempt finals policy fits within the existing cap without widening it',()=>{expect(()=>assertFinalCapacity({attempts:31,images:31,entries:[]},5)).not.toThrow();expect(()=>assertFinalCapacity({attempts:37,images:37,entries:[]},4)).toThrow();expect(()=>assertFinalCapacity({attempts:40,images:40,entries:[]},1)).toThrow();expect(()=>assertFinalCapacity({attempts:1,images:2,entries:[]},0)).toThrow();});
 describe("manual build-time images", () => {
   it("plans twelve low-quality drafts at the smallest valid square", () => {
     const plan = assets("paper", "draft", locked);

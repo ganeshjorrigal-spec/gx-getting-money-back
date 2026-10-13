@@ -629,8 +629,8 @@ button:disabled {cursor:default;opacity:.6;}
 .sample-note {margin-top:16px;line-height:1.6;}
 @keyframes sample-row {from{transform:translateY(8px)}to{transform:none}}
 @keyframes sample-overdue {0%,27%{opacity:0;transform:rotate(-3deg) scale(.9)}33%,87%{opacity:1;transform:rotate(-3deg)}100%{opacity:0;visibility:hidden}}
-@keyframes sample-final {from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes sample-ready {0%,60%{opacity:1}66%,100%{opacity:0;visibility:hidden}}
+@keyframes sample-final {from{visibility:hidden;transform:translateY(8px)}to{visibility:visible;transform:none}}
+@keyframes sample-ready {0%,65%{opacity:1;visibility:visible}65.01%,100%{opacity:1;visibility:hidden}}
 .chat-story {max-width:580px}.chat-bubble{width:85%;border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:0 0 16px;background:var(--surface)}.chat-you{margin-left:auto;background:var(--waiting-fill)}.chat-bubble strong{font-size:var(--text-small)}.chat-bubble p{margin:8px 0 0;line-height:1.5}.genie-answer{display:flex;gap:16px;margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}.genie-answer p{margin:0;line-height:1.6}
 .reveal-ready:not(.is-revealed) .chat-bubble,.reveal-ready:not(.is-revealed) .genie-answer{opacity:0}.is-revealed .chat-bubble,.is-revealed .genie-answer{animation:sample-row .7s both}.is-revealed .chat-bubble:nth-child(2){animation-delay:.35s}.is-revealed .chat-bubble:nth-child(3){animation-delay:.7s}.is-revealed .chat-bubble:nth-child(4){animation-delay:1.05s}.is-revealed .genie-answer{animation-delay:1.4s}
 .snap-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}.how-cards{grid-template-columns:repeat(4,minmax(0,1fr))}.snap-cards .value-card{padding:24px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}.snap-cards h3{font-size:1.25rem;margin:16px 0 8px}.snap-cards p{line-height:1.6;margin:0}.swipe-hint{display:none}
@@ -645,7 +645,7 @@ button:disabled {cursor:default;opacity:.6;}
 .home-shell > .section-block,.home-shell > .story-band,.home-shell > .sample-showcase,.home-shell > .brand-section {content-visibility:auto;contain-intrinsic-size:auto 450px;}
 @media(prefers-reduced-motion:reduce){.animated-sample:not(.sample-playing) .sample-mail,.animated-sample:not(.sample-playing) .sample-reply,.animated-sample:not(.sample-playing) .sample-landed,.animated-sample:not(.sample-playing) .sample-sent {visibility:visible;}}
 
-@keyframes sample-stage {from{opacity:0;visibility:hidden;transform:translateY(8px)}to{opacity:1;visibility:visible;transform:none}}
+@keyframes sample-stage {from{visibility:hidden;transform:translateY(8px)}to{visibility:visible;transform:none}}
 
 /* D-046: plain disclosure and progress, using the existing palette. */
 .answer-step{margin:16px 0}.answer-step p{margin:0 0 6px;font-size:.8rem;color:var(--muted)}
@@ -656,3 +656,10 @@ button:disabled {cursor:default;opacity:.6;}
 .summary-edit{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;background:none;border:0;text-decoration:underline;font-size:.8rem;color:inherit;cursor:pointer}
 .saved-answer{display:inline-block;min-height:24px;color:var(--ink,#15263d);font-size:.85rem;margin:4px 8px}
 @media(prefers-reduced-motion:reduce){.saved-answer,.answer-step-track span{animation:none;transition:none}}
+
+/* D-047 approved mark and art, kept outside receipts and mail content. */
+.wordmark{display:inline-flex;align-items:center;gap:10px}.brand-mark{flex:none;width:40px;height:45px}
+.genie-mascot{object-fit:contain;width:96px;height:96px}.genie-mascot[width="64"]{width:64px;height:64px}.hero-case{display:grid;grid-template-columns:minmax(0,1fr) 88px;align-items:center;gap:12px}.hero-case .animated-sample{grid-column:1;grid-row:1}.hero-mascot{grid-column:2;grid-row:1;width:88px;height:120px}.landed-mascot{float:right;margin:0 0 12px 16px}.empty-mascot{display:block;margin:12px 0}
+.genie-scene{display:block;object-fit:contain;width:100%;max-width:260px;height:auto;aspect-ratio:1;margin:16px 0 24px}.chat-story>.genie-scene{max-width:180px;margin-left:auto}#how-it-works>.genie-scene,.landing-faq>.genie-scene{float:right;width:220px;margin:0 0 24px 24px}#how-it-works>.snap-cards{clear:both}
+.brand-strip{display:flex;align-items:center;flex-wrap:wrap;gap:24px;margin:24px 0}.brand-strip>img{width:140px;height:66px;object-fit:contain}.official-sprite{display:block;flex:none;background-repeat:no-repeat}.spicejet{width:140px;height:66px;background-position:-33px -24px}.goibibo{width:104px;height:30px;background-position:-2px -1px;background-size:125px 200px}
+@media(max-width:760px){.hero-case{display:flex;flex-direction:column;align-items:stretch;gap:12px}.hero-mascot{align-self:flex-end;width:64px;height:80px}.hero-case .animated-sample{width:100%}.brand-strip{gap:16px}.brand-strip>img{width:140px}.genie-scene{max-width:220px}#how-it-works>.genie-scene,.landing-faq>.genie-scene{float:none;margin:0 0 24px;width:180px}.home-shell .wordmark{font-size:24px}.brand-mark{width:32px;height:36px}}

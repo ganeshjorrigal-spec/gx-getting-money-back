@@ -14,7 +14,57 @@ const scenes = [
 ];
 export type Asset = { id: string; path: string; quality: "low" | "high"; size: string; outputUsd: number; prompt: string; alt?: string };
 export type Ledger = { attempts: number; images: number; entries: { id: string; model: string; size: string; quality: string; status: string }[] };
-type Approval = { paidRunApproved: boolean; pickedLogo: number | null; illustrationsApproved: boolean; d045DraftsApproved?:boolean };
+type Approval = { paidRunApproved: boolean; pickedLogo: number | null; illustrationsApproved: boolean; d045DraftsApproved?:boolean; d047FinalsApproved?:boolean };
+
+export function d047Assets(anchor:string){
+ const common=`${anchor}\nRefine the supplied approved draft into a high-quality final; preserve composition, subject and palette. Crisp flat artwork, no lettering or brands. Do not redesign.`;
+ return [
+ {id:'mascot',reference:'d045-mascot-6.webp.source.png',alt:'Genie presents a receipt.',transparent:true,prompt:`${common}\nKeep Mascot6 exactly: bald rounded cream face, round ears, navy contours, small smile, receipt at chest, navy waist band, curling smoke instead of legs. Preserve proportions. Remove the paper canvas and amber backing only; genuine transparent background outside the character. Opaque cream character fill, full body, no clipping. No blue skin, hair, pointed ears, earrings or new props.`},
+ {id:'airport',reference:'airport-draft.webp.source.png',alt:'A traveller checks her phone beside a cancelled-flight symbol at an airport.',transparent:false,prompt:common},
+ {id:'on-hold',reference:'d045-on-hold.webp.source.png',alt:'A traveller waits on hold with customer care at home.',transparent:false,prompt:`${common}\nNo airport board in this home scene.`},
+ {id:'refund-coming',reference:'d045-refund-coming.webp.source.png',alt:'A small genie hands a refund receipt to a relieved traveller at home.',transparent:false,prompt:`${common}\nPreserve the small genie handing a receipt. No airport board in this home scene.`},
+ {id:'family',reference:'family-draft.webp.source.png',alt:'A family checks a travel update together beside their bags.',transparent:false,prompt:common},
+ ];
+}
+export function assertFinalCapacity(ledger:Ledger,pending:number){
+ if(!Number.isInteger(pending)||pending<0||!Number.isInteger(ledger.attempts)||!Number.isInteger(ledger.images)||ledger.images<0||ledger.images>ledger.attempts||ledger.attempts<0||ledger.attempts+pending>CAP)throw new Error('40-image cap would be exceeded. Stop.');
+}
+async function d047Finals(args:string[],root:string,approval:Approval,ledger:Ledger){
+ if(!approval.d047FinalsApproved)throw new Error('D-047 finals need chat approval.');
+ const all=d047Assets(readFileSync(resolve(root,'design/style-anchor.md'),'utf8'));
+ const list=args.includes('--repair-mascot')?[{...all[0],id:'mascot-clean',reference:'../finals/mascot.source.png',prompt:`${all[0].prompt}\nTARGETED CORRECTION: remove the floating cancellation sign/board to the right of the head entirely, including its navy hanging rods. It is an unwanted extra object. There must be only the complete genie holding its paper receipt on transparency. Preserve every character detail, face, pose, contours, smoke and cream fill unchanged. No symbols, boards, airplane graphics, signs or background props.`}]:all;
+ const pending=list.filter(a=>!existsSync(resolve(root,`docs/design/finals/${a.id}.source.png`)));
+ assertFinalCapacity(ledger,pending.length);
+ console.log(JSON.stringify({mode:args.includes('--dry-run')?'dry-run':'generate',model:MODEL,quality:'high',size:'1024x1024',count:pending.length,attempts:ledger.attempts,cap:CAP,automaticRetries:0}));
+ if(args.includes('--dry-run'))return;
+ assertPaidApproval(approval,process.env);
+ if(!process.env.OPENAI_API_KEY)throw new Error('Missing local image key.');
+ const sharp=(await import('sharp')).default;
+ mkdirSync(resolve(root,'docs/design/finals'),{recursive:true});mkdirSync(resolve(root,'public/images'),{recursive:true});
+ writeFileSync(resolve(root,`docs/design/finals/${args.includes('--repair-mascot')?'mascot-repair-prompts':'prompts'}.json`),JSON.stringify(list,null,2)+'\n');
+ for(const a of list){
+  let raw=resolve(root,`docs/design/finals/${a.id}.source.png`);
+  if(!existsSync(raw)){
+   assertFinalCapacity(ledger,1);ledger.attempts++;
+   ledger.entries.push({id:`d047-${a.id}`,model:MODEL,size:'1024x1024',quality:'high',status:'attempt reserved; no automatic retry'});saveLedger(root,ledger);
+   const reference=readFileSync(resolve(root,'docs/design/logo-candidates',a.reference));
+   const response=await fetch('https://api.openai.com/v1/images/edits',{method:'POST',headers:{Authorization:`Bearer ${process.env.OPENAI_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,prompt:a.prompt,images:[{image_url:`data:image/png;base64,${reference.toString('base64')}`}],size:'1024x1024',quality:'high',background:a.transparent?'transparent':'opaque',output_format:'png',n:1}),signal:AbortSignal.timeout(240000)});
+   if(!response.ok)throw new Error(`Image edit failed (HTTP ${response.status}); no automatic retry.`);
+   const payload=await response.json() as {data?:{b64_json?:string}[]};
+   if(!payload.data?.[0]?.b64_json)throw new Error('Image missing; stop.');
+   writeFileSync(raw,Buffer.from(payload.data[0].b64_json,'base64'),{flag:'wx'});ledger.images++;ledger.entries.at(-1)!.status='source saved';saveLedger(root,ledger);
+  }
+  // A resumed normal run must keep the approved repair, never restore the rejected board.
+  if(a.id==='mascot'&&existsSync(resolve(root,'docs/design/finals/mascot-clean.source.png')))raw=resolve(root,'docs/design/finals/mascot-clean.source.png');
+  const mascot=a.id.startsWith('mascot'),budget=mascot?60000:120000;
+  let bytes=await sharp(raw).resize({width:mascot?512:816}).webp({quality:80}).toBuffer();
+  if(bytes.length>=budget)bytes=await sharp(raw).resize({width:mascot?480:720}).webp({quality:65}).toBuffer();
+  if(bytes.length>=budget)throw new Error('Compress saved source locally; never regenerate for file size.');
+  writeFileSync(resolve(root,`public/images/${a.id}.webp`),bytes);
+  const entry=ledger.entries.findLast(e=>e.id===`d047-${a.id}`);if(entry)entry.status=a.id==='mascot'&&raw.endsWith('mascot-clean.source.png')?'rejected: extra cancellation board; superseded by mascot-clean':'file saved';saveLedger(root,ledger);
+  console.log(`${a.id}: final saved, ${bytes.length} bytes; ${ledger.images}/${CAP} images.`);
+ }
+}
 
 export function assets(anchor: string, stage: "draft" | "final", approval: Approval): Asset[] {
   const quality = stage === "draft" ? "low" : "high";
@@ -74,9 +124,10 @@ export function writeReview(root: string) {
   writeFileSync(resolve(root, "docs/design/illustration-alt.json"), JSON.stringify(Object.fromEntries(scenes.map(scene => [scene.id, scene.alt])), null, 2) + "\n");
 }
 export async function main(args: string[], root = process.cwd()) {
-  if (args.some(a => !["--dry-run", "--generate", "--final", "--d045"].includes(a)) || args.includes("--dry-run") === args.includes("--generate")) throw new Error("Choose --dry-run or --generate. Generation needs recorded chat approval.");
+  if (args.some(a => !["--dry-run", "--generate", "--final", "--d045", "--d047", "--repair-mascot"].includes(a)) || args.includes("--dry-run") === args.includes("--generate")) throw new Error("Choose --dry-run or --generate. Generation needs recorded chat approval.");
   const approval: Approval = JSON.parse(readFileSync(resolve(root, "docs/design/image-approval.json"), "utf8"));
   const ledger: Ledger = JSON.parse(readFileSync(resolve(root, "docs/design/image-spend.json"), "utf8"));
+  if(args.includes('--d047'))return d047Finals(args,root,approval,ledger);
   if(args.includes('--d045')&&args.includes('--final'))throw new Error('D-045 is drafts only.');
   const anchor=readFileSync(resolve(root,"design/style-anchor.md"),'utf8');
   const list=args.includes('--d045')?d045Assets(anchor):assets(anchor,args.includes('--final')?'final':'draft',approval);
