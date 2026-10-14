@@ -41,3 +41,12 @@ Reviewed Wed 14 Oct 2026, 23:15 IST by Claude HQ. Against: `docs/hq/codex-prompt
 - Event flow screens checked from Codex's screenshots only.
 
 Status for `STATE.md`: D-048 code reviewed and accepted by HQ, pending the confirmation-limit fix and the live Gmail check. Nothing DONE yet.
+
+## Follow-up review: 8cf4c6d and 5c1e8be (Wed 14 Oct, 23:59 IST)
+
+**Accepted.** 350 tests, 47 files, type check clean (HQ ran both).
+
+- **D-050 call model (8cf4c6d).** Both overrides now use `VAPI_MODEL_PROVIDER` / `VAPI_MODEL`, default `openai` / `gpt-4.1-mini`. Instructions, tools, recording and time limits unchanged. Codex checked the Vapi docs: the model override needs provider and model when messages are given, and Vapi names the model `gpt-4.1-mini`. `GEMINI_MODEL` no longer reaches calls.
+- **Confirmation limits (5c1e8be).** 3 mails per folded address per IST day and 100 a day overall, checked before the mail is sent, inside the same atomic step. Gmail folding is one shared helper. Tests cover aliases across devices, the 101st refusal, the IST midnight reset and the old device limit.
+
+**Important for Thursday:** the call code runs on the Convex backend. The supervised call uses the new model only after `npm run deploy`. So the publish (`docs/hq/codex-prompts/2026-10-15-publish-before-live-call.md`) must run before the supervised call.
