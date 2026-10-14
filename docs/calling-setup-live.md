@@ -55,16 +55,21 @@ Menu names in Vobiz may differ slightly; look for the closest match.
    - It does not ring: open Vapi, Call Logs, click the call, copy the Call ID and the "ended reason". Send both to Vobiz support with your number. If the ended reason contains 407, say: "Outbound from Vapi with my purchased number fails with 407. Please check my trunk credentials and that the number is linked to the trunk." Stop here; calls stay simulated.
 
 ## Part 4: Convex settings (only after Part 3 rang)
-1. Open dashboard.convex.dev, select the Refund Genie project (deployment harmless-lyrebird-924).
-2. Settings, then Environment Variables.
-3. Set or update:
-   - VAPI_PHONE_NUMBER_ID = the ID from Part 2 step 8.
+Important: the live site uses the Convex DEVELOPMENT deployment, named harmless-lyrebird-924 (our deploy command is `npx convex dev --once`). The dashboard may open on Production, which is empty for us.
+1. Open dashboard.convex.dev and open the Refund Genie project.
+2. At the top of the page, use the deployment switcher and choose Development (harmless-lyrebird-924). Not Production.
+3. Left menu: Settings, then Environment Variables.
+4. Check GEMINI_MODEL is listed (it should be, because the live site uses it). If it is not listed even here, stop and tell HQ before changing anything.
+5. Add or update these (use Add for any that are missing):
+   - VAPI_API_KEY = your Vapi PRIVATE key. In Vapi: click your organisation name (top left or bottom left), then API Keys (or Organization Settings, API Keys). Copy the Private key, not the Public key.
+   - VAPI_ASSISTANT_ID = in Vapi, left menu Assistants, click "Refund Genie Recovery Agent", copy its ID (shown near the name or in the page address).
+   - VAPI_PHONE_NUMBER_ID = the number ID from Part 2 step 8.
    - CALL_ALLOWLIST = Phone 1 and Phone 2 in +91 form, comma separated, Phone 1 first. Example format: +91AAAAAAAAAA,+91BBBBBBBBBB
-   - CALL_MAX_COST_USD = the most one call could cost. Formula: 25 minutes x (Vapi per-minute rate + Vobiz per-minute rate) x 2 legs. Read both rates in each dashboard's billing or pricing page.
+   - CALL_MAX_COST_USD = 25 minutes x (Vapi per-minute rate + Vobiz per-minute rate) x 2 legs. Read both rates in each dashboard's billing or pricing page.
    - CALL_DAILY_CAP_USD = about two times CALL_MAX_COST_USD.
-4. Check these already exist and leave them unchanged: VAPI_API_KEY, VAPI_ASSISTANT_ID, GEMINI_MODEL.
-5. Do NOT set CALL_MODE to live yet. Leave it empty or simulated.
-6. Click Save.
+6. Do NOT set CALL_MODE to live yet. Leave it missing or simulated.
+7. Save.
+8. In Vapi, open the "Refund Genie Recovery Agent" assistant and check its model settings. Refund Genie tells Vapi to use Google Gemini for each call. If Vapi shows a warning that a Google or Gemini key is needed, add your Gemini key in Vapi under Integrations (provider keys). Tomorrow's test will show if this is missing.
 
 ## Part 5: Supervised in-app test (Thursday 15 Oct, between 10:00 and 18:00 IST)
 The app only allows live calls Monday to Saturday, 10:00 to 18:00 IST.
