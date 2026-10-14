@@ -1,0 +1,9 @@
+{
+  "ownerReported": "connected",
+  "readOnlyDemoMailboxCheck": "passed",
+  "query": "intentionally invalid case code; no messages matched",
+  "matchedMessages": 0,
+  "mailSentByCodex": false,
+  "publishRun": false,
+  "callingSettingsChanged": false
+}
