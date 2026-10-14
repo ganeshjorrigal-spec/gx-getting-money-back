@@ -678,3 +678,5 @@ button:disabled {cursor:default;opacity:.6;}
 
 @media(max-width:760px){.home-shell .site-header{flex-wrap:nowrap;gap:8px}.site-header .wordmark{font-size:16px;gap:6px;min-height:44px}.site-header .brand-mark{width:24px;height:28px}.header-actions>.button{font-size:12px}}
 .animated-sample.sample-paused *{animation-play-state:paused!important}
+
+.chase-history-toggle{display:block;min-height:44px;margin-top:8px;font-size:var(--text-small);text-decoration:underline;text-underline-offset:3px}
