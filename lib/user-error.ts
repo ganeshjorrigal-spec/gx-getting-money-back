@@ -8,6 +8,9 @@ export function userError(error:unknown) {
  if(/One demo per email per day/i.test(message))return "One demo per email per day. Try tomorrow.";
  if(/confirmation link expired|already used/i.test(message))return "This confirmation link expired or was already used. Request another link from your demo.";
  if(/valid email|Confirm your demo email/i.test(message))return "Please add a valid email and confirm it for the demo.";
+ if(/date in the past/i.test(message))return 'Choose a cancellation date in the past';
+ if(/six letters or numbers/i.test(message))return 'Use the six letters or numbers from your PNR';
+ if(/Add your name/i.test(message))return 'Add your name and confirm your demo email';
  console.error(error);
  if(/13 digits|e-ticket/i.test(message))return portalCopy.ticketError;
  if(/valid date|pick a date|YYYY-MM-DD/i.test(message))return "Please pick a date from the calendar";

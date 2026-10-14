@@ -1,9 +1,8 @@
 # Current state, 15 October 2026
 
-## Main republished: Part A fixes and D-050 live, email proof pending Ganesh
-Published source1a181a956b7193bf644cd0971fe81ec3f88ef997 includes the two fixes0e2dca6 and reviewed D-050. Convex static versiona0bde24d-8f05-403c-aa35-7c4167d1ed95; Cloudflare worker1ac577f6-6bab-4ed0-b8fe-b08521d72e44. Both deploy commands succeeded in order. This supersedes the rollback baseline.
-355tests/47files pass twice; type check, explicit export and local17-step mocked public-demo walk pass. Seven live paths200, demo-confirm heading loads, hero ends It's in at opacity1. Initial browser wait timed out, subsequent current-frame check verified finished state; no code/deployment retry. Post-publish read-only demo mailbox diagnostic succeeds. Proof docs/qa/republish-demo-email-fix-2026-10-15. No actual email demo or call run. Nothing DONE.
+## D-051 Part B, branch d051-d052
+Ganesh closed Part A and explicitly moved Parts B/C before the supervised call, on this branch only. Main/live unchanged. Demo intake reuses FlightCaseView question, free-check and confirm screens, step bar, summary and ask-once answers. Fixed Demo Air/DemoTrips; typed name, verified email and optional phone; five non-personal samples. Typed facts drive saved case/planner/draft/recovered amount. Recent cancellations stay WAIT in free check; starting sample permission explicitly advances only the demo clock past due before its first mail.
+359 tests across48files pass; type check and static export pass. Local 21-step walk (original17 plus4 intake steps) reaches Money landed in14.717seconds with replaced mail/call transport. This is not a live Gmail speed proof. Screenshots each intake state at375/1280: docs/qa/d051-d052-2026-10-15. Nothing DONE.
 
-## Remaining proof and boundaries
-Ganesh verifies live confirmation arrival/link and copied requests/replies. Earlier address/device quotas were not reset; previously capped address/device remain capped today. Use another owned Gmail and fresh profile for fresh proof, or wait until next IST day. New cleanup only returns counts for new failed sends.
-D-050 now live for the supervised call; no actual call or calling settings changed. No env/API key/allow-list changes. PartB not started, waits for PartA closure and supervised call per prompt. No further publish without Ganesh's instruction. Prior Goibibo contact/path, post-trial payment and video/calendar evidence gaps remain as logged.
+## Next
+Implement D-052 items1-5, one commit each, no publish/deploy/env/key/calling changes. Supervised live call is separate and has not run. At10:00 Ganesh will request main. Existing published source1a181a9 and deployments unchanged.

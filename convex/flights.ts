@@ -1,3 +1,5 @@
+import {demoFactValue} from '../lib/demo-intake';
+import {saveDemoIntake} from './lib/demo_intake';
 import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import {publicDemoPlan} from '../lib/public-demo-plan';
 import { answerAvailable, answerDate, answerAmount } from "../lib/flight-answers";
@@ -15,6 +17,7 @@ import { replyKeySentence } from "../lib/reply-banner";
 import type { Doc } from "./_generated/dataModel";
 
 async function rerun(ctx:MutationCtx,item:Doc<"cases">,read:FlightRead) {
+ if(item.demo?.intakeRequired){await saveDemoIntake(ctx,item,read);return;}
  const runId=crypto.randomUUID();const now=Date.now();
  await ctx.db.patch(item._id,{facts:read,refundType:"flight",stage:"TRIAGING",latestRunId:runId,progress:{step:"route",at:now},updatedAt:now});
  await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});
@@ -47,14 +50,16 @@ export const reminder=mutation({args:{code:v.string(),token:v.string(),date:v.st
  const runId=crypto.randomUUID();await ctx.db.patch(item._id,{latestRunId:runId});
  await ctx.scheduler.runAfter(0,internal.flights.apply,{caseId:item._id,runId,read,plan,model:"code",latencyMs:0,inputTokens:0,outputTokens:0,totalTokens:0});return null;
 }});
-export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.string(),bookingId:v.optional(v.string()),contact:v.optional(v.string()),email:v.optional(v.string()),correction:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
+export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.string(),bookingId:v.optional(v.string()),contact:v.optional(v.string()),email:v.optional(v.string()),correction:v.optional(v.string()),name:v.optional(v.string()),flightName:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
+ if(item.demo?.intakeRequired&&args.correction?.trim())throw new Error('Edit the saved demo facts below');
  if(args.correction?.trim()){
  const runId=crypto.randomUUID();const now=Date.now();await ctx.db.insert("inputs",{caseId:item._id,kind:"answer",text:redact(args.correction.slice(0,8000)),storageIds:[],createdAt:now});await ctx.db.patch(item._id,{stage:"TRIAGING",factsConfirmedAt:undefined,latestRunId:runId,updatedAt:now});await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId});return null;}
- const email=item.demo?undefined:confirmedEmail({...item,contact:args.contact??item.contact},args.email);
+ const email=item.demo?item.email:confirmedEmail({...item,contact:args.contact??item.contact},args.email);
  const pnr=redact(args.pnr.trim()).slice(0,30);if(!pnr||pnr.includes("["))throw new Error("Add a PNR, never an OTP or bank detail");
- const read=flightReadSchema.parse({...item.facts,pnr,bookingId:args.bookingId?.trim().slice(0,100)||item.facts?.bookingId||null});
- await ctx.db.patch(item._id,{email,factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
+ if(item.demo?.intakeRequired){if(item.questions?.length||item.facts?.paymentMethod==='unknown')throw new Error('Complete the booking details first');if(!item.demo.emailConfirmedAt||!args.name?.trim())throw new Error('Add your name and confirm your demo email');demoFactValue('pnr',pnr,item.demo.now);demoFactValue('flightName',args.flightName??'',item.demo.now);}
+ const read=flightReadSchema.parse({...item.facts,...(item.demo?.intakeRequired?{flightName:args.flightName?.trim()}:{}),pnr,bookingId:args.bookingId?.trim().slice(0,100)||item.facts?.bookingId||null});
+ await ctx.db.patch(item._id,{...(item.demo?.intakeRequired?{name:redact(args.name!.trim()).slice(0,80)}:{}),email,factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string(),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
@@ -63,7 +68,7 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
  const value=args.id==="eTicketNumber"?args.value.trim():redact(args.value.trim()).slice(0,100); const read=flightReadSchema.parse(item.facts);
  if(args.id==="confirmReply"){if(value!=="Looks right")throw new Error("Paste a correction to their reply below");read.replyConfirmed=true;}
  if(args.id==="transferDestination"){if(value==="Not clear")throw new Error("Paste their exact reply or a correction below");if(value!=="passenger"&&value!==read.bookedVia)throw new Error("Choose the transfer destination");read.reply.pointsAt=value;read.reply.paymentDestination=value==="passenger"?"passenger":"travel_site";read.replyConfirmed=true;}
- if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {Object.assign(read,{[args.id]:answerDate(value)});}
+ if(["cancellationDate","supportContactDate","departureDate"].includes(args.id)) {Object.assign(read,{[args.id]:item.demo?.intakeRequired&&args.id==='cancellationDate'?demoFactValue('cancellationDate',value,item.demo.now):answerDate(value)});}
  else if(["bookingTime","cancellationTime"].includes(args.id)){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)||!Number.isFinite(Date.parse(value+"+05:30")))throw new Error("Use YYYY-MM-DDTHH:mm");Object.assign(read,{[args.id]:value+"+05:30"});}
  else if(["airline","bookedVia"].includes(args.id)){if(value==="Other")throw new Error("Type the company name below");Object.assign(read,{[args.id]:value});}
  else if(args.id==="paymentMethod"){if(!["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"].includes(value))throw new Error("Choose a payment method");read.paymentMethod=value as FlightRead["paymentMethod"];read.paymentConfirmed=true;}
@@ -72,7 +77,7 @@ export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string
  else if(args.id==="supportContacted")read.supportContacted=value==="Yes";
  else if(args.id==="domestic")read.domestic=value==="Yes";
  else if(args.id==="cancelledBy" && ["airline","passenger"].includes(value))read.cancelledBy=value as "airline"|"passenger";
- else if(["taxes","amountPaid"].includes(args.id)){Object.assign(read,{[args.id]:answerAmount(value)});}
+ else if(["taxes","amountPaid"].includes(args.id)){Object.assign(read,{[args.id]:item.demo?.intakeRequired&&args.id==='amountPaid'?demoFactValue('amountPaid',value,item.demo.now):answerAmount(value)});}
  await ctx.db.insert("caseEvents",{caseId:item._id,type:"answered",summary:`You answered ${args.id}`,actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string(),read:v.any(),plan:v.any(),model:v.string(),latencyMs:v.number(),inputTokens:v.number(),outputTokens:v.number(),totalTokens:v.number()},returns:v.null(),handler:async(ctx,args)=>{
@@ -109,11 +114,12 @@ export const replies=query({args:{code:v.string(),token:v.string()},returns:v.an
 // delayed question tap, which must still ignore an already answered question.
 export const editFact=mutation({args:{code:v.string(),token:v.string(),field:v.union(v.literal('name'),v.literal('contact'),v.literal('airline'),v.literal('bookedVia'),v.literal('paymentMethod'),v.literal('cancellationDate'),v.literal('amountPaid'),v.literal('eTicketNumber'),v.literal('airIndiaRefundRequested')),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=='flight'||item.stage.startsWith('CLOSED')||item.chase?.active)throw new Error('Stop Genie before editing an active chase');
+ if(item.demo?.intakeRequired&&['airline','bookedVia'].includes(args.field))throw new Error('Demo roles are fixed');
  const read=flightReadSchema.parse(item.facts);let value:any=redact(args.value.trim()).slice(0,150);
  if(args.field==='eTicketNumber'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!/^\d{13}$/.test(args.value.trim()))throw new Error('Use the 13 digits from your Air India ticket, not a PNR or card number');value=args.value.trim();}
  if(args.field==='airIndiaRefundRequested'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!['Yes','No'].includes(value))throw new Error('Choose Yes or No');value=value==='Yes';}
- if(args.field==='cancellationDate')value=answerDate(value);
- if(args.field==='amountPaid')value=answerAmount(value);
+ if(args.field==='cancellationDate')value=item.demo?.intakeRequired?demoFactValue('cancellationDate',value,item.demo.now):answerDate(value);
+ if(args.field==='amountPaid')value=item.demo?.intakeRequired?demoFactValue('amountPaid',value,item.demo.now):answerAmount(value);
  if(args.field==='name')value=value.replace(/\s+/g,' ').slice(0,80);
  if(args.field==='name'||args.field==='contact')await ctx.db.patch(item._id,{[args.field]:value||undefined});
  else {Object.assign(read,{[args.field]:value});flightReadSchema.parse(read);}
