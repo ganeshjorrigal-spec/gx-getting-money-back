@@ -1,0 +1,11 @@
+{
+  "conversationCC": true,
+  "mails": 5,
+  "noticeEveryMail": true,
+  "overflow": false,
+  "subjectsExplicit": true,
+  "width": 375,
+  "transport": "replaced locally; no Gmail delivery",
+  "confirmationOpened": true,
+  "moneyLanded": true
+}

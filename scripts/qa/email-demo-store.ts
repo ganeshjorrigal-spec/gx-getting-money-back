@@ -1,0 +1,42 @@
+import {validEmail,canDraftCompany} from '../../lib/case-email';
+import {demoEmailBody,demoEmailSubject,demoRecipientsAllowed,confirmationBody,confirmationLink} from '../../lib/demo-email';
+import {useSyncExternalStore} from 'react';
+import {getFunctionName} from 'convex/server';
+import {sampleFlight} from '../../lib/flight-sample';
+import {planFlight} from '../../lib/flight';
+import {publicDemoPlan} from '../../lib/public-demo-plan';
+let revision=0;const listeners=new Set<()=>void>();
+const query=new URLSearchParams(location.search);
+export let route=query.has('flow')?'case':query.has('demo')?'start':'landing';
+const facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips'};
+const plan=publicDemoPlan(planFlight(facts,'2026-10-13',{},'desk@example.invalid'));
+export let item:any={trialLanded:0,trialLimit:3,trialLocked:false,annualPaid:false,refundType:'flight',stage:'READY',facts,flightPlan:plan,name:'Demo Passenger',dueDate:'2026-10-16',chase:null,demo:{kind:'flight',chaseStory:true,emailRequired:true,chasePhase:'authority',phase:'ready',now:'2026-10-13',round:0}};
+if(query.get('flow')==='questions'){
+ const r={...facts,airline:'Air India',bookedVia:'direct',cancellationDate:'2026-10-10',eTicketNumber:null,airIndiaRefundRequested:undefined};const p=planFlight(r,'2026-10-13');item={...item,demo:null,facts:r,flightPlan:p,questions:p.questions,route:'NEED_INFO',stage:'NEED_INFO',factsConfirmedAt:null};
+}else if(query.get('flow')==='confirm'){item={...item,demo:null,route:plan.route,questions:[],factsConfirmedAt:null};}
+export let inboxRows:{subject:string;to:string;cc:string[];body:string;link?:string}[]=[];
+let confirmationUsed=false;const passenger='passenger@example.invalid';
+export function openLocalConfirmation(){if(confirmationUsed)throw new Error('One-use local confirmation');confirmationUsed=true;item={...item,email:passenger,demo:{...item.demo,emailConfirmedAt:Date.now()}};emit();}
+function addConversation(company:string,reply:string){const to=company==='DemoTrips'?plan.to!:'desk+airline@example.invalid';const list=[to,'desk@example.invalid',passenger].join(',');if(!demoRecipientsAllowed(item,[to],[passenger],list,'desk@example.invalid'))throw new Error('Local CC guard rejected dispatch');const subject=demoEmailSubject('Flight refund [RG-QATEST]');inboxRows.push({subject,to,cc:[passenger],body:demoEmailBody('Dear '+company+' customer care,\n\nPlease give a refund update.')},{subject,to:'inbox+RG-QATEST@example.invalid',cc:[passenger],body:demoEmailBody(reply)});}
+if(query.get('flow')==='event')item={...item,demo:null,refundType:'event',route:'OVERDUE',stage:'READY',factsConfirmedAt:null,draftsShown:0,nextStep:'L0_chat',platform:'BookMyShow',eventName:'Fixture concert',amountPaise:240000,questions:[],facts:{bookingId:'SAMPLE',promise:{text:'7-10 working days'},completedActions:[],situation:'cancelled'}};
+let call:any=null;
+export let draft:any={_id:'fixture',createdAt:Date.now(),status:'ready',channel:'email',recipientRole:plan.nextPerson?.role,rung:plan.rung,to:plan.to,body:plan.body,subject:'Demo [RG-QATEST]'};
+function emit(){revision++;listeners.forEach(fn=>fn());}
+export function subscribe(fn:()=>void){listeners.add(fn);return ()=>listeners.delete(fn);}
+export function snapshot(){return revision;}
+export function navigate(url:string){route=url.includes('/c/')?'case':url.includes('/start')?'start':'landing';if(url.includes('?'))history.replaceState(null,'','?'+url.split('?')[1].split('#')[0]);else history.replaceState(null,'',location.pathname);emit();}
+export const openCase=navigate;
+export const makeToken=()=> 'x'.repeat(43),tokenHash=async()=> '0'.repeat(64),getDeviceId=()=> 'fixture-device-id',saveCase=()=>{},forgetCase=()=>{};
+export const CASE_STORAGE_KEY='fixture-unused';
+export function useQuery(ref:any){useSyncExternalStore(subscribe,snapshot,snapshot);const name=getFunctionName(ref);if(name==='cases:get')return item;if(name==='calls:mode')return 'simulated';if(name==='cases:drafts')return canDraftCompany(item)?[draft]:[];if(name==='chaseDemo:view')return {calls:call?[call]:[],events:[],mails:item.demo.round,replies:inboxRows.filter(row=>row.to.startsWith('inbox+')).map(row=>({summary:row.body,text:row.body,at:Date.now()})).concat(call?[{summary:call.readerOutput.reply.summary,text:call.transcript,at:Date.now()}]:[]),simulatedCalls:call?1:0,realCalls:0};return undefined;}
+export function useMutation(ref:any){return async(args:any)=>{const name=getFunctionName(ref);if(name==='demoEmailActions:request'){if(!validEmail(args.email)||args.email!==passenger)throw new Error('Use the synthetic local inbox');const link=confirmationLink('http://127.0.0.1:4320','a'.repeat(64));inboxRows.push({subject:'Demo: Confirm your email',to:passenger,cc:[],body:confirmationBody(link),link});emit();return;}if(name==='chaseDemo:create'||name==='demo:create'){if(name==='demo:create'){const selfPlan=planFlight(facts,'2026-10-13',{},'desk@example.invalid');item={...item,questions:[],factsConfirmedAt:null,flightPlan:selfPlan,demo:{...item.demo,chaseStory:false}};draft={...draft,to:selfPlan.to,cc:selfPlan.cc,body:selfPlan.body};}return {code:'RG-QATEST'};} if(name==='flights:answer'){const value=args.id==='airIndiaRefundRequested'?args.value==='Yes':args.value;const read={...item.facts,[args.id]:value};const p=planFlight(read,'2026-10-13');item={...item,facts:read,flightPlan:p,questions:p.questions,route:p.route,stage:p.route==='NEED_INFO'?'NEED_INFO':'READY'};emit();return;} if(name==='flights:editFact'){item={...item,facts:{...item.facts,[args.field]:args.value},...(args.field==='name'?{name:args.value}:{}),factsConfirmedAt:null};emit();return;} if(name==='cases:confirmFacts'){if(!validEmail(args.email))throw new Error('Email required');item={...item,email:args.email,factsConfirmedAt:1};emit();return;}if(name==='flights:confirm'){item={...item,email:args.email,factsConfirmedAt:1};emit();return;}
+if(name==='chaseActions:authoriseDemo'){if(!item.demo.emailConfirmedAt)throw new Error('Confirm email first');item={...item,chase:{active:true,email:item.email},demo:{...item.demo,chasePhase:'first_mail'}};emit();setTimeout(()=>{item={...item,facts:{...facts,reply:{...facts.reply,summary:'DemoTrips says the refund is pending with Demo Air.'}},demo:{...item.demo,chasePhase:'ready_call',round:1}};addConversation('DemoTrips','DemoTrips: refund pending with Demo Air.');emit();},250);return;}
+if(name==='chaseDemo:advance'){
+if(item.demo.chasePhase==='ready_call'){item={...item,demo:{...item.demo,chasePhase:'call'}};emit();setTimeout(()=>{call={label:'Simulated demo call',durationSeconds:30,transcript:'Demo Air paid DemoTrips. Reference DEMO-REF.',readerOutput:{moneyWith:'DemoTrips',reply:{summary:'Airline gave the payment reference.',reference:'DEMO-REF'}}};item={...item,demo:{...item.demo,chasePhase:'confirm_ready'}};emit();},250);}
+else if(item.demo.chasePhase==='confirm_ready'){item={...item,demo:{...item.demo,chasePhase:'confirm_mail'}};emit();setTimeout(()=>{item={...item,facts:{...facts,reply:{...facts.reply,summary:'Refund processed to the original payment method.',reference:'DEMO-REF'}},demo:{...item.demo,chasePhase:'bank',round:2}};addConversation('Demo Air','Demo Air: refund processed. Reference DEMO-REF.');emit();},250);}
+else if(item.demo.chasePhase==='bank'){item={...item,demo:{...item.demo,now:item.dueDate}};emit();}else throw new Error('Invalid demo transition');return;}
+if(name==='cases:answerCheckin'){if(item.demo.chasePhase!=='bank'||item.demo.now<item.dueDate)throw new Error('Finish rounds first');item={...item,stage:'CLOSED_LANDED'};emit();return;}throw new Error('No external action allowed in browser test: '+name);};}
+export const useAction=useMutation;
+export function escalationFixture(){item={...item,stage:'READY',flightPlan:{...plan,rung:3},demo:{...item.demo,chasePhase:'authority'}};draft={...draft,rung:3,recipientRole:'Grievance Officer'};route='case';emit();}
+
+

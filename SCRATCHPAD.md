@@ -1,8 +1,5 @@
-# Pending review, 14 Oct 2026
+# Pending review, 14 October 2026
 
-- [ ] HQ review of published2156ce9: both live pathsRG-37C1B2/RG-F173E9 now reach Money landed, final screenshots saved. Same direct case/tab resumed successfully. Gates/6routes/hero/mobile Lighthouse89/accessibility100 verified; no redeployment or repeated Lighthouse.
-- [ ] HQ review of published44c942b: fresh-profile landing/direct demos complete to Money landed,6routes200, old notice/legacy link, live mobile91/accessibility100. Proof pushed2f8e806.
-- [ ] Current Goibibo path and own-page MMT/Goibibo email sources missing; never guess.
-- [ ] Prior timed flight demos/post-trial TEST payment/sample-video-calendar evidence remain as logged. Current keys live, no switch.
-- [ ] No calling settings, allow-list or key changes. Further deployment needs Ganesh's chat authorisation.
-- [ ] D-048 Parts2-3: demo email confirmation/CC/limits and local proof; no deploy or real-company mail.
+- [ ] HQ review D-048 Parts1-2 code and Part3local375px proof.339tests/type/staticbuild pass;17step walk passes. Actual allow-listed Gmail arrival remains unverified under no-publish/local credential constraints.
+- [ ] No further publish or calling work without Ganesh's chat instruction. HQ D-049docs merged only; no calling settings or keys touched.
+- [ ] Prior missing Goibibo own-page contact/path, post-trial payment and video/calendar proofs remain as logged.

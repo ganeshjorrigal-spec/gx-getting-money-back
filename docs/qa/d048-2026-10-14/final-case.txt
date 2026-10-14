@@ -1,0 +1,45 @@
+Refund Genie
+Try another demo
+
+Demo · RG-QATEST
+
+A flight refund chase
+
+Rs 5,400 · Demo Air via DemoTrips · PNR SAMPLE
+
+Demo, nothing is sent to a real company. Mails go to our test desk. The call is simulated; no phone rings or call credits are used.
+
+The demo chase is closed.
+
+From Demo Air’s or DemoTrips’ saved demo reply; demo clock
+
+The chase
+Round 2 · Simulated demo call
+
+30 seconds · Airline gave the payment reference.
+
+Reference: DEMO-REF
+
+Who has the money: DemoTrips. Who owes you: still Demo Air.
+
+Saved fixture read aloud by your browser; not a live call or a recorded person.
+
+Play simulated demo call
+Read the simulated call transcript
+Money landed · demo
+
+Rs 5,400 simulated; no real money moved.
+
+Genie sent 2 test mails, read 3 replies (including the simulated call), and ran 1 simulated demo call. Real company calls: 0.
+
+You gave sample permission and tapped through the time skips.
+
+Copy share card
+Replies received
+This is a Refund Genie demo. No real company is involved. DemoTrips: refund pending with Demo Air.
+This is a Refund Genie demo. No real company is involved. Demo Air: refund processed. Reference DEMO-REF.
+Airline gave the payment reference.
+Privacy
+Terms
+Refund and cancellation policy
+Contact

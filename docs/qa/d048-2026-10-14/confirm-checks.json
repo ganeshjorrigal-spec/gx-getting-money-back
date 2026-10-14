@@ -1,0 +1,8 @@
+{
+  "flightRequiresEmail": true,
+  "eventRequiresEmail": true,
+  "flightFreeCheckVisible": true,
+  "eventFreeCheckVisible": true,
+  "selfSendDemoConfirmationWithoutEmail": true,
+  "transport": "local fixtures"
+}

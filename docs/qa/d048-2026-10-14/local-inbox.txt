@@ -1,0 +1,58 @@
+Local test inbox · transport replaced
+
+Synthetic allow-listed inbox only. Nothing is sent to Gmail.
+
+Demo: Confirm your email
+
+To: passenger@example.invalid
+
+CC: none
+
+This is a Refund Genie demo. No real company is involved.
+
+Confirm your email to start the demo. This link is valid for 30 minutes and works once.
+
+http://127.0.0.1:4320/demo-confirm/?confirmation=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+If you did not ask for this demo, ignore this mail.
+Open confirmation link
+Demo: Flight refund [RG-QATEST]
+
+To: desk+travelsite@example.invalid
+
+CC: passenger@example.invalid
+
+This is a Refund Genie demo. No real company is involved.
+
+Dear DemoTrips customer care,
+
+Please give a refund update.
+Demo: Flight refund [RG-QATEST]
+
+To: inbox+RG-QATEST@example.invalid
+
+CC: passenger@example.invalid
+
+This is a Refund Genie demo. No real company is involved.
+
+DemoTrips: refund pending with Demo Air.
+Demo: Flight refund [RG-QATEST]
+
+To: desk+airline@example.invalid
+
+CC: passenger@example.invalid
+
+This is a Refund Genie demo. No real company is involved.
+
+Dear Demo Air customer care,
+
+Please give a refund update.
+Demo: Flight refund [RG-QATEST]
+
+To: inbox+RG-QATEST@example.invalid
+
+CC: passenger@example.invalid
+
+This is a Refund Genie demo. No real company is involved.
+
+Demo Air: refund processed. Reference DEMO-REF.
