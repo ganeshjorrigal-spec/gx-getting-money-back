@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "dd47738",
+  "fullSuiteRuns": [
+    {
+      "passed": 350,
+      "files": 47,
+      "seconds": 7.19
+    },
+    {
+      "passed": 350,
+      "files": 47,
+      "seconds": 7.31
+    }
+  ],
+  "typeCheck": "passed",
+  "staticExport": "passed before publish",
+  "savedPublicDemoWalk": {
+    "passedSteps": 17,
+    "transport": "local mocked inbox; no real email or call"
+  },
+  "liveEmailDemo": "reserved for Ganesh; not run by Codex"
+}

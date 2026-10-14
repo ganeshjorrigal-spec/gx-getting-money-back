@@ -1,17 +1,10 @@
 # Current state, 15 October 2026
 
-## Authorised release stopped at failed test gate
-Pulled main to 0c3636fd76d9a78b31bb589bd9842bc8b2a65065 (HQ docs only after 5c1e8be). Full tests: 349 passed, 1 failed, 47 files. lib/chase-send-action.test.ts:10, actual send action handles Customer support email before mocked Gmail dispatch, timed out at 5000ms. Type check passed. No rerun or code change; Ganesh explicitly said stop if anything fails.
-Static export had started during result collection; interrupted after compilation, not completed or claimed passed. Saved local public-demo walk not run. Neither npm run deploy nor npm run deploy:web run; live checks not run. No real email demo, calling settings, keys or environment change. No deployed version change. Next: HQ review of the failed gate before a new release attempt. Nothing DONE.
+## D-048 and D-050 published, live Gmail check pending Ganesh
+Published source dd47738fd85d315874f594f646951472961109a8. Convex static deployment 33e5ffdf-abdc-43cb-b07c-1bc9eb299f11; Cloudflare worker version 9705807a-1116-4425-b79e-338dc7abb39e on refundgenie.app and www. npm run deploy and then npm run deploy:web both exited 0. New backend functions accepted. Both previously reviewed parts are now live.
+HQ's 00:15 update authorised a file-local 20-second timeout for the cold-start mail-action tests. Commit dd47738 changes only that one line. Full suite passes twice, 350 tests / 47 files each. Type check, explicit static export and saved 17-step local public-demo walk pass. Local walk is isolated transport, not real Gmail delivery.
+Live seven routes (six public paths plus demo-confirm) all return 200. Confirmation page loads without a nonce and shows its error/return-link state; no valid email link used. Landing hero ends on It's in: final opacity 1, reply visible and mail hidden. Evidence: docs/qa/publish-d048-d050-2026-10-15. Nothing DONE.
 
-## D-050 Parts 1 and 2, accepted by HQ, unpublished
-Part 1 commit 8cf4c6d: call and transfer assistants select VAPI_MODEL_PROVIDER/VAPI_MODEL, defaulting to openai/gpt-4.1-mini. Calls no longer use GEMINI_MODEL. Both instruction texts, first messages, tools, recording and time limits match the pre-change snapshot; simulated transport still makes zero requests. Calling guide and empty optional .env.example names updated.
-Part 2: confirmation-mail reservation enforces 3 per folded address per IST calendar day and 100 overall per IST calendar day. Gmail/Googlemail dots and plus aliases fold through one helper used by reserve and consume. Exact requested error messages; atomic counters/records. Existing 3/device/day and 1 confirmed demo/address/day remain.
-350 tests / 47 files pass; npx tsc --noEmit and explicit static export pass. Proof: docs/qa/d050-2026-10-14, including built default simulated override with zero requests and no phone numbers. No live-call or inbox-arrival proof claimed. Nothing DONE. HQ accepted these parts in the follow-up review; publication remains pending the failed release gate.
-
-## D-048 and live baseline
-HQ accepted D-048 code, with confirmation-limit fix now ready for review. Ganesh's real Gmail-arrival check follows authorised publication; D-048 local 17-step browser proof uses mocked transport, not actual Gmail.
-Published source remains 2156ce9, Cloudflare worker e88ac8bd-3bf2-467c-ac8b-4440be7c4be3. Previous flight 14/14 and event 16/16 paid evals on f47b849; no new paid eval run or claim.
-
-## Boundaries and open items
-No publication or deployment command, environment inspection/change, calling settings, allow-list or key change, actual call or mail. Static build loads the existing configuration normally; no values printed or logged. D-049 supervised live call not started. Goibibo own-page contact/path, post-trial payment and video/calendar evidence gaps remain as previously logged. Wait for HQ review and Ganesh's further instruction.
+## Next action and boundaries
+Ganesh runs the first live demo with his own Gmail and reports confirmation arrival, link starting the demo, and copied requests/replies with Demo: subjects and notice. Codex has not run a live email demo or claimed inbox arrival. No calling settings, allow-lists, keys or environment changes; no actual calls or real-company mail. Supervised call not run. No further publishing or rollback without Ganesh's instruction.
+Previous flight 14/14 and event 16/16 paid evals on f47b849 remain historical evidence, not a new run. Prior Goibibo contact/path, post-trial payment and video/calendar proof gaps remain as logged. Ready for HQ review of this publication proof.

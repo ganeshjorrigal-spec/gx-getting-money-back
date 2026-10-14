@@ -1,6 +1,6 @@
-# Pending review, 15 October 2026
+# Pending proof and review, 15 October 2026
 
-- [ ] Release stopped on main 0c3636f: 349/350 tests pass; mocked mail-send test timed out at 5000ms. Type check passed, export interrupted, browser walk/deploy/live checks not run. HQ to review failure before retry. Nothing DONE.
-- [ ] D-048 code accepted by HQ; confirmation-limit fix and D-050 accepted by HQ. Actual Gmail-arrival proof waits for authorised publication and Ganesh.
-- [ ] No further publish or supervised calling work until Ganesh's instruction. D-049 call not started; no calling settings or keys touched.
-- [ ] Prior missing Goibibo own-page contact/path, post-trial payment and video/calendar proofs remain as logged.
+- [ ] Ganesh's first live D-048 email demo: confirmation arrival/link, copied requests/replies with Demo: subjects and notice. Publication succeeded; Codex did not run the live demo. Log result when supplied.
+- [ ] HQ review publication proof: source dd47738, both deploys succeeded, 350 tests twice/type/export/local 17-step walk, seven routes 200, hero It's in. docs/qa/publish-d048-d050-2026-10-15. Nothing DONE.
+- [ ] D-049 supervised call not run. No calling settings, allow-list or keys touched. Any new publication or rollback waits for Ganesh's chat instruction.
+- [ ] Prior Goibibo own-page contact/path, post-trial payment and video/calendar proofs remain as logged.

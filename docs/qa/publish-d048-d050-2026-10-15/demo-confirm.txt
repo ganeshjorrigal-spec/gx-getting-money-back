@@ -1,0 +1,6 @@
+- main:
+  - heading "Confirming your demo email" [level=1]
+  - alert: Something went wrong on our side. Your answers are saved; try again.
+  - link "Return to the demo":
+    - /url: /start/?demo=flight
+- alert
