@@ -1,0 +1,15 @@
+{
+  "belowHero": true,
+  "finished": true,
+  "landedOpacity": "1",
+  "links": 2,
+  "mailDisplay": "none",
+  "mascotWidth": 120,
+  "messageInside": true,
+  "overflow": false,
+  "receiptPresent": true,
+  "replyVisibility": "visible",
+  "savedVisible": true,
+  "sections": 1,
+  "width": 1280
+}

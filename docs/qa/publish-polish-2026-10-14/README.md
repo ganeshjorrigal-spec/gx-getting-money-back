@@ -1,0 +1,11 @@
+# Publication proof, 14 October 2026
+
+Deployed source:2156ce9fd809640a0b63ef2c4cf71061b548d943, main. Convex deploy exit0, then Cloudflare deploy exit0. Worker e88ac8bd-3bf2-467c-ac8b-4440be7c4be3. No source changes or environment/settings changes.
+
+-321tests/43files, type check and explicit static build pass.
+- `local-demo-gate.json`: saved12step actual-component demo walk passes with isolated transport, no mail/call. Not live demo evidence.
+- `http-checks.json`: all six requested routes200.
+- `hero-check.json`, `live-hero.png`: published desktop hero, mascot on quiet card corner120px, reply inside card and green It's in after natural animation. One saved section below hero. Existing Chrome Work profile, not fresh.
+- `mobile-lighthouse.json`: one375x812 mobile run, performance89/accessibility100; FCP2408ms/LCP2960ms, no runtime error. No repeat run or comparison claim.
+
+Pending: both live demo paths in a fresh browser. Browser tool cannot create a profile; available Chrome profiles have already been used. Ganesh was asked to open a new Chrome profile and connect the extension. No ready reply yet. Publication succeeded, but release proof remains incomplete. Nothing DONE.
