@@ -4,7 +4,7 @@ import {convexTest} from 'convex-test';
 import schema from '../convex/schema';
 import {api,internal} from '../convex/_generated/api';
 import {hashToken} from '../convex/lib/access';
-import {demoRecipientsAllowed,demoEmailSubject,demoEmailBody,confirmationBody,confirmationLink} from './demo-email';
+import {demoRecipientsAllowed,demoEmailSubject,demoEmailBody,confirmationBody,confirmationLink,foldGmailAddress} from './demo-email';
 afterEach(()=>{vi.clearAllTimers();vi.useRealTimers();});
 async function fixture(){vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-14T10:00:00Z'));const t=convexTest(schema,import.meta.glob('../convex/**/*.ts')),token='x'.repeat(43),deviceId='synthetic-device-id';const caseId=await t.run(async ctx=>ctx.db.insert('cases',{code:'RG-EMAIL1',tokenHash:await hashToken(token),deviceHash:await hashToken(deviceId),stage:'READY',factsConfirmedAt:1,facts:{pnr:'SAMPLE'},refundType:'flight',ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,demo:{kind:'flight',chaseStory:true,emailRequired:true,chasePhase:'authority',round:0,phase:'ready',now:'2026-10-14',expiresAt:Date.now()+86400000}}));const reserve=async(email='passenger@example.invalid',nonce='a'.repeat(64))=>{const id=await t.mutation(internal.demoEmail.reserve,{code:'RG-EMAIL1',token,deviceId,email,nonceHash:await hashToken(nonce),encryptedCaseToken:'synthetic-encrypted'});await t.mutation(internal.demoEmail.sent,{id});return id;};return {t,token,deviceId,caseId,reserve};}
 it('confirmation is one use, binds the case email, and never authorises sending on its own',async()=>{const {t,caseId,reserve}=await fixture();await reserve();await t.mutation(internal.demoEmail.consume,{nonceHash:await hashToken('a'.repeat(64))});const item=await t.run(ctx=>ctx.db.get(caseId));expect(item?.email).toBe('passenger@example.invalid');expect(item?.chase).toBeUndefined();await expect(t.mutation(internal.demoEmail.consume,{nonceHash:await hashToken('a'.repeat(64))})).rejects.toThrow(/already used/);});
@@ -16,3 +16,40 @@ it('public demo cannot start without confirmation',async()=>{const {t,token}=awa
 it('unconfirmed CC is never allowed, even on the list; only the exact confirmed demo CC is excepted',()=>{const item={email:'passenger@example.invalid',demo:{chaseStory:true,emailRequired:true},chase:{email:'passenger@example.invalid'}};expect(demoRecipientsAllowed(item,['desk@example.invalid'],[item.email],'desk@example.invalid,passenger@example.invalid','desk@example.invalid')).toBe(false);const confirmed={...item,demo:{...item.demo,emailConfirmedAt:1}};expect(demoRecipientsAllowed(confirmed,['desk@example.invalid'],[item.email],'desk@example.invalid','desk@example.invalid')).toBe(true);expect(demoRecipientsAllowed(confirmed,['desk@example.invalid'],['stranger@example.invalid'],'desk@example.invalid','desk@example.invalid')).toBe(false);expect(demoRecipientsAllowed({...confirmed,demo:undefined},['desk@example.invalid'],[item.email],'desk@example.invalid','desk@example.invalid')).toBe(false);expect(demoRecipientsAllowed(confirmed,[item.email],[item.email],'desk@example.invalid','desk@example.invalid')).toBe(false);});
 it('demo subjects and first body line are explicit; confirmation contains a nonce link and no case key',()=>{for(const subject of ['Refund','Re: Demo: Refund','Demo old refund'])expect(demoEmailSubject(subject)).toMatch(/^Demo:/);expect(demoEmailBody('Dear support')).toMatch(/^This is a Refund Genie demo\. No real company is involved\./);const body=confirmationBody(confirmationLink('https://example.invalid','a'.repeat(64)));expect(body).toContain('30 minutes');expect(body).not.toContain('#k=');expect(body).not.toContain('synthetic-encrypted');});
 it('the address daily limit follows a new case on another device',async()=>{const {t,token,reserve}=await fixture();await reserve();await t.mutation(internal.demoEmail.consume,{nonceHash:await hashToken('a'.repeat(64))});const deviceId='another-device-id';await t.run(async ctx=>ctx.db.insert('cases',{code:'RG-EMAIL2',tokenHash:await hashToken(token),deviceHash:await hashToken(deviceId),stage:'READY',refundType:'flight',factsConfirmedAt:1,ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,demo:{kind:'flight',chaseStory:true,emailRequired:true,chasePhase:'authority',round:0,phase:'ready',now:'2026-10-14',expiresAt:Date.now()+86400000}}));await t.mutation(internal.demoEmail.reserve,{code:'RG-EMAIL2',token,deviceId,email:'passenger@example.invalid',nonceHash:await hashToken('b'.repeat(64)),encryptedCaseToken:'synthetic'});await expect(t.mutation(internal.demoEmail.consume,{nonceHash:await hashToken('b'.repeat(64))})).rejects.toThrow(/One demo per email per day/);});
+async function otherDeviceRequest(f:Awaited<ReturnType<typeof fixture>>,index:number,email:string){
+ const deviceId=`synthetic-limit-device-${index}`,code=`RG-L${String(index).padStart(5,"0")}`;
+ await f.t.run(async ctx=>{const original=await ctx.db.get(f.caseId);if(!original)throw new Error('Fixture missing');const {_id,_creationTime,...fields}=original;await ctx.db.insert('cases',{...fields,code,email:undefined,deviceHash:await hashToken(deviceId),demo:{...fields.demo!,emailConfirmedAt:undefined,expiresAt:Date.now()+3*86400000}});});
+ return ()=>f.t.mutation(internal.demoEmail.reserve,{code,token:f.token,deviceId,email,nonceHash:`fixture-hash-${index}`,encryptedCaseToken:'synthetic'});
+}
+it('fourth address request is refused across devices and folded Gmail aliases',async()=>{
+ const f=await fixture();const forms=['synthetic.limit.fixture@gmail.com','syntheticlimitfixture+one@gmail.com','Synthetic.Limit.Fixture+two@googlemail.com','syntheticlimitfixture+three@gmail.com'];
+ for(let i=0;i<3;i++)await (await otherDeviceRequest(f,i,forms[i]))();
+ const fourth=await otherDeviceRequest(f,3,forms[3]);await expect(fourth()).rejects.toThrow("We've sent this address three links today. Try tomorrow.");
+ const rejectedCase=await f.t.run(ctx=>ctx.db.query('cases').withIndex('by_code',q=>q.eq('code','RG-L00003')).unique());expect(rejectedCase).not.toBeNull();
+ expect(await f.t.run(ctx=>ctx.db.query('demoEmailConfirmations').withIndex('by_case',q=>q.eq('caseId',rejectedCase!._id)).take(4))).toHaveLength(0);
+});
+it('100 requests overall are allowed; the 101st on another device/address is refused atomically',async()=>{
+ const f=await fixture();for(let i=0;i<100;i++)await (await otherDeviceRequest(f,i,`passenger${i}@example.invalid`))();
+ const extra=await otherDeviceRequest(f,100,'extra@example.invalid');await expect(extra()).rejects.toThrow('The demo is busy today. Try again tomorrow.');
+ const counters=await f.t.run(ctx=>ctx.db.query('rateCounters').withIndex('by_key',q=>q.eq('key','demo-confirm-mail-overall:2026-10-14')).unique());expect(counters?.count).toBe(100);
+ const deviceHash=await hashToken('synthetic-limit-device-100');const device=await f.t.run(ctx=>ctx.db.query('rateCounters').withIndex('by_key',q=>q.eq('key',`demo-confirm-device:${deviceHash}:2026-10-14`)).unique());expect(device).toBeNull();
+});
+it('mail address and global limits reset at IST midnight, rather than after 24 hours',async()=>{
+ const f=await fixture();vi.setSystemTime(new Date('2026-10-14T18:29:59Z'));
+ await f.t.run(async ctx=>{await ctx.db.insert('rateCounters',{key:`demo-confirm-mail-address:${await hashToken('passenger@example.invalid')}:2026-10-14`,count:3,windowStart:Date.now()});await ctx.db.insert('rateCounters',{key:'demo-confirm-mail-overall:2026-10-14',count:100,windowStart:Date.now()});});
+ await expect(f.reserve()).rejects.toThrow("We've sent this address three links today. Try tomorrow.");
+ vi.setSystemTime(new Date('2026-10-14T18:30:00Z'));await f.reserve();
+ expect(await f.t.run(ctx=>ctx.db.query('rateCounters').withIndex('by_key',q=>q.eq('key','demo-confirm-mail-overall:2026-10-15')).unique())).toMatchObject({count:1});
+});
+it('Gmail folding also keeps the confirmed-demo limit across cases and aliases',async()=>{
+ const f=await fixture();await f.reserve('synthetic.limit.fixture+one@gmail.com');await f.t.mutation(internal.demoEmail.consume,{nonceHash:await hashToken('a'.repeat(64))});
+ const request=await otherDeviceRequest(f,1,'syntheticlimitfixture+two@googlemail.com');await request();await expect(f.t.mutation(internal.demoEmail.consume,{nonceHash:'fixture-hash-1'})).rejects.toThrow('One demo per email per day. Try tomorrow.');
+});
+it('the device limit still holds when each request uses a different address',async()=>{
+ const f=await fixture();for(let i=0;i<3;i++)await f.reserve(`passenger${i}@example.invalid`,`${i}`.repeat(64));await expect(f.reserve('fourth@example.invalid','d'.repeat(64))).rejects.toThrow('At most three confirmation emails per device per day. Try tomorrow.');
+});
+
+it('shared folding preserves non-Gmail dots and plus addresses',()=>{
+ expect(foldGmailAddress(' A.B+demo@googlemail.com ')).toBe('ab@gmail.com');
+ expect(foldGmailAddress(' A.B+demo@example.invalid ')).toBe('a.b+demo@example.invalid');
+});

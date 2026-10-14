@@ -14,3 +14,9 @@ export function demoEmailSubject(subject:string){return `Demo: ${subject.replace
 export function demoEmailBody(body:string){return `${demoMailNotice}\n\n${body.replace(demoMailNotice,'').trim()}`;}
 export function confirmationLink(origin:string,nonce:string){return `${origin.replace(/\/$/,'')}/demo-confirm/?confirmation=${encodeURIComponent(nonce)}`;}
 export function confirmationBody(link:string){return `${demoMailNotice}\n\nConfirm your email to start the demo. This link is valid for 30 minutes and works once.\n\n${link}\n\nIf you did not ask for this demo, ignore this mail.`;}
+
+// Gmail and Googlemail aliases share one mailbox; other domains stay exact.
+export function foldGmailAddress(value:string){
+ const email=value.trim().toLowerCase();const [local,domain]=email.split('@');
+ return domain==='gmail.com'||domain==='googlemail.com'?`${local.split('+')[0].replaceAll('.','')}@gmail.com`:email;
+}

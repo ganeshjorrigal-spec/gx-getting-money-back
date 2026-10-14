@@ -1,10 +1,13 @@
 # Current state, 14 October 2026
 
-## D-050 Part 1, READY FOR REVIEW, unpublished
-Call and transfer assistants now select the two optional Vapi settings, defaulting to OpenAI GPT-4.1 Mini. Calls no longer read GEMINI_MODEL; Gemini reading/planning/drafting unchanged. Instructions, first messages, tools, recording and time limits match a snapshot captured before the change. Simulated mode unchanged, zero network requests in the proof. docs/calling.md and names-only optional entries in .env.example updated.
-344 tests / 47 files pass, type check and explicit static export pass. Proof: docs/qa/d050-2026-10-14/default-simulated-override.json (fixture details, no phone numbers). Part 2 confirmation-mail address/global limits is next. Nothing DONE.
+## D-050 Parts 1 and 2, READY FOR REVIEW, unpublished
+Part 1 commit 8cf4c6d: call and transfer assistants select VAPI_MODEL_PROVIDER/VAPI_MODEL, defaulting to openai/gpt-4.1-mini. Calls no longer use GEMINI_MODEL. Both instruction texts, first messages, tools, recording and time limits match the pre-change snapshot; simulated transport still makes zero requests. Calling guide and empty optional .env.example names updated.
+Part 2: confirmation-mail reservation enforces 3 per folded address per IST calendar day and 100 overall per IST calendar day. Gmail/Googlemail dots and plus aliases fold through one helper used by reserve and consume. Exact requested error messages; atomic counters/records. Existing 3/device/day and 1 confirmed demo/address/day remain.
+350 tests / 47 files pass; npx tsc --noEmit and explicit static export pass. Proof: docs/qa/d050-2026-10-14, including built default simulated override with zero requests and no phone numbers. No live-call or inbox-arrival proof claimed. Nothing DONE. Next action: HQ review.
 
-## Existing state and boundaries
-HQ accepted D-048 code in docs/hq/review-2026-10-14-d048-email-demo-cc.md, pending confirmation limits and Ganesh's actual Gmail check after authorised publish. Local D-048 17-step proof remains transport-mocked, not actual Gmail delivery.
-Live baseline remains published source 2156ce9, Cloudflare worker e88ac8bd-3bf2-467c-ac8b-4440be7c4be3. Prior flight 14/14 and event 16/16 paid evals on f47b849; no new paid eval claim.
-No publish, deployment, environment value reads/changes, calling settings, keys, actual calls or mail. D-049 supervised live call not started. Prior Goibibo contact/path, post-trial payment and video/calendar evidence gaps remain as logged. Wait for HQ review after Part 2.
+## D-048 and live baseline
+HQ accepted D-048 code, with confirmation-limit fix now ready for review. Ganesh's real Gmail-arrival check follows authorised publication; D-048 local 17-step browser proof uses mocked transport, not actual Gmail.
+Published source remains 2156ce9, Cloudflare worker e88ac8bd-3bf2-467c-ac8b-4440be7c4be3. Previous flight 14/14 and event 16/16 paid evals on f47b849; no new paid eval run or claim.
+
+## Boundaries and open items
+No publication or deployment command, environment inspection/change, calling settings, allow-list or key change, actual call or mail. Static build loads the existing configuration normally; no values printed or logged. D-049 supervised live call not started. Goibibo own-page contact/path, post-trial payment and video/calendar evidence gaps remain as previously logged. Wait for HQ review and Ganesh's further instruction.
