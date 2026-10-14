@@ -1,0 +1,124 @@
+{
+  "transport": "mocked local inbox; no real email or call",
+  "steps": [
+    {
+      "step": 1,
+      "action": "click",
+      "role": "link",
+      "name": "See a 3-minute demo",
+      "passed": true
+    },
+    {
+      "step": 2,
+      "action": "assert",
+      "role": "heading",
+      "name": "See the demo in your inbox",
+      "passed": true
+    },
+    {
+      "step": 3,
+      "action": "fill",
+      "role": "textbox",
+      "name": "Your email",
+      "value": "passenger@example.invalid",
+      "passed": true
+    },
+    {
+      "step": 4,
+      "action": "click",
+      "role": "button",
+      "name": "Email me the confirmation link",
+      "passed": true
+    },
+    {
+      "step": 5,
+      "action": "assert",
+      "role": "heading",
+      "name": "Demo: Confirm your email",
+      "passed": true
+    },
+    {
+      "step": 6,
+      "action": "click",
+      "role": "link",
+      "name": "Open confirmation link",
+      "passed": true
+    },
+    {
+      "step": 7,
+      "action": "assert",
+      "role": "heading",
+      "name": "Let Genie send and follow up",
+      "passed": true
+    },
+    {
+      "step": 8,
+      "action": "check",
+      "role": "checkbox",
+      "passed": true
+    },
+    {
+      "step": 9,
+      "action": "click",
+      "role": "button",
+      "name": "Let Genie send and follow up",
+      "passed": true
+    },
+    {
+      "step": 10,
+      "action": "assert",
+      "role": "heading",
+      "name": "Round 1 · DemoTrips replied",
+      "passed": true
+    },
+    {
+      "step": 11,
+      "action": "click",
+      "role": "button",
+      "name": "Skip ahead 10 days",
+      "passed": true
+    },
+    {
+      "step": 12,
+      "action": "assert",
+      "role": "button",
+      "name": "Continue to the confirming mail",
+      "passed": true
+    },
+    {
+      "step": 13,
+      "action": "click",
+      "role": "button",
+      "name": "Continue to the confirming mail",
+      "passed": true
+    },
+    {
+      "step": 14,
+      "action": "assert",
+      "role": "heading",
+      "name": "Round 3 · Refund processed",
+      "passed": true
+    },
+    {
+      "step": 15,
+      "action": "click",
+      "role": "button",
+      "name": "Skip to the bank check date",
+      "passed": true
+    },
+    {
+      "step": 16,
+      "action": "click",
+      "role": "button",
+      "name": "Money landed",
+      "passed": true
+    },
+    {
+      "step": 17,
+      "action": "assert",
+      "role": "heading",
+      "name": "Money landed · demo",
+      "passed": true
+    }
+  ]
+}

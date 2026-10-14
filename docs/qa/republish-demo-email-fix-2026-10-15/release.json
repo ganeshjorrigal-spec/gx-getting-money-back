@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "1a181a956b7193bf644cd0971fe81ec3f88ef997",
+  "convexStaticDeploymentId": "a0bde24d-8f05-403c-aa35-7c4167d1ed95",
+  "cloudflareVersionId": "1ac577f6-6bab-4ed0-b8fe-b08521d72e44",
+  "convexExitCode": 0,
+  "cloudflareExitCode": 0,
+  "testsPerRun": 355,
+  "testFiles": 47,
+  "fullSuiteRuns": 2,
+  "suiteSeconds": [
+    4.69,
+    4.59
+  ],
+  "typeCheck": "passed",
+  "staticExport": "passed",
+  "localWalkSteps": 17,
+  "localWalkTransport": "mocked; no email or call",
+  "postPublishReadOnlyGoogleCheck": "passed; no messages matched invalid case code",
+  "liveEmailDemo": "not run by Codex",
+  "oldQuotaCountersReset": false,
+  "partB": "not started",
+  "realCalls": "none"
+}
