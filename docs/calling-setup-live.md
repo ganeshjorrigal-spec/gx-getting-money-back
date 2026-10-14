@@ -69,7 +69,7 @@ Important: the live site uses the Convex DEVELOPMENT deployment, named harmless-
    - CALL_DAILY_CAP_USD = about two times CALL_MAX_COST_USD.
 6. Do NOT set CALL_MODE to live yet. Leave it missing or simulated.
 7. Save.
-8. In Vapi, open the "Refund Genie Recovery Agent" assistant and check its model settings. Refund Genie tells Vapi to use Google Gemini for each call. If Vapi shows a warning that a Google or Gemini key is needed, add your Gemini key in Vapi under Integrations (provider keys). Tomorrow's test will show if this is missing.
+8. In Vapi, leave the "Refund Genie Recovery Agent" assistant on Vapi's own GPT-4.1 Mini. Do not add a Gemini key to Vapi. Vapi bills the model inside its per-minute charge (D-050). Codex changes the app so calls use this model instead of Gemini before the Thursday test.
 
 ## Part 5: Supervised in-app test (Thursday 15 Oct, between 10:00 and 18:00 IST)
 The app only allows live calls Monday to Saturday, 10:00 to 18:00 IST.
