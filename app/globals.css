@@ -677,3 +677,4 @@ button:disabled {cursor:default;opacity:.6;}
 @media(max-width:760px){.header-actions{gap:4px}.header-actions>.button{padding-inline:12px;min-height:44px}.site-header .header-menu nav{min-width:180px}.site-header .wordmark{font-size:18px}}
 
 @media(max-width:760px){.home-shell .site-header{flex-wrap:nowrap;gap:8px}.site-header .wordmark{font-size:16px;gap:6px;min-height:44px}.site-header .brand-mark{width:24px;height:28px}.header-actions>.button{font-size:12px}}
+.animated-sample.sample-paused *{animation-play-state:paused!important}
