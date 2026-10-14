@@ -1,3 +1,4 @@
+import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import { knownEventAnswer } from "../lib/event-answers";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
@@ -83,6 +84,7 @@ export const triage = internalAction({
     if (loaded.item.demo?.round === 3) plan = { ...plan, route: "TRACE", nextStep: "none", dueDate: addWorkingDays(today, 3), dueSource: "message_promise", dueSourceText: "A made-up refund reference is ready for your bank.", checkins: [{ date: addWorkingDays(today, 3), reason: "demo_bank" }], locked: false };
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "date" });
     const applied = await ctx.runMutation(internal.agentWrites.applyTriage, { caseId, runId, read, plan, model: usedModel, latencyMs, replySummary, ...triageUsage });
+    if(!canDraftCompany(loaded.item)){await ctx.runMutation(internal.agentWrites.progress,{caseId,runId,step:"done"});return null;}
     if (!applied || plan.nextStep === "none" || plan.nextStep === "questions" || plan.nextStep === "options" || plan.nextStep === "waitlist" || plan.locked) return null;
     await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "writing" });
     let draft = draftForCase(read, today, plan.nextStep, plan.dueDate, loaded.item.name);

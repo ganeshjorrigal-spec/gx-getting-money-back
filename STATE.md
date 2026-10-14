@@ -15,3 +15,6 @@ The earlier proof-command blocker is resolved. No new deployment, backend/settin
 
 ## Paid evals, 14 October 2026
 On mainf47b849, fixed paid gemini-3.5-flash-lite settings verified without printing keys. Current flight planner:14/14pass. Current event planner:F1-F16,16/16pass; all asserted dates exact;0invented contacts. No failures for HQ. Reports docs/qa/eval-flights-2026-10-14.md and docs/qa/eval-2026-10-14.md. No code change, retry, deploy or settings change. Nothing DONE.
+
+## D-048 email required/demo CC, in progress, unpublished
+Part1 built: email required at real confirm, earlier same-case email reused, optional phone retained. Backend draft gating and CC regression proof.326tests/44files/type check pass. Part2 confirmation link/confirmed demo CC and Part3 local proof next. No publish. Nothing DONE.

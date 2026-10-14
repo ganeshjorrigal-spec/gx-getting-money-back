@@ -1,3 +1,4 @@
+import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import {publicDemoPlan} from '../lib/public-demo-plan';
 import { answerAvailable, answerDate, answerAmount } from "../lib/flight-answers";
 import { finishMail } from "../lib/mail-copy";
@@ -46,13 +47,14 @@ export const reminder=mutation({args:{code:v.string(),token:v.string(),date:v.st
  const runId=crypto.randomUUID();await ctx.db.patch(item._id,{latestRunId:runId});
  await ctx.scheduler.runAfter(0,internal.flights.apply,{caseId:item._id,runId,read,plan,model:"code",latencyMs:0,inputTokens:0,outputTokens:0,totalTokens:0});return null;
 }});
-export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.string(),bookingId:v.optional(v.string()),contact:v.optional(v.string()),correction:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
+export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.string(),bookingId:v.optional(v.string()),contact:v.optional(v.string()),email:v.optional(v.string()),correction:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
  if(args.correction?.trim()){
  const runId=crypto.randomUUID();const now=Date.now();await ctx.db.insert("inputs",{caseId:item._id,kind:"answer",text:redact(args.correction.slice(0,8000)),storageIds:[],createdAt:now});await ctx.db.patch(item._id,{stage:"TRIAGING",factsConfirmedAt:undefined,latestRunId:runId,updatedAt:now});await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId});return null;}
+ const email=item.demo?undefined:confirmedEmail({...item,contact:args.contact??item.contact},args.email);
  const pnr=redact(args.pnr.trim()).slice(0,30);if(!pnr||pnr.includes("["))throw new Error("Add a PNR, never an OTP or bank detail");
  const read=flightReadSchema.parse({...item.facts,pnr,bookingId:args.bookingId?.trim().slice(0,100)||item.facts?.bookingId||null});
- await ctx.db.patch(item._id,{factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
+ await ctx.db.patch(item._id,{email,factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string(),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")throw new Error("Not a flight case");
@@ -83,7 +85,8 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  const reply=inputs.find(i=>i.kind==="reply"&&i.runId===args.runId);if(reply)await ctx.db.patch(reply._id,{summary:redact(read.reply.summary).slice(0,240),keySentence:replyKeySentence(reply.text??"")});
  await ctx.db.insert("caseEvents",{caseId:item._id,type:reply?"reply_read":"triaged",summary:reply?redact(read.reply.summary).slice(0,180):`${plan.owner} owes the refund. ${plan.dueSourceText}`.slice(0,180),actor:"agent",createdAt:now});
  if(plan.checkDate){const checkinId=await ctx.db.insert("checkins",{caseId:item._id,date:plan.checkDate,reason:"flight_refund",status:"scheduled"});const scheduledId=await ctx.scheduler.runAt(Math.max(now,Date.parse(`${(plan.nextStep==="FLIGHT_status"&&plan.checkDate<=todayIST()?addDays(todayIST(),1):plan.checkDate)}T04:30:00.000Z`)),internal.checkins.fire,{checkinId});await ctx.db.patch(checkinId,{scheduledId});if(plan.checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${plan.checkDate}`,actor:"agent",createdAt:now});}
- if(plan.body && item.factsConfirmedAt){
+ if(!canDraftCompany(item)){plan.body=null;plan.subject="";await ctx.db.patch(item._id,{flightPlan:plan});}
+ if(plan.body && item.factsConfirmedAt&&canDraftCompany(item)){
  if(plan.rung>=3&&plan.channel!=="bank"&&plan.nextStep!=="FLIGHT_status"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
    plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.map(i=>`${todayIST(new Date(i.receivedAt??i.createdAt))} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");

@@ -1,3 +1,4 @@
+import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import { finishMail } from "../lib/mail-copy";
 import { internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
@@ -71,6 +72,7 @@ export const saveDraft = internalMutation({
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
     if (!item || item.latestRunId !== args.runId) return null;
+    if(!canDraftCompany(item)){await ctx.db.patch(item._id,{progress:{step:"done",at:Date.now()}});return null;}
     const now = Date.now();
     await ctx.db.insert("drafts", {
       caseId: args.caseId, step: args.step, channel: args.channel, to: caseRecipient(!!item.demo, process.env.TICKBACK_DEMO_ADDRESS, args.to),

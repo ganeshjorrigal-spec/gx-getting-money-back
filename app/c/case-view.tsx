@@ -1,4 +1,5 @@
 "use client";
+import {savedEmail,validEmail} from "../../lib/case-email";
 import {Mascot,BrandMark} from "../components/brand";
 import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {WhyAsk} from "../components/why-ask";
@@ -45,7 +46,7 @@ type CaseView = TrialData & {
   checkin: { date: string; reason: string; status: string } | null; paymentsEnabled: boolean;
   upiVpa: string | null; upiName: string;
   feedbackGiven: boolean;
-  name: string | null; contact: string | null;
+  name: string | null; contact: string | null; email?:string|null;
   demo: { round: number; now: string; expiresAt: number; phase: string } | null;
   newReply: { _id: Id<"inputs">; sender: string; receivedAt: number; summary: string; keySentence: string } | null;
 };
@@ -91,6 +92,7 @@ export default function CaseView({ code }: { code: string }) {
   const [reviewName,setReviewName]=useState(""),[editingName,setEditingName]=useState(false);
   const [bookingId, setBookingId] = useState("");
   const [contact, setContact] = useState("");
+  const [email,setEmail]=useState("");
   const [detailsLoaded, setDetailsLoaded] = useState(false);
   const [correctingFacts, setCorrectingFacts] = useState(false);
   const [actionDate, setActionDate] = useState("");
@@ -160,7 +162,7 @@ export default function CaseView({ code }: { code: string }) {
     if (!caseData || caseData.factsConfirmedAt || detailsLoaded) return;
     setReviewName(caseData.name||"");
     setBookingId(caseData.facts?.bookingId || "");
-    setContact(caseData.contact || "");
+    setContact(caseData.contact?.includes("@")?"":caseData.contact||"");setEmail(savedEmail(caseData));
     setDetailsLoaded(true);
   }, [caseData, detailsLoaded]);
 
@@ -168,7 +170,7 @@ export default function CaseView({ code }: { code: string }) {
     if (!token || (!looksRight && !factCorrection.trim())) return;
     setBusy(true);
     try {
-      await confirmFacts({ code, token, looksRight, correction: looksRight ? undefined : factCorrection.trim(), bookingId, contact, name:reviewName });
+      await confirmFacts({ code, token, looksRight, correction: looksRight ? undefined : factCorrection.trim(), bookingId, contact, email, name:reviewName });
       markSaved("Case details");
       if (looksRight && caseData?.demo) setDemoDraftToOpen("L0_email");
       if (!looksRight) { setCorrectingFacts(false); setFactCorrection(""); }
@@ -370,7 +372,7 @@ export default function CaseView({ code }: { code: string }) {
   const invalid = ready && !token;
   const route = caseData?.route;
   const estimated = caseData?.dueSource === "estimate" || caseData?.dueSource === "platform_policy_reported" || caseData?.dueSource === "platform_policy";
-  const needsConfirm = !!caseData && !caseData.factsConfirmedAt && (route === "ACTION_NEEDED" || (caseData.draftsShown >= 1 && !!caseData.nextStep && !["none", "questions", "options", "waitlist"].includes(caseData.nextStep)));
+  const needsConfirm = !!caseData && (!caseData.factsConfirmedAt||(!caseData.demo&&!savedEmail(caseData))) && (route === "ACTION_NEEDED" || (!!caseData.nextStep && !["none", "questions", "options", "waitlist"].includes(caseData.nextStep)));
   const title = route === "WAIT" && caseData?.dueDate ? estimated ? `Our check-in for your ${money(caseData.amountPaise)} refund is ${displayDate(caseData.dueDate)}.` : `Your ${money(caseData.amountPaise)} should land by ${displayDate(caseData.dueDate)}.`
     : route === "OVERDUE" && caseData?.dueDate ? estimated ? `Time to check your ${money(caseData.amountPaise)} refund.` : `Your ${money(caseData.amountPaise)} was due by ${displayDate(caseData.dueDate)}.`
     : route ? c.routeLabels[route] : "";
@@ -450,7 +452,8 @@ export default function CaseView({ code }: { code: string }) {
             <ol>{c.progress.map((step, index) => <li className={index < stepIndex ? "progress-done" : index === stepIndex ? "progress-current" : ""} key={step}><span>{index < stepIndex ? "✓" : index + 1}</span>{step}</li>)}</ol>
           </article>}
           {caseData.stage === "ERROR" && <article className="case-card" role="alert"><h2>{c.error}</h2><button className="button button-primary" onClick={() => token && retry({ code, token })}>{c.retry}</button></article>}
-           {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><AnswerStep step={count+2}/><h2>Check these details</h2><SharedSummary screen="event-confirm" confirm items={[{label:"Name",value:reviewName||"Not given",edit:()=>setEditingName(true)},{label:"Platform",value:caseData.platform,edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct platform: ");}},{label:"Event",value:caseData.eventName,edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct event: ");}},{label:"Amount",value:money(caseData.amountPaise),edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct amount: ");}},{label:"Refund promise",value:caseData.facts?.promise?.text||"No refund promise found",edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct refund promise: ");}},{label:"Refund date",value:caseData.dueDate?displayDate(caseData.dueDate):"Not given",edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct refund date: ");}},...(!caseData.demo?[{label:"Booking ID",value:bookingId||"Not given",href:"#booking-id"},{label:"Contact",value:contact||"Not given",href:"#follow-up-contact"}]:[])]}/><SourceLine>{caseData.dueSourceText??"From your message; confirm or correct below"}</SourceLine><div className="confirm-details">{editingName&&<label>Your name (optional)<input value={reviewName} maxLength={80} onChange={e=>setReviewName(e.target.value)}/><WhyAsk field="name" personal/></label>}</div><div className="confirm-details" style={caseData.demo ? {display: "none"} : undefined}><label hidden={!!caseData.demo} htmlFor="booking-id">Booking ID <span>(if you have it)</span><input id="booking-id" value={bookingId} onChange={(event) => setBookingId(event.target.value)} maxLength={100} /><WhyAsk field="bookingId" personal/></label><label hidden={!!caseData.demo} htmlFor="follow-up-contact">Phone or email <span>(optional)</span><input id="follow-up-contact" value={contact} onChange={(event) => setContact(event.target.value)} maxLength={150} autoComplete="email" /><WhyAsk field="contact" personal/></label></div><div className="save-actions"><button className="button button-primary" disabled={busy} onClick={() => confirmCaseFacts(true)}>{caseData.demo ? "Confirm" : "Looks right"}</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><WhyAsk field="correction" personal/><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={() => confirmCaseFacts(false)}>Save correction</button></div>}</article>}
+           {needsConfirm&&!caseData.demo&&<article className="case-card"><h2>Your free check</h2><p>Who has the money: {caseData.platform??"The organiser"}</p><p>Due: {caseData.dueDate?displayDate(caseData.dueDate):"No promised date"}</p><p>First step: {route?c.routeLabels[route]:"Check the details"}</p></article>}
+           {needsConfirm && <article className="case-card" aria-label="What we understood"><p className="section-kicker">WHAT WE UNDERSTOOD</p><AnswerStep step={count+2}/><h2>Check these details</h2><SharedSummary screen="event-confirm" confirm items={[{label:"Name",value:reviewName||"Not given",edit:()=>setEditingName(true)},{label:"Platform",value:caseData.platform,edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct platform: ");}},{label:"Event",value:caseData.eventName,edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct event: ");}},{label:"Amount",value:money(caseData.amountPaise),edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct amount: ");}},{label:"Refund promise",value:caseData.facts?.promise?.text||"No refund promise found",edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct refund promise: ");}},{label:"Refund date",value:caseData.dueDate?displayDate(caseData.dueDate):"Not given",edit:()=>{setCorrectingFacts(true);setFactCorrection("Correct refund date: ");}},...(!caseData.demo?[{label:"Booking ID",value:bookingId||"Not given",href:"#booking-id"},{label:"Contact",value:contact||"Not given",href:"#follow-up-contact"}]:[])]}/><SourceLine>{caseData.dueSourceText??"From your message; confirm or correct below"}</SourceLine><div className="confirm-details">{editingName&&<label>Your name (optional)<input value={reviewName} maxLength={80} onChange={e=>setReviewName(e.target.value)}/><WhyAsk field="name" personal/></label>}</div><div className="confirm-details" style={caseData.demo ? {display: "none"} : undefined}><label hidden={!!caseData.demo} htmlFor="booking-id">Booking ID <span>(if you have it)</span><input id="booking-id" value={bookingId} onChange={(event) => setBookingId(event.target.value)} maxLength={100} /><WhyAsk field="bookingId" personal/></label><label hidden={!!caseData.demo} htmlFor="confirm-email">Email <span>(required)</span><input id="confirm-email" type="email" required value={email} onChange={event=>setEmail(event.target.value)} autoComplete="email"/><p>So you see every mail about your case in your own inbox.</p></label><label htmlFor="follow-up-contact">Phone <span>(optional)</span><input id="follow-up-contact" value={contact} onChange={(event) => setContact(event.target.value)} maxLength={150} autoComplete="tel" /><WhyAsk field="contact" personal/></label></div><div className="save-actions"><button className="button button-primary" disabled={busy||(!caseData.demo&&!validEmail(email))} onClick={() => confirmCaseFacts(true)}>{caseData.demo ? "Confirm" : "Looks right"}</button><button className="button button-secondary" onClick={() => setCorrectingFacts(true)}>Not quite</button></div>{correctingFacts && <div className="answer-form"><label htmlFor="fact-fix">What needs fixing?</label><input id="fact-fix" value={factCorrection} onChange={(event) => setFactCorrection(event.target.value)} /><WhyAsk field="correction" personal/><button className="button button-primary" disabled={!factCorrection.trim() || busy} onClick={() => confirmCaseFacts(false)}>Save correction</button></div>}</article>}
           {route && !needsConfirm && !["ERROR", "CLOSED_LANDED", "TRIAGING", "NEED_INFO"].includes(caseData.stage) && <ReceiptSlip
             status={<StatusBadge kind={route==='OVERDUE'?'overdue':route==='WAIT'?'waiting':'ready'} label={route==='OVERDUE'?'Overdue':route==='WAIT'&&(estimated||!caseData.dueDate)?'Waiting for a refund':c.routeLabels[route]}/>}
             rows={[

@@ -1,0 +1,4 @@
+export function validEmail(value:unknown):value is string{return typeof value==='string'&&value.length<=254&&/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(value.trim());}
+export function savedEmail(item:{email?:string|null;contact?:string|null;chase?:unknown}){return [item.email,item.contact,(item.chase as {email?:string}|null)?.email].find(validEmail)?.trim().toLowerCase()??'';}
+export function confirmedEmail(item:Parameters<typeof savedEmail>[0],entered?:string){const email=entered===undefined?savedEmail(item):entered.trim().toLowerCase();if(!validEmail(email))throw new Error('Add a valid email so you see every mail about your case');return email;}
+export function canDraftCompany(item:Parameters<typeof savedEmail>[0]&{demo?:unknown;factsConfirmedAt?:number|null}){return !!item.demo||!!item.factsConfirmedAt&&validEmail(savedEmail(item));}

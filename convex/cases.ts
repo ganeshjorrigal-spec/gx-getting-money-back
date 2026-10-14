@@ -1,3 +1,4 @@
+import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import { visibleTimeline } from "../lib/timeline";
 import { publicAppUrl } from "../lib/app-url";
 import { finishMail, greeting } from "../lib/mail-copy";
@@ -103,7 +104,7 @@ export const get = query({
       actionsRequired: (item.facts as { actionsRequired?: unknown[] } | undefined)?.actionsRequired ?? [],
       outOfScopeCategory: (item.facts as { outOfScopeCategory?: string } | undefined)?.outOfScopeCategory ?? null,
       situation: (item.facts as { situation?: string } | undefined)?.situation ?? null,
-      facts: item.facts ?? null, factsConfirmedAt: item.factsConfirmedAt ?? null,
+      email:savedEmail(item)||null, facts: item.facts ?? null, factsConfirmedAt: item.factsConfirmedAt ?? null,
       oldCheckinDate: oldCheckin?.date ?? null, paymentGraceUntil: item.paymentGraceUntil ?? null,
       checkin: checkin ? { date: checkin.date, reason: checkin.reason, status: checkin.status } : null,
       paymentsEnabled: !!process.env.NEXT_PUBLIC_UPI_VPA,
@@ -147,6 +148,7 @@ export const drafts = query({
   returns: v.any(),
   handler: async (ctx, { code, token }) => {
     const item = await assertAccess(ctx, code, token);
+    if(!canDraftCompany(item))return [];
     const rows = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").take(10);
     const trial=await caseTrial(ctx,item);
     return rows.map(row => {
@@ -264,8 +266,8 @@ export const markActionDone = mutation({
 });
 
 export const confirmFacts = mutation({
-  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()), bookingId: v.optional(v.string()), contact: v.optional(v.string()), name:v.optional(v.string()) }, returns: v.null(),
-  handler: async (ctx, { code, token, looksRight, correction, bookingId, contact, name }) => {
+  args: { ...accessArgs, looksRight: v.boolean(), correction: v.optional(v.string()), bookingId: v.optional(v.string()), contact: v.optional(v.string()), email:v.optional(v.string()), name:v.optional(v.string()) }, returns: v.null(),
+  handler: async (ctx, { code, token, looksRight, correction, bookingId, contact, email, name }) => {
     const item = await assertAccess(ctx, code, token);
     const savedName=name===undefined?item.name:cleanLine(name,80);
     const savedContact = contact === undefined ? item.contact : cleanLine(contact, 150);
@@ -274,7 +276,9 @@ export const confirmFacts = mutation({
     const savedBookingId = bookingId === undefined ? previousFacts?.bookingId : cleanLine(bookingId, 100) ?? null;
     const facts = previousFacts ? { ...previousFacts, bookingId: savedBookingId ?? null } : previousFacts;
     if (looksRight) {
-      await ctx.db.patch(item._id, { facts, name:savedName, contact: savedContact, factsConfirmedAt: Date.now(), updatedAt: Date.now() });
+      const savedCaseEmail=item.demo?undefined:confirmedEmail({...item,contact:savedContact},email);
+      await ctx.db.patch(item._id, { email:savedCaseEmail, facts, name:savedName, contact: savedContact, factsConfirmedAt: Date.now(), updatedAt: Date.now() });
+      if(!item.demo){const runId=crypto.randomUUID();await ctx.db.patch(item._id,{latestRunId:runId,stage:"TRIAGING"});await ctx.scheduler.runAfter(0,internal.agent.triage,{caseId:item._id,runId,reuseFacts:true});}
       if (facts && item.nextStep) {
         const latestDraft = await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", item._id)).order("desc").first();
         if (latestDraft && latestDraft.status !== "sent") {

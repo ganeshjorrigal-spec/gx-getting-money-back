@@ -5,3 +5,4 @@
 - [ ] Current Goibibo path and own-page MMT/Goibibo email sources missing; never guess.
 - [ ] Prior timed flight demos/post-trial TEST payment/sample-video-calendar evidence remain as logged. Current keys live, no switch.
 - [ ] No calling settings, allow-list or key changes. Further deployment needs Ganesh's chat authorisation.
+- [ ] D-048 Parts2-3: demo email confirmation/CC/limits and local proof; no deploy or real-company mail.
