@@ -36,3 +36,21 @@ Do not start until Part A is closed and the supervised call is done. No publish 
 ```
 git pull. Do Part A of docs/hq/codex-prompts/2026-10-15-demo-email-fix-and-intake.md now: the live demo fails at the email step. Read the Convex logs, find the cause, fix the two listed bugs. If the fix is small and every gate passes, Ganesh authorises npm run deploy and npm run deploy:web for this fix only. If the cause is an env value or Google permission, or it is not fixed by 01:45 IST, republish 2156ce9 instead (authorised) and tell me. No env, key or calling changes. Do not start Part B. Mark nothing DONE.
 ```
+
+## Part C, with Part B: landing and case screen polish (D-052)
+
+Same timing as Part B: after the supervised call, one commit per item, no publish until HQ review and Ganesh's line.
+
+1. **Header.** Logo left. Right: "Check my refund" button, then a hamburger menu with "How it works", "Try a demo", "Your cases". Same on phone and desktop. Menu opens as a small panel, closes on tap outside or Escape, keyboard and screen-reader friendly, tap targets 44px. Keep the gap between the header and the hero small.
+2. **"Your cases" page.** Move the saved cases list and the old-address note from the landing to a new page `/cases/` (static export route; add it to the route checks). Empty state: "No saved cases on this browser yet." plus "Check my refund". Remove the section from the landing.
+3. **Sample case loop.** The hero animation plays, rests on the final "It's in" frame for 3 seconds, then restarts. Pause it when the hero is off screen (IntersectionObserver). With reduced motion, show the final frame only. Check the speed score does not drop (one mobile Lighthouse run, local).
+4. **The chase, collapsed.** On the case card, "The chase" shows only the newest entry. Under it a subtle link "See all N messages" opens the full list in place; "Hide" closes it. Same style as the D-046 summary link.
+5. **Simulated call button.** Make the demo's play-call button a primary button: "Play the simulated call". Keep the "Simulated" label next to it, so it is never shown as a live call.
+
+Tests and screenshots at 375px and 1280px for each item. The 17-step demo walk still passes.
+
+## Short paste block (Parts B and C, after the supervised call)
+
+```
+git pull. Part A is closed. After the supervised call, do Parts B and C of docs/hq/codex-prompts/2026-10-15-demo-email-fix-and-intake.md: D-051 demo intake, then the D-052 polish, one commit per item. No publish, no npm run deploy, no env, key or calling changes. Mark nothing DONE. Update STATE.md, append the log with screenshots, push, then wait for HQ review.
+```
