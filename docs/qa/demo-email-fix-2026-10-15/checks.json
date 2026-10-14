@@ -6,8 +6,9 @@
   "localWalkSteps": 17,
   "liveOriginalSendFailure": "not in available CLI history",
   "liveRetryError": "We've sent this address three links today. Try tomorrow.",
-  "rootCause": "still under investigation",
+  "rootCause": "Demo organiser Google connection needs renewal, verified by existing read-only action",
   "newFixPublished": false,
   "oldCountersReset": false,
-  "realMailOrCallByCodex": false
+  "realMailOrCallByCodex": false,
+  "rollbackPublished": true
 }

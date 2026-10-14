@@ -1,0 +1,19 @@
+{
+  "cause": "Google refused the saved demo organiser connection; read-only diagnose returns Google connection needs to be renewed",
+  "preRollbackDiagnostic": "Google connection needs to be renewed",
+  "postRollbackDiagnostic": "Google connection needs to be renewed",
+  "rollbackBaseline": "2156ce9",
+  "rollbackSource": "76c1eb6be319d0996cdad958a7b8df7761e7645a",
+  "rollbackSchemaCompatibility": "Retain optional cases.email and demo.emailRequired/emailConfirmedAt only; no case data deleted",
+  "convexDeploymentId": "863d1c3a-c1b1-4a87-8fbc-35398216f191",
+  "cloudflareVersionId": "e18d32c8-c1c9-4ec5-8ffa-002fcba57123",
+  "convexExitCode": 0,
+  "cloudflareExitCode": 0,
+  "unpublishedFixCommit": "0e2dca6",
+  "originalEnvironmentContentsUnchanged": true,
+  "mainStillContainsD048AndD050": true,
+  "liveBackendD050RolledBack": true,
+  "supervisedLiveCall": "must wait for D-050 republish",
+  "partB": "not started",
+  "realDemoMailDelivery": "not verified; Google renewal required"
+}

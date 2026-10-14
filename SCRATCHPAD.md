@@ -1,8 +1,7 @@
-# Pending proof and review, 15 October 2026
+# Pending owner action and review, 15 October 2026
 
-- [ ] Ganesh's first live D-048 email demo: confirmation arrival/link, copied requests/replies with Demo: subjects and notice. Publication succeeded; Codex did not run the live demo. Log result when supplied.
-- [ ] HQ review publication proof: source dd47738, both deploys succeeded, 350 tests twice/type/export/local 17-step walk, seven routes 200, hero It's in. docs/qa/publish-d048-d050-2026-10-15. Nothing DONE.
-- [ ] D-049 supervised call not run. No calling settings, allow-list or keys touched. Any new publication or rollback waits for Ganesh's chat instruction.
-- [ ] Prior Goibibo own-page contact/path, post-trial payment and video/calendar proofs remain as logged.
-
-- [ ] Part A original demo-email failure: obtain earlier Convex log; current retry hit address limit, no manual reset. Two required fixes pass 355 tests/type/export/local walk and are unpublished. If config/Google permission or not fixed by01:45 IST, authorised rollback2156ce9. PartB not started.
+- [ ] Ganesh renews demo organiser Google read/send connection; read-only check still fails after rollback. No Codex permission/env/key changes.
+- [ ] HQ review Part A fixes0e2dca6 (355 tests/type/export/local walk pass), unpublished, and rollback proof docs/qa/demo-email-fix-2026-10-15. Nothing DONE.
+- [ ] Supervised live call waits for authorised D-050 republish. PartB not started.
+- [ ] No manual old-counter resets. Further publication needs Ganesh's instruction.
+- [ ] Prior Goibibo contact/path, post-trial payment and video/calendar evidence gaps remain as logged.
