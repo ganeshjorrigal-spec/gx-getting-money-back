@@ -1,0 +1,64 @@
+[
+  {
+    "header": 81.5999984741211,
+    "overflow": false,
+    "targets": [
+      {
+        "height": 44,
+        "text": "Refund Genie"
+      },
+      {
+        "height": 49.60000228881836,
+        "text": "Check my refund"
+      },
+      {
+        "height": 44,
+        "text": ""
+      },
+      {
+        "height": 44,
+        "text": "How it works"
+      },
+      {
+        "height": 44,
+        "text": "Try a demo"
+      },
+      {
+        "height": 44,
+        "text": "Your cases"
+      }
+    ],
+    "width": 375
+  },
+  {
+    "header": 81.5999984741211,
+    "overflow": false,
+    "targets": [
+      {
+        "height": 45,
+        "text": "Refund Genie"
+      },
+      {
+        "height": 49.60000228881836,
+        "text": "Check my refund"
+      },
+      {
+        "height": 44,
+        "text": ""
+      },
+      {
+        "height": 44,
+        "text": "How it works"
+      },
+      {
+        "height": 44,
+        "text": "Try a demo"
+      },
+      {
+        "height": 44,
+        "text": "Your cases"
+      }
+    ],
+    "width": 1280
+  }
+]

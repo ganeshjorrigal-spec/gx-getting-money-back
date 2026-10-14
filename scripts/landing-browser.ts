@@ -1,3 +1,4 @@
+import {enhanceHeaderMenu} from '../lib/header-menu';
 // Only the static landing uses this small browser entry. Intake and cases keep Next/React.
 import {CASE_STORAGE_KEY} from '../lib/case-link';
 import {savedCasesNotice} from '../lib/app-url';
@@ -5,6 +6,7 @@ import {readDomainMove} from '../lib/domain-notice';
 import {landingCases} from '../lib/landing-cases';
 import {playSample} from '../lib/sample-animation';
 
+enhanceHeaderMenu(document.querySelector('.site-header'));
 const savedList=document.querySelector('.saved-cases>div');
 try {
  const saved=landingCases(localStorage.getItem(CASE_STORAGE_KEY));
