@@ -9,3 +9,6 @@ Deployed source:2156ce9fd809640a0b63ef2c4cf71061b548d943, main. Convex deploy ex
 - `mobile-lighthouse.json`: one375x812 mobile run, performance89/accessibility100; FCP2408ms/LCP2960ms, no runtime error. No repeat run or comparison claim.
 
 Pending: both live demo paths in a fresh browser. Browser tool cannot create a profile; available Chrome profiles have already been used. Ganesh was asked to open a new Chrome profile and connect the extension. No ready reply yet. Publication succeeded, but release proof remains incomplete. Nothing DONE.
+
+## Later resume
+Ganesh connected the prepared browser. Its landing had zero saved cases; browser metadata still Work/id4, so a new profile identity was not independently verified. Landing RG-37C1B2 completes to Money landed (landing-final.txt/landing-landed.png and round screenshots). Direct RG-F173E9 reaches refund processed; screenshot capture timed out before the bank-date skip. Stopped as instructed. Direct Money landed remains pending. STATE and today's log carry the checkpoint. No redeployment or second Lighthouse.
