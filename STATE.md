@@ -12,3 +12,6 @@ Proof docs/qa/publish-polish-2026-10-14. Ganesh-prepared clean browser initially
 D-047 finals37/40cap and accepted speed work unchanged. Prior missing Goibibo app path/own-page emails, sample-video/calendar and old timed flight/post-trial TEST-payment proof remain as logged. Current keys live, no switch. Domain carry-over rules/limits and D-038 simulated-only safeguards unchanged.
 
 The earlier proof-command blocker is resolved. No new deployment, backend/settings/keys/allow-list change or image call. Nothing DONE.
+
+## Paid evals, 14 October 2026
+On mainf47b849, fixed paid gemini-3.5-flash-lite settings verified without printing keys. Current flight planner:14/14pass. Current event planner:F1-F16,16/16pass; all asserted dates exact;0invented contacts. No failures for HQ. Reports docs/qa/eval-flights-2026-10-14.md and docs/qa/eval-2026-10-14.md. No code change, retry, deploy or settings change. Nothing DONE.
