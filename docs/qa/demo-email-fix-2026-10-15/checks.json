@@ -1,0 +1,13 @@
+{
+  "tests": 355,
+  "files": 47,
+  "typeCheck": "passed",
+  "staticExport": "passed",
+  "localWalkSteps": 17,
+  "liveOriginalSendFailure": "not in available CLI history",
+  "liveRetryError": "We've sent this address three links today. Try tomorrow.",
+  "rootCause": "still under investigation",
+  "newFixPublished": false,
+  "oldCountersReset": false,
+  "realMailOrCallByCodex": false
+}

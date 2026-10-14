@@ -1,7 +1,9 @@
+import {confirmationSendError} from './demo-email';
 import {portalCopy} from "../app/copy";
 // Only these fixed messages reach the screen; the original error stays in the console.
 export function userError(error:unknown) {
  const message=error instanceof Error?error.message:"";
+ if(message.includes(confirmationSendError))return confirmationSendError;
  if(/three confirmation emails per device per day/i.test(message))return "At most three confirmation emails per device per day. Try tomorrow.";
  if(/One demo per email per day/i.test(message))return "One demo per email per day. Try tomorrow.";
  if(/confirmation link expired|already used/i.test(message))return "This confirmation link expired or was already used. Request another link from your demo.";

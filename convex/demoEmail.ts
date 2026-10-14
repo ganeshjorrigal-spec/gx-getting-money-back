@@ -34,3 +34,12 @@ export const consume=internalMutation({args:{nonceHash:v.string()},returns:v.obj
  await ctx.db.patch(row._id,{usedAt:Date.now()});await ctx.db.patch(item._id,{email:row.email,demo:{...item.demo,emailConfirmedAt:Date.now()}});return {code:item.code,encryptedCaseToken:row.encryptedCaseToken};
 }});
 export const expire=internalMutation({args:{id:v.id('demoEmailConfirmations')},returns:v.null(),handler:async(ctx,{id})=>{const row=await ctx.db.get(id);if(row&&row.expiresAt<=Date.now())await ctx.db.delete(id);return null;}});
+
+export const releaseFailedSend=internalMutation({args:{id:v.id('demoEmailConfirmations')},returns:v.null(),handler:async(ctx,{id})=>{
+ const row=await ctx.db.get(id);if(!row||row.sentAt!==undefined||row.usedAt!==undefined)return null;
+ const item=await ctx.db.get(row.caseId),day=todayIST(new Date(row.createdAt));
+ const keys=[`demo-confirm-mail-address:${await hashToken(foldGmailAddress(row.email))}:${day}`,`demo-confirm-mail-overall:${day}`];
+ if(item?.deviceHash)keys.push(`demo-confirm-device:${item.deviceHash}:${day}`);
+ for(const key of keys){const counter=await ctx.db.query('rateCounters').withIndex('by_key',q=>q.eq('key',key)).unique();if(counter&&counter.count>0)await ctx.db.patch(counter._id,{count:counter.count-1});}
+ await ctx.db.delete(id);return null;
+}});

@@ -1,0 +1,74 @@
+- paragraph: LOCAL TEST · transport replaced; no mail or call
+- main:
+  - link "Refund Genie":
+    - /url: /
+    - generic: Refund Genie
+  - link "Try another demo":
+    - /url: /start/?demo=flight
+  - paragraph: Demo · RG-QATEST
+  - heading "A flight refund chase" [level=1]
+  - paragraph: Rs 5,400 · Demo Air via DemoTrips · PNR SAMPLE
+  - status:
+    - text: ✓ Saved
+    - generic: ": Demo step"
+  - paragraph: Demo, nothing is sent to a real company. Mails go to our test desk. The call is simulated; no phone rings or call credits are used.
+  - status: The demo chase is closed.
+  - paragraph: From Demo Air’s or DemoTrips’ saved demo reply; demo clock
+  - region "The chase":
+    - heading "The chase" [level=2]
+    - list
+  - heading "Round 2 · Simulated demo call" [level=2]
+  - paragraph: 30 seconds · Airline gave the payment reference.
+  - paragraph: "Reference: DEMO-REF"
+  - paragraph: "Who has the money: DemoTrips. Who owes you: still Demo Air."
+  - paragraph: Saved fixture read aloud by your browser; not a live call or a recorded person.
+  - button "Play simulated demo call"
+  - generic "Read the simulated call transcript"
+  - heading "Money landed · demo" [level=2]
+  - paragraph: Rs 5,400 simulated; no real money moved.
+  - paragraph: "Genie sent 2 test mails, read 3 replies (including the simulated call), and ran 1 simulated demo call. Real company calls: 0."
+  - paragraph: You gave sample permission and tapped through the time skips.
+  - button "Copy share card"
+  - heading "Replies received" [level=2]
+  - 'generic "This is a Refund Genie demo. No real company is involved. DemoTrips: refund pending with Demo Air."'
+  - 'generic "This is a Refund Genie demo. No real company is involved. Demo Air: refund processed. Reference DEMO-REF."'
+  - generic "Airline gave the payment reference."
+  - navigation "Policies and support":
+    - link "Privacy":
+      - /url: /privacy
+    - link "Terms":
+      - /url: /terms
+    - link "Refund and cancellation policy":
+      - /url: /refund-policy
+    - link "Contact":
+      - /url: /contact
+- region "Local test inbox":
+  - heading "Local test inbox · transport replaced" [level=2]
+  - paragraph: Synthetic allow-listed inbox only. Nothing is sent to Gmail.
+  - article:
+    - 'heading "Demo: Confirm your email" [level=3]'
+    - paragraph: "To: passenger@example.invalid"
+    - paragraph: "CC: none"
+    - generic: This is a Refund Genie demo. No real company is involved. Confirm your email to start the demo. This link is valid for 30 minutes and works once. http://127.0.0.1:4320/demo-confirm/?confirmation=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa If you did not ask for this demo, ignore this mail.
+    - link "Open confirmation link":
+      - /url: http://127.0.0.1:4320/demo-confirm/?confirmation=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - article:
+    - 'heading "Demo: Flight refund [RG-QATEST]" [level=3]'
+    - paragraph: "To: desk+travelsite@example.invalid"
+    - paragraph: "CC: passenger@example.invalid"
+    - generic: This is a Refund Genie demo. No real company is involved. Dear DemoTrips customer care, Please give a refund update.
+  - article:
+    - 'heading "Demo: Flight refund [RG-QATEST]" [level=3]'
+    - paragraph: "To: inbox+RG-QATEST@example.invalid"
+    - paragraph: "CC: passenger@example.invalid"
+    - generic: "This is a Refund Genie demo. No real company is involved. DemoTrips: refund pending with Demo Air."
+  - article:
+    - 'heading "Demo: Flight refund [RG-QATEST]" [level=3]'
+    - paragraph: "To: desk+airline@example.invalid"
+    - paragraph: "CC: passenger@example.invalid"
+    - generic: This is a Refund Genie demo. No real company is involved. Dear Demo Air customer care, Please give a refund update.
+  - article:
+    - 'heading "Demo: Flight refund [RG-QATEST]" [level=3]'
+    - paragraph: "To: inbox+RG-QATEST@example.invalid"
+    - paragraph: "CC: passenger@example.invalid"
+    - generic: "This is a Refund Genie demo. No real company is involved. Demo Air: refund processed. Reference DEMO-REF."

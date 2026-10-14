@@ -1,6 +1,7 @@
 import {validEmail} from './case-email';
 import {chaseAddressAllowed} from './chase';
 import {sameDemoMailbox} from './demo';
+export const confirmationSendError="We couldn't send the confirmation mail just now. Try again in a few minutes.";
 export const demoMailNotice='This is a Refund Genie demo. No real company is involved.';
 export function confirmedDemoCc(item:{demo?:any;email?:string;chase?:{email:string}|null}){return !!item.demo?.chaseStory&&!!item.demo.emailConfirmedAt&&validEmail(item.email)&&item.chase?.email===item.email?item.email:null;}
 export function demoRecipientsAllowed(item:Parameters<typeof confirmedDemoCc>[0],to:string[],cc:string[],allowlist:string|undefined,desk:string|undefined){
