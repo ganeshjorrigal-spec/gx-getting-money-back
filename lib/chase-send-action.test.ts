@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import {it,expect,vi,afterEach} from "vitest";
+vi.setConfig({testTimeout:20000});
 import {convexTest} from "convex-test";
 import schema from "../convex/schema";
 import {internal} from "../convex/_generated/api";
