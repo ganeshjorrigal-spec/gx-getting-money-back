@@ -74,7 +74,7 @@ export const caseRow = internalQuery({
     const lastReplyAt = item.lastTrackedReplyAt ?? inputs.find((input) => input.kind === "reply")?.createdAt ?? null;
     const feedbackText = feedback ? `${feedback.worthIt ? "Yes" : "No"}${feedback.comment ? ` — ${feedback.comment}` : ""}` : "";
     return {
-      code: item.code, createdAt: item.createdAt, name: item.name ?? "", contact: item.contact ?? "",
+      code: item.code, createdAt: item.createdAt, name: item.name ?? "", contact: [item.email,item.contact].filter(Boolean).filter((value,index,all)=>all.indexOf(value)===index).join("; "),
       platform: `${item.demo ? "Demo · " : ""}${item.platform ?? ""}`, amount: item.amountPaise == null ? "" : item.amountPaise / 100,
       route: item.route ?? "", dueDate: item.dueDate ?? "", stage: item.stage, channel, lastReplyAt, feedback: feedbackText,
     };

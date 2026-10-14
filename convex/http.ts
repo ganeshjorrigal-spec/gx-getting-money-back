@@ -35,7 +35,7 @@ http.route({
 
 // Static Hosting serves exact uploaded paths. Next exports each page as
 // /page/index.html, so direct visits to /page/ need a matching redirect.
-for (const page of ["terms", "refund-policy", "contact", "sample", "start", "privacy", "taste", "m0-font-check", "c"]) {
+for (const page of ["terms", "refund-policy", "contact", "sample", "start", "privacy", "taste", "m0-font-check", "c", "demo-confirm"]) {
   for (const suffix of ["", "/"]) {
     http.route({
       path: `/${page}${suffix}`,

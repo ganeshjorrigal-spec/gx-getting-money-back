@@ -1,4 +1,5 @@
 "use node";
+import {demoRecipientsAllowed,confirmedDemoCc,demoEmailSubject,demoEmailBody} from '../lib/demo-email';
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
@@ -20,12 +21,13 @@ import { caseInboxAddress } from "../lib/google-tracking";
 const access = { code: v.string(), token: v.string() };
 export const authoriseDemo=action({args:{...access,accepted:v.boolean()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await ctx.runQuery(internal.chase.loadAccess,{code:args.code,token:args.token});
+ if(item.demo?.emailRequired&&(!item.demo.emailConfirmedAt||!item.email))throw new Error('Confirm your demo email first');
  if(!args.accepted||!item.demo?.chaseStory||item.demo.chasePhase!=='authority'||item.chase)throw new Error('Use the sample permission on a new flight demo');
- const config=await ctx.runQuery(internal.callQa.config,{}),authorisedAt=Date.now();
+ const config=item.demo.emailRequired?null:await ctx.runQuery(internal.callQa.config,{}),authorisedAt=Date.now();
  // Public PDF contains made-up details only. Operational test recipients stay private.
  const bytes=await makeAuthorityLetter({code:item.code,name:'Demo Passenger',mobile:'+910000000000',email:'passenger@example.invalid',company:'Demo Air and DemoTrips',pnr:'SAMPLE',authorisedAt});
  const letterId=await ctx.storage.store(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
- try{await ctx.runMutation(internal.chase.authorise,{code:args.code,token:args.token,name:'Demo Passenger',mobile:'+910000000000',email:config.email,letterId,authorisedAt,encryptedCaseToken:await encryptToken(args.token)});await ctx.runMutation(internal.chaseDemo.authorised,{code:args.code,token:args.token});}catch(e){await ctx.storage.delete(letterId);throw e;}return null;
+ try{await ctx.runMutation(internal.chase.authorise,{code:args.code,token:args.token,name:'Demo Passenger',mobile:'+910000000000',email:item.demo.emailRequired?item.email!:config!.email,letterId,authorisedAt,encryptedCaseToken:await encryptToken(args.token)});await ctx.runMutation(internal.chaseDemo.authorised,{code:args.code,token:args.token});}catch(e){await ctx.storage.delete(letterId);throw e;}return null;
 }});
 export const deliveryProof = internalAction({
   args: { code: v.string() },
@@ -258,6 +260,7 @@ export const send = internalAction({
     if (!reservation) return null;
     let primaryDelivered = false;
     try {
+      if(!demoRecipientsAllowed(loaded.item,[loaded.draft.to],[...(loaded.draft.cc??[]),loaded.item.chase.email],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS))return null;
       const token = await accessToken(loaded.connection.encryptedRefreshToken);
       const from = caseInboxAddress(
         process.env.TICKBACK_INBOX_ADDRESS!,
@@ -270,16 +273,17 @@ export const send = internalAction({
         ? undefined
         : await ctx.storage.get(loaded.item.chase.letterId);
       if (!parent && !letter) throw new Error("Authority letter unavailable");
-      const body = chaseBody(
+      const originalBody = chaseBody(
         loaded.draft.body,
         loaded.item.chase.name,
         !parent,
       );
+      const body=loaded.item.demo?demoEmailBody(originalBody):originalBody;
       const raw = rawMail(
         from,
         [loaded.draft.to],
         [...new Set([...(loaded.draft.cc ?? []), loaded.item.chase.email])],
-        loaded.parentSubject ?? loaded.draft.subject,
+        loaded.item.demo?demoEmailSubject(loaded.parentSubject??loaded.draft.subject):loaded.parentSubject??loaded.draft.subject,
         body,
         reservation.messageId,
         letter ? new Uint8Array(await letter.arrayBuffer()) : undefined,
@@ -356,9 +360,9 @@ export const notify = internalAction({
       caseId: args.caseId,
     });
     if (
-      !loaded?.item.chase ||
+      !loaded?.item.chase || loaded.item.demo?.chaseStory ||
       !loaded.connection?.chaseSendGranted ||
-      !chaseAddressAllowed(loaded.item.chase.email, process.env.CHASE_ALLOWLIST)
+      !(chaseAddressAllowed(loaded.item.chase.email, process.env.CHASE_ALLOWLIST)||confirmedDemoCc(loaded.item)===loaded.item.chase.email)
     )
       return null;
     const id = await ctx.runMutation(internal.chase.reserveNotice, {
@@ -399,8 +403,8 @@ export const notify = internalAction({
               from,
               [loaded.item.chase.email],
               [],
-              `Genie update [${loaded.item.code}]`,
-              body,
+              loaded.item.demo?demoEmailSubject(`Genie update [${loaded.item.code}]`):`Genie update [${loaded.item.code}]`,
+              loaded.item.demo?demoEmailBody(body):body,
               `<${crypto.randomUUID()}@refundgenie.local>`,
             ),
           }),

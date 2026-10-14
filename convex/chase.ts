@@ -1,3 +1,4 @@
+import {demoRecipientsAllowed,confirmedDemoCc} from '../lib/demo-email';
 import { isPassengerEscalation, escalationSendLine } from "../lib/chase-escalation";
 import {
   query,
@@ -90,6 +91,7 @@ export const authorise = internalMutation({
       item.stage.startsWith("CLOSED")
     )
       throw new Error("Confirm your flight facts and PNR first");
+    if(item.demo?.emailRequired&&(!item.demo.emailConfirmedAt||args.email!==item.email))throw new Error('Confirm your demo email first');
     if(item.demo?.chaseStory && (item.chase || item.demo.chasePhase!=='authority')) throw new Error('The sample permission is already saved');
     await ctx.db.patch(item._id, {
       chase: {
@@ -224,10 +226,7 @@ export const reserve = internalMutation({
     // Until a later authorised release, every recipient (including the passenger) must be on the test list.
     if (!item.demo && process.env.CHASE_REAL_COMPANIES_ENABLED !== "true")
       return null;
-    const allowed = chaseRecipientsAllowed(
-      recipients,
-      process.env.CHASE_ALLOWLIST,
-    );
+    const allowed = demoRecipientsAllowed(item,[draft.to??""],[...(draft.cc??[]),item.chase.email],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS);
     const inputs = await ctx.db
       .query("inputs")
       .withIndex("by_case", (q) => q.eq("caseId", item._id))
@@ -331,6 +330,7 @@ export const stillActive = internalQuery({
     if (
       !item?.chase?.active ||
       item.chase.authorisedAt !== args.authorisedAt ||
+      (item.demo?.emailRequired&&!confirmedDemoCc(item)) ||
       item.stage.startsWith("CLOSED") ||
       (item.demo && item.demo.expiresAt <= Date.now())
     )

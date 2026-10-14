@@ -1,3 +1,4 @@
+import {hashToken} from './lib/access';
 import {mutation,internalMutation,internalQuery,query} from './_generated/server';
 import {v} from 'convex/values';
 import {internal} from './_generated/api';
@@ -19,7 +20,7 @@ export const create=mutation({args:{tokenHash:v.string(),deviceId:v.string()},re
  let code='';for(let i=0;i<5;i++){code=`RG-${crypto.randomUUID().replaceAll('-','').slice(0,6).toUpperCase()}`;if(!await ctx.db.query('cases').withIndex('by_code',q=>q.eq('code',code)).first())break;if(i===4)throw new Error('Please try again');}
  const now=Date.now(),day=todayIST(),facts={...sampleFlight(),airline:'Demo Air',bookedVia:'DemoTrips',flightName:'Sample domestic flight',cancellationDate:addDays(day,-30)},plan=publicDemoPlan(planFlight(facts,day,{},process.env.TICKBACK_DEMO_ADDRESS));
  if(!plan.body||!plan.to)throw new Error('Demo mail could not be prepared');
- const caseId=await ctx.db.insert('cases',{code,tokenHash:args.tokenHash,refundType:'flight',stage:'READY',factsConfirmedAt:now,ladderLevel:0,draftsShown:1,tier:'free_check',paidState:'none',createdAt:now,updatedAt:now,facts,flightPlan:plan,owner:plan.owner,moneyWith:plan.moneyWith,route:plan.route,amountPaise:540000,eventName:'Sample domestic flight',name:'Demo Passenger',demo:{kind:'flight',chaseStory:true,chasePhase:'authority',round:0,phase:'ready',now:day,expiresAt:now+7*86400000}});
+ const caseId=await ctx.db.insert('cases',{code,deviceHash:await hashToken(args.deviceId),tokenHash:args.tokenHash,refundType:'flight',stage:'READY',factsConfirmedAt:now,ladderLevel:0,draftsShown:1,tier:'free_check',paidState:'none',createdAt:now,updatedAt:now,facts,flightPlan:plan,owner:plan.owner,moneyWith:plan.moneyWith,route:plan.route,amountPaise:540000,eventName:'Sample domestic flight',name:'Demo Passenger',demo:{kind:'flight',chaseStory:true,emailRequired:true,chasePhase:'authority',round:0,phase:'ready',now:day,expiresAt:now+7*86400000}});
  await ctx.db.insert('inputs',{caseId,kind:'initial',text:`Made-up domestic Delhi to Mumbai flight, Demo Air via DemoTrips. Airline cancelled ${facts.cancellationDate}. Rs 5400 paid by UPI. PNR SAMPLE, booking TEST-ID. Full refund not received.`,storageIds:[],createdAt:now});
  await ctx.db.insert('drafts',{caseId,company:'DemoTrips',recipientRole:plan.nextPerson?.role,rung:plan.rung,step:plan.nextStep,channel:'email',to:plan.to??undefined,cc:plan.cc,subject:`Demo: Flight refund chase [${code}]`,body:finishMail(plan.body,code,[],'Demo Passenger'),attachChecklist:[],status:'ready',createdAt:now});
  await ctx.db.insert('caseEvents',{caseId,type:'created',summary:'Demo started. No real booking, company or money.',actor:'user',createdAt:now});

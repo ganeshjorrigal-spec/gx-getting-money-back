@@ -25,6 +25,8 @@ import type * as checkoutData from "../checkoutData.js";
 import type * as crons from "../crons.js";
 import type * as demo from "../demo.js";
 import type * as demoActions from "../demoActions.js";
+import type * as demoEmail from "../demoEmail.js";
+import type * as demoEmailActions from "../demoEmailActions.js";
 import type * as feedback from "../feedback.js";
 import type * as files from "../files.js";
 import type * as flightAgent from "../flightAgent.js";
@@ -78,6 +80,8 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   demo: typeof demo;
   demoActions: typeof demoActions;
+  demoEmail: typeof demoEmail;
+  demoEmailActions: typeof demoEmailActions;
   feedback: typeof feedback;
   files: typeof files;
   flightAgent: typeof flightAgent;

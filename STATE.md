@@ -18,3 +18,4 @@ On mainf47b849, fixed paid gemini-3.5-flash-lite settings verified without print
 
 ## D-048 email required/demo CC, in progress, unpublished
 Part1 built: email required at real confirm, earlier same-case email reused, optional phone retained. Backend draft gating and CC regression proof.326tests/44files/type check pass. Part2 confirmation link/confirmed demo CC and Part3 local proof next. No publish. Nothing DONE.
+Part2 built and static export/type/337tests46files pass. Confirmation/CC/limits tests exercise actual mutations/actions with mocked transport. No publish; codegen uploaded analysis candidates but never activated a deployment (installed CLI verified). Part3 local UI/inbox proof next; real Gmail arrival remains unverified without deployment/local mailbox credentials. Nothing DONE.
