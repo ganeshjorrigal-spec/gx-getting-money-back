@@ -1,0 +1,22 @@
+[
+  {
+    "buttonTop": 726,
+    "className": "button button-primary",
+    "height": 49.60000228881836,
+    "label": "Simulated",
+    "labelTop": 733,
+    "overflow": false,
+    "text": "Play the simulated call",
+    "width": 375
+  },
+  {
+    "buttonTop": 638.6000366210938,
+    "className": "button button-primary",
+    "height": 49.60000228881836,
+    "label": "Simulated",
+    "labelTop": 645.6000366210938,
+    "overflow": false,
+    "text": "Play the simulated call",
+    "width": 1280
+  }
+]

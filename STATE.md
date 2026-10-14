@@ -1,8 +1,10 @@
 # Current state, 15 October 2026
 
-## D-051 Part B, branch d051-d052
-Ganesh closed Part A and explicitly moved Parts B/C before the supervised call, on this branch only. Main/live unchanged. Demo intake reuses FlightCaseView question, free-check and confirm screens, step bar, summary and ask-once answers. Fixed Demo Air/DemoTrips; typed name, verified email and optional phone; five non-personal samples. Typed facts drive saved case/planner/draft/recovered amount. Recent cancellations stay WAIT in free check; starting sample permission explicitly advances only the demo clock past due before its first mail.
-359 tests across48files pass; type check and static export pass. Local 21-step walk (original17 plus4 intake steps) reaches Money landed in14.717seconds with replaced mail/call transport. This is not a live Gmail speed proof. Screenshots each intake state at375/1280: docs/qa/d051-d052-2026-10-15. Nothing DONE.
+## D-051 / D-052 branch for HQ review
+Branch d051-d052, based on main ed73863. Ganesh closed Part A and explicitly authorised this branch work before the separate supervised call. Part B demo intake and D-052 items1-5 implemented, one source/proof commit per item. Main/live remain unchanged (published source1a181a9).
+Demo uses real flight question/free-check/confirm screens and planner, fixed Demo Air/DemoTrips, verified email, typed personal fields, five non-personal samples. Entered date/amount/PNR/booking/flight/name reach saved case/draft; recent cancellation stays WAIT until disclosed demo clock advance at permission. Existing demos preserved. Header/menu, /cases/ with saved list/old-address note, looping/offscreen/reduced-motion hero, newest-only chase history, primary simulated playback all present.
+368tests/51files pass; type/export pass; /cases/index.html generated and8local public routes200. Local21-step walk (original17 plus4 intake steps) reaches Money landed in11.176s, transport replaced, no actual Gmail or phone proof.375/1280screenshots and detector[] in docs/qa/d051-d052-2026-10-15. Nothing DONE.
 
-## Next
-D-052 items1-2 checked, screenshots/tests saved; /cases/ exported,8local routes200. D-052 item3 animation checked; speed no-drop gate OPEN (90 vs97 same-day comparison with differing CPU benchmarks). D-052 item4 checked with2tests and375/1280 expand/hide screenshots. Implement D-052 item5, one commit each, no publish/deploy/env/key/calling changes. Supervised live call is separate and has not run. At10:00 Ganesh will request main. Existing published source1a181a9 and deployments unchanged.
+## Open gate and next step
+Speed no-drop is OPEN: C3 final mobile Lighthouse90/100 versus same-day pre-loop97/100, CPU benchmark1147 versus3266. Raw baseline/final reports retained. Do not claim no regression or publish this branch before HQ review. Live Gmail timing remains untested here.
+Wait for HQ review. Supervised call has not run; switch to main only when Ganesh asks at10:00. No publish/deploy/env/key/calling/allow-list changes made or authorised next. Prior unrelated proof gaps remain in historical logs.

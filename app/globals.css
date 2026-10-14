@@ -680,3 +680,6 @@ button:disabled {cursor:default;opacity:.6;}
 .animated-sample.sample-paused *{animation-play-state:paused!important}
 
 .chase-history-toggle{display:block;min-height:44px;margin-top:8px;font-size:var(--text-small);text-decoration:underline;text-underline-offset:3px}
+
+.demo-call-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-block:16px}.demo-call-controls>.button{min-height:44px}
+@media(max-width:760px){.demo-call-controls{flex-wrap:nowrap;gap:8px}.flight-case .demo-call-controls>.button{flex:1;min-width:0;padding-inline:12px;font-size:14px;margin-right:0}.demo-call-controls>.status-badge{flex:none}}
