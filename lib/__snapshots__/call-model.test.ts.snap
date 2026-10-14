@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`instructions, first messages, tools, recording and time limits match the pre-change contract 1`] = `
+{
+  "artifactPlan": {
+    "recordingEnabled": true,
+  },
+  "firstMessage": "Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE.",
+  "maxDurationSeconds": 1500,
+  "model": {
+    "messages": [
+      {
+        "content": "You are Refund Genie Recovery Agent. Speak English or Hindi as needed. Ask refund status, processing date, who holds the money and reference. Use only PNR and confirmed booking facts. Never request, repeat, accept or send OTP, password, card or bank details. Never accept vouchers/credit shells, cancel or change bookings, or pretend to be the passenger. Do not guess menu keys: listen then use dtmf. When identity verification is required, say I'll connect the passenger now and use transferCall. If the passenger does not answer, end politely and say they will call back. Stop after 25 minutes including hold. Company: Demo Air.",
+        "role": "system",
+      },
+    ],
+    "tools": [
+      {
+        "type": "dtmf",
+      },
+      {
+        "type": "endCall",
+      },
+      {
+        "destinations": [
+          {
+            "description": "The authorised passenger, only for identity verification",
+            "message": "I'll connect the passenger now.",
+            "number": "synthetic-passenger",
+            "transferPlan": {
+              "fallbackPlan": {
+                "endCallEnabled": true,
+                "message": "The passenger will call back. Thank you.",
+              },
+              "mode": "warm-transfer-experimental",
+              "transferAssistant": {
+                "firstMessage": "I reached Demo Air about your refund for PNR SAMPLE. They need to speak to you to verify identity. I have shared no private code.",
+                "maxDurationSeconds": 15,
+                "model": {
+                  "messages": [
+                    {
+                      "content": "Give only the short refund summary. Connect only if the passenger accepts. Call transferCancel for no answer, voicemail, refusal or any private verification details. Never read codes.",
+                      "role": "system",
+                    },
+                  ],
+                },
+              },
+            },
+            "type": "number",
+          },
+        ],
+        "type": "transferCall",
+      },
+    ],
+  },
+}
+`;

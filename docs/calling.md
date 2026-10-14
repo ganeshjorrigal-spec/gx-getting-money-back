@@ -13,9 +13,10 @@ Ganesh sets these in the existing Convex deployment's Environment Variables scre
 - CALL_ALLOWLIST: exact approved test phone numbers, in international form beginning with +. Include the destination and passenger patch-in number. Neither the app nor Codex adds numbers.
 - CALL_DAILY_CAP_USD: your maximum daily call budget in US dollars.
 - CALL_MAX_COST_USD: reserve the maximum full 25-minute call cost, including the second transfer leg, at your configured rate. Missing/zero budget blocks live calls. Failed attempts consume the daily count and reservation. No automatic retry.
-- GEMINI_MODEL stays at the already approved model. Do not change it to enable calls.
+- VAPI_MODEL_PROVIDER and VAPI_MODEL: optional call-only model settings. Leave both unset. Calls default to Vapi OpenAI GPT-4.1 Mini, including the transfer assistant.
+- GEMINI_MODEL stays at the already approved model for reading, planning and drafting. It is not used for calls.
 
-No webhook secret is needed: this module reads call status directly with the private API key. It uses only the number behind the Vapi ID; no phone carrier is named or hard-coded. The saved assistant should use the already approved model and support English/Hindi. Per-call instructions, 25-minute stop, DTMF and a short assistant-based warm transfer are applied by code.
+No webhook secret is needed: this module reads call status directly with the private API key. It uses only the number behind the Vapi ID; no phone carrier is named or hard-coded. The saved assistant should support English/Hindi. Code selects the call model using those two optional settings, without sending a Gemini key to Vapi. Per-call instructions, 25-minute stop, DTMF and a short assistant-based warm transfer are applied by code.
 
 First test: save two phones in CALL_ALLOWLIST, in order: the first is the passenger, the second answers as the demo airline. Explicitly approve one supervised demo call during Monday to Saturday, 10:00 to 18:00 IST. Use sample data and verify the opening, safe transcript, next step and confirming mail, then test the patch-in between the two phones. Nothing after the transfer is kept, and a private verification or transfer call has no saved recording link. With only one saved number, the call record says the patch-in cannot be tested. Live transport and actual phone transfer are untested until that supervised test. Do not set live while expecting a simulated-only session. Missing either Vapi key or phone ID forces simulated even if CALL_MODE says live.
 
