@@ -1,8 +1,7 @@
-# Pending supervised call review, 15 October 2026
+# Call-tool fix and review, 15 October 2026
 
-- [ ] HQ reviews failed call n177azp5xf5vnxc22nppt64knd8gac58 on RG-06B69F: Vapi rejects duplicate endCall tools. Exactly one attempt, no retry.
-- [ ] Review fixture-derived duration65 and patchIntrue retained/displayed on immediate live rejection. No successful transfer demonstrated.
-- [ ] Supervised opening, status/reference, transfer/privacy and confirming-mail checks remain unmet; screenshot proof unavailable after capture failure. Safe record saved in docs/qa/live-call-2026-10-15/call-failure.json.
-- [ ] CALL_MODE=simulated restored by owner and verified. No agent environment/key/settings/allow-list changes, code changes or publish. Mark nothing DONE.
-- [ ] Any retry needs explicit Ganesh instruction and must be within approved window. No real-company call or automatic retry.
-- [ ] D-051/D-052 remains on d051-d052 at e092e5e for HQ review; its follow-ups are separate.
+- [ ] Publish committed Part1 fix only after passed gates: Convex then Cloudflare; live route checks.
+- [ ] Correct only previously rejected call n177azp5xf5vnxc22nppt64knd8gac58 and verify zero duration/no patch-in/empty transcript and safe failure history.
+- [ ] Append final deploy and live proof; push; wait for HQ review. Mark nothing DONE.
+- [ ] No calls, settings/env/key/allow-list changes. Part2 supervised retry not started or authorised by this Part1 instruction.
+- [ ] Separate d051-d052 branch/review follow-ups remain untouched; prior unrelated proof gaps remain logged.

@@ -3,6 +3,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
 import { callGate, callMode, callLabel, safeTranscript, demoPhones, confirmingCallMail } from "../lib/calls";
+import {callingCopy} from "../app/copy";
 import { safeCallResult } from "../lib/call-transport";
 import { todayIST } from "../lib/dates";
 import { chaseRows,chaseNext } from "../lib/chase-view";
@@ -36,9 +37,11 @@ export const queued=internalMutation({args:{id:v.id("calls"),externalId:v.string
 export const finish=internalMutation({args:{id:v.id("calls"),status:v.union(v.literal("completed"),v.literal("failed")),transcript:v.string(),reason:v.optional(v.string()),recordingUrl:v.optional(v.string()),recordingKind:v.optional(v.literal("roleplay")),costUsd:v.number(),durationSeconds:v.number(),patchIn:v.boolean(),privacyNote:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
  const call=await ctx.db.get(args.id);if(!call||!['reserved','queued'].includes(call.status))return null;const item=await ctx.db.get(call.caseId);if(!item)return null;
  if(call.mode==="live"&&args.costUsd>call.reservedUsd){const budget=await ctx.db.query("callBudgets").withIndex("by_day",q=>q.eq("day",todayIST(new Date(call.createdAt)))).unique();if(budget)await ctx.db.patch(budget._id,{reserved:budget.reserved+args.costUsd-call.reservedUsd});}
+ const rejected=call.status==="reserved"&&args.status==="failed"&&!call.externalId;
+ if(rejected)args={...args,transcript:"",durationSeconds:0,patchIn:false,recordingUrl:undefined,recordingKind:undefined};
  const evidence=safeCallResult({transcript:args.transcript,recordingUrl:args.recordingUrl,patchIn:args.patchIn,endedReason:args.reason}),text=evidence.transcript,recordingUrl=evidence.recordingUrl;
  await ctx.db.patch(call._id,{status:args.status,transcript:text,privacyNote:evidence.privacyNote??args.privacyNote,recordingKind:args.recordingKind,reason:args.reason?safeTranscript(args.reason):undefined,recordingUrl:recordingUrl&&/^https:\/\//.test(recordingUrl)?recordingUrl:undefined,costUsd:args.costUsd,durationSeconds:Math.min(1500,args.durationSeconds),patchIn:args.patchIn||evidence.patchIn,endedAt:Date.now()});
- await ctx.db.insert("caseEvents",{caseId:item._id,type:args.status==="failed"?"call_failed":"call_completed",summary:`${call.label} · ${call.company} · ${Math.min(1500,args.durationSeconds)} seconds${args.patchIn?" · passenger patch-in simulated/requested":""}${args.status==="failed"?". The call could not connect. Genie will follow up by mail.":""}`,actor:"agent",createdAt:Date.now()});
+ await ctx.db.insert("caseEvents",{caseId:item._id,type:args.status==="failed"?"call_failed":"call_completed",summary:rejected?`${call.label} · ${call.company} · ${callingCopy.callCouldNotStart(safeTranscript(args.reason??""))}. Genie will follow up by mail.`:`${call.label} · ${call.company} · ${Math.min(1500,args.durationSeconds)} seconds${args.patchIn?" · passenger patch-in simulated/requested":""}${args.status==="failed"?". The call could not connect. Genie will follow up by mail.":""}`,actor:"agent",createdAt:Date.now()});
  if(!item.chase?.active||item.chase.authorisedAt!==call.authorisedAt||item.stage.startsWith("CLOSED"))return null;
  if(args.status==="failed"||!text||!text.split("\n").some(line=>line.startsWith("Care:"))){await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});return null;}
  const runId=crypto.randomUUID();await ctx.db.insert("inputs",{caseId:item._id,kind:"reply",text:`${call.label}. Reply from ${call.company} care:\n${text.split("\n").filter(line=>line.startsWith("Care:")).map(line=>line.replace(/^Care:/,call.company+":")).join("\n")}`,sender:item.demo?process.env.TICKBACK_DEMO_ADDRESS:undefined,storageIds:[],createdAt:Date.now(),receivedAt:Date.now(),runId});await ctx.db.patch(item._id,{stage:"TRIAGING",latestRunId:runId,progress:{step:"reading",at:Date.now()}});
@@ -51,6 +54,18 @@ export const prepareConfirmation=internalMutation({args:{id:v.id("calls")},retur
  if(!item.demo?.chaseStory)await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});return draftId;
 }});
 export const list=query({args:access,returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);return ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(30);}});
+// Admin correction only. Never sends, schedules or retries a call.
+export const correctRejectedCall=internalMutation({args:{id:v.id('calls')},returns:v.null(),handler:async(ctx,{id})=>{
+ const call=await ctx.db.get(id);
+ if(!call||call.mode!=='live'||call.status!=='failed'||call.externalId||!call.reason)throw new Error('Use a live call rejected before it started');
+ const events=await ctx.db.query('caseEvents').withIndex('by_case',q=>q.eq('caseId',call.caseId).gte('createdAt',call.createdAt).lte('createdAt',(call.endedAt??call.createdAt)+1000)).take(20);
+ const matching=events.filter(e=>e.type==='call_failed'&&e.summary.startsWith(`${call.label} · ${call.company} ·`));
+ if(matching.length!==1)throw new Error('Rejected call history is ambiguous; no correction made');
+ const reason=safeTranscript(call.reason);
+ await ctx.db.patch(id,{durationSeconds:0,patchIn:false,transcript:'',recordingUrl:undefined,recordingKind:undefined,roleplayTranscript:undefined,privacyNote:undefined,reason});
+ await ctx.db.patch(matching[0]._id,{summary:`${call.label} · ${call.company} · ${callingCopy.callCouldNotStart(reason)}. Genie will follow up by mail.`});
+ return null;
+}});
 // Admin CLI only; never callable from the public browser.
 export const attachRecording=internalMutation({args:{id:v.id("calls"),url:v.string(),transcript:v.string()},returns:v.null(),handler:async(ctx,args)=>{const call=await ctx.db.get(args.id);const item=call?await ctx.db.get(call.caseId):null;if(!call||!item?.demo||!/^https:\/\//.test(args.url)||call.patchIn||call.privacyNote||!safeCallResult({transcript:args.transcript,recordingUrl:args.url}).recordingUrl)throw new Error("Use a demo recording with no private verification details");await ctx.db.patch(call._id,{recordingUrl:args.url,roleplayTranscript:safeTranscript(args.transcript),recordingKind:"roleplay"});return null;}});
 

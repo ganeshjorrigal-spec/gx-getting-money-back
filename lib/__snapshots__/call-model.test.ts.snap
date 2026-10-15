@@ -19,9 +19,6 @@ exports[`instructions, first messages, tools, recording and time limits match th
         "type": "dtmf",
       },
       {
-        "type": "endCall",
-      },
-      {
         "destinations": [
           {
             "description": "The authorised passenger, only for identity verification",

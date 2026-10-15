@@ -107,6 +107,7 @@ export const callingCopy = {
  demoRecording: "Role-play recording. No real company was called.",
  browserReading: "Saved fixture read aloud by your browser; not a live call or a recorded person.",
  demoTranscript: "Read the simulated call transcript",
+ callCouldNotStart: (reason:string) => `Call could not start${reason?`: ${reason}`:"."}`,
  callFailed: "The call could not connect. Genie will follow up by mail.",
  patchSimulated: "Passenger patch-in simulated. No phone rang.",
  patchRequested: "Passenger patch-in requested.",

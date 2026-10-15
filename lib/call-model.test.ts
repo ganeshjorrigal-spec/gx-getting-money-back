@@ -1,7 +1,13 @@
 import {expect,it,vi} from 'vitest';
 import {assistantOverrides,startCall} from './call-transport';
 const details={name:'Demo Passenger',pnr:'SAMPLE',company:'Demo Air',mobile:'synthetic-passenger'};
-const transfer=(a:ReturnType<typeof assistantOverrides>)=>{const tool=a.model.tools[2];if(!('destinations' in tool))throw new Error('Transfer missing');return tool.destinations[0].transferPlan.transferAssistant;};
+const transfer=(a:ReturnType<typeof assistantOverrides>)=>{const tool=a.model.tools.find(t=>t.type==='transferCall');if(!tool||!('destinations' in tool))throw new Error('Transfer missing');return tool.destinations[0].transferPlan.transferAssistant;};
+it('does not duplicate the saved assistant End Call tool and keeps exactly one passenger transfer',()=>{
+ const a=assistantOverrides(details),types=['endCall',...a.model.tools.map(t=>t.type)];
+ expect(new Set(types).size).toBe(types.length);
+ expect(a.model.tools.filter(t=>t.type==='transferCall')).toHaveLength(1);
+ expect(a.model.tools.map(t=>t.type)).toEqual(['dtmf','transferCall']);
+});
 it('call assistants default to Vapi OpenAI GPT-4.1 Mini, ignoring Gemini settings',()=>{
  const a=assistantOverrides(details,{GEMINI_MODEL:'gemini-fixture'});
  expect(a.model).toMatchObject({provider:'openai',model:'gpt-4.1-mini'});
