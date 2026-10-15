@@ -1,8 +1,8 @@
-# Pending supervised call and review, 15 October 2026
+# Pending supervised call review, 15 October 2026
 
-- [ ] Owner confirms CALL_MODE back to simulated after reporting live mode; reset requested, not verified yet.
-- [ ] Confirm two separately answerable receiving phones. One saved number is the SIP trunk number; receiving route unconfirmed. No allow-list changes by Codex.
-- [ ] Resume one supervised demo call on RG-06B69F only within approved 10:00–18:00 IST window after owner readiness. No call has started. Stop on failure, no automatic retry.
-- [ ] Capture safe record/transcript/privacy/cost/screenshots and confirming-mail proof if a call proceeds; ask owner to disable live mode immediately afterward.
-- [ ] D-051/D-052 remains on d051-d052 at e092e5e for HQ review; do not apply its follow-ups as part of call task.
-- [ ] No publish, environment/key/calling-setting change or real-company contact by Codex. Mark nothing DONE.
+- [ ] HQ reviews failed call n177azp5xf5vnxc22nppt64knd8gac58 on RG-06B69F: Vapi rejects duplicate endCall tools. Exactly one attempt, no retry.
+- [ ] Review fixture-derived duration65 and patchIntrue retained/displayed on immediate live rejection. No successful transfer demonstrated.
+- [ ] Supervised opening, status/reference, transfer/privacy and confirming-mail checks remain unmet; screenshot proof unavailable after capture failure. Safe record saved in docs/qa/live-call-2026-10-15/call-failure.json.
+- [ ] CALL_MODE=simulated restored by owner and verified. No agent environment/key/settings/allow-list changes, code changes or publish. Mark nothing DONE.
+- [ ] Any retry needs explicit Ganesh instruction and must be within approved window. No real-company call or automatic retry.
+- [ ] D-051/D-052 remains on d051-d052 at e092e5e for HQ review; its follow-ups are separate.
