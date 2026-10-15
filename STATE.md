@@ -1,10 +1,11 @@
 # Current state, 15 October 2026
 
-## D-051 / D-052 branch for HQ review
-Branch d051-d052, based on main ed73863. Ganesh closed Part A and explicitly authorised this branch work before the separate supervised call. Part B demo intake and D-052 items1-5 implemented, one source/proof commit per item. Main/live remain unchanged (published source1a181a9).
-Demo uses real flight question/free-check/confirm screens and planner, fixed Demo Air/DemoTrips, verified email, typed personal fields, five non-personal samples. Entered date/amount/PNR/booking/flight/name reach saved case/draft; recent cancellation stays WAIT until disclosed demo clock advance at permission. Existing demos preserved. Header/menu, /cases/ with saved list/old-address note, looping/offscreen/reduced-motion hero, newest-only chase history, primary simulated playback all present.
-368tests/51files pass; type/export pass; /cases/index.html generated and8local public routes200. Local21-step walk (original17 plus4 intake steps) reaches Money landed in11.176s, transport replaced, no actual Gmail or phone proof.375/1280screenshots and detector[] in docs/qa/d051-d052-2026-10-15. Nothing DONE.
+## d051-d052 HQ fixes READY FOR REVIEW, unpublished
+Branch d051-d052 only, source fix eed3336. Added outlined44px Fill sample buttons on each sample field's label row, right-aligned with field-specific accessible names. Date, amount, PNR, booking and flight fill correctly; personal fields remain typed. Existing older demos and non-demo labels preserved.18screens at checked375/1280CSS viewports, including actual facts/date and amount steps. Keyboard Shift+Tab/Enter verified; aligned rows, no overflow, detector[]. Proof docs/qa/d051-d052-fixes-2026-10-15.
 
-## Open gate and next step
-Speed no-drop is OPEN: C3 final mobile Lighthouse90/100 versus same-day pre-loop97/100, CPU benchmark1147 versus3266. Raw baseline/final reports retained. Do not claim no regression or publish this branch before HQ review. Live Gmail timing remains untested here.
-Wait for HQ review. Supervised call has not run; switch to main only when Ganesh asks at10:00. No publish/deploy/env/key/calling/allow-list changes made or authorised next. Prior unrelated proof gaps remain in historical logs.
+## Fair speed and regression gates pass
+Three main and three branch Lighthouse13.5mobile runs alternated serially with identical settings and no concurrent builds/tests/benchmarks. Main scores99/99/99, branch99/99/98: both medians99, difference0within allowed3points. TBT medians0/0ms, benchmark medians2622/2521. All six raw reports retained. Earlier speed gate is superseded by this passing comparison, not erased.
+368tests/51files pass in4.20s; type check clean, final static export16pages passes. Saved21-step local walk reaches Money landed in11.778s; transport replaced, no actual Gmail/phone proof. Comparison main copy moved outside test tree after initial combined727test discovery; clean branch-only run count above.
+
+## Boundaries and next step
+No publish, env, key, calling or allow-list changes; no actual mail/call. Main remains0f15c1f after initial requested HQ-doc pull; no source edits/commits/merge there. Main's call-tool fix/review is separate. Nothing DONE. Push branch proof then wait for HQ review; no merge/publication authorised. Live Gmail intake timing and prior unrelated proof gaps remain in historical logs.

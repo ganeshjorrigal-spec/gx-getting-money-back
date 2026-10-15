@@ -1,6 +1,6 @@
-# Review and separate supervised call, 15 October 2026
-- [ ] HQ review branch d051-d052, D-051 and D-052 source/proof commits. Nothing DONE.
-- [ ] C3 speed no-drop remains OPEN (90 versus97 with differing CPU benchmark); review before publication.
-- [ ] Live Gmail delivery/time not verified on this unpublished branch.
-- [ ] Supervised call is separate, has not run; switch to main only when Ganesh asks at10:00.
-- [ ] No publish/deploy/env/key/calling/allow-list changes or real-company mail/calls.
+# Awaiting HQ branch review, 15 October 2026
+
+- [ ] HQ reviews d051-d052 source eed3336 and docs/qa/d051-d052-fixes-2026-10-15:18screens, fair speed medians99/99,368tests/type/export/21-step walk pass. Nothing DONE.
+- [ ] Live Gmail delivery/time with D-051 intake remains untested until a separately authorised publish.
+- [ ] No merge, publish, env/key/calling/allow-list changes authorised by this task. Main call work/review stays separate and untouched.
+- [ ] Prior unrelated contact/payment/video/calendar proof gaps remain in historical logs.

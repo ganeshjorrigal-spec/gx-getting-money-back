@@ -1,0 +1,28 @@
+{
+  "order": [
+    "main-1",
+    "branch-1",
+    "main-2",
+    "branch-2",
+    "main-3",
+    "branch-3"
+  ],
+  "mainCommit": "0f15c1f",
+  "branchBase": "e092e5e",
+  "identicalSettings": true,
+  "medians": {
+    "main": {
+      "score": 99,
+      "tbtMs": 0,
+      "benchmarkIndex": 2622
+    },
+    "branch": {
+      "score": 99,
+      "tbtMs": 0,
+      "benchmarkIndex": 2521
+    }
+  },
+  "scoreDifference": 0,
+  "pass": true,
+  "conditions": "Same machine; static local exports; alternating serial fresh Chrome Lighthouse runs; no builds, tests or other benchmark jobs during measurement. Existing user apps left open and idle."
+}
