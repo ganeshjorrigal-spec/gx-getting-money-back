@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "eed3336",
+  "branch": "d051-d052",
+  "mainReferenceUnchangedAfterPull": "0f15c1f4933ea8cce80597457c107dae3fed5758",
+  "testsPassed": 368,
+  "testFilesPassed": 51,
+  "suiteSeconds": 4.20,
+  "typeCheck": "PASS",
+  "staticExport": "PASS, 16 pages including cases/index.html",
+  "walk": {"passed": 21, "durationMs": 11778, "outcome": "Money landed · demo", "transport": "Local replacement; no actual Gmail or phone call"},
+  "screenshots": 18,
+  "cssViewports": [375,1280],
+  "speedGate": "PASS: main median99, branch median99; allowed drop3 points",
+  "publication": false,
+  "environmentChanges": false,
+  "callingChanges": false,
+  "markedDone": false
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "export": "out/index.html"
+  },
+  {
+    "route": "/terms/",
+    "status": 200,
+    "export": "out/terms/index.html"
+  },
+  {
+    "route": "/refund-policy/",
+    "status": 200,
+    "export": "out/refund-policy/index.html"
+  },
+  {
+    "route": "/contact/",
+    "status": 200,
+    "export": "out/contact/index.html"
+  },
+  {
+    "route": "/privacy/",
+    "status": 200,
+    "export": "out/privacy/index.html"
+  },
+  {
+    "route": "/start/",
+    "status": 200,
+    "export": "out/start/index.html"
+  },
+  {
+    "route": "/demo-confirm/",
+    "status": 200,
+    "export": "out/demo-confirm/index.html"
+  },
+  {
+    "route": "/cases/",
+    "status": 200,
+    "export": "out/cases/index.html"
+  }
+]

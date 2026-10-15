@@ -31,6 +31,27 @@
     "name": "Open confirmation link"
   },
   {
+    "action": "click",
+    "role": "button",
+    "name": "Fill all samples"
+  },
+  {
+    "action": "click",
+    "role": "button",
+    "name": "UPI"
+  },
+  {
+    "action": "fill",
+    "role": "textbox",
+    "name": "Your name",
+    "value": "Fixture Passenger"
+  },
+  {
+    "action": "click",
+    "role": "button",
+    "name": "Looks right"
+  },
+  {
     "action": "assert",
     "role": "heading",
     "name": "Let Genie send and follow up"

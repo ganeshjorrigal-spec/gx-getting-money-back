@@ -1,0 +1,26 @@
+[
+  {
+    "empty": true,
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "empty": true,
+    "overflow": false,
+    "width": 1280
+  },
+  {
+    "overflow": false,
+    "sampleLinks": 1,
+    "width": 375
+  },
+  {
+    "overflow": false,
+    "sampleLinks": 1,
+    "width": 1280
+  },
+  {
+    "landingOldNote": 0,
+    "landingSavedSections": 0
+  }
+]

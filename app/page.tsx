@@ -1,3 +1,4 @@
+import {SiteHeader} from './components/site-header';
 import Link from 'next/link';
 import {PolicyFooter} from './policy-footer';
 import {flightLandingCopy as c,landingSections as s,callingCopy,productName} from './copy';
@@ -6,7 +7,7 @@ import {Icon,SourceLine} from './components/receipts';
 import {AnimatedSample} from './components/animated-sample';
 import {BrandMark,Mascot,Scene,BrandStrip} from './components/brand';
 export default function Home(){return <main className="home-shell">
- <header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><nav aria-label="Main"><a href="#how-it-works">{c.howTitle}</a><Link prefetch={false} href="/start/?demo=flight">{c.headerLink}</Link><Link prefetch={false} className="button button-primary" href="/start/">{c.primary}</Link></nav></header>
+ <SiteHeader/>
  <section className="hero section-wrap" id="hero"><div className="hero-copy"><p className="eyebrow">{c.eyebrow}</p><h1>{c.headline}</h1><p className="hero-sub">{c.sub}</p><div className="hero-actions"><Link prefetch={false} className="button button-primary" href="/start/">{c.primary}</Link><Link prefetch={false} className="button button-secondary" href="/start/?demo=flight">{c.secondary}</Link></div><p className="release-note">{c.releaseNote}</p></div><div className="hero-case"><Mascot className="hero-mascot"/><AnimatedSample/></div></section>
  <LandingEnhancements/>
  <section className="brand-section section-wrap"><h2>{c.brandTitle}</h2><BrandStrip/><p className="source-note">{c.notAffiliated}</p></section>

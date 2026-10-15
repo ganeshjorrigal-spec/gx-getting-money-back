@@ -1,0 +1,170 @@
+[
+  {
+    "variant": "main",
+    "round": 1,
+    "score": 99,
+    "tbtMs": 76.95409999999993,
+    "benchmarkIndex": 1369,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  },
+  {
+    "variant": "branch",
+    "round": 1,
+    "score": 99,
+    "tbtMs": 0,
+    "benchmarkIndex": 3606.5,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  },
+  {
+    "variant": "main",
+    "round": 2,
+    "score": 99,
+    "tbtMs": 0,
+    "benchmarkIndex": 3451,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  },
+  {
+    "variant": "branch",
+    "round": 2,
+    "score": 99,
+    "tbtMs": 0,
+    "benchmarkIndex": 2419.5,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  },
+  {
+    "variant": "main",
+    "round": 3,
+    "score": 99,
+    "tbtMs": 0,
+    "benchmarkIndex": 2622,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  },
+  {
+    "variant": "branch",
+    "round": 3,
+    "score": 98,
+    "tbtMs": 0,
+    "benchmarkIndex": 2521,
+    "version": "13.5.0",
+    "settings": {
+      "formFactor": "mobile",
+      "screen": {
+        "mobile": true,
+        "width": 375,
+        "height": 812,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "method": "simulate",
+      "storageReset": true
+    }
+  }
+]

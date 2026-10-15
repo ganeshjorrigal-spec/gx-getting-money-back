@@ -1,0 +1,26 @@
+{
+  "loopFrames": [
+    {
+      "classes": "animated-sample sample-playing sample-finished",
+      "landedOpacity": "1",
+      "mailDisplay": "none",
+      "width": 375
+    },
+    {
+      "classes": "animated-sample sample-playing sample-finished",
+      "landedOpacity": "1",
+      "mailDisplay": "none",
+      "width": 1280
+    }
+  ],
+  "replayFrame": {
+    "classes": "animated-sample sample-playing"
+  },
+  "offscreenPause": true,
+  "resumed": true,
+  "reducedMotion": "unit tested; OS setting unchanged",
+  "laterObservationDuringRestart": {
+    "classes": "animated-sample"
+  },
+  "timing": "Two captures during the first final rest; restart observed. Later capture landed between restart frames; exact repeat/rest behavior covered by unit tests."
+}

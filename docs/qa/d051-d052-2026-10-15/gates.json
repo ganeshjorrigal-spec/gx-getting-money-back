@@ -1,0 +1,19 @@
+{
+  "tests": {
+    "passed": 368,
+    "files": 51,
+    "durationSeconds": 9.01
+  },
+  "typeCheck": "pass",
+  "staticExport": "pass",
+  "publicRoutes": 8,
+  "demoWalk": {
+    "originalSteps": 17,
+    "intakeSteps": 4,
+    "passed": 21,
+    "durationMs": 11176,
+    "transport": "local replacement; no external mail or call"
+  },
+  "designDetector": [],
+  "speedNoDrop": "OPEN: C3 final90 versus same-day baseline97; differing CPU benchmark; raw reports retained"
+}
