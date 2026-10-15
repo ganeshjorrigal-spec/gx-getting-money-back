@@ -1,0 +1,131 @@
+{
+  "note": "Browser capture omits scrollbars and may scale pixels. The CSS viewport was verified separately for every capture.",
+  "files": [
+    {
+      "file": "confirm-booking-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "confirm-booking-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "confirm-personal-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "confirm-personal-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "email-confirmation-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "email-confirmation-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "email-entry-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "email-entry-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "facts-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "facts-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "facts-amount-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "facts-amount-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "facts-payment-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "facts-payment-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "free-check-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "free-check-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    },
+    {
+      "file": "sample-permission-1280.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 1265,
+      "pixelHeight": 802,
+      "checkedCssViewportWidth": 1280
+    },
+    {
+      "file": "sample-permission-375.jpg",
+      "encoding": "JPEG",
+      "pixelWidth": 360,
+      "pixelHeight": 779,
+      "checkedCssViewportWidth": 375
+    }
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "keyboard": {
+    "dateSampleReachedWithShiftTab": true,
+    "activatedWithEnter": true
+  },
+  "captureNote": "Final mobile images re-shot in one fixed-width flow after one resize-race image. Desktop images from original verified pass. Screenshot files are JPEG and may omit browser scrollbars; widths below are checked CSS viewports.",
+  "captures": [
+    {
+      "step": "email-entry",
+      "buttons": [],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "email-confirmation",
+      "buttons": [],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "facts",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "When was it cancelled? (YYYY-MM-DD)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "facts-payment",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "When was it cancelled? (YYYY-MM-DD)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "facts-amount",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "free-check",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "confirm-booking",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "confirm-personal",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 789.9750366210938,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 777.9750061035156,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "sample-permission",
+      "buttons": [],
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "step": "email-entry",
+      "buttons": [],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "email-confirmation",
+      "buttons": [],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "facts",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "When was it cancelled? (YYYY-MM-DD)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "facts-payment",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "When was it cancelled? (YYYY-MM-DD)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "facts-amount",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "How much did you pay? (rupees)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "free-check",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "confirm-booking",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "confirm-personal",
+      "buttons": [
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "PNR (demo: any made-up PNR works)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Travel-site booking ID (if you have it)",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        },
+        {
+          "border": "solid",
+          "button": "Fill sample",
+          "buttonLeft": 221.5749969482422,
+          "height": 44,
+          "label": "Flight",
+          "labelRight": 209.575008392334,
+          "sameRow": true,
+          "tabIndex": 0
+        }
+      ],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    },
+    {
+      "step": "sample-permission",
+      "buttons": [],
+      "height": 812,
+      "scrollWidth": 360,
+      "width": 375
+    }
+  ]
+}

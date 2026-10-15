@@ -474,6 +474,10 @@ button.situation-chip:hover, .chip-selected { border-color: var(--accent); backg
 
 .flight-case .case-card label { display: block; margin-block: var(--space-3); font-size: var(--text-small); font-weight: 600; }
 
+.sample-field-label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-block: var(--space-3); }
+.flight-case .case-card .sample-field-label label { margin: 0; flex: 1; }
+.flight-case .case-card .sample-field-label .sample-fill { flex: 0 0 auto; min-height: 44px; margin: 0; padding: var(--space-2) var(--space-3); font-size: var(--text-small); white-space: nowrap; }
+
 .flight-case .case-card input:not([type="checkbox"]), .flight-case .case-card textarea { width: 100%; min-height: var(--control-height); border: var(--border-width) solid var(--line); border-radius: var(--radius-control); padding: var(--space-3); background: var(--surface); color: var(--ink); font: inherit; }
 
 .flight-case .case-card textarea { min-height: 120px; }
