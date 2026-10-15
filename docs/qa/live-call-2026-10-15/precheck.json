@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "ff64b2c",
+  "date": "2026-10-15",
+  "precheck": {
+    "sixRequiredSettingsPresent": true,
+    "twoDistinctAllowlistedNumbers": true,
+    "positiveBudgets": true,
+    "modeInitiallyNotLive": true
+  },
+  "caseCode": "RG-06B69F",
+  "caseId": "jd7ccakxb7c4nvkhadhezn09jn8gb56p",
+  "sampleAuthorityPdfUsesMadeUpDetailsOnly": true,
+  "callStarted": false,
+  "callId": null,
+  "status": "WAITING_FOR_TWO_CONFIRMED_RECEIVING_PHONES",
+  "reason": "Owner reports one saved number is the SIP trunk number. Whether it rings a separate answerable phone is not confirmed.",
+  "ownerModeResetRequested": true,
+  "ownerModeResetConfirmed": false,
+  "environmentChangedByAgent": false,
+  "deployed": false,
+  "privacy": "No call, transcript, passenger speech or recording created. Private access token remains in ignored local runtime state only."
+}

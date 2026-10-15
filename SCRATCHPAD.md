@@ -1,7 +1,8 @@
-# Pending live proof and review, 15 October 2026
+# Pending supervised call and review, 15 October 2026
 
-- [ ] Ganesh's fresh live confirmation/copy delivery proof. Owner reconnect and post-publish read-only diagnostic pass. Old daily counts not reset; use another owned Gmail/fresh profile or next IST day.
-- [ ] HQ review PartA fixes0e2dca6 and republish proof. Source1a181a9 live,355tests twice/type/export/local17steps/sevenroutes200/hero It's in. Nothing DONE.
-- [ ] D-050 restored live, supervised call not run. PartB not started.
-- [ ] No further publication or calling settings change without Ganesh's instruction.
-- [ ] Prior Goibibo contact/path, post-trial payment and video/calendar proof gaps remain as logged.
+- [ ] Owner confirms CALL_MODE back to simulated after reporting live mode; reset requested, not verified yet.
+- [ ] Confirm two separately answerable receiving phones. One saved number is the SIP trunk number; receiving route unconfirmed. No allow-list changes by Codex.
+- [ ] Resume one supervised demo call on RG-06B69F only within approved 10:00–18:00 IST window after owner readiness. No call has started. Stop on failure, no automatic retry.
+- [ ] Capture safe record/transcript/privacy/cost/screenshots and confirming-mail proof if a call proceeds; ask owner to disable live mode immediately afterward.
+- [ ] D-051/D-052 remains on d051-d052 at e092e5e for HQ review; do not apply its follow-ups as part of call task.
+- [ ] No publish, environment/key/calling-setting change or real-company contact by Codex. Mark nothing DONE.
