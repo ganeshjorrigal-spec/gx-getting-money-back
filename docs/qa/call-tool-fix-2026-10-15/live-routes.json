@@ -1,0 +1,91 @@
+{
+  "sourceCommit": "17d70763667b833fe048f306073c9430fb4cd4a8",
+  "convexStaticDeploymentId": "0121f762-1b52-4244-a4c3-ca902c3daa51",
+  "cloudflareVersionId": "51cb6ac8-2f11-4df1-b273-e519cd7774df",
+  "results": [
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/terms/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/refund-policy/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/contact/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/privacy/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/start/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://refundgenie.app",
+      "path": "/demo-confirm/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/terms/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/refund-policy/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/contact/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/privacy/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/start/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "origin": "https://harmless-lyrebird-924.ap-southeast-2.convex.site",
+      "path": "/demo-confirm/",
+      "status": 200,
+      "html": true
+    }
+  ]
+}

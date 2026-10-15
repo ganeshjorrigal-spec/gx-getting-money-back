@@ -1,0 +1,17 @@
+{
+  "_id": "n177azp5xf5vnxc22nppt64knd8gac58",
+  "caseId": "jd7ccakxb7c4nvkhadhezn09jn8gb56p",
+  "mode": "live",
+  "status": "failed",
+  "reason": "Invalid Configuration. Assistant 'Refund Genie Recovery Agent' has more than one tool of type 'endCall'.",
+  "durationSeconds": 0,
+  "costUsd": 0,
+  "patchIn": false,
+  "transcriptEmpty": true,
+  "recordingLinkPresent": false,
+  "externalCallIdPresent": false,
+  "callCount": 1,
+  "confirmingDraftCreated": false,
+  "mailStates": [],
+  "correctionOnly": true
+}

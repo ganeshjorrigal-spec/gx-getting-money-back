@@ -1,0 +1,6 @@
+{
+  "caseCode": "RG-06B69F",
+  "correctedHistoryLine": "    - text: \"Live call · Demo Air · Call could not start: Invalid Configuration. Assistant 'Refund Genie Recovery Agent' has more than one tool of type 'endCall'.. Genie will follow up by mail. ·\"",
+  "hasOldPatchIn": false,
+  "hasOldDuration": false
+}

@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "17d70763667b833fe048f306073c9430fb4cd4a8",
+  "testsPassed": 359,
+  "testFilesPassed": 48,
+  "fullSuiteSeconds": 5.47,
+  "typeCheck": "PASS",
+  "staticExport": "PASS, 15 pages",
+  "snapshotChange": "Only the duplicate endCall entry removed; instructions and passenger transfer plan unchanged.",
+  "initialGateIssues": [
+    "Existing chase-screen test exceeded five-second default on initial full run; passed in full rerun without changing that test.",
+    "Initial type check found stale generated route types from the separate branch and a missing null check in new test; export refreshed generated output and the test null check was fixed."
+  ],
+  "callsPlaced": 0,
+  "assistantSettingsChanged": false,
+  "environmentChanges": false
+}
