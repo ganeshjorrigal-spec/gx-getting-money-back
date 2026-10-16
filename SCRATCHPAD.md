@@ -1,6 +1,6 @@
-# No-transfer release complete, stop for next instruction
+# Real-airline work, 16 October 2026
 
-- Published c107521 to Convex 3a036beb-7dbf-4e82-88f1-e403b9ec9d24 and Cloudflare a4969ebe-b72d-4c8a-9bd3-d5f80641c848.
-- Six requested live routes return 200. New QA demo RG-9D10BC READY, zero calls and zero mails.
-- No calls, env/key/allow-list/model/calling-setting changes or historical repairs. Nothing DONE.
-- Stop and report. Supervised call requires separate authority and fresh guard checks. Real-airline work remains pending; prerequisite now deployed. Earlier proof gaps remain logged.
+- No-transfer prerequisite deployed at c107521; do Parts 1, 2, 3, 3b, 3c, 4, one commit each.
+- No calls, real-case creation, publish, env/key/allow-list/model/calling-setting changes. Nothing DONE.
+- Read-only path check found real-case backend refusal and hidden real button; wire approved D-056 path behind existing guards, preserving public demo simulation.
+- Gates once, then wait for Ganesh's deployment line. Earlier live proof gaps remain logged.
