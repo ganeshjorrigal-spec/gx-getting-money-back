@@ -112,3 +112,27 @@ it('cuts Vapi user answers after a care verification request even without a tran
  const result=safeCallResult({artifact:{transcript:'AI: Hello.\nUser: Please read out the code we sent.\nUser: 482913',recordingUrl:'https://example.invalid/private.wav'}});
  expect(result.transcript).not.toContain('482913');expect(result.recordingUrl).toBeUndefined();expect(result.transcript).toContain(marker);
 });
+
+it.each(['call.forwarding.operator-busy','call.forwarding.no-answer','call.forwarding.rejected'])('forwarding failure is honest and still cuts private speech: %s',reason=>{
+ const raw="Care: Refund pending.\nGenie: I'll connect the passenger now.\nPassenger: private answer";
+ const r=safeCallResult({endedReason:reason,transcript:raw,patchIn:true,recordingUrl:'https://example.invalid/private.wav'});
+ expect(r.transcript).toBe('Care: Refund pending.\nWe could not reach the passenger. Nothing private was shared.');
+ expect(r.transcript).not.toContain('Passenger was connected');expect(r.transcript).not.toContain('private answer');expect(r.recordingUrl).toBeUndefined();
+});
+it('an explicit passenger-answer event preserves connected wording, not patchIn alone',()=>{
+ const r=safeCallResult({endedReason:'call.forwarding.operator-busy',transcript:"Care: Refund pending.\nGenie: I'll connect the passenger now.\nPassenger: private answer",events:[{type:'transfer-update',status:'connected'}]});
+ expect(r.passengerAnswered).toBe(true);expect(r.transcript).toContain(marker);expect(r.transcript).not.toContain('private answer');expect(r.recordingUrl).toBeUndefined();
+});
+it('saved failed-forward record and history are honest after the second privacy pass',async()=>{
+ const {t,caseId}=await fixture();const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'identity'});
+ const safe=safeCallResult({endedReason:'call.forwarding.operator-busy',transcript:"Care: Refund pending.\nGenie: I'll connect the passenger now.\nPassenger: private answer",patchIn:true});
+ await t.mutation(internal.calls.finish,{id:r!.callId,status:'failed',reason:safe.reason,transcript:safe.transcript,costUsd:0,durationSeconds:30,patchIn:true});
+ const record=await t.run(ctx=>ctx.db.get(r!.callId)),events=await t.run(ctx=>ctx.db.query('caseEvents').collect());
+ expect(record!.transcript).toContain('We could not reach the passenger. Nothing private was shared.');expect(record!.transcript).not.toContain(marker);expect(record!.recordingUrl).toBeUndefined();
+ expect(events.find(e=>e.type==='call_failed')!.summary).toContain('We could not reach the passenger. Nothing private was shared.');
+});
+it('saved positive answer evidence survives the second privacy pass',async()=>{
+ const {t,caseId}=await fixture();const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'identity'});
+ await t.mutation(internal.calls.finish,{id:r!.callId,status:'failed',reason:'call.forwarding.operator-busy',transcript:'Care: Refund pending.\n'+marker,passengerAnswered:true,costUsd:0,durationSeconds:30,patchIn:true});
+ const record=await t.run(ctx=>ctx.db.get(r!.callId));expect(record!.passengerAnswered).toBe(true);expect(record!.transcript).toContain(marker);
+});

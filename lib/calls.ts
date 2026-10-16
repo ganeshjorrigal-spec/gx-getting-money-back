@@ -6,6 +6,7 @@ export function phone(value:string) { const n=value.replace(/[ ()-]/g,""); retur
 export function phoneAllowed(value:string,list:string|undefined) { const n=phone(value);return !!n&&!!list?.split(/[\s,;]+/).some(v=>phone(v)===n); }
 export function officeHours(now:number,demo=false) { const d=new Date(now+330*60000);return demo?d.getUTCHours()>=9&&d.getUTCHours()<21:d.getUTCDay()!==0&&d.getUTCHours()>=10&&d.getUTCHours()<18; }
 export function nextOffice(now:number) { let d=new Date(now+330*60000);if(d.getUTCDay()!==0&&d.getUTCHours()<10)d.setUTCHours(10,0,0,0);else{d.setUTCDate(d.getUTCDate()+1);d.setUTCHours(10,0,0,0);}if(d.getUTCDay()===0)d.setUTCDate(d.getUTCDate()+1);return d.getTime()-330*60000; }
+export const FAILED_TRANSFER_CUTOFF='We could not reach the passenger. Nothing private was shared.';
 export const PRIVATE_CALL_CUTOFF='Passenger was connected. Nothing after this point is kept.';
 export const MISSING_CALL_NOTE='Transcript unavailable or invalid. No transcript or recording link is kept.';
 const privateAsk=/\botp\b|one[ -]?time|verification code|prove.*identity|only speak to.*passenger|password|card number|bank detail|\bpin\b|\bcvv\b|date of birth|\bdob\b|registered (?:mobile|email)|last four|security question/i;
@@ -15,14 +16,14 @@ const asksForPrivate=(line:string)=>{
  const remainder=line.replace(/\b(?:(?:refund|complaint) reference(?: code)?|reference code)\b/gi,'');
  return /\b(?:code|digits?)\b/i.test(remainder)&&/\bread out\b|\b(?:share|confirm|tell|send|text|give|sms|phone|otp)\b/i.test(remainder);
 };
-const transferLine=(line:string)=>line===PRIVATE_CALL_CUTOFF||/^Transfer\s*:/i.test(line)||/\b(?:I'll|I will|I am going to) connect the passenger\b/i.test(line)||/^(?:Passenger|User|Customer)\s*:/i.test(line);
+const transferLine=(line:string)=>line===PRIVATE_CALL_CUTOFF||line===FAILED_TRANSFER_CUTOFF||/^Transfer\s*:/i.test(line)||/\b(?:I'll|I will|I am going to) connect the passenger\b/i.test(line)||/^(?:Passenger|User|Customer)\s*:/i.test(line);
 export const needsPassenger=(text:string)=>text.split(/\r?\n/).some(line=>transferLine(line)||asksForPrivate(line));
 // Passenger speech is never retained, even if care used none of the private-ask words.
 export function safeTranscript(text:string) {
  if(typeof text!=='string')return '';
  const kept:string[]=[];
  for(const line of text.slice(0,24000).split(/\r?\n/)) {
-  if(transferLine(line)){kept.push(PRIVATE_CALL_CUTOFF);break;}
+  if(transferLine(line)){kept.push(line===FAILED_TRANSFER_CUTOFF?FAILED_TRANSFER_CUTOFF:PRIVATE_CALL_CUTOFF);break;}
   if(/^Care\s*:/i.test(line)&&asksForPrivate(line)){kept.push('Care: Identity check requested. No sensitive details retained.',PRIVATE_CALL_CUTOFF);break;}
   kept.push(redact(line).replace(/\b(?:\d[ -]?){13,19}\b/g,'[number removed]'));
  }

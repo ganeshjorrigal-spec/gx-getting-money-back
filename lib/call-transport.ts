@@ -1,4 +1,4 @@
-import { callMode, safeTranscript, needsPassenger, PRIVATE_CALL_CUTOFF, MISSING_CALL_NOTE, type CallMode } from "./calls";
+import { callMode, safeTranscript, needsPassenger, PRIVATE_CALL_CUTOFF, FAILED_TRANSFER_CUTOFF, MISSING_CALL_NOTE, type CallMode } from "./calls";
 type Env=Record<string,string|undefined>;
 export async function startCall(env:Env,body:unknown,fixture:string,request:typeof fetch=fetch):Promise<{mode:CallMode;status:"completed"|"queued"|"failed";transcript:string;externalId?:string;reason?:string;privacyNote?:string}> {
  const mode=callMode(env);
@@ -20,6 +20,12 @@ const transferEvent=(value:unknown):boolean=>{
  if(['type','name'].some(key=>typeof entry[key]==='string'&&/transfer|forwarded.call/i.test(entry[key] as string)))return true;
  return ['function','tool','toolCall','toolCalls','tool_calls','call','message'].some(key=>Array.isArray(entry[key])?(entry[key] as unknown[]).some(transferEvent):transferEvent(entry[key]));
 };
+// Only explicit transfer-answer events count. A tool request or patchIn flag does not.
+const passengerAnswerEvent=(value:unknown):boolean=>{
+ const event=object(value);if(!event)return false;
+ return event.type==='transfer-destination-answered'||
+  event.type==='transfer-update'&&['answered','connected'].includes(String(event.status));
+};
 export function safeCallResult(value:unknown) {
  let data=object(value);
  if(typeof value==='string'){try{data=object(JSON.parse(value));}catch{/* Safe default below. */}}
@@ -39,6 +45,8 @@ export function safeCallResult(value:unknown) {
  if(!data||typeof raw!=='string'||!raw.trim()||raw.length>24000||data.artifact!==undefined&&!artifact||!(/^(?:Care|Genie|Assistant|AI|User|Customer|Passenger|Menu|Transfer)\s*:/im.test(raw)||raw.includes(PRIVATE_CALL_CUTOFF)))return missing();
  const streams=[artifact?.messages,data.messages,data.events,artifact?.events].filter(v=>v!==undefined);
  if(streams.some(stream=>!Array.isArray(stream)||(stream as unknown[]).some(v=>!object(v))))return missing();
+ const passengerAnswered=data.passengerAnswered===true||(streams as unknown[][]).some(stream=>stream.some(passengerAnswerEvent));
+ const failedForward=reason.startsWith('call.forwarding.')&&!passengerAnswered;
  let boundary=raw.length,transfer=false,unknownBoundary=false;
  for(const stream of streams as Record<string,unknown>[][]) {
   const index=stream.findIndex(transferEvent);if(index<0)continue;transfer=true;
@@ -57,13 +65,14 @@ export function safeCallResult(value:unknown) {
   else unknownBoundary=true;
  }
  if(transferEvent(data)){transfer=true;unknownBoundary=true;}
- const explicit=/^(?:Passenger was connected\. Nothing after this point is kept\.|Transfer\s*:|.*\b(?:I'll|I will|I am going to) connect the passenger\b)/im.exec(raw);
+ const explicit=/^(?:Passenger was connected\. Nothing after this point is kept\.|We could not reach the passenger\. Nothing private was shared\.|Transfer\s*:|.*\b(?:I'll|I will|I am going to) connect the passenger\b)/im.exec(raw);
  if(explicit){transfer=true;boundary=Math.min(boundary,explicit.index);}
- if(/transfer|forwarded.call/i.test(reason)){transfer=true;if(!explicit&&boundary===raw.length)unknownBoundary=true;}
+ if(/transfer|forwarded.call|call\.forwarding\./i.test(reason)){transfer=true;if(!explicit&&boundary===raw.length)unknownBoundary=true;}
  if(data.patchIn===true&&!raw.includes(PRIVATE_CALL_CUTOFF)&&!explicit&&boundary===raw.length){transfer=true;unknownBoundary=true;}
  if(unknownBoundary)boundary=0;
- const transcript=transfer?`${safeTranscript(raw.slice(0,boundary).trimEnd())}${boundary?'\n':''}${PRIVATE_CALL_CUTOFF}`:safeTranscript(raw);
+ const cut=failedForward?FAILED_TRANSFER_CUTOFF:PRIVATE_CALL_CUTOFF;
+ const transcript=(transfer?`${safeTranscript(raw.slice(0,boundary).trimEnd())}${boundary?'\n':''}${cut}`:safeTranscript(raw)).replaceAll(PRIVATE_CALL_CUTOFF,cut);
  const privateCall=transfer||needsPassenger(raw)||data.patchIn===true;
  const url=artifact?.recordingUrl??data.recordingUrl;
- return {...base,transcript,recordingUrl:!privateCall&&typeof url==='string'&&/^https:\/\//.test(url)?url:undefined,patchIn:privateCall,privacyNote:unknownBoundary?'Transfer boundary unavailable. No conversation or recording link is kept.':privateCall?'Private verification or passenger connection detected. No recording link is kept.':undefined};
+ return {...base,transcript,recordingUrl:!privateCall&&typeof url==='string'&&/^https:\/\//.test(url)?url:undefined,patchIn:privateCall,passengerAnswered,privacyNote:unknownBoundary?'Transfer boundary unavailable. No conversation or recording link is kept.':privateCall?'Private verification or passenger connection detected. No recording link is kept.':undefined};
 }
