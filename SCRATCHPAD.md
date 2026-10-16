@@ -1,6 +1,6 @@
-# No-transfer fixes await deploy authority, 16 October 2026
+# No-transfer release complete, stop for next instruction
 
-- Parts 1 to 5 complete in five separate commits; full suite once 410/410, type check and static export pass.
-- No calls, publish, env/key/allow-list/model/calling-setting changes or live data repair. Nothing DONE.
-- Wait for Ganesh's deploy line. After authorised deploy, prepare one NEW made-up QA demo and report its code; never call without separate authority.
-- Real-airline task waits for this deployed prerequisite. Previous live failure and unrelated proof gaps remain logged.
+- Published c107521 to Convex 3a036beb-7dbf-4e82-88f1-e403b9ec9d24 and Cloudflare a4969ebe-b72d-4c8a-9bd3-d5f80641c848.
+- Six requested live routes return 200. New QA demo RG-9D10BC READY, zero calls and zero mails.
+- No calls, env/key/allow-list/model/calling-setting changes or historical repairs. Nothing DONE.
+- Stop and report. Supervised call requires separate authority and fresh guard checks. Real-airline work remains pending; prerequisite now deployed. Earlier proof gaps remain logged.
