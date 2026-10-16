@@ -22,7 +22,7 @@ export const reserve=internalMutation({args:{caseId:v.id("cases"),fixture:v.unio
  const calls=await ctx.db.query("calls").withIndex("by_case_day",q=>q.eq("caseId",item._id).eq("day",day)).take(3);
  const budget=await ctx.db.query("callBudgets").withIndex("by_day",q=>q.eq("day",todayIST())).unique();
  const reserve=Number(process.env.CALL_MAX_COST_USD??0),limit=Number(process.env.CALL_DAILY_CAP_USD??0);
- const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care});
+ const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care,demoEndHour:process.env.CALL_DEMO_END_HOUR});
  if(gate)throw new Error(gate);
  if(item.demo?.chaseStory&&(item.demo.chasePhase!=='call'||calls.length))throw new Error('The demo call already ran or is not ready');
  // This release never opens a real-company gate. Live testing can target demo cases only.

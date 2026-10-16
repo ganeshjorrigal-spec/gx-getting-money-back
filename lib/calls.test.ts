@@ -19,3 +19,16 @@ it('demo calls allow 09:00 through 20:59 every day, still only to listed test ph
 it('real-company hours retain Monday to Saturday 10:00 through 17:59',()=>{
  for(const date of ['2026-10-12T10:00:00+05:30','2026-10-17T17:59:59+05:30'])expect(callGate({...gate,demo:false,official:true,now:Date.parse(date)})).toBeNull();
 });
+
+it.each([undefined,'25','abc','20','22.5'])('invalid or unset demo end hour defaults to 21: %s',value=>{
+ expect(callGate({...gate,demoEndHour:value,now:Date.parse('2026-10-16T21:00:00+05:30')})).toMatch(/09:00 to 21:00/);
+});
+it('demo end hour 23 permits 22:30, but closes at 23:00; 24 permits 23:59',()=>{
+ expect(callGate({...gate,demoEndHour:'23',now:Date.parse('2026-10-16T22:30:00+05:30')})).toBeNull();
+ expect(callGate({...gate,demoEndHour:'23',now:Date.parse('2026-10-16T23:00:00+05:30')})).toMatch(/09:00 to 23:00/);
+ expect(callGate({...gate,demoEndHour:'24',now:Date.parse('2026-10-16T23:59:59+05:30')})).toBeNull();
+ expect(callGate({...gate,demoEndHour:'24',now:Date.parse('2026-10-17T08:59:59+05:30')})).toMatch(/09:00 to 24:00/);
+});
+it('a later demo setting does not extend real-company hours',()=>{
+ expect(callGate({...gate,demo:false,official:true,demoEndHour:'23',now:Date.parse('2026-10-16T18:00:00+05:30')})).toMatch(/Monday to Saturday, 10:00 to 18:00/);
+});
