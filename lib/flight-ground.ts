@@ -7,7 +7,7 @@ import { flightContacts } from "./flight-kb";
 export function groundFlightRead(value:FlightRead,text:string,prior?:FlightRead|null,hasImage=false,sender?:string,isDemo=false,replyText=text):FlightRead {
  const read=flightReadSchema.parse(value);
  read.replyConfirmed=false;
- for(const field of ['routeFrom','routeTo','nameOnTicket','bookingMobile','bookingEmail'] as const){const value=read[field];read[field]=prior?.[field]??(value&&(hasImage||text.toLowerCase().includes(value.toLowerCase()))?value:null);}
+ for(const field of ['flightNumber','routeFrom','routeTo','nameOnTicket','bookingMobile','bookingEmail'] as const){const value=read[field];read[field]=prior?.[field]??(value&&(hasImage||text.toLowerCase().includes(value.toLowerCase()))?value:null);}
  // Consent is a user action, never a model or screenshot assertion.
  read.shareBookingContact=prior?.shareBookingContact===true;
  read.bookingContactReviewed=prior?.bookingContactReviewed===true;
