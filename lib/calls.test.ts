@@ -39,3 +39,16 @@ it('real no-transfer gate allows only the listed checked care number, not a list
  expect(callGate({...real,official:false})).toMatch(/checked/);expect(callGate({...real,transfer:true})).toMatch(/saved test numbers/);
  expect(callGate({...real,demo:true})).toMatch(/saved test numbers/);
 });
+
+it('real hours override allows Saturday night and Sunday without bypassing other guards',()=>{
+ const real={...gate,demo:false,official:true,realAnyHour:true};
+ for(const date of ['2026-10-17T01:00:00+05:30','2026-10-18T11:00:00+05:30'])expect(callGate({...real,now:Date.parse(date)})).toBeNull();
+ expect(callGate({...real,authorised:false})).toMatch(/permission/);
+ expect(callGate({...real,allowlist:undefined})).toMatch(/test numbers/);
+ expect(callGate({...real,official:false})).toMatch(/checked/);
+ expect(callGate({...real,dayCount:2})).toMatch(/Two calls/);
+ expect(callGate({...real,mode:'live',dailyReserved:1})).toMatch(/budget/);
+});
+it('real override never extends demo hours',()=>{
+ expect(callGate({...gate,realAnyHour:true,now:Date.parse('2026-10-17T01:00:00+05:30')})).toMatch(/Demo calls run/);
+});
