@@ -22,11 +22,11 @@ export const reserve=internalMutation({args:{caseId:v.id("cases"),fixture:v.unio
  const calls=await ctx.db.query("calls").withIndex("by_case_day",q=>q.eq("caseId",item._id).eq("day",day)).take(3);
  const budget=await ctx.db.query("callBudgets").withIndex("by_day",q=>q.eq("day",todayIST())).unique();
  const reserve=Number(process.env.CALL_MAX_COST_USD??0),limit=Number(process.env.CALL_DAILY_CAP_USD??0);
- const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care,demoEndHour:process.env.CALL_DEMO_END_HOUR});
+ const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care,demoEndHour:process.env.CALL_DEMO_END_HOUR,transfer:process.env.CALL_TRANSFER_ENABLED==='true'});
  if(gate)throw new Error(gate);
  if(item.demo?.chaseStory&&(item.demo.chasePhase!=='call'||calls.length))throw new Error('The demo call already ran or is not ready');
- // This release never opens a real-company gate. Live testing can target demo cases only.
- if(!item.demo)throw new Error("Real-company calling is not enabled");
+ // Real calls require the owner-enabled live mode plus checked, listed care number.
+ if(!item.demo&&mode!=="live")throw new Error("Live airline calling is not enabled");
  if(mode==="live"&&!process.env.VAPI_ASSISTANT_ID)throw new Error("The recovery assistant is not configured");
  if(mode==="live"){if(budget)await ctx.db.patch(budget._id,{reserved:budget.reserved+reserve});else await ctx.db.insert("callBudgets",{day:todayIST(),reserved:reserve});}
  const callId=await ctx.db.insert("calls",{caseId:item._id,mode,label:callLabel(mode),status:"reserved",company,day,startedAt:now,createdAt:Date.now(),durationSeconds:0,costUsd:0,reservedUsd:mode==="live"?reserve:0,authorisedAt:item.chase.authorisedAt,testPhoneNote:item.demo?phones.testPhoneNote:undefined});

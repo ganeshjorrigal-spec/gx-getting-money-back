@@ -32,3 +32,10 @@ it('demo end hour 23 permits 22:30, but closes at 23:00; 24 permits 23:59',()=>{
 it('a later demo setting does not extend real-company hours',()=>{
  expect(callGate({...gate,demo:false,official:true,demoEndHour:'23',now:Date.parse('2026-10-16T18:00:00+05:30')})).toMatch(/Monday to Saturday, 10:00 to 18:00/);
 });
+
+it('real no-transfer gate allows only the listed checked care number, not a listed passenger requirement',()=>{
+ const real={...gate,demo:false,official:true,transfer:false,mobile:'+910000000009'};
+ expect(callGate(real)).toBeNull();expect(callGate({...real,number:'+910000000009'})).toMatch(/saved test numbers/);
+ expect(callGate({...real,official:false})).toMatch(/checked/);expect(callGate({...real,transfer:true})).toMatch(/saved test numbers/);
+ expect(callGate({...real,demo:true})).toMatch(/saved test numbers/);
+});

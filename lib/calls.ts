@@ -34,9 +34,9 @@ export function demoPhones(list:string|undefined) {
  const saved=[...new Set((list??'').split(/[\s,;]+/).map(phone).filter((n):n is string=>!!n))];
  return {passengerNumber:saved[0],number:saved[1]??saved[0],testPhoneNote:saved.length===1?'Only one test number is saved, so the patch-in cannot be tested.':undefined};
 }
-export function callGate(input:{active:boolean;authorised:boolean;demo:boolean;mode:CallMode;number:string;mobile:string;allowlist:string|undefined;now:number;dayCount:number;dailyReserved:number;budget:number;reserve:number;official:boolean;demoEndHour?:string}) {
+export function callGate(input:{active:boolean;authorised:boolean;demo:boolean;mode:CallMode;number:string;mobile:string;allowlist:string|undefined;now:number;dayCount:number;dailyReserved:number;budget:number;reserve:number;official:boolean;demoEndHour?:string;transfer?:boolean}) {
  if(!input.active||!input.authorised)return "Give separate calling permission first";
- if(!phoneAllowed(input.number,input.allowlist)||!phoneAllowed(input.mobile,input.allowlist))return "Calling is limited to the saved test numbers";
+ if(!phoneAllowed(input.number,input.allowlist)||(input.demo||input.transfer===true)&&!phoneAllowed(input.mobile,input.allowlist))return "Calling is limited to the saved test numbers";
  if(!input.demo&&!input.official)return "No checked customer-care number is available";
  if(!officeHours(input.now,input.demo,input.demoEndHour))return input.demo?`Demo calls run every day, 09:00 to ${demoEndHour(input.demoEndHour)}:00 IST`:"Calls run Monday to Saturday, 10:00 to 18:00 IST";
  if(input.dayCount>=2)return "Two calls are already recorded for this case today";
