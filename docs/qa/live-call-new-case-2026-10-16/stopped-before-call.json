@@ -1,0 +1,13 @@
+{
+  "caseCode": "RG-A64786",
+  "caseId": "jd796rqqddaydssttsmsg02gm18gdchr",
+  "callCount": 0,
+  "mailCount": 0,
+  "callStarted": false,
+  "stoppedBeforeRequest": true,
+  "reason": "Existing daily reservation budget cannot cover one more maximum-cost reservation.",
+  "perCaseLimitChanged": false,
+  "dailyBudgetChanged": false,
+  "ownerResetRequested": true,
+  "ownerResetConfirmed": true
+}

@@ -1,0 +1,10 @@
+{
+  "requiredSettingsPresent": true,
+  "twoDistinctValidReceivingNumbers": true,
+  "liveModeAlreadySetByOwner": true,
+  "enoughDailyBudget": false,
+  "insideApprovedWindow": true,
+  "timeIST": "2026-10-16T15:44:20.067284+05:30",
+  "callNotStartedYet": true,
+  "perCaseLimitChanged": false
+}

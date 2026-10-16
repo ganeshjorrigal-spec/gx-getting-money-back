@@ -1,7 +1,9 @@
-# New supervised case authorisation,16 October2026
+# Supervised call stop, 16 October 2026
 
-- [ ] First push today's earlier call log/evidence: busy n176d0z9w4gvsc7b6b93kvwfq58gdv2q and extra n173zewq1kc2pmd3e4z6admpk18gcp8d,cost0.0281. Opening correct, reference/status and transfer unproven.
-- [ ] Pull main and prepare NEW made-up demo case for exactly one owner-authorised call today within10:00–18:00IST. Ganesh plays both roles and sets/resets mode. Keep per-case cap unchanged; no further retry today.
-- [ ] Save safe record/transcript/privacy/cost/screenshots and confirming-mail proof, ask owner to restore simulated and verify. No keys/private contacts in evidence.
-- [ ] No code/deploy/env/key/allow-list/calling-setting/limit changes, real-company contact or DONE marking.
-- [ ] Separate merged-publication timeout job and earlier unrelated gaps remain pending.
+- Earlier two call attempts logged and pushed first as 73ee953.
+- Main pulled; new demo QA case RG-A64786 prepared without changing per-case limits.
+- Daily reserved-budget precheck failed; zero calls and zero mails. No further retry today.
+- Owner reset confirmed by read-only check: simulated mode.
+- Safe proof in docs/qa/live-call-new-case-2026-10-16. No source, deployment, environment, key, allow-list or calling-setting changes by Codex. Nothing DONE.
+- Await HQ review of reserved-budget stop and earlier voice-role drift; complete reference/transfer/privacy proof remains unmet.
+- Separate merged-publication timeout job and earlier unrelated gaps remain pending.
