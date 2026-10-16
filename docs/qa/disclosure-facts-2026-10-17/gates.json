@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "b1758ea",
+  "testsPassed": 465,
+  "testFilesPassed": 61,
+  "fullSuiteRuns": 1,
+  "testDurationSeconds": 8.24,
+  "typeCheck": "pass",
+  "staticExport": "pass",
+  "staticPages": 16,
+  "uiProof": "Actual components in a local fixture; saves and mail fully mocked",
+  "uiChecks": ["sample buttons for all five fields", "optional contact skip", "consent unchecked by default", "unchecked consent saved as No", "masked sent confirmation", "three-send limit message", "copy fallback"],
+  "screenshots": ["mobile-consent.jpg", "desktop-link-controls.jpg"],
+  "viewportWidths": [375, 1280],
+  "uiDetectorFindings": 0,
+  "callsPlaced": 0,
+  "realMailSent": 0,
+  "deployments": 0,
+  "settingsChanged": false
+}

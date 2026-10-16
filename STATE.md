@@ -1,13 +1,10 @@
 # Current state, 17 October 2026
 
-## D-058 override published
-Code 594e741 adds optional pure realAnyHour, wired only from the exact true owner setting; demo hours and other guards unchanged. Gate commit b985822becf7caf689c2536e0584f885279774ee deployed. Full suite once 438/438 tests across 57 files, type check and 16-page export pass. Convex static d8f050e8-4ed3-4b4d-925f-d92a1c0543a7; Cloudflare e3a9e117-1f63-4721-acb4-8457ba3a9591. All six live route checks 200. Proof docs/qa/real-hours-2026-10-17/.
+## Disclosure, booking facts and case-link mail built, unpublished
+Parts 1 to 6: 70a1c31, 6d6bf0f, 3dad730, c6bb99d, 9b0c309, b1758ea. Repeat full AI/passenger/recording disclosure to each live person; intake and screenshot schema collect route, ticket name and optional booking contact with unticked separate sharing consent; calls receive only confirmed known facts and consented contact; stored transcripts mask allowed contact while private requests still cut; menu and answer waiting improved. Case-link button sends only to the case-confirmed user via existing inbox, with atomic three-per-day quota and copy fallback. Company mail gates unchanged. Optional schema additions only, no live case facts edited.
 
-## Part 3 blocked by missing exact case
-Read-only Development lookup for RG-FJ0BTS found no record. Saved browser lists lack it too. System live mode, exact override true, checked IndiGo care allow-list, required settings and next-call budget availability pass. Case-specific real/airline/active chase/calling permission/per-case-limit and actual call-button visibility cannot be verified. Need actual saved code/link. No substituted case or invented facts.
+## Gates and local proof pass
+465/465 tests across 61 files, full suite once, 8.24s. Type check and 16-page static export pass. Actual components walked in a local fixture with all saves/mail mocked, at 375px and 1280px. Consent off, sample buttons, optional skip, masked sent result, daily limit and copy fallback verified. UI detector finds none. Proof/screenshots docs/qa/disclosure-facts-2026-10-17/.
 
-## Stop
-No call, real mail, remote env/key/allow-list/model/calling-setting change or case edit. Nothing DONE. Stop after Part 3 report. Existing live real-call/callback/user-summary proof and historical gaps remain untested; this job did not authorise calls.
-
-## Corrected case recheck supersedes missing-code blocker
-At 01:29 IST, indexed read-only lookup found RG-FJOBTS (letter O), not RG-FJ0BTS (zero). Real IndiGo, active chase, listed care destination, live mode, exact hours override, required settings, zero calls today and budget all pass. Separate calling permission is missing; gate blocks. Actual screen not directly verified; source requires permission before the call button. Proof docs/qa/real-hours-2026-10-17/precheck-RG-FJOBTS.json. No call/mail/settings/fact changes. Nothing DONE. Stop for owner to save separate calling permission.
+## Stop for deploy line
+No calls, real company mail, deploy, env/key/allow-list/model/calling-setting changes. Nothing DONE. Live site still source b985822, Convex static d8f050e8-4ed3-4b4d-925f-d92a1c0543a7 and Cloudflare e3a9e117-1f63-4721-acb4-8457ba3a9591. No backend push for these new changes. Actual live disclosure/booking verification and case-link delivery remain untested. Wait for Ganesh to authorise deployment.
