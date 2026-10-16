@@ -1,0 +1,19 @@
+{
+  "code": "RG-06B69F",
+  "mails": [
+    {
+      "caseCodeInSubject": true,
+      "company": "Demo Air",
+      "day": "2026-10-16",
+      "fromCaseAddress": true,
+      "hasParent": false,
+      "messageIdRegistered": true,
+      "passengerInCc": true,
+      "pdfAttached": true,
+      "recipientsAllowed": true,
+      "replyToCaseAddress": true,
+      "sentAt": 1792139347000
+    }
+  ],
+  "oneGmailThread": true
+}

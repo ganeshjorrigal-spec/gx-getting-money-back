@@ -1,0 +1,49 @@
+{
+  "_id": "n173zewq1kc2pmd3e4z6admpk18gcp8d",
+  "caseId": "jd7ccakxb7c4nvkhadhezn09jn8gb56p",
+  "mode": "live",
+  "label": "Live call",
+  "status": "completed",
+  "externalId": "01a143d3-72d5-7662-b01f-23c39527ac2a",
+  "reason": "assistant-ended-call",
+  "startedAt": 1792139293178,
+  "endedAt": 1792139339969,
+  "durationSeconds": 30,
+  "costUsd": 0.0281,
+  "patchIn": false,
+  "privacyNote": null,
+  "confirmingDraftId": "jn7785hwtr3z7k0pe6jxf425kx8gc4ts",
+  "readerOutput": {
+    "owner": "Demo Air",
+    "moneyWith": "unknown",
+    "nextContact": "DemoTrips"
+  },
+  "caseCode": "RG-06B69F",
+  "transcript": "Genie: Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger. With their permission, about a refund for PNR sample.\nCare: ഹലോ.\nGenie: Hello, how can I assist you with your demo air refund today? Could you please provide the PNR and details of the confirmed booking?\nCare: ഓക്കേ. താങ്ക്യൂ.\nGenie: Goodbye.\n",
+  "recordingLinkPresent": true,
+  "recordingUrlOmitted": true,
+  "ownerAuthorizedExtraAttempt": true,
+  "authorization": "Ganesh explicitly requested please retry once again after customer-busy; this overrides the earlier no-second-retry instruction for one extra attempt.",
+  "requestAtIST": "2026-10-16T13:58:11.403467+05:30",
+  "todayCallCount": 2,
+  "totalCaseCallCount": 3,
+  "openingAiDisclosure": true,
+  "openingNamedDemoPassenger": true,
+  "openingPermission": true,
+  "statusAndReferenceObtained": false,
+  "passengerTransferTested": false,
+  "privacyAfterTransferTested": false,
+  "observedProblem": "After correct opening, Genie asked the answerer for PNR and booking details instead of requesting airline refund status/reference. Care only greeted and thanked; identity request and transfer did not happen.",
+  "durationNote": "Saved durationSeconds is poll-based elapsed estimate; not independently measured connected duration.",
+  "mailStates": [
+    "sent"
+  ],
+  "ownerResetRequested": true,
+  "ownerResetConfirmed": false,
+  "noMoreCalls": true,
+  "lastModeCheck": {
+    "simulated": false,
+    "live": true,
+    "timeIST": "2026-10-16T14:07:37.925020+05:30"
+  }
+}

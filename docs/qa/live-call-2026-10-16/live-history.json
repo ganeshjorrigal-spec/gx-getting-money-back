@@ -1,0 +1,11 @@
+{
+  "caseCode": "RG-06B69F",
+  "seen": [
+    "Confirming mail marked sent",
+    "Demo reply read and next mail prepared",
+    "Live call: 30 seconds (poll estimate)",
+    "Earlier busy attempt: could not connect"
+  ],
+  "screenshotsContainNoMailboxAddresses": true,
+  "privateCaseLinkOmitted": true
+}

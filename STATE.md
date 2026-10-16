@@ -1,11 +1,14 @@
-# Current state, 15 October 2026
+# Current state, 16 October 2026
 
-## Authorised merge committed, publication STOPPED
-Main merge07adc10 combines c1da00c with reviewed d051-d0526a3f848. Only STATE, SCRATCHPAD and15Oct log conflicted; both log histories preserved, state reconciled. Code merged cleanly. Call fix17d7076 transport/actions/mutations/history files preserved unchanged. Nothing DONE.
-Merged full suite failed:370passed/2failed out of372,52files,11.70s. lib/chase-screen.test.ts manual escalation-screen test and lib/demo-email.test.ts public demo cannot start without confirmation each exceeded the5000ms limit. Cause not diagnosed. Per Ganesh's stop instruction, no code/timeout change or test rerun. Type check/export/21-step walk and all publish/live checks not run after failure. Evidence docs/qa/merge-d051-d052-2026-10-15/stopped-gate.json.
+## Supervised retry: partial proof, no more calls today
+Main pulled to4a0ec89; published call source17d7076 unchanged. One retry on made-up RG-06B69F at13:55:36IST failed customer-busy, saved cost0/no transcript. Ganesh explicitly authorised one extra attempt at13:58:11IST. It completed assistant-ended-call, costUSD0.0281. Correct AI/Refund Genie/Demo Passenger/permission opening; then wrongly asks answerer for PNR/booking details rather than airline refund status/reference. Care greetings only. No identity request/transfer. Transfer and post-transfer privacy NOT TESTED. Recorded15/30second durations are poll estimates. Normal non-transfer recording link retained but omitted from files.
+Confirming mail sent with passenger CC and allowed recipients/PDF/case-thread metadata verified; demo reply read and next mail updated. Safe record/transcript/privacy/cost/screenshots in docs/qa/live-call-2026-10-16. No real-company call/mail, code/test/deploy/env/key/settings/allow-list change. Nothing DONE.
 
-## Live baseline unchanged
-Live source remains17d70763667b833fe048f306073c9430fb4cd4a8: Convex static0121f762-1b52-4244-a4c3-ca902c3daa51, Cloudflare51cb6ac8-2f11-4df1-b273-e519cd7774df. D-051/D-052 is merged in code but not published. No email demo, mail, call, env/key/allow-list/calling-setting change, rollback or deletion. Ganesh runs the actual email demo after a later successful authorised release.
+## Owner reset pending
+Two-call daily limit reached for this case. Owner asked for a third; no call request made and no new case/cap bypass. Asked owner to restore CALL_MODE=simulated. Last read-only check still found live on; await owner reset confirmation. No further calls scheduled by Codex. Next HQ reviews conversation role before any separately authorised future supervised test; complete call scenario acceptance remains unmet.
 
-## Next: HQ review of stopped gates
-Wait for HQ's instruction on two test timeouts before another release attempt. Supervised call retry remains separate and needs explicit owner go; earlier unrelated evidence gaps and Convex free-plan warning remain logged. Prior branch gates368tests/type/export/21steps and speed medians99/99 remain historical branch proof, not passing merged-main gates.
+## Separate release job
+Authorised merge07adc10 remains on main; release stopped on two5000ms test timeouts,370/372pass, proof docs/qa/merge-d051-d052-2026-10-15. Today's latest task is calling only; no timeout edits/release-gate rerun/publication. Live D-051/D-052 remains unpublished, source17d7076 live. Prior unrelated contact/payment/video/calendar evidence and observed Convex free-plan warning remain logged.
+
+## New owner instruction now permits one new case
+Ganesh explicitly authorises one more call today on a NEW demo case, keeping per-case limits unchanged. First push the two earlier attempts' log, then pull and prepare it. No additional retry today. Owner sets/resets mode and plays both roles. This supersedes the earlier no-next-call statement only for this explicitly authorised new case. No new call placed yet.
