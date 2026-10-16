@@ -1,7 +1,7 @@
-# Authorised publication checked, stopped
+# D-058 published; requested case not found
 
-- Published exact main source 27394ea6f5c160faec63330cce653106568b042a once to Convex, then Cloudflare.
-- All five requested live routes return 200; landing not-affiliated line visibly checked and screenshot saved.
-- Version IDs and safe release proof recorded in STATE.md and docs/log/2026-10-17.md.
-- No calls, real mail, new cases or environment/settings changes. Nothing marked DONE.
-- Await HQ review or Ganesh's next instruction. No further publish or call authorised.
+- Code 594e741; gates b985822; 438/438 tests, type check and static export pass.
+- Published once to Convex then Cloudflare. Six live routes 200, versions logged.
+- RG-FJ0BTS exact read-only lookup found no record. System checks pass, case-specific checks and button visibility blocked.
+- Need actual saved case code/link. No call, mail, case edit or settings change. Nothing DONE.
+- Stop for Ganesh/HQ. No call authorised.

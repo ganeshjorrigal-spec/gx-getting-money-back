@@ -1,0 +1,14 @@
+{
+  "code": "RG-FJ0BTS",
+  "checkedAt": "2026-10-16T19:54:13.367Z",
+  "caseFound": false,
+  "careAllowlisted": true,
+  "liveMode": true,
+  "realAnyHour": true,
+  "settingsPresent": true,
+  "budgetAvailable": true,
+  "caseChecks": "Blocked: exact case code not found in linked Development deployment",
+  "buttonCheck": "Not verified: case missing and not in connected browser saved lists",
+  "callsPlaced": 0,
+  "settingsChanged": false
+}
