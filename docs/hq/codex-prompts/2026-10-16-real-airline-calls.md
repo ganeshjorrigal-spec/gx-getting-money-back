@@ -15,12 +15,18 @@ Confirm and log in one line each: (a) public demo cases with a chase story stay 
 - FAQ answer: "Yes, for IndiGo to start. Genie calls Monday to Saturday, 10:00 to 18:00 IST, only after you give calling permission and press call. It says it is an AI, gets the status and reference, and mails you what it learned. Calls are recorded. If the airline needs to verify you, Genie tells you how to call back."
 - Real-case button: "Ask Genie to call {company}". Replace "approved test numbers" lines for real cases. Keep all demo and simulated labels as they are.
 - Privacy page: add that call recordings and transcripts are kept for the case, and the call stops at any request for OTP, card or bank details.
+- Privacy page: name the existing support contact (`app/support-contact.tsx`) as the place for privacy and deletion requests. Do not promise an automatic deletion period; none is built yet.
+- Logo strip (`app/components/brand.tsx`): add one line under it: "Refund Genie is independent and not affiliated with these companies. Names and logos only show which companies Genie can chase."
 - Update snapshots and copy tests only.
+
+## Part 3b: recording line in the call opening (`lib/call-transport.ts`)
+- First message becomes: "Hello, I'm an AI assistant from Refund Genie, calling on behalf of {name}, with their permission, about a refund for PNR {pnr}. This call is recorded. Could you tell me the current status of this refund?"
+- Tests: opening contains the AI disclosure, "This call is recorded." and ends with the status question. See `docs/hq/legal-pass-2026-10-16.md` section 2.
 
 ## Part 4: gates
 Full suite once, type check, static export. Stop and tell Ganesh. He authorises deploy. Do not create a real case and do not call.
 
 ## Short paste block
 ```
-git pull. After the no-transfer prompt is deployed, do docs/hq/codex-prompts/2026-10-16-real-airline-calls.md Parts 1 to 4, one commit each. No calls, no env, key, allow-list or calling-setting changes. Stop after gates for Ganesh's deploy line. Mark nothing DONE.
+git pull. After the no-transfer prompt is deployed, do docs/hq/codex-prompts/2026-10-16-real-airline-calls.md Parts 1, 2, 3, 3b and 4, one commit each. No calls, no env, key, allow-list or calling-setting changes. Stop after gates for Ganesh's deploy line. Mark nothing DONE.
 ```
