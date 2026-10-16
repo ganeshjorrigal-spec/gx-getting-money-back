@@ -1,6 +1,7 @@
-# Urgent caller release stop, 16 October 2026
+# Supervised call stop, 16 October 2026
 
-- Three source commits pushed; 375 tests, type check and static export pass; authorised Convex then Cloudflare release succeeds. Six live routes return 200.
-- RG-A64786 remains unused: zero calls and zero mails. Daily reserved budget precheck fails; mode not confirmed simulated. No call placed.
-- Await Ganesh reset confirmation, then verify simulated read-only. No environment, key, allow-list, calling-setting or cap changes by Codex.
-- Wait for HQ review of stop; no automatic call or retry. Full live transfer/privacy scenario and earlier unrelated gaps remain unproven. Nothing DONE.
+- RG-A64786 precheck passed after owner raised budget. Exactly one call n1737hsmdnwr1rxa4aj9mw9yz98gcxs7 ended failed call.forwarding.operator-busy; cost USD 0.1266.
+- Correct opening/status question, persistent caller-role drift; passenger forwarding failed. Full live scenario unmet. Privacy cutoff present and no recording link.
+- Owner reset simulated confirmed read-only. No retry, source/deploy/env/key/allow-list/calling-setting/cap changes by Codex.
+- Safe evidence and screenshot in docs/qa/supervised-tonight-2026-10-16. Nothing DONE.
+- Wait for HQ review. Earlier unrelated proof gaps remain open.

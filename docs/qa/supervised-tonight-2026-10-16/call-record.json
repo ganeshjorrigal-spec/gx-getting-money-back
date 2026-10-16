@@ -1,0 +1,19 @@
+{
+  "_id": "n1737hsmdnwr1rxa4aj9mw9yz98gcxs7",
+  "caseId": "jd796rqqddaydssttsmsg02gm18gdchr",
+  "mode": "live",
+  "label": "Live call",
+  "status": "failed",
+  "reason": "call.forwarding.operator-busy",
+  "transcript": "Genie: Hello, I'm an AI assistant from RefundGenie, calling on behalf of Demo Passenger, with their permission about a refund for PNR sample. Could you tell me the current status of this refund?\nCare: Uh, current. Status?\nGenie: Could you please provide me the PNR or booking details? So I can specify the refund status?\nCare: Sure. The current status is, uh, like, the refund is not initiated, and the reference. Number. Is DA. R-45. 78. 1.\nGenie: Thank you for the information. I actually need the PNR or confirmed booking details to check the refund status from my side. Could you provide the PNR for the booking?\nCare: Sure. It is 1234-XXY-34.\nGenie: Thank you. Could you also please tell me the processing date of the refund and who currently holds the money?\nCare: Uh\u2014\nGenie: Please provide the processing date of the refund and who currently holds the money for the booking with PNR 1234.\nCare: Sure. So, the. Processing date will be\u2014uh. 18. October.\nGenie: Thank you.\nCare: What else do you want to know?\nGenie: I also need to know who currently holds the refund amount for the booking with PNR.\nCare: Yeah, sure. So, the.\nGenie: I am waiting for the information about.\nCare: Yeah,.\nPassenger was connected. Nothing after this point is kept.",
+  "privacyNote": "Private verification or passenger connection detected. No recording link is kept.",
+  "durationSeconds": 105,
+  "costUsd": 0.1266,
+  "patchIn": true,
+  "confirmingDraftId": null,
+  "createdAt": 1792154025492,
+  "startedAt": 1792154025492,
+  "endedAt": 1792154156170,
+  "hasRecordingLink": false,
+  "durationIsPollEstimate": true
+}

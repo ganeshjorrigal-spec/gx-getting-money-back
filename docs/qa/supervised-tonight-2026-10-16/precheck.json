@@ -1,0 +1,16 @@
+{
+  "caseCode": "RG-A64786",
+  "timeIST": "2026-10-16T18:03:25.572682+05:30",
+  "checks": {
+    "liveConfirmed": true,
+    "requiredSettingsPresent": true,
+    "twoValidTestPhones": true,
+    "enoughDailyBudget": true,
+    "insideDemoHours": true,
+    "unusedCase": true,
+    "demoActive": true,
+    "callingAuthorised": true
+  },
+  "allPassed": true,
+  "callPlaced": false
+}

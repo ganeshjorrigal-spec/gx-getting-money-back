@@ -1,10 +1,10 @@
 # Current state, 16 October 2026
 
-## Urgent fixes published, call blocked before request
-Published source 67c1eb2: test timeout 20000ms (78e9876), caller role and status question (7177754), demo-only daily 09:00 to 21:00 IST hours (67c1eb2). Existing real hours, safety and two-call cap unchanged. Full suite once: 375/375 across 52 files; type check and 16-page static export pass. npm run deploy and npm run deploy:web succeeded. Convex static 254cafe7-f479-432a-8a1f-e7ac5e802566; Cloudflare ec289016-5eaf-4c9a-aa38-ba8187dfd867. Reviewed D-051/D-052 merge now published. Six public routes return 200. Proof docs/qa/urgent-call-fix-2026-10-16. No actual email demo run. Nothing DONE.
+## One supervised call completed with failure; simulated reset confirmed
+Ganesh raised budget/transcriber settings himself and explicitly authorised new precheck and exactly one call on RG-A64786. All checks passed at 18:03:25 IST. One request, call n1737hsmdnwr1rxa4aj9mw9yz98gcxs7. Provider elapsed 106.224s, saved poll estimate 105s, cost USD 0.1266, failed call.forwarding.operator-busy. Correct disclosed/status-question opening, but caller role still drifts into asking care for known PNR. Transfer completion not proven; forwarding failed. Privacy cutoff present, no recording link and no passenger speech retained. Confirming draft absent, no outbox mail recorded. Owner reset simulated confirmed read-only. No further call, code/deploy/env/key/allow-list/limit changes by Codex. Proof docs/qa/supervised-tonight-2026-10-16. Nothing DONE.
 
-## Supervised case waits: stop on failed budget precheck
-RG-A64786 still zero calls and zero mails. At 17:46:28 IST daily reservation budget cannot cover another maximum reservation; owner-set live mode confirmed on recheck at 17:54:14 IST, with budget still insufficient and zero calls/mails. No call request made. Asked Ganesh restore simulated; awaiting owner reset confirmation. No env/key/allow-list/calling-setting changes by Codex. No further action until owner/HQ resolves this stop; no automatic retry or cap bypass.
+## Current published release
+Source 67c1eb2: test timeout 20000ms, explicit caller role/status question, demo-only every-day 09:00 to 21:00 IST hours. Existing real hours, safety and two-call cap unchanged. Gates once 375/375 across 52 files, type check, 16-page export pass. Convex static 254cafe7-f479-432a-8a1f-e7ac5e802566; Cloudflare ec289016-5eaf-4c9a-aa38-ba8187dfd867. D-051/D-052 published. Six public routes 200. No email demo run by Codex.
 
-## Remaining proof and scope
-Earlier RG-06B69F calls: busy, then completed opening but voice role drift and no passenger transfer. Full live status/reference/transfer/privacy scenario remains unproven despite the now-published caller-role fix. Daily reservation-release fix and transcriber are outside tonight's urgent code scope. Earlier unrelated proof gaps/free-plan warning remain logged. Next: confirm owner reset and HQ review. Mark nothing DONE.
+## Next
+HQ reviews persistent caller-role drift and failed forwarding before any new separately authorised call. Full live status/reference/transfer/privacy scenario remains unmet. Earlier RG-06B69F evidence, unrelated proof gaps and free-plan warning remain logged. Budget-release accounting change outside urgent scope remains unimplemented. Wait for review; mark nothing DONE.

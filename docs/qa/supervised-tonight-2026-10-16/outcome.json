@@ -1,0 +1,22 @@
+{
+  "caseCode": "RG-A64786",
+  "callId": "n1737hsmdnwr1rxa4aj9mw9yz98gcxs7",
+  "requestCount": 1,
+  "providerStatus": "ended",
+  "endedReason": "call.forwarding.operator-busy",
+  "providerStartedAt": "2026-10-16T12:34:00.062Z",
+  "providerEndedAt": "2026-10-16T12:35:46.286Z",
+  "providerDurationSeconds": 106.224,
+  "savedDurationSeconds": 105,
+  "savedDurationIsPollEstimate": true,
+  "costUsd": 0.1266,
+  "openingStatusQuestionPresent": true,
+  "callerRolePassed": false,
+  "passengerTransferCompleted": false,
+  "privacyCutoffPresent": true,
+  "recordingLinkSaved": false,
+  "confirmingDraftPresent": false,
+  "ownerResetSimulatedConfirmed": true,
+  "furtherCallPlaced": false,
+  "environmentChangedByCodex": false
+}
