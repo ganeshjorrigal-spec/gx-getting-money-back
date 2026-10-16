@@ -2,6 +2,7 @@
 import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {intakeIdentity} from "../../lib/intake-identity";
 import {WhyAsk} from "../components/why-ask";
+import {flightCare} from '../../lib/flight-care';
 import {callingCopy} from '../copy';
 import { useState } from "react";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -12,6 +13,7 @@ export function ChaseAuthority({
   code,
   token,
   company,
+  callCompany,
   pnr,
   chase,
   demo,
@@ -21,12 +23,14 @@ export function ChaseAuthority({
   code: string;
   token: string;
   company: string;
+  callCompany?: string;
   pnr: string;
   chase: { active: boolean; letterUrl: string | null; callsAuthorisedAt?: number | null; mobile?:string } | null;
   demo: boolean;
   saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
 }) {
+  const callAirline=callCompany||company,realCareAvailable=!!flightCare(callAirline);
   const {saved:recentSaved,markSaved}=useSavedAnswer();
   const [review,setReview]=useState(false),[callReview,setCallReview]=useState(false);
   const authorise = useAction(api.chaseActions.authorise),
@@ -74,8 +78,8 @@ export function ChaseAuthority({
       {chase?.active ? (
         <>
           <p>Written permission saved. {status}</p>
-          <p>{mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
-          {!chase.callsAuthorisedAt ? <><AnswerStep step={callReview?2:1} total={2}/>{callReview?<SharedSummary screen="call-confirm" confirm items={[{label:"Company",value:company},{label:"PNR",value:pnr},{label:"Mobile",value:mobile,edit:()=>setCallReview(false)}]}/>:<SharedSummary screen="call-question" items={[{label:"Company",value:company},{label:"PNR",value:pnr}]}/>}<label><input id="calling-consent" type="checkbox" checked={callAccepted} onChange={e=>{setCallAccepted(e.target.checked);setCallReview(false);}}/><WhyAsk field="consent"/>{callingCopy.permission(company)}</label>{callAccepted&&!callReview&&<label>{callingCopy.mobileLabel}<input required type="tel" value={mobile} onChange={e=>setMobile(e.target.value)}/><WhyAsk field="mobile" personal/></label>}<button disabled={busy||!callAccepted||!/^\+?[0-9 ()-]{7,20}$/.test(mobile)} onClick={()=>callReview?run(()=>allowCalls({code,token,accepted:callAccepted,mobile})):setCallReview(true)}>{callReview?callingCopy.savePermission:callingCopy.reviewPermission}</button></> : demo && <button disabled={busy||!mode} onClick={()=>run(()=>requestCall({code,token,fixture:"reference",expectedMode:mode!}))}>{mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>}
+          <p>{!demo?callingCopy.realCallNotice:mode==="live"?callingCopy.liveTestOnly:callingCopy.simulatedNotice}</p>
+          {(demo||realCareAvailable)&&(!chase.callsAuthorisedAt ? <><AnswerStep step={callReview?2:1} total={2}/>{callReview?<SharedSummary screen="call-confirm" confirm items={[{label:"Company",value:callAirline},{label:"PNR",value:pnr},{label:"Mobile",value:mobile,edit:()=>setCallReview(false)}]}/>:<SharedSummary screen="call-question" items={[{label:"Company",value:callAirline},{label:"PNR",value:pnr}]}/>}<label><input id="calling-consent" type="checkbox" checked={callAccepted} onChange={e=>{setCallAccepted(e.target.checked);setCallReview(false);}}/><WhyAsk field="consent"/>{callingCopy.permission(callAirline)}</label>{callAccepted&&!callReview&&<label>{callingCopy.mobileLabel}<input required type="tel" value={mobile} onChange={e=>setMobile(e.target.value)}/><WhyAsk field="mobile" personal/></label>}<button disabled={busy||!callAccepted||!/^\+?[0-9 ()-]{7,20}$/.test(mobile)} onClick={()=>callReview?run(()=>allowCalls({code,token,accepted:callAccepted,mobile})):setCallReview(true)}>{callReview?callingCopy.savePermission:callingCopy.reviewPermission}</button></> : <button disabled={busy||!mode||(!demo&&mode!=="live")} onClick={()=>run(()=>requestCall({code,token,...(demo?{fixture:"reference" as const}:{}),expectedMode:mode!}))}>{!demo?callingCopy.realCallButton(callAirline):mode==="live"?callingCopy.startLiveTest:callingCopy.runSimulation}</button>)}
 
           <button
             disabled={busy}
