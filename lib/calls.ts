@@ -4,7 +4,7 @@ export const callLabel = (mode: CallMode) => mode === "live" ? "Live call" : "Si
 export const callMode = (env: Record<string,string|undefined>):CallMode => env.CALL_MODE === "live" && !!env.VAPI_API_KEY && !!env.VAPI_PHONE_NUMBER_ID ? "live" : "simulated";
 export function phone(value:string) { const n=value.replace(/[ ()-]/g,""); return /^\+[1-9]\d{7,14}$/.test(n)?n:null; }
 export function phoneAllowed(value:string,list:string|undefined) { const n=phone(value);return !!n&&!!list?.split(/[\s,;]+/).some(v=>phone(v)===n); }
-export function officeHours(now:number) { const d=new Date(now+330*60000);return d.getUTCDay()!==0&&d.getUTCHours()>=10&&d.getUTCHours()<18; }
+export function officeHours(now:number,demo=false) { const d=new Date(now+330*60000);return demo?d.getUTCHours()>=9&&d.getUTCHours()<21:d.getUTCDay()!==0&&d.getUTCHours()>=10&&d.getUTCHours()<18; }
 export function nextOffice(now:number) { let d=new Date(now+330*60000);if(d.getUTCDay()!==0&&d.getUTCHours()<10)d.setUTCHours(10,0,0,0);else{d.setUTCDate(d.getUTCDate()+1);d.setUTCHours(10,0,0,0);}if(d.getUTCDay()===0)d.setUTCDate(d.getUTCDate()+1);return d.getTime()-330*60000; }
 export const PRIVATE_CALL_CUTOFF='Passenger was connected. Nothing after this point is kept.';
 export const MISSING_CALL_NOTE='Transcript unavailable or invalid. No transcript or recording link is kept.';
@@ -36,7 +36,7 @@ export function callGate(input:{active:boolean;authorised:boolean;demo:boolean;m
  if(!input.active||!input.authorised)return "Give separate calling permission first";
  if(!phoneAllowed(input.number,input.allowlist)||!phoneAllowed(input.mobile,input.allowlist))return "Calling is limited to the saved test numbers";
  if(!input.demo&&!input.official)return "No checked customer-care number is available";
- if(!officeHours(input.now))return "Calls run Monday to Saturday, 10:00 to 18:00 IST";
+ if(!officeHours(input.now,input.demo))return input.demo?"Demo calls run every day, 09:00 to 21:00 IST":"Calls run Monday to Saturday, 10:00 to 18:00 IST";
  if(input.dayCount>=2)return "Two calls are already recorded for this case today";
  if(input.mode==="live"&&(!(input.budget>0)||!(input.reserve>0)||input.dailyReserved+input.reserve>input.budget))return "Today's calling budget is unavailable or used up";
  return null;
