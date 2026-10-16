@@ -23,10 +23,14 @@ Confirm and log in one line each: (a) public demo cases with a chase story stay 
 - First message becomes: "Hello, I'm an AI assistant from Refund Genie, calling on behalf of {name}, with their permission, about a refund for PNR {pnr}. This call is recorded. Could you tell me the current status of this refund?"
 - Tests: opening contains the AI disclosure, "This call is recorded." and ends with the status question. See `docs/hq/legal-pass-2026-10-16.md` section 2.
 
+## Part 3c: callback line in the confirming mail (`lib/calls.ts`)
+- The confirming mail is addressed to the company, with the passenger in CC. Replace "Customer care asked you to call them back to verify your identity. Quote reference {ref}." with: "Your agent asked that {passenger name} call back to verify identity. {passenger name} will call and quote reference {ref}." Without a reference, end after "verify identity."
+- Tests: both versions; no line when care did not ask.
+
 ## Part 4: gates
 Full suite once, type check, static export. Stop and tell Ganesh. He authorises deploy. Do not create a real case and do not call.
 
 ## Short paste block
 ```
-git pull. After the no-transfer prompt is deployed, do docs/hq/codex-prompts/2026-10-16-real-airline-calls.md Parts 1, 2, 3, 3b and 4, one commit each. No calls, no env, key, allow-list or calling-setting changes. Stop after gates for Ganesh's deploy line. Mark nothing DONE.
+git pull. After the no-transfer prompt is deployed, do docs/hq/codex-prompts/2026-10-16-real-airline-calls.md Parts 1, 2, 3, 3b, 3c and 4, one commit each. No calls, no env, key, allow-list or calling-setting changes. Stop after gates for Ganesh's deploy line. Mark nothing DONE.
 ```
