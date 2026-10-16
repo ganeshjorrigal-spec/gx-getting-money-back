@@ -16,6 +16,6 @@
   "historicalRecordManuallyChanged": false,
   "recordingLinkSaved": false,
   "resetRequested": true,
-  "resetConfirmed": false,
+  "resetConfirmed": true,
   "environmentOrSettingsChanged": false
 }
