@@ -1,0 +1,35 @@
+{
+  "deployedCommit": "27394ea6f5c160faec63330cce653106568b042a",
+  "convexStaticVersion": "a667d31c-fe3a-4da6-9116-059c46845f4b",
+  "cloudflareVersion": "a4ead612-ddbe-471b-8b13-572801f7abf3",
+  "checkedAtIST": "2026-10-17T00:04:31.134752+05:30",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    },
+    {
+      "route": "/cases/",
+      "status": 200
+    },
+    {
+      "route": "/privacy/",
+      "status": 200
+    },
+    {
+      "route": "/terms/",
+      "status": 200
+    }
+  ],
+  "all200": true,
+  "landingDisclaimerInHtml": true,
+  "callsPlaced": 0,
+  "realMailSent": 0,
+  "settingsChanged": false,
+  "landingDisclaimerVisible": true,
+  "landingScreenshot": "landing-disclaimer.jpg"
+}

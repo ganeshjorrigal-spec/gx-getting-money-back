@@ -1,6 +1,7 @@
-# Call summary gates pass, wait for deployment authority
+# Authorised publication checked, stopped
 
-- Parts 1 to 3 committed; read-only real-mail path audit, D-057 exact user-only summary exception, gates.
-- Full suite once 432/432 across 57 files, type check and 16-page export pass. No real mail: transport mocked.
-- No calls, publish, real cloud case, env/key/allow-list/model/calling-setting changes. Nothing DONE.
-- Stop for Ganesh's deploy line covering summary and preceding real-airline commits. Actual company-mail gates remain unchanged/off; live user-summary proof remains untested.
+- Published exact main source 27394ea6f5c160faec63330cce653106568b042a once to Convex, then Cloudflare.
+- All five requested live routes return 200; landing not-affiliated line visibly checked and screenshot saved.
+- Version IDs and safe release proof recorded in STATE.md and docs/log/2026-10-17.md.
+- No calls, real mail, new cases or environment/settings changes. Nothing marked DONE.
+- Await HQ review or Ganesh's next instruction. No further publish or call authorised.

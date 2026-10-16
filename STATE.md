@@ -1,11 +1,10 @@
-# Current state, 16 October 2026
+# Current state, 17 October 2026
 
-## User-only call summary and mail-path audit built, unpublished
-Part 1 9aef9d2 audits manual Gmail/Genie case-inbox options, company contact validation, user CC and real-company switch/list. Read-only Development check: real company mail off; list configured. Detailed source/functions docs/qa/real-mail-path-2026-10-16.md. Authority email CC not cross-checked against confirmed case email on generic chase, unchanged.
-Part 2 b49031e resolves D-057: completed live real calls prepare a summary only to case-confirmed item.email. Dedicated sender rejects company To/CC, changed/unconfirmed recipient and failed/simulated calls. Exact user exception only, normal company-mail gates unchanged. Dedup/uncertain state prevents resend; summary does not displace company draft. Demo unchanged. No real mail/call or remote settings changes. Nothing DONE.
+## Owner-authorised main publication checked
+Published source 27394ea6f5c160faec63330cce653106568b042a. Ran npm run deploy once, then npm run deploy:web once, both successful. Convex static version a667d31c-fe3a-4da6-9116-059c46845f4b. Cloudflare Worker version a4ead612-ddbe-471b-8b13-572801f7abf3. Backend check and both 16-page builds passed.
 
-## Gates pass, await deployment line
-432/432 tests across 57 files, full suite once; final type check and 16-page export pass. Summary path 15/15 targeted; initial mixed 23/23. Mail transport fully mocked. Proof docs/qa/call-summary-mail-2026-10-16/gates.json. Stop for Ganesh's deploy line covering user summary plus prior real-airline changes. No deployment or real cloud case here.
+## Live proof
+At 00:04 IST, refundgenie.app /, /start/, /cases/, /privacy/ and /terms/ returned 200. Landing independent/not-affiliated line verified in served HTML and visibly in Chrome. Safe proof and screenshot: docs/qa/call-summary-publish-2026-10-17/. Previous source gates 432/432 tests across 57 files, type check and export passed; no additional full-suite run in this publish task.
 
-## Live and remaining proof
-Published source c107521e42780d89a7c9073422ef667ab1d7c870, Convex static 3a036beb-7dbf-4e82-88f1-e403b9ec9d24, Cloudflare a4969ebe-b72d-4c8a-9bd3-d5f80641c848. Earlier real-airline gates 417/417 and new user-only policy are not live. Full real-call/callback/user-email proof awaits separate authority; company sending remains off, not opened by D-057. Prior live polling/transfer failures and unrelated gaps remain historical. No env/key/allow-list/model/calling-setting changes by Codex.
+## Stop and remaining proof
+No calls, real mail, new cases, env/key/allow-list/model/calling-setting changes. Nothing marked DONE. Stop after publication and checks. D-057 user-only summary and preceding real-airline code are now published, but real-call/callback/user-email delivery remains untested. Existing company-mail controls unchanged; no current setting values read in this publish task. Historical polling/transfer failures, generic chase authority-email CC caveat and unrelated proof gaps remain recorded in the prior log.
