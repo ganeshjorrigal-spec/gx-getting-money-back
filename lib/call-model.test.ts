@@ -87,3 +87,10 @@ it('discloses AI and recording to each live person after a recorded menu',()=>{
  expect(prompt).toContain('Say it once per live person, again if you are moved to a new person.');
  }
 });
+
+it('listens to the full menu and waits for an answer beyond sure or okay',()=>{
+ const prompt=assistantOverrides(details).model.messages[0].content;
+ expect(prompt).toContain('Listen to the whole menu before pressing a key.');
+ expect(prompt).toContain('After you ask a question, wait for the answer.');
+ expect(prompt).toContain('If the answer is only sure or okay, wait a few seconds before asking again.');
+});
