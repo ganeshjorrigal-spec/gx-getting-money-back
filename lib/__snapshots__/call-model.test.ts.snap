@@ -5,7 +5,7 @@ exports[`instructions, first messages, tools, recording and time limits match th
   "artifactPlan": {
     "recordingEnabled": true,
   },
-  "firstMessage": "Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE. Could you tell me the current status of this refund?",
+  "firstMessage": "Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE. This call is recorded. Could you tell me the current status of this refund?",
   "maxDurationSeconds": 1500,
   "model": {
     "messages": [
