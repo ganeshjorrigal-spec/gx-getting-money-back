@@ -1,5 +1,5 @@
 import {it,expect,vi} from "vitest";
-import {callMode,callGate,callFixture,safeTranscript,callLabel,confirmingCallMail} from "./calls";
+import {callMode,callGate,callFixture,safeTranscript,callLabel,confirmingCallMail,needsPassenger} from "./calls";
 import {startCall,safeCallResult,assistantOverrides} from "./call-transport";
 const now=Date.parse("2026-10-12T11:00:00+05:30");
 const gate={active:true,authorised:true,demo:true,mode:"simulated" as const,number:"+910000000001",mobile:"+910000000002",allowlist:"+910000000001,+910000000002",now,dayCount:0,dailyReserved:0,budget:1,reserve:0.3,official:false};
@@ -51,4 +51,18 @@ it('real hours override allows Saturday night and Sunday without bypassing other
 });
 it('real override never extends demo hours',()=>{
  expect(callGate({...gate,realAnyHour:true,now:Date.parse('2026-10-17T01:00:00+05:30')})).toMatch(/Demo calls run/);
+});
+
+it('consented registered/booking contact requests continue with contact masked',()=>{
+ for(const request of ['registered mobile number','booking mobile','registered email address','booking email']){
+ const raw=`Care: Please confirm your ${request} to verify the booking.\nGenie: +910000000012, alice@example.invalid\nCare: Refund reference REF-DEMO.`;
+ expect(safeTranscript(raw)).not.toContain('REF-DEMO');
+ const privacy={shareBookingContact:true},safe=safeTranscript(raw,privacy);
+ expect(safe).toContain('REF-DEMO');expect(safe).toContain('[mobile ending 12]');expect(safe).toContain('a***@example.invalid');expect(safe).not.toContain('alice@');expect(safe).not.toContain('+910000000012');
+ expect(needsPassenger(raw,privacy)).toBe(false);
+ }
+});
+it.each(['OTP','one-time code','verification code','card number','bank details','password','PIN','CVV','date of birth'])('consent never allows a private request: %s',request=>{
+ const raw=`Care: Please confirm your registered email and ${request}.\nGenie: secret\nCare: after`;
+ expect(safeTranscript(raw,{shareBookingContact:true})).not.toContain('secret');expect(needsPassenger(raw,{shareBookingContact:true})).toBe(true);
 });

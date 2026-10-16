@@ -1,4 +1,4 @@
-import { callMode, safeTranscript, needsPassenger, PRIVATE_CALL_CUTOFF, FAILED_TRANSFER_CUTOFF, MISSING_CALL_NOTE, type CallMode } from "./calls";
+import { callMode, safeTranscript, needsPassenger, PRIVATE_CALL_CUTOFF, FAILED_TRANSFER_CUTOFF, MISSING_CALL_NOTE, type CallMode, type BookingPrivacy } from "./calls";
 type Env=Record<string,string|undefined>;
 export async function startCall(env:Env,body:unknown,fixture:string,request:typeof fetch=fetch):Promise<{mode:CallMode;status:"completed"|"queued"|"failed";transcript:string;externalId?:string;reason?:string;privacyNote?:string}> {
  const mode=callMode(env);
@@ -28,7 +28,7 @@ const passengerAnswerEvent=(value:unknown):boolean=>{
  return event.type==='transfer-destination-answered'||
   event.type==='transfer-update'&&['answered','connected'].includes(String(event.status));
 };
-export function safeCallResult(value:unknown) {
+export function safeCallResult(value:unknown,privacy:BookingPrivacy={}) {
  let data=object(value);
  if(typeof value==='string'){try{data=object(JSON.parse(value));}catch{/* Safe default below. */}}
  if(object(data?.message)?.type==='end-of-call-report')data=object(data?.message);
@@ -73,8 +73,8 @@ export function safeCallResult(value:unknown) {
  if(data.patchIn===true&&!raw.includes(PRIVATE_CALL_CUTOFF)&&!explicit&&boundary===raw.length){transfer=true;unknownBoundary=true;}
  if(unknownBoundary)boundary=0;
  const cut=failedForward?FAILED_TRANSFER_CUTOFF:PRIVATE_CALL_CUTOFF;
- const transcript=(transfer?`${safeTranscript(raw.slice(0,boundary).trimEnd())}${boundary?'\n':''}${cut}`:safeTranscript(raw)).replaceAll(PRIVATE_CALL_CUTOFF,cut);
- const privateCall=transfer||needsPassenger(raw)||data.patchIn===true;
+ const transcript=(transfer?`${safeTranscript(raw.slice(0,boundary).trimEnd(),privacy)}${boundary?'\n':''}${cut}`:safeTranscript(raw,privacy)).replaceAll(PRIVATE_CALL_CUTOFF,cut);
+ const privateCall=transfer||needsPassenger(raw,privacy)||data.patchIn===true;
  const url=artifact?.recordingUrl??data.recordingUrl;
  return {...base,transcript,recordingUrl:!privateCall&&typeof url==='string'&&/^https:\/\//.test(url)?url:undefined,patchIn:privateCall,passengerAnswered,privacyNote:unknownBoundary?'Transfer boundary unavailable. No conversation or recording link is kept.':privateCall?'Private verification or passenger connection detected. No recording link is kept.':undefined};
 }

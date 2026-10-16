@@ -11,22 +11,29 @@ export const FAILED_TRANSFER_CUTOFF='We could not reach the passenger. Nothing p
 export const PRIVATE_CALL_CUTOFF='Passenger was connected. Nothing after this point is kept.';
 export const MISSING_CALL_NOTE='Transcript unavailable or invalid. No transcript or recording link is kept.';
 const privateAsk=/\botp\b|one[ -]?time|verification code|prove.*identity|only speak to.*passenger|password|card number|bank detail|\bpin\b|\bcvv\b|date of birth|\bdob\b|registered (?:mobile|email)|last four|security question/i;
-const asksForPrivate=(line:string)=>{
- if(privateAsk.test(line))return true;
+export type BookingPrivacy={shareBookingContact?:boolean};
+const bookingContactAsk=/\b(?:registered|booking)\s+(?:mobile|phone|email)(?:\s+(?:number|address))?/i;
+const highRiskAsk=/\botp\b|one[ -]?time|verification code|password|card number|card details|bank|\bpin\b|\bcvv\b|date of birth|\bdob\b|security question|last four/i;
+const asksForPrivate=(line:string,privacy:BookingPrivacy={})=>{
+ if(privacy.shareBookingContact===true&&bookingContactAsk.test(line)&&!highRiskAsk.test(line)&&!(/\b(?:code|digits?)\b/i.test(line)&&/\b(?:sms|phone|read out)\b/i.test(line)))return false;
+ if(bookingContactAsk.test(line)||privateAsk.test(line))return true;
  if(/\b(?:code|digits?)\b/i.test(line)&&/\b(?:sms|phone)\b/i.test(line))return true;
  const remainder=line.replace(/\b(?:(?:refund|complaint) reference(?: code)?|reference code)\b/gi,'');
  return /\b(?:code|digits?)\b/i.test(remainder)&&/\bread out\b|\b(?:share|confirm|tell|send|text|give|sms|phone|otp)\b/i.test(remainder);
 };
 const transferLine=(line:string)=>line===PRIVATE_CALL_CUTOFF||line===FAILED_TRANSFER_CUTOFF||/^Transfer\s*:/i.test(line)||/\b(?:I'll|I will|I am going to) connect the passenger\b/i.test(line)||/^(?:Passenger|User|Customer)\s*:/i.test(line);
-export const needsPassenger=(text:string)=>text.split(/\r?\n/).some(line=>transferLine(line)||asksForPrivate(line));
+export const needsPassenger=(text:string,privacy:BookingPrivacy={})=>text.split(/\r?\n/).some(line=>transferLine(line)||asksForPrivate(line,privacy));
 // Passenger speech is never retained, even if care used none of the private-ask words.
-export function safeTranscript(text:string) {
+export function maskBookingContact(text:string) {
+ return text.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,email=>`${email[0]}***@${email.split('@')[1]}`).replace(/(?<!\d)\+?\d(?:[ ()-]*\d){9,14}(?!\d)/g,mobile=>`[mobile ending ${mobile.replace(/\D/g,'').slice(-2)}]`);
+}
+export function safeTranscript(text:string,privacy:BookingPrivacy={}) {
  if(typeof text!=='string')return '';
  const kept:string[]=[];
  for(const line of text.slice(0,24000).split(/\r?\n/)) {
   if(transferLine(line)){kept.push(line===FAILED_TRANSFER_CUTOFF?FAILED_TRANSFER_CUTOFF:PRIVATE_CALL_CUTOFF);break;}
-  if(/^Care\s*:/i.test(line)&&asksForPrivate(line)){kept.push('Care: Identity check requested. No sensitive details retained.',PRIVATE_CALL_CUTOFF);break;}
-  kept.push(redact(line).replace(/\b(?:\d[ -]?){13,19}\b/g,'[number removed]'));
+  if(/^Care\s*:/i.test(line)&&asksForPrivate(line,privacy)){kept.push('Care: Identity check requested. No sensitive details retained.',PRIVATE_CALL_CUTOFF);break;}
+  kept.push(redact(privacy.shareBookingContact===true?maskBookingContact(line):line).replace(/\b(?:\d[ -]?){13,19}\b/g,'[number removed]'));
  }
  return kept.join('\n');
 }

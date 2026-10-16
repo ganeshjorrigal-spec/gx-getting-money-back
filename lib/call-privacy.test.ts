@@ -145,3 +145,13 @@ it('an unknown transfer boundary stays cut on the second pass with honest failur
  const second=safeCallResult({endedReason:first.reason,transcript:first.transcript,patchIn:first.patchIn});
  expect(second.transcript).toBe(first.transcript);expect(second.recordingUrl).toBeUndefined();
 });
+
+it('saved consent snapshot masks contact at both provider and storage passes, preserving refund answer',async()=>{
+ const {t,caseId}=await fixture();await t.run(ctx=>ctx.db.patch(caseId,{facts:{airline:'Demo Air',pnr:'SAMPLE',shareBookingContact:true},factsConfirmedAt:1}));
+ const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'reference'});
+ const raw='Care: What is the registered mobile and email?\nGenie: +910000000012, alice@example.invalid\nCare: Refund reference REF-DEMO.';
+ const result=safeCallResult({transcript:raw},{shareBookingContact:true});expect(result.patchIn).toBe(false);expect(result.transcript).toContain('REF-DEMO');
+ await t.mutation(internal.calls.finish,{id:r!.callId,status:'completed',transcript:result.transcript,costUsd:0,durationSeconds:30,patchIn:false});
+ const saved=await t.run(ctx=>ctx.db.get(r!.callId));expect(saved!.shareBookingContact).toBe(true);expect(saved!.transcript).toContain('REF-DEMO');expect(saved!.transcript).not.toContain('alice@');expect(saved!.transcript).not.toContain('+910000000012');
+ const inputs=await t.run(ctx=>ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',caseId)).take(2));expect(inputs[0].text).toContain('REF-DEMO');expect(inputs[0].text).not.toContain('alice@');
+});
