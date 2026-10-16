@@ -51,7 +51,7 @@ export const view=query({args:access,returns:v.any(),handler:async(ctx,args)=>{c
 // Admin-selected role-play recording only, never an arbitrary live recording.
 export const recording=internalQuery({args:{},returns:v.any(),handler:async(ctx)=>{const rows=await ctx.db.query('calls').withIndex('by_recording_kind',q=>q.eq('recordingKind','roleplay')).order('desc').take(10);const call=rows.find(c=>c.mode==='simulated'&&c.status==='completed'&&!c.patchIn&&c.recordingUrl&&c.roleplayTranscript&&c.readerOutput?.reply?.reference);return call?{url:call.recordingUrl,transcript:call.roleplayTranscript}:null;}});
 
-export const fillSamples=mutation({args:{...access,field:v.optional(v.union(v.literal('pnr'),v.literal('bookingId'),v.literal('cancellationDate'),v.literal('amountPaid'),v.literal('flightName')))},returns:v.null(),handler:async(ctx,args)=>{
+export const fillSamples=mutation({args:{...access,field:v.optional(v.union(v.literal('pnr'),v.literal('bookingId'),v.literal('cancellationDate'),v.literal('amountPaid'),v.literal('flightName'),v.literal('routeFrom'),v.literal('routeTo'),v.literal('nameOnTicket'),v.literal('bookingMobile'),v.literal('bookingEmail')))},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(!item.demo?.intakeRequired||!item.demo.emailConfirmedAt||item.factsConfirmedAt||item.chase)throw new Error('Use a new confirmed demo intake');
  const samples=demoSamples(item.demo.now),facts={...item.facts};for(const field of args.field?[args.field]:demoSampleFields)facts[field]=samples[field];await saveDemoIntake(ctx,item,facts);return null;
 }});

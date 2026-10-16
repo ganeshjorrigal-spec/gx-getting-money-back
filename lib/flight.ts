@@ -6,6 +6,7 @@ import { flightContact, flightContacts, flightRule, type FlightContact } from ".
 
 const nullable = z.string().nullable();
 export const flightReadSchema = z.object({
+  routeFrom:nullable.optional(),routeTo:nullable.optional(),nameOnTicket:nullable.optional(),bookingMobile:nullable.optional(),bookingEmail:nullable.optional(),shareBookingContact:z.boolean().optional(),bookingContactReviewed:z.boolean().optional(),
   scopeIssue:z.enum(["none","failed_no_ticket","compensation_only"]).optional(), airline: nullable, bookedVia: nullable, paymentMethod: z.enum(["credit_card","debit_card","upi","netbanking","cash","wallet","unknown"]),
   cancellationDate: nullable, cancelledBy: z.enum(["airline","passenger","unknown"]), domestic: z.boolean().nullable(),
   flightName: nullable, amountPaid: z.number().nonnegative().nullable(), pnr: nullable, bookingId: nullable, replyConfirmed: z.boolean().optional(), paymentConfirmed: z.boolean().optional(), supportContacted:z.boolean().optional(), eTicketNumber:nullable.optional(), airIndiaRefundRequested:z.boolean().optional(), cancellationTime: nullable.optional(),

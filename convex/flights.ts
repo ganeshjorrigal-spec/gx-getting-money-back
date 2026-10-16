@@ -1,3 +1,4 @@
+import {verificationFields,verificationReady,type VerificationField} from '../lib/booking-verification';
 import {demoFactValue} from '../lib/demo-intake';
 import {saveDemoIntake} from './lib/demo_intake';
 import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
@@ -59,6 +60,7 @@ export const confirm=mutation({args:{code:v.string(),token:v.string(),pnr:v.stri
  const pnr=redact(args.pnr.trim()).slice(0,30);if(!pnr||pnr.includes("["))throw new Error("Add a PNR, never an OTP or bank detail");
  if(item.demo?.intakeRequired){if(item.questions?.length||item.facts?.paymentMethod==='unknown')throw new Error('Complete the booking details first');if(!item.demo.emailConfirmedAt||!args.name?.trim())throw new Error('Add your name and confirm your demo email');demoFactValue('pnr',pnr,item.demo.now);demoFactValue('flightName',args.flightName??'',item.demo.now);}
  const read=flightReadSchema.parse({...item.facts,...(item.demo?.intakeRequired?{flightName:args.flightName?.trim()}:{}),pnr,bookingId:args.bookingId?.trim().slice(0,100)||item.facts?.bookingId||null});
+ if(!verificationReady(read))throw new Error('Review the route, ticket name and optional booking contact first');
  await ctx.db.patch(item._id,{...(item.demo?.intakeRequired?{name:redact(args.name!.trim()).slice(0,80)}:{}),email,factsConfirmedAt:Date.now(),contact:args.contact?redact(args.contact.slice(0,150)):item.contact});await ctx.db.insert("caseEvents",{caseId:item._id,type:"confirmed",summary:"You confirmed the flight details",actor:"user",createdAt:Date.now()});await rerun(ctx,item,read);return null;
 }});
 export const answer=mutation({args:{code:v.string(),token:v.string(),id:v.string(),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
@@ -126,4 +128,20 @@ export const editFact=mutation({args:{code:v.string(),token:v.string(),field:v.u
  await ctx.db.patch(item._id,{factsConfirmedAt:undefined});
  await ctx.db.insert('caseEvents',{caseId:item._id,type:'answered',summary:'You edited a case detail',actor:'user',createdAt:Date.now()});
  await rerun(ctx,item,read);return null;
+}});
+
+// Saved booking contact is never also the notification recipient.
+export const verification=mutation({args:{code:v.string(),token:v.string(),field:v.string(),value:v.optional(v.string()),consent:v.optional(v.boolean())},returns:v.null(),handler:async(ctx,args)=>{
+ const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=='flight'||item.stage.startsWith('CLOSED')||item.chase?.active)throw new Error('Stop Genie before editing booking details');
+ const read=flightReadSchema.parse(item.facts);
+ if(args.field==='bookingContactReviewed'){read.bookingContactReviewed=true;read.shareBookingContact=args.consent===true;}
+ else {
+ if(!verificationFields.includes(args.field as VerificationField))throw new Error('Choose a booking detail');
+ const field=args.field as VerificationField,value=redact((args.value??'').trim()).slice(0,150);
+ if(['routeFrom','routeTo','nameOnTicket'].includes(field)&&!value)throw new Error('Add this booking detail');
+ if(field==='bookingEmail'&&value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw new Error('Enter a booking email or skip');
+ if(field==='bookingMobile'&&value&&!/^\+?[0-9 ()-]{7,20}$/.test(value))throw new Error('Enter a booking mobile or skip');
+ read[field]=value||null;
+ }
+ await ctx.db.patch(item._id,{facts:read,factsConfirmedAt:undefined,updatedAt:Date.now()});return null;
 }});

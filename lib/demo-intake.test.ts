@@ -23,6 +23,8 @@ it('typed date and amount reach the saved case, same planner, and demo-only mail
  await t.mutation(api.flights.answer,{...args,id:'cancellationDate',value:'2026-09-01'});
  await t.mutation(api.flights.answer,{...args,id:'amountPaid',value:'6240'});
  await t.mutation(api.flights.answer,{...args,id:'paymentMethod',value:'credit_card'});
+ for(const [field,value] of [['routeFrom','Pune'],['routeTo','Delhi'],['nameOnTicket','Fixture Passenger']])await t.mutation(api.flights.verification,{...args,field,value});
+ await t.mutation(api.flights.verification,{...args,field:'bookingContactReviewed',consent:false});
  await t.mutation(api.flights.confirm,{...args,pnr:'ABC123',bookingId:'MADE-UP',name:'Fixture Passenger',flightName:'Pune to Delhi',contact:''});
  const item=(await t.run(ctx=>ctx.db.get(id)))!;expect(item.facts).toMatchObject({cancellationDate:'2026-09-01',amountPaid:6240,pnr:'ABC123',bookingId:'MADE-UP',flightName:'Pune to Delhi'});
  expect(item.amountPaise).toBe(624000);expect(item.dueDate).toBe(flightDue(item.facts).date);expect(item.email).toBe('passenger@example.invalid');expect(item.name).toBe('Fixture Passenger');
