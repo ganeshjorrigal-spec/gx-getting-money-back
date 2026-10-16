@@ -11,7 +11,7 @@ Written by HQ. Read D-058. Do this on main after 27394ea is deployed (deploy it 
 Full suite once, type check, static export. If all pass, Ganesh authorises deploy here: run `npm run deploy` then `npm run deploy:web`, live route checks, log both IDs. Then stop.
 
 ## Part 3: precheck for Ganesh's real case (read-only, after he creates it)
-When Ganesh gives his case code, report pass or fail for: real (non-demo), airline IndiGo, active chase, calling permission saved, care number on CALL_ALLOWLIST, CALL_MODE live, CALL_REAL_ANY_HOUR true, per-case limit, budget. Never print numbers or addresses. Do not call.
+When Ganesh gives his case code, report pass or fail for: real (non-demo), airline IndiGo, active chase, calling permission saved, care number on CALL_ALLOWLIST, CALL_MODE live, CALL_REAL_ANY_HOUR true, per-case limit, budget. Also report whether the case page shows the real call button, and if not, the exact reason (for example a flown booking with no refund route). The booking was flown normally and bought on a travel site; the facts must stay true, so do not edit case facts to unlock the button. Never print numbers or addresses. Do not call.
 
 ## Short paste block
 ```
