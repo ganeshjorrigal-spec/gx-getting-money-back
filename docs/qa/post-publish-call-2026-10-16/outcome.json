@@ -1,0 +1,21 @@
+{
+  "callId": "n176r64sx1nm8q7gq2gmpxymvh8gc60c",
+  "caseCode": "RG-A64786",
+  "callsRequested": 1,
+  "retryPlaced": false,
+  "providerEnded": true,
+  "providerEndReason": "call.forwarding.operator-busy",
+  "providerCostUsd": 0.0728,
+  "providerElapsedSeconds": 55.217,
+  "vapiCallOverrideModel": "gpt-4.1",
+  "convexStatus": "failed",
+  "convexReason": "Call status unavailable; no automatic retry",
+  "convexCostUsd": 0,
+  "convexTranscriptEmpty": true,
+  "providerSafeTranscriptSavedSeparately": true,
+  "historicalRecordManuallyChanged": false,
+  "recordingLinkSaved": false,
+  "resetRequested": true,
+  "resetConfirmed": false,
+  "environmentOrSettingsChanged": false
+}

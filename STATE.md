@@ -1,10 +1,10 @@
 # Current state, 16 October 2026
 
-## Night call fixes published with owner authority
-Deployed source 8bd0d3364821bd619a134393396885eadfebe3d2. Convex static version 32257ffa-602a-4d06-ada3-cc30e1bec7c9; Cloudflare version 1a21e558-f5ba-4665-b132-875a4cd5981f. npm run deploy then npm run deploy:web each succeeded once. At 19:06:45 IST /, /start/, /cases/, /demo-confirm/, /privacy/ and /terms/ all return 200 on refundgenie.app. Safe release proof docs/qa/night-call-publish-2026-10-16/release-proof.json. Nothing DONE.
+## One post-publish supervised call failed; reset requested
+Read-only precheck passed at 19:08:02 IST for RG-A64786, one of two daily attempts used. Exactly one call n176r64sx1nm8q7gq2gmpxymvh8gc60c invoked. No retry. Provider ended call.forwarding.operator-busy, elapsed 55.217s, cost USD 0.0728, Vapi call override shows gpt-4.1. Caller holds role and gives known PNR; care explicitly requests passenger before transfer. Forwarding still failed, full successful transfer unproven. Safe provider transcript ends honest could-not-reach wording, no passenger speech/recording retained. Proof docs/qa/post-publish-call-2026-10-16. Nothing DONE.
 
-## Gate status
-HQ-authorised extra full suite on final tree: 388/388 tests across 53 files pass, 7.32s. This supersedes earlier pending full-suite gate. Type check and 16-page export previously passed, and publication builds also pass. No further code or settings changes. Night fixes now live: known PNR/bounded caller questions, identity-only transfer instruction, honest forwarding-failure marker and history, affirmative answer evidence, unused reservation settlement to actual cost. Historical records not manually repaired.
+## Poll-failure inconsistency
+Convex poll timed out first and saved failed / Call status unavailable; no automatic retry, empty transcript and cost 0. Separate read-only provider evidence has safe transcript and actual cost 0.0728. No stored data/budget repair or code change attempted. Provider confirmed ended; no stop-control POST sent. Asked owner reset CALL_MODE to simulated, confirmation pending. Two-call daily cap now used for RG-A64786. No further calls.
 
-## Remaining evidence / next step
-No calls or demo walks in publication. Previous RG-A64786 call failed forwarding with persistent caller-role drift; the revised night prompt has not been tested on a live call. Full successful live transfer scenario remains unmet. Read-only diagnosis cannot establish separate second-leg creation or underlying operator-busy cause. Earlier unrelated proof gaps/free-plan warning remain logged. D-053 model/mode settings belong to Ganesh; no agent env/key/allow-list/calling-setting changes. Stop and wait for review; no next call or publish authorised.
+## Current published release
+Published source 8bd0d3364821bd619a134393396885eadfebe3d2; Convex static 32257ffa-602a-4d06-ada3-cc30e1bec7c9, Cloudflare 1a21e558-f5ba-4665-b132-875a4cd5981f. 388/388 tests across 53 files, type/export passed. Six requested public routes 200. No new deploy, env/key/allow-list/model/calling-setting changes by Codex. Next: verify owner reset and HQ review of forwarding/poll inconsistency. Earlier unrelated gaps remain logged.
