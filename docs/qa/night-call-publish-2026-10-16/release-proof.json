@@ -1,0 +1,36 @@
+{
+  "deployedCommit": "8bd0d3364821bd619a134393396885eadfebe3d2",
+  "convexStaticVersion": "32257ffa-602a-4d06-ada3-cc30e1bec7c9",
+  "cloudflareVersion": "1a21e558-f5ba-4665-b132-875a4cd5981f",
+  "checkedAtIST": "2026-10-16T19:06:45.959518+05:30",
+  "transport": "curl GET",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    },
+    {
+      "route": "/cases/",
+      "status": 200
+    },
+    {
+      "route": "/demo-confirm/",
+      "status": 200
+    },
+    {
+      "route": "/privacy/",
+      "status": 200
+    },
+    {
+      "route": "/terms/",
+      "status": 200
+    }
+  ],
+  "all200": true,
+  "callsPlaced": 0,
+  "settingsChanged": false
+}
