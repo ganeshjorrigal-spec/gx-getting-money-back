@@ -1,6 +1,6 @@
-# Real-airline work, 16 October 2026
+# Real-airline gates pass, wait for review
 
-- No-transfer prerequisite deployed at c107521; do Parts 1, 2, 3, 3b, 3c, 4, one commit each.
-- No calls, real-case creation, publish, env/key/allow-list/model/calling-setting changes. Nothing DONE.
-- Read-only path check found real-case backend refusal and hidden real button; wire approved D-056 path behind existing guards, preserving public demo simulation.
-- Gates once, then wait for Ganesh's deployment line. Earlier live proof gaps remain logged.
+- Six parts committed, full suite once 417/417 across 56 files; type check/static export/exported-copy checks pass.
+- No calls, real cloud case creation, deploy, env/key/allow-list/model/calling-setting changes. Nothing DONE.
+- OPEN: real confirming-mail recipient still demo-only; real dispatch still CHASE_ALLOWLIST protected. HQ must specify verified recipient and sending policy before full real call/mail flow is ready.
+- Stop for Ganesh's deploy line and review. Prior live callback/forwarding/polling evidence and unrelated proof gaps remain logged.

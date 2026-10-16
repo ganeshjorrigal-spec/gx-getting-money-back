@@ -1,0 +1,49 @@
+{
+  "parts": [
+    "1",
+    "2",
+    "3",
+    "3b",
+    "3c",
+    "4"
+  ],
+  "sourcePartCommits": [
+    "8c31d49",
+    "672c722",
+    "824a420",
+    "857e72e",
+    "e4a91d0"
+  ],
+  "targetedTests": [
+    {
+      "passed": 20,
+      "files": 2,
+      "scope": "care gate and isolated real-shaped reservations"
+    },
+    {
+      "passed": 4,
+      "files": 1,
+      "scope": "copy and rendered airline/demo buttons"
+    },
+    {
+      "passed": 21,
+      "files": 2,
+      "scope": "opening and callback mail"
+    }
+  ],
+  "fullSuiteRuns": 1,
+  "fullSuite": {
+    "passed": 417,
+    "failed": 0,
+    "files": 56,
+    "durationSeconds": 7.05
+  },
+  "typeCheck": "pass after adding null assertions in new test",
+  "staticExport": "pass",
+  "staticPages": 16,
+  "callsPlaced": 0,
+  "realCloudCasesCreated": 0,
+  "deploymentRun": false,
+  "settingsChanged": false,
+  "openGap": "Real-case confirming-mail recipient remains demo-only in calls.prepareConfirmation; real mail dispatch also remains CHASE_ALLOWLIST protected. No new recipient route chosen."
+}

@@ -15,7 +15,7 @@ it('real reservation uses checked IndiGo care only with owner-enabled live mode 
  const {t,caseId}=await fixture();vi.setSystemTime(new Date('2026-10-16T11:00:00+05:30'));
  vi.stubEnv('CALL_ALLOWLIST',flightCare('IndiGo')!.careNumber);vi.stubEnv('CALL_TRANSFER_ENABLED','false');vi.stubEnv('CALL_MODE','live');vi.stubEnv('VAPI_API_KEY','synthetic');vi.stubEnv('VAPI_PHONE_NUMBER_ID','synthetic');vi.stubEnv('VAPI_ASSISTANT_ID','synthetic');vi.stubEnv('CALL_MAX_COST_USD','0.3');vi.stubEnv('CALL_DAILY_CAP_USD','1');
  await t.run(async ctx=>{const item=await ctx.db.get(caseId);await ctx.db.patch(caseId,{demo:undefined,facts:{airline:'IndiGo',pnr:'SAMPLE'},chase:{...item!.chase!,mobile:'+910000000009'}});});
- const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'reference',expectedMode:'live'});expect(r.number).toBe(flightCare('IndiGo')!.careNumber);expect(r.mode).toBe('live');
+ const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'reference',expectedMode:'live'});expect(r!.number).toBe(flightCare('IndiGo')!.careNumber);expect(r!.mode).toBe('live');
  vi.stubEnv('CALL_TRANSFER_ENABLED','true');await expect(t.mutation(internal.calls.reserve,{caseId,fixture:'reference'})).rejects.toThrow(/saved test numbers/);
  vi.stubEnv('CALL_TRANSFER_ENABLED','false');vi.stubEnv('CALL_MODE','simulated');await expect(t.mutation(internal.calls.reserve,{caseId,fixture:'reference'})).rejects.toThrow(/Live airline calling/);
 });
