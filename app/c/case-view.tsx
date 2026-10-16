@@ -9,6 +9,7 @@ import { privateCaseUrl } from "../../lib/app-url";
 import { userError } from "../../lib/user-error";
 import { CcList, AttachmentPicker } from "./mail-tools";
 import { finishMail } from "../../lib/mail-copy";
+import {caseLinkRecipient} from "../../lib/case-link-mail";
 import { EmailCaseLink } from "./email-case-link";
 import { PolicyFooter } from "../policy-footer";
 
@@ -487,7 +488,7 @@ export default function CaseView({ code }: { code: string }) {
             <SourceLine>{caseData.checkin?.reason??"From your saved case’s check-in date"}</SourceLine><div className="save-actions">
                {!isIOS && <button className="button button-secondary" onClick={() => addCalendar("google")}>{c.calendar}{!isAndroid ? " (Google)" : ""}</button>}
                {!isAndroid && <button className="button button-secondary" onClick={() => addCalendar("ics")}>{c.calendar}{!isIOS ? " (.ics)" : ""}</button>}
-              <EmailCaseLink code={code} contact={caseData.email||caseData.contact} link={privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || "")}/><button className="button button-secondary" onClick={() => copy(privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || ""))}>{c.copyLink}</button>
+              <EmailCaseLink code={code} token={token || ""} confirmedEmail={caseLinkRecipient(caseData)} link={privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || "")}/><button className="button button-secondary" onClick={() => copy(privateCaseUrl(caseData.publicAppUrl || location.origin, code, token || ""))}>{c.copyLink}</button>
               <button className="button button-secondary" onClick={share}>{c.share}</button>
             </div>
             <p className="example-source">{c.linkNote}</p>

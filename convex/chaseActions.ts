@@ -137,7 +137,7 @@ export const confirmSendPermission = internalAction({
 });
 const encoded = (s: string) =>
   `=?UTF-8?B?${Buffer.from(s).toString("base64")}?=`;
-function rawMail(
+export function rawMail(
   from: string,
   to: string[],
   cc: string[],

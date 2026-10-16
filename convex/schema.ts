@@ -5,6 +5,7 @@ const route = v.union(v.literal("WAIT"), v.literal("OVERDUE"), v.literal("ACTION
 const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("READY"), v.literal("ACTED"), v.literal("WAITING"), v.literal("DUE"), v.literal("CLOSED_LANDED"), v.literal("CLOSED_NO_ROUTE"), v.literal("CLOSED_OUT_OF_SCOPE"), v.literal("ERROR"));
 
 export default defineSchema({
+  caseLinkMails:defineTable({caseId:v.id('cases'),day:v.string(),state:v.union(v.literal('reserved'),v.literal('sent'),v.literal('uncertain'))}).index('by_case',['caseId']).index('by_case_day',['caseId','day']),
   cases: defineTable({
     chase: v.optional(v.object({active:v.boolean(),callsAuthorisedAt:v.optional(v.number()),name:v.string(),mobile:v.string(),email:v.string(),authorisedAt:v.number(),stoppedAt:v.optional(v.number()),letterId:v.id("_storage"),priorLetterIds:v.optional(v.array(v.id("_storage"))),encryptedCaseToken:v.string()})),
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),

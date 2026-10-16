@@ -15,6 +15,8 @@ import type * as annualPayments from "../annualPayments.js";
 import type * as callActions from "../callActions.js";
 import type * as callQa from "../callQa.js";
 import type * as calls from "../calls.js";
+import type * as caseLinkMail from "../caseLinkMail.js";
+import type * as caseLinkMailActions from "../caseLinkMailActions.js";
 import type * as cases from "../cases.js";
 import type * as chase from "../chase.js";
 import type * as chaseActions from "../chaseActions.js";
@@ -71,6 +73,8 @@ declare const fullApi: ApiFromModules<{
   callActions: typeof callActions;
   callQa: typeof callQa;
   calls: typeof calls;
+  caseLinkMail: typeof caseLinkMail;
+  caseLinkMailActions: typeof caseLinkMailActions;
   cases: typeof cases;
   chase: typeof chase;
   chaseActions: typeof chaseActions;

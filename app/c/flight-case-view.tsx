@@ -32,6 +32,7 @@ import { finishMail } from "../../lib/mail-copy";
 
 import { privateCaseUrl } from "../../lib/app-url";
 
+import {caseLinkRecipient} from "../../lib/case-link-mail";
 import { EmailCaseLink } from "./email-case-link";
 
 import { TrialCard } from "./trial-card";
@@ -155,7 +156,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&!passengerEscalation&&data.chase&&<p role="status">{chaseView?.next}</p>}
 
- <EmailCaseLink code={code} contact={data.email||data.contact} link={privateCaseUrl(data.publicAppUrl || location.origin, code, token)}/>
+ <EmailCaseLink code={code} token={token || ""} confirmedEmail={caseLinkRecipient(data)} link={privateCaseUrl(data.publicAppUrl || location.origin, code, token)}/>
 
  <p>{tracking?.firstSent&&tracking?.configured?"Reply tracking is on through the case inbox.":"Once you send the mail, tap 'I sent it' and we'll watch for their reply."}</p>
 
