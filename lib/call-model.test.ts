@@ -77,3 +77,13 @@ it('both openings disclose AI, passenger permission and recording before the sta
  expect(message).toContain("I'm an AI assistant from Refund Genie");expect(message).toContain('Demo Passenger, with their permission');expect(message).toContain('This call is recorded.');expect(message).toMatch(/Could you tell me the current status of this refund\?$/);
  }
 });
+
+it('discloses AI and recording to each live person after a recorded menu',()=>{
+ for(const env of [{},{CALL_TRANSFER_ENABLED:'true'}]){
+ const prompt=assistantOverrides(details,env).model.messages[0].content;
+ expect(prompt).toContain('The first message may play to a recorded menu.');
+ expect(prompt).toContain("Hi, I'm Refund Genie, an AI assistant calling for the passenger Demo Passenger, with their permission. This call is recorded.");
+ expect(prompt).toContain('Then ask for the refund status for PNR SAMPLE.');
+ expect(prompt).toContain('Say it once per live person, again if you are moved to a new person.');
+ }
+});
