@@ -1,0 +1,14 @@
+{
+  "requiredSettingsPresent": true,
+  "twoDistinctValidReceivingNumbers": true,
+  "simulatedModeConfirmed": false,
+  "enoughDailyBudget": false,
+  "insideDemoHours": true,
+  "caseCode": "RG-A64786",
+  "caseExists": true,
+  "callCount": 0,
+  "mailCount": 0,
+  "timeIST": "2026-10-16T17:46:28.405440+05:30",
+  "callPlaced": false,
+  "settingsChanged": false
+}

@@ -1,10 +1,10 @@
 # Current state, 16 October 2026
 
-## Latest supervised call stopped before request
-Earlier two attempts and safe evidence pushed first as 73ee953. Pulled main, then prepared NEW made-up demo QA case RG-A64786. At 15:44:20 IST settings/test receiving phones/live mode/time window passed, but the unchanged daily reserved budget could not cover another maximum-cost reservation. No call action invoked: zero calls and zero mails on the new case. No further retry today. Ganesh reset mode himself; read-only verification confirms simulated mode. Proof in docs/qa/live-call-new-case-2026-10-16. Per-case cap, daily budget, settings, environment, keys and allow-list unchanged by Codex. Nothing DONE.
+## Urgent fixes published, call blocked before request
+Published source 67c1eb2: test timeout 20000ms (78e9876), caller role and status question (7177754), demo-only daily 09:00 to 21:00 IST hours (67c1eb2). Existing real hours, safety and two-call cap unchanged. Full suite once: 375/375 across 52 files; type check and 16-page static export pass. npm run deploy and npm run deploy:web succeeded. Convex static 254cafe7-f479-432a-8a1f-e7ac5e802566; Cloudflare ec289016-5eaf-4c9a-aa38-ba8187dfd867. Reviewed D-051/D-052 merge now published. Six public routes return 200. Proof docs/qa/urgent-call-fix-2026-10-16. No actual email demo run. Nothing DONE.
 
-## Earlier attempts: partial proof only
-RG-06B69F busy attempt at 13:55:36 IST failed customer-busy, cost 0. Explicitly authorised extra at 13:58:11 IST completed assistant-ended-call, cost USD 0.0281. Correct AI/Refund Genie/passenger/permission opening, then voice role drift: asks answerer for known booking details instead of airline refund status/reference. Transfer and post-transfer privacy NOT TESTED. Saved durations are poll estimates. Confirming mail and demo reply metadata/screenshots in docs/qa/live-call-2026-10-16. Full scenario acceptance unmet. HQ review next; no more calls today.
+## Supervised case waits: stop on failed budget precheck
+RG-A64786 still zero calls and zero mails. At 17:46:28 IST daily reservation budget cannot cover another maximum reservation; mode not confirmed simulated. No call request made. Asked Ganesh restore simulated; awaiting owner reset confirmation. No env/key/allow-list/calling-setting changes by Codex. No further action until owner/HQ resolves this stop; no automatic retry or cap bypass.
 
-## Separate release job
-Merged 07adc10 remains on main; release stopped on two 5000ms test timeouts, 370/372 pass, proof docs/qa/merge-d051-d052-2026-10-15. No timeout edits, release reruns or publication in this task. Published call source remains 17d7076. Prior unrelated proof gaps and Convex free-plan warning remain logged.
+## Remaining proof and scope
+Earlier RG-06B69F calls: busy, then completed opening but voice role drift and no passenger transfer. Full live status/reference/transfer/privacy scenario remains unproven despite the now-published caller-role fix. Daily reservation-release fix and transcriber are outside tonight's urgent code scope. Earlier unrelated proof gaps/free-plan warning remain logged. Next: confirm owner reset and HQ review. Mark nothing DONE.

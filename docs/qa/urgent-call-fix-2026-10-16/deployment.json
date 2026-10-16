@@ -1,0 +1,9 @@
+{
+  "sourceCommit": "67c1eb2",
+  "convexStaticDeployment": "254cafe7-f479-432a-8a1f-e7ac5e802566",
+  "cloudflareVersion": "ec289016-5eaf-4c9a-aa38-ba8187dfd867",
+  "convexDeployExitCode": 0,
+  "cloudflareDeployExitCode": 0,
+  "publicUrl": "https://refundgenie.app",
+  "callPlaced": false
+}

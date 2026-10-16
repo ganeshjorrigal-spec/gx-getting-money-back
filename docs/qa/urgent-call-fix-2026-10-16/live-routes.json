@@ -1,0 +1,30 @@
+{
+  "transport": "curl GET",
+  "pythonCheck": "403; curl used to distinguish checker failure from route failure",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/terms/",
+      "status": 200
+    },
+    {
+      "route": "/refund-policy/",
+      "status": 200
+    },
+    {
+      "route": "/contact/",
+      "status": 200
+    },
+    {
+      "route": "/privacy/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    }
+  ]
+}
