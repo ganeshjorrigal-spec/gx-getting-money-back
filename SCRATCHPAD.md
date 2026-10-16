@@ -1,7 +1,8 @@
-# D-058 published; requested case not found
+# D-058 published; corrected case precheck blocked by permission
 
-- Code 594e741; gates b985822; 438/438 tests, type check and static export pass.
-- Published once to Convex then Cloudflare. Six live routes 200, versions logged.
-- RG-FJ0BTS exact read-only lookup found no record. System checks pass, case-specific checks and button visibility blocked.
-- Need actual saved case code/link. No call, mail, case edit or settings change. Nothing DONE.
-- Stop for Ganesh/HQ. No call authorised.
+- Published b985822; 438/438 tests, type check/export and six live routes pass. Versions in today's log.
+- Corrected saved code is RG-FJOBTS (letter O); RG-FJ0BTS (zero) is absent.
+- Corrected case passes real/IndiGo/active chase, listed care, live mode, exact hours override, required settings, per-case limit (0 today) and budget.
+- Separate calling permission is not saved. Gate blocks with Give separate calling permission first.
+- Actual case-screen visibility unverified; source shows consent controls until permission saved. No call/mail, case edit or settings change. Nothing DONE.
+- Stop. Owner saves separate calling permission, then request read-only precheck. No call authorised.

@@ -8,3 +8,6 @@ Read-only Development lookup for RG-FJ0BTS found no record. Saved browser lists 
 
 ## Stop
 No call, real mail, remote env/key/allow-list/model/calling-setting change or case edit. Nothing DONE. Stop after Part 3 report. Existing live real-call/callback/user-summary proof and historical gaps remain untested; this job did not authorise calls.
+
+## Corrected case recheck supersedes missing-code blocker
+At 01:29 IST, indexed read-only lookup found RG-FJOBTS (letter O), not RG-FJ0BTS (zero). Real IndiGo, active chase, listed care destination, live mode, exact hours override, required settings, zero calls today and budget all pass. Separate calling permission is missing; gate blocks. Actual screen not directly verified; source requires permission before the call button. Proof docs/qa/real-hours-2026-10-17/precheck-RG-FJOBTS.json. No call/mail/settings/fact changes. Nothing DONE. Stop for owner to save separate calling permission.
