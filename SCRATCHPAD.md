@@ -1,7 +1,6 @@
-# Post-publish supervised call stop, 16 October 2026
+# No-transfer and polling fixes, 16 October 2026
 
-- One authorised call on RG-A64786: n176r64sx1nm8q7gq2gmpxymvh8gc60c. Provider model gpt-4.1 verified; failed forwarding operator-busy, actual cost USD 0.0728. No retry.
-- Convex polling failed first: row has no transcript/cost 0. Separate safe provider evidence retained; no manual call/budget repair.
-- Provider confirmed ended. Owner simulated reset requested, confirmed simulated by read-only check.
-- Unchanged per-case daily cap now used. No more calls, deployment or settings changes authorised here. Nothing DONE.
-- Wait for HQ review of forwarding and polling discrepancy; full transfer and earlier unrelated proof gaps remain unmet.
+- Parts 1 to 5 in order, one commit each. Transfer off by default, callback message, resilient status polling, configurable demo end hour, gates once.
+- No calls, deployment, env/key/allow-list/model/calling-setting changes. Nothing DONE.
+- After passing gates, wait for Ganesh's deploy line. Only after authorised deploy prepare a new QA demo; never call without separate authority.
+- Real-airline task waits until this prerequisite is deployed. Earlier live proof gaps remain logged.
