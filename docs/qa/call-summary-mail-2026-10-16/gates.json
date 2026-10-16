@@ -1,0 +1,25 @@
+{
+  "codeCommit": "b49031e",
+  "readOnlyAuditCommit": "9aef9d2",
+  "targetedTests": {
+    "summaryPathPassed": 15,
+    "initialSummaryCallbackDemoPassed": 23
+  },
+  "fullSuiteRuns": 1,
+  "fullSuite": {
+    "passed": 432,
+    "failed": 0,
+    "files": 57,
+    "durationSeconds": 9.88
+  },
+  "typeCheck": "pass",
+  "staticExport": "pass",
+  "staticPages": 16,
+  "summaryRecipient": "only case.email saved by confirmed facts, no fallback to unconfirmed contact/authority email",
+  "companyMailRestrictions": "unchanged CHASE_REAL_COMPANIES_ENABLED and CHASE_ALLOWLIST",
+  "callsPlaced": 0,
+  "realMailSent": 0,
+  "mockedMailTransport": true,
+  "deploymentRun": false,
+  "remoteSettingsChanged": false
+}
