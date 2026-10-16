@@ -125,6 +125,7 @@ it('an explicit passenger-answer event preserves connected wording, not patchIn 
 });
 it('saved failed-forward record and history are honest after the second privacy pass',async()=>{
  const {t,caseId}=await fixture();const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'identity'});
+ await t.run(ctx=>ctx.db.patch(r!.callId,{status:'queued',externalId:'synthetic'}));
  const safe=safeCallResult({endedReason:'call.forwarding.operator-busy',transcript:"Care: Refund pending.\nGenie: I'll connect the passenger now.\nPassenger: private answer",patchIn:true});
  await t.mutation(internal.calls.finish,{id:r!.callId,status:'failed',reason:safe.reason,transcript:safe.transcript,costUsd:0,durationSeconds:30,patchIn:true});
  const record=await t.run(ctx=>ctx.db.get(r!.callId)),events=await t.run(ctx=>ctx.db.query('caseEvents').collect());
@@ -133,6 +134,14 @@ it('saved failed-forward record and history are honest after the second privacy 
 });
 it('saved positive answer evidence survives the second privacy pass',async()=>{
  const {t,caseId}=await fixture();const r=await t.mutation(internal.calls.reserve,{caseId,fixture:'identity'});
+ await t.run(ctx=>ctx.db.patch(r!.callId,{status:'queued',externalId:'synthetic'}));
  await t.mutation(internal.calls.finish,{id:r!.callId,status:'failed',reason:'call.forwarding.operator-busy',transcript:'Care: Refund pending.\n'+marker,passengerAnswered:true,costUsd:0,durationSeconds:30,patchIn:true});
  const record=await t.run(ctx=>ctx.db.get(r!.callId));expect(record!.passengerAnswered).toBe(true);expect(record!.transcript).toContain(marker);
+});
+
+it('an unknown transfer boundary stays cut on the second pass with honest failure wording',()=>{
+ const first=safeCallResult({endedReason:'call.forwarding.operator-busy',transcript:'Care: private answer',events:[{type:'transferCall'}]});
+ expect(first.transcript).toBe('We could not reach the passenger. Nothing private was shared.');
+ const second=safeCallResult({endedReason:first.reason,transcript:first.transcript,patchIn:first.patchIn});
+ expect(second.transcript).toBe(first.transcript);expect(second.recordingUrl).toBeUndefined();
 });

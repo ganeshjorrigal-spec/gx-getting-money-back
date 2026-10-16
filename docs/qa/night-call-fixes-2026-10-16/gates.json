@@ -1,0 +1,29 @@
+{
+  "fullSuiteRuns": 1,
+  "fullSuite": {
+    "passed": 385,
+    "failed": 2,
+    "total": 387,
+    "files": 53,
+    "durationSeconds": 5.16,
+    "failures": "Two new forwarding persistence tests modelled a refused pre-start call, not a queued provider call."
+  },
+  "correction": "Both test fixtures now have queued status and a synthetic provider ID. Type return supplies passengerAnswered=false for missing evidence. Failed-transfer marker survives a second sanitization with unknown boundary.",
+  "targetedPrivacyRuns": [
+    {
+      "passed": 44,
+      "failed": 0
+    },
+    {
+      "passed": 45,
+      "failed": 0
+    }
+  ],
+  "typeCheck": "pass after fixing missing evidence result field",
+  "staticExport": "pass",
+  "staticPages": 16,
+  "cleanFullSuiteOnFinalTree": "not run; the prompt requests full suite once",
+  "deployment": "not run; await Ganesh authorization and clean full-suite evidence",
+  "callsPlaced": 0,
+  "environmentOrCallingSettingsChanged": false
+}

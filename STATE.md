@@ -1,10 +1,13 @@
 # Current state, 16 October 2026
 
-## One supervised call completed with failure; simulated reset confirmed
-Ganesh raised budget/transcriber settings himself and explicitly authorised new precheck and exactly one call on RG-A64786. All checks passed at 18:03:25 IST. One request, call n1737hsmdnwr1rxa4aj9mw9yz98gcxs7. Provider elapsed 106.224s, saved poll estimate 105s, cost USD 0.1266, failed call.forwarding.operator-busy. Correct disclosed/status-question opening, but caller role still drifts into asking care for known PNR. Transfer completion not proven; forwarding failed. Privacy cutoff present, no recording link and no passenger speech retained. Confirming draft absent, no outbox mail recorded. Owner reset simulated confirmed read-only. No further call, code/deploy/env/key/allow-list/limit changes by Codex. Proof docs/qa/supervised-tonight-2026-10-16. Nothing DONE.
+## Night call fixes on main, unpublished
+Parts 1 to 4: 0997bd6 prompt hardening, 49d7122 honest failed-transfer wording/affirmative answer evidence, 9f0139c budget settlement to actual cost, 86dfbf8 read-only saved-call diagnosis. Part 5 corrects new test fixtures and missing-evidence return typing; preserves failed-transfer marker through second privacy pass. No historical records/settings changed. No calls or deployment. Nothing DONE.
 
-## Current published release
-Source 67c1eb2: test timeout 20000ms, explicit caller role/status question, demo-only every-day 09:00 to 21:00 IST hours. Existing real hours, safety and two-call cap unchanged. Gates once 375/375 across 52 files, type check, 16-page export pass. Convex static 254cafe7-f479-432a-8a1f-e7ac5e802566; Cloudflare ec289016-5eaf-4c9a-aa38-ba8187dfd867. D-051/D-052 published. Six public routes 200. No email demo run by Codex.
+## Verification
+Full suite once: 385/387 passed across 53 files; two new tests used pre-start-refusal fixtures and failed. Corrected them to queued provider calls. Affected privacy file then 44/44 and after added boundary regression 45/45 pass. Final type check and 16-page static export pass. No second full-suite run under the prompt's once instruction: clean full-suite evidence on final tree still required. Proof docs/qa/night-call-fixes-2026-10-16. Stop for HQ/Ganesh review, no deploy.
 
-## Next
-HQ reviews persistent caller-role drift and failed forwarding before any new separately authorised call. Full live status/reference/transfer/privacy scenario remains unmet. Earlier RG-06B69F evidence, unrelated proof gaps and free-plan warning remain logged. Budget-release accounting change outside urgent scope remains unimplemented. Wait for review; mark nothing DONE.
+## Read-only diagnosis
+Saved 18:04 call invokes transferCall at 99.942s after Genie says "I am waiting for the information about." Transfer entry failed, overall call.forwarding.operator-busy. Separate second leg creation and underlying cause UNKNOWN from the saved response; no passenger connection evidence. No further call. Owner last reset simulated confirmed in prior task; not reasserted as a current settings check in this task.
+
+## Current live version and gaps
+Published source remains 67c1eb2, Convex static 254cafe7-f479-432a-8a1f-e7ac5e802566, Cloudflare ec289016-5eaf-4c9a-aa38-ba8187dfd867. Latest live supervised call cost USD 0.1266, correct opening then caller-role drift and failed forwarding. Full live scenario remains unmet. Earlier unrelated proof gaps/free-plan warning remain logged. D-053 model/mode settings belong to Ganesh. No agent env/key/allow-list/calling-setting changes.

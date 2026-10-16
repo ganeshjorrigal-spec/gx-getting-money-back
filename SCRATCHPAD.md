@@ -1,5 +1,7 @@
 # Night call fixes, 16 October 2026
 
-- Parts 1 to 5 in order, one commit each: harden prompt, honest failed-transfer wording, release unused budget, read-only diagnosis, gates once.
-- No calls, deploy, environment, keys, allow-list or calling-setting changes. Ganesh controls model/mode. Nothing DONE.
-- After gates pass, stop for Ganesh deployment authority. Earlier live scenario and unrelated proof gaps remain unmet.
+- Parts 1 to 5 implemented, separate commits. Part 4 read-only saved-call diagnosis; second-leg creation/cause unknown.
+- Full suite once 385/387, two invalid pre-start test fixtures corrected. Final affected privacy file 45/45, type check and static export pass.
+- A clean final-tree full-suite run remains required; not repeated under the once instruction. Stop for review, no deployment.
+- No calls, environment, key, allow-list, model or calling-setting changes. Ganesh controls settings and deployment authorization. Nothing DONE.
+- Full live scenario and earlier unrelated proof gaps remain open.

@@ -41,8 +41,8 @@ export function safeCallResult(value:unknown) {
  const reason=typeof data?.endedReason==='string'?data.endedReason:'';
  const failed=!!reason&&/error|failed|authentication|unavailable|not.answer|busy|rejected|max.duration|stopped/i.test(reason);
  const base={status:failed?'failed' as const:'completed' as const,reason:safeTranscript(reason).slice(0,500),cost:typeof data?.cost==='number'&&Number.isFinite(data.cost)?Math.max(0,data.cost):0};
- const missing=()=>({...base,transcript:'',recordingUrl:undefined,patchIn:false,privacyNote:MISSING_CALL_NOTE});
- if(!data||typeof raw!=='string'||!raw.trim()||raw.length>24000||data.artifact!==undefined&&!artifact||!(/^(?:Care|Genie|Assistant|AI|User|Customer|Passenger|Menu|Transfer)\s*:/im.test(raw)||raw.includes(PRIVATE_CALL_CUTOFF)))return missing();
+ const missing=()=>({...base,transcript:'',recordingUrl:undefined,patchIn:false,passengerAnswered:false,privacyNote:MISSING_CALL_NOTE});
+ if(!data||typeof raw!=='string'||!raw.trim()||raw.length>24000||data.artifact!==undefined&&!artifact||!(/^(?:Care|Genie|Assistant|AI|User|Customer|Passenger|Menu|Transfer)\s*:/im.test(raw)||raw.includes(PRIVATE_CALL_CUTOFF)||raw.includes(FAILED_TRANSFER_CUTOFF)))return missing();
  const streams=[artifact?.messages,data.messages,data.events,artifact?.events].filter(v=>v!==undefined);
  if(streams.some(stream=>!Array.isArray(stream)||(stream as unknown[]).some(v=>!object(v))))return missing();
  const passengerAnswered=data.passengerAnswered===true||(streams as unknown[][]).some(stream=>stream.some(passengerAnswerEvent));
