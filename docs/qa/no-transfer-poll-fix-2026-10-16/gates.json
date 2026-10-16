@@ -1,0 +1,35 @@
+{
+  "codeCommit": "b5949c5",
+  "partCommits": [
+    "a988d9b",
+    "b9f089d",
+    "cbe97c6",
+    "b5949c5"
+  ],
+  "targetedTests": [
+    {
+      "files": 2,
+      "passed": 24,
+      "scope": "transfer configuration and existing call guards"
+    },
+    {
+      "files": 2,
+      "passed": 7,
+      "scope": "callback and initial polling regressions"
+    }
+  ],
+  "fullSuiteRuns": 1,
+  "fullSuite": {
+    "passed": 410,
+    "failed": 0,
+    "files": 55,
+    "durationSeconds": 9.63
+  },
+  "typeCheck": "pass",
+  "staticExport": "pass",
+  "staticPages": 16,
+  "callsPlaced": 0,
+  "deploymentRun": false,
+  "newDemoSeeded": false,
+  "remoteSettingsChanged": false
+}

@@ -1,10 +1,10 @@
 # Current state, 16 October 2026
 
-## One post-publish supervised call failed; reset requested
-Read-only precheck passed at 19:08:02 IST for RG-A64786, one of two daily attempts used. Exactly one call n176r64sx1nm8q7gq2gmpxymvh8gc60c invoked. No retry. Provider ended call.forwarding.operator-busy, elapsed 55.217s, cost USD 0.0728, Vapi call override shows gpt-4.1. Caller holds role and gives known PNR; care explicitly requests passenger before transfer. Forwarding still failed, full successful transfer unproven. Safe provider transcript ends honest could-not-reach wording, no passenger speech/recording retained. Proof docs/qa/post-publish-call-2026-10-16. Nothing DONE.
+## No-transfer and poll fix built, unpublished
+Parts 1-4 commits a988d9b, b9f089d, cbe97c6, b5949c5: transfer off unless exact true, callback confirming-mail step with reader-only reference, resilient status GET polling/unknown-cost reservation retention, validated demo end hour setting. Existing transfer-on contract, privacy cut, real hours and limits retained. No settings or historical row edits. Nothing DONE.
 
-## Poll-failure inconsistency
-Convex poll timed out first and saved failed / Call status unavailable; no automatic retry, empty transcript and cost 0. Separate read-only provider evidence has safe transcript and actual cost 0.0728. No stored data/budget repair or code change attempted. Provider confirmed ended; no stop-control POST sent. Asked owner reset CALL_MODE to simulated, confirmed simulated by read-only check. Two-call daily cap now used for RG-A64786. No further calls.
+## Gates pass, stop for deploy approval
+Full suite once 410/410 across 55 files; type check and 16-page export pass. Targeted transfer tests 24/24, callback/poll initial tests 7/7. Proof docs/qa/no-transfer-poll-fix-2026-10-16/gates.json. No calls, publish, new demo seed, env/key/allow-list/model/calling-setting changes. Wait for Ganesh's deployment line. Only after authorised deploy prepare new QA demo, no call. Real-airline task waits for this prerequisite to be deployed.
 
-## Current published release
-Published source 8bd0d3364821bd619a134393396885eadfebe3d2; Convex static 32257ffa-602a-4d06-ada3-cc30e1bec7c9, Cloudflare 1a21e558-f5ba-4665-b132-875a4cd5981f. 388/388 tests across 53 files, type/export passed. Six requested public routes 200. No new deploy, env/key/allow-list/model/calling-setting changes by Codex. Next: HQ review of forwarding/poll inconsistency. Earlier unrelated gaps remain logged.
+## Live version and remaining proof
+Published source remains 8bd0d3364821bd619a134393396885eadfebe3d2, Convex static 32257ffa-602a-4d06-ada3-cc30e1bec7c9, Cloudflare 1a21e558-f5ba-4665-b132-875a4cd5981f. Latest call gpt-4.1 held caller role but failed forwarding; Convex poll prematurely saved empty/cost0 versus provider0.0728. No record repaired. Owner simulated reset last confirmed before this task; no new settings check/claim here. Full live callback/no-transfer scenario untested until separately authorised run. Earlier unrelated gaps remain logged.
