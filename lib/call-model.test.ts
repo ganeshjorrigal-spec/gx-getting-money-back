@@ -34,3 +34,9 @@ it('building default overrides still makes no request in simulated mode',async()
  const result=await startCall({}, {assistantOverrides:a},'Care: Demo refund reference.',request);
  expect(result.mode).toBe('simulated');expect(request).not.toHaveBeenCalled();
 });
+
+it('opens with a refund-status question and explicitly stays the caller',()=>{
+ const a=assistantOverrides(details);
+ expect(a.firstMessage).toBe("Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE. Could you tell me the current status of this refund?");
+ expect(a.model.messages[0].content).toMatch(/^You are the caller\. The person who answers works at Demo Air customer care\. You are not customer care: never offer help, never ask how you can assist, never ask them for the PNR or booking details; give those only when they ask\./);
+});
