@@ -40,3 +40,21 @@ it('opens with a refund-status question and explicitly stays the caller',()=>{
  expect(a.firstMessage).toBe("Hello, I'm an AI assistant from Refund Genie, calling on behalf of Demo Passenger, with their permission, about a refund for PNR SAMPLE. Could you tell me the current status of this refund?");
  expect(a.model.messages[0].content).toMatch(/^You are the caller\. The person who answers works at Demo Air customer care\. You are not customer care: never offer help, never ask how you can assist, never ask them for the PNR or booking details; give those only when they ask\./);
 });
+
+it('keeps known PNR, four bounded questions, identity-only transfer and all existing safety lines',()=>{
+ const a=assistantOverrides(details),prompt=a.model.messages[0].content;
+ for(const phrase of [
+  'Known facts: the booking reference (PNR) is SAMPLE. You already have it. Never ask for it. If care asks for it, say it.',
+  'Learn four things, asking one at a time: current refund status, reference number, processing date, who holds the money.',
+  'Once you have all four, thank them and end the call. If care cannot answer one after two tries, move on.',
+  "Call transferCall only if care says they need to verify the passenger's identity or speak to the passenger. Never for silence, hesitation, a slow answer or a pause.",
+  'Use only PNR and confirmed booking facts.',
+  'Never request, repeat, accept or send OTP, password, card or bank details.',
+  'Never accept vouchers/credit shells, cancel or change bookings, or pretend to be the passenger.',
+  'Do not guess menu keys: listen then use dtmf.',
+  "When identity verification is required, say I'll connect the passenger now and use transferCall.",
+  'If the passenger does not answer, end politely and say they will call back.',
+  'Stop after 25 minutes including hold.'
+ ])expect(prompt).toContain(phrase);
+ expect(a.firstMessage).toMatch(/Could you tell me the current status of this refund\?$/);
+});
