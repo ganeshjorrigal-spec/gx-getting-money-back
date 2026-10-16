@@ -152,11 +152,10 @@ export const load = internalQuery({
       item.stage.startsWith("CLOSED")
     )
       return null;
-    const draft = await ctx.db
+    const draft = (await ctx.db
       .query("drafts")
       .withIndex("by_case", (q) => q.eq("caseId", caseId))
-      .order("desc")
-      .first();
+      .order("desc").take(30)).find(d=>d.step!=='FLIGHT_call_update')??null;
     const connection = await ctx.db
       .query("googleConnections")
       .withIndex("by_kind", (q) => q.eq("kind", "inbox"))
@@ -200,6 +199,7 @@ export const reserve = internalMutation({
       item.refundType !== "flight" ||
       draft.channel !== "email" ||
       draft.step === "FLIGHT_status" ||
+      draft.step === "FLIGHT_call_update" ||
       isPassengerEscalation(item, draft) ||
       (item.demo &&
         (item.demo.expiresAt <= Date.now() ||
@@ -212,11 +212,10 @@ export const reserve = internalMutation({
     )
       return null;
     if(item.demo?.chaseStory && !['first_mail','confirm_mail'].includes(item.demo.chasePhase??'')) return null;
-    const latest = await ctx.db
+    const latest = (await ctx.db
       .query("drafts")
       .withIndex("by_case", (q) => q.eq("caseId", item._id))
-      .order("desc")
-      .first();
+      .order("desc").take(30)).find(d=>d.step!=='FLIGHT_call_update')??null;
     if (latest?._id !== args.draftId) return null;
     const connection = await ctx.db
       .query("googleConnections")
@@ -336,11 +335,10 @@ export const stillActive = internalQuery({
     )
       return false;
     if (args.draftId) {
-      const latest = await ctx.db
+      const latest = (await ctx.db
         .query("drafts")
         .withIndex("by_case", (q) => q.eq("caseId", args.caseId))
-        .order("desc")
-        .first();
+        .order("desc").take(30)).find(d=>d.step!=='FLIGHT_call_update')??null;
       return (
         ["READY", "DUE"].includes(item.stage) &&
         latest?._id === args.draftId &&
@@ -554,11 +552,10 @@ export const status = query({
       return `Check your bank${item.flightPlan?.checkDate ? ` by ${item.flightPlan.checkDate}` : ""}; the mail chase has reached the bank step.`;
     if (item.route === "NEED_INFO")
       return "Answer the question on your case before Genie sends the next mail.";
-    const draft = await ctx.db
+    const draft = (await ctx.db
       .query("drafts")
       .withIndex("by_case", (q) => q.eq("caseId", item._id))
-      .order("desc")
-      .first();
+      .order("desc").take(30)).find(d=>d.step!=='FLIGHT_call_update')??null;
     if (isPassengerEscalation(item, draft)) return escalationSendLine;
     if (draft && draft.channel !== "email")
       return "Follow the next step on your case; Genie cannot send a portal form or make a call in this release.";

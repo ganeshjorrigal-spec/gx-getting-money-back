@@ -246,7 +246,7 @@ export const send = internalAction({
     const loaded = await ctx.runQuery(internal.chase.load, { caseId });
     if (
       !loaded?.item.chase ||
-      !loaded.draft?.body ||
+      !loaded.draft?.body || loaded.draft.step === "FLIGHT_call_update" ||
       !loaded.draft.to ||
       !loaded.draft.subject ||
       loaded.draft.channel !== "email" ||
@@ -477,3 +477,15 @@ export const reconcileDemoHeader = internalAction({
     };
   },
 });
+
+export const sendCallUpdate=internalAction({args:{id:v.id('calls')},returns:v.null(),handler:async(ctx,{id})=>{
+ const loaded=await ctx.runQuery(internal.calls.callUpdateEnvelope,{id});if(!loaded)return null;
+ const notice=await ctx.runMutation(internal.chase.reserveNotice,{caseId:loaded.caseId,key:`call-update:${id}`});if(!notice)return null;
+ try{
+  const token=await accessToken(loaded.connection.encryptedRefreshToken);
+  const current=await ctx.runQuery(internal.calls.callUpdateEnvelope,{id});if(!current||current.recipient!==loaded.recipient||!current.draft.subject||!current.draft.body)return null;
+  const from=caseInboxAddress(process.env.TICKBACK_INBOX_ADDRESS!,current.code);
+  await googleJson('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',token,{method:'POST',body:JSON.stringify({raw:rawMail(from,[current.recipient],[],current.draft.subject,current.draft.body,`<${crypto.randomUUID()}@refundgenie.local>`)})});
+  await ctx.runMutation(internal.chase.finishNotice,{id:notice,state:'sent'});await ctx.runMutation(internal.calls.callUpdateSent,{id});
+ }catch{await ctx.runMutation(internal.chase.finishNotice,{id:notice,state:'uncertain'});}return null;
+}});

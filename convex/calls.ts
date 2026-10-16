@@ -1,3 +1,4 @@
+import {callUpdateRecipient,callUpdateBody} from '../lib/call-update';
 import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
@@ -48,10 +49,12 @@ export const finish=internalMutation({args:{id:v.id("calls"),status:v.union(v.li
  await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId});await ctx.scheduler.runAfter(0,internal.callActions.confirm,{id:call._id,attempt:0});return null;
 }});
 export const prepareConfirmation=internalMutation({args:{id:v.id("calls")},returns:v.any(),handler:async(ctx,{id})=>{const call=await ctx.db.get(id);if(!call||call.status!=="completed"||call.confirmingDraftId)return null;const item=await ctx.db.get(call.caseId);if(!item?.chase?.active||item.chase.authorisedAt!==call.authorisedAt||item.stage==="TRIAGING"||item.stage==="ERROR"||item.stage.startsWith("CLOSED"))return null;
- const to=item.demo?process.env.TICKBACK_DEMO_ADDRESS?.replace("@","+airline@"):undefined;if(!to)return null;
- const body=confirmingCallMail(call.company,call.startedAt,item.facts?.reply?.summary??call.transcript??"",call.mode,item.code,{requested:careRequestsCallback(call.transcript??""),reference:item.facts?.reply?.reference,passengerName:item.chase.name});
- const draftId=await ctx.db.insert("drafts",{caseId:item._id,company:call.company,...(item.demo?.chaseStory?{recipientRole:"Customer care",rung:item.flightPlan?.rung??2}:{}),step:"FLIGHT_call_confirmation",channel:"email",to,cc:[],subject:`Demo: refund call confirmation [${item.code}]`,body,attachChecklist:[],status:"ready",createdAt:Date.now()});await ctx.db.insert("caseEvents",{caseId:item._id,type:"call_confirmation_ready",summary:`Confirming mail to ${call.company} ready after ${call.label.toLowerCase()}`,actor:"agent",createdAt:Date.now()});await ctx.db.patch(call._id,{confirmingDraftId:draftId,readerOutput:{reply:item.facts?.reply??null,owner:item.owner??null,moneyWith:item.moneyWith??null,nextContact:item.flightPlan?.nextPerson?.company??null,nextStep:item.nextStep??null}});await ctx.db.patch(item._id,{stage:"READY",...(item.demo?.chaseStory?{demo:{...item.demo,chasePhase:'confirm_ready' as const}}:{})});
- if(!item.demo?.chaseStory)await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});return draftId;
+ const real=!item.demo;if(real&&call.mode!=="live")return null;
+ const to=item.demo?process.env.TICKBACK_DEMO_ADDRESS?.replace("@","+airline@"):callUpdateRecipient(item);if(!to)return null;
+ const body=real?callUpdateBody(call.company,item.facts?.reply,call.transcript??""):confirmingCallMail(call.company,call.startedAt,item.facts?.reply?.summary??call.transcript??"",call.mode,item.code,{requested:careRequestsCallback(call.transcript??""),reference:item.facts?.reply?.reference,passengerName:item.chase.name});
+ const draftId=await ctx.db.insert("drafts",{caseId:item._id,company:call.company,...(item.demo?.chaseStory?{recipientRole:"Customer care",rung:item.flightPlan?.rung??2}:{}),step:real?"FLIGHT_call_update":"FLIGHT_call_confirmation",channel:"email",to,cc:[],subject:real?`Refund Genie call update: ${call.company} · ${item.code}`:`Demo: refund call confirmation [${item.code}]`,body,attachChecklist:[],status:"ready",createdAt:Date.now()});await ctx.db.insert("caseEvents",{caseId:item._id,type:"call_confirmation_ready",summary:`Confirming mail to ${call.company} ready after ${call.label.toLowerCase()}`,actor:"agent",createdAt:Date.now()});await ctx.db.patch(call._id,{confirmingDraftId:draftId,readerOutput:{reply:item.facts?.reply??null,owner:item.owner??null,moneyWith:item.moneyWith??null,nextContact:item.flightPlan?.nextPerson?.company??null,nextStep:item.nextStep??null}});await ctx.db.patch(item._id,{stage:"READY",...(item.demo?.chaseStory?{demo:{...item.demo,chasePhase:'confirm_ready' as const}}:{})});
+ if(real)await ctx.scheduler.runAfter(0,internal.chaseActions.sendCallUpdate,{id:call._id});
+ else if(!item.demo?.chaseStory)await ctx.scheduler.runAfter(0,internal.chaseActions.send,{caseId:item._id});return draftId;
 }});
 export const list=query({args:access,returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);return ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(30);}});
 // Admin correction only. Never sends, schedules or retries a call.
@@ -70,3 +73,19 @@ export const correctRejectedCall=internalMutation({args:{id:v.id('calls')},retur
 export const attachRecording=internalMutation({args:{id:v.id("calls"),url:v.string(),transcript:v.string()},returns:v.null(),handler:async(ctx,args)=>{const call=await ctx.db.get(args.id);const item=call?await ctx.db.get(call.caseId):null;if(!call||!item?.demo||!/^https:\/\//.test(args.url)||call.patchIn||call.privacyNote||!safeCallResult({transcript:args.transcript,recordingUrl:args.url}).recordingUrl)throw new Error("Use a demo recording with no private verification details");await ctx.db.patch(call._id,{recordingUrl:args.url,roleplayTranscript:safeTranscript(args.transcript),recordingKind:"roleplay"});return null;}});
 
 export const chaseView=query({args:access,returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);const events=await ctx.db.query("caseEvents").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(60);const calls=await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(30);const draft=await ctx.db.query("drafts").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").first();const company=draft?.company??item.flightPlan?.nextPerson?.company??item.owner??"support";const day=item.demo?.now??todayIST();const attempts=await ctx.db.query("chaseOutbox").withIndex("by_case_day",q=>q.eq("caseId",item._id).eq("day",day)).take(10);return {next:chaseNext(item,draft,calls[0]??null,company,companyDayUsed([company],attempts)),events:chaseRows(events,company),calls};}});
+
+// D-057 exception: only the exact case-confirmed user address, never company To/CC.
+export const callUpdateEnvelope=internalQuery({args:{id:v.id('calls')},returns:v.any(),handler:async(ctx,{id})=>{
+ const call=await ctx.db.get(id);if(!call||call.status!=='completed'||call.mode!=='live'||!call.confirmingDraftId)return null;
+ const item=await ctx.db.get(call.caseId);if(!item?.chase?.active||item.chase.authorisedAt!==call.authorisedAt||item.stage.startsWith('CLOSED'))return null;
+ const recipient=callUpdateRecipient(item),draft=await ctx.db.get(call.confirmingDraftId);
+ if(!recipient||!draft||draft.caseId!==item._id||draft.step!=='FLIGHT_call_update'||draft.channel!=='email'||draft.status!=='ready'||draft.to!==recipient||(draft.cc??[]).length||!draft.body||!draft.subject)return null;
+ const connection=await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','inbox')).first();
+ if(!connection?.chaseSendGranted)return null;
+ return {caseId:item._id,code:item.code,recipient,draft,connection};
+}});
+export const callUpdateSent=internalMutation({args:{id:v.id('calls')},returns:v.null(),handler:async(ctx,{id})=>{
+ const call=await ctx.db.get(id);if(!call?.confirmingDraftId)return null;
+ const draft=await ctx.db.get(call.confirmingDraftId);if(draft?.step!=='FLIGHT_call_update'||draft.status!=='ready')return null;
+ await ctx.db.patch(draft._id,{status:'sent'});await ctx.db.insert('caseEvents',{caseId:call.caseId,type:'call_update_sent',summary:'Your call update was emailed to you',actor:'agent',createdAt:Date.now()});return null;
+}});
