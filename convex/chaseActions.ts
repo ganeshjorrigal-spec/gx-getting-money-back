@@ -14,6 +14,7 @@ import {
 } from "./googleActions";
 import type { GmailMessage } from "./googleActions";
 import { encryptToken, decryptToken } from "../lib/token-crypto";
+import {confirmedChaseCc,realChaseRecipients} from "../lib/chase";
 import { chaseAddressAllowed, chaseBody, chaseMailbox } from "../lib/chase";
 import { emailAddresses } from "../lib/demo";
 import { chaseRecipientsAllowed } from "../lib/chase";
@@ -259,9 +260,11 @@ export const send = internalAction({
       draftId: loaded.draft._id,
     });
     if (!reservation) return null;
-    let primaryDelivered = false;
+    let primaryDelivered = false,providerAccepted=false;
     try {
-      if(!demoRecipientsAllowed(loaded.item,[loaded.draft.to],[...(loaded.draft.cc??[]),loaded.item.chase.email],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS))return null;
+      const userCc=loaded.item.demo?loaded.item.chase.email:confirmedChaseCc(loaded.item);
+      if(!userCc)throw new Error('Confirmed email missing');
+      if(!await ctx.runQuery(internal.chase.dispatchAllowed,{caseId,draftId:loaded.draft._id,userCc,to:loaded.draft.to,cc:loaded.draft.cc??[]}))throw new Error('Recipients changed');
       const token = await accessToken(loaded.connection.encryptedRefreshToken);
       const from = caseInboxAddress(
         process.env.TICKBACK_INBOX_ADDRESS!,
@@ -283,7 +286,7 @@ export const send = internalAction({
       const raw = rawMail(
         from,
         [loaded.draft.to],
-        [...new Set([...(loaded.draft.cc ?? []), loaded.item.chase.email])],
+        [...new Set([...(loaded.draft.cc ?? []), userCc])],
         loaded.item.demo?demoEmailSubject(loaded.parentSubject??loaded.draft.subject):loaded.parentSubject??loaded.draft.subject,
         body,
         reservation.messageId,
@@ -296,9 +299,9 @@ export const send = internalAction({
           authorisedAt: loaded.item.chase.authorisedAt,
           draftId: loaded.draft._id,
         }))
-      )
-        return null;
-      const delivered = await googleJson<{ threadId: string; id: string }>(
+      )throw new Error('Authority stopped');
+      if(!await ctx.runQuery(internal.chase.dispatchAllowed,{caseId,draftId:loaded.draft._id,userCc,to:loaded.draft.to,cc:loaded.draft.cc??[]}))throw new Error('Recipients changed');
+      const delivered = await googleJson<{ threadId: string; id: string }> (
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
         token,
         {
@@ -309,6 +312,7 @@ export const send = internalAction({
           }),
         },
       );
+      providerAccepted=true;
       const saved = await googleJson<{
         payload?: { headers?: { name: string; value: string }[] };
       }>(
@@ -340,7 +344,7 @@ export const send = internalAction({
     } catch {
       if (!primaryDelivered)
         await ctx.runMutation(internal.chase.uncertain, {
-          id: reservation._id,
+          id: reservation._id,releaseDaily:!providerAccepted,
         });
     }
     return null;

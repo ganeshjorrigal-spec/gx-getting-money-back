@@ -1,3 +1,4 @@
+import {validEmail} from './case-email';
 import { flightContacts } from "./flight-kb";
 export const authorityLine = (company: string, pnr: string) =>
   `I authorise Refund Genie to contact ${company} about my refund for PNR ${pnr}, and to receive their replies for me. I can stop this any time.`;
@@ -86,4 +87,12 @@ export function chaseBody(body: string, name: string, first: boolean) {
   return /^(Dear [^\n]+,)\n\n/.test(body)
     ? body.replace(/^(Dear [^\n]+,)\n\n/, `$1\n\n${prefix}\n\n`)
     : `${prefix}\n\n${body}`;
+}
+
+export function chaseDailyCap(value:string|undefined){const count=Number(value);return value&&/^\d+$/.test(value.trim())&&Number.isSafeInteger(count)&&count>=0?count:50;}
+export function confirmedChaseCc(item:{email?:string|null;factsConfirmedAt?:number|null}){return item.factsConfirmedAt&&validEmail(item.email)?item.email.trim().toLowerCase():null;}
+export function realChaseRecipients(item:{email?:string|null;factsConfirmedAt?:number|null;facts?:any},to:string[],cc:string[],replySenders:string[]){
+ const user=confirmedChaseCc(item);if(!user||!to.length)return false;
+ const companies=[item.facts?.airline,item.facts?.bookedVia].filter(Boolean);
+ return to.every(a=>chaseCompanyAddress(a,companies,replySenders))&&cc.every(a=>a.trim().toLowerCase()===user||chaseCompanyAddress(a,companies,replySenders));
 }

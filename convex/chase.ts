@@ -11,7 +11,7 @@ import { internal } from "./_generated/api";
 import { assertAccess } from "./lib/access";
 import { recordDraftSent } from "./cases";
 import {
-  chaseRecipientsAllowed,
+  chaseRecipientsAllowed,confirmedChaseCc,realChaseRecipients,chaseDailyCap,
   chaseCompanyAddress,
   canChaseSend,
   companyDayUsed,
@@ -221,29 +221,12 @@ export const reserve = internalMutation({
       .query("googleConnections")
       .withIndex("by_kind", (q) => q.eq("kind", "inbox"))
       .first();
-    const recipients = [draft.to ?? "", ...(draft.cc ?? []), item.chase.email];
-    // Until a later authorised release, every recipient (including the passenger) must be on the test list.
-    if (!item.demo && process.env.CHASE_REAL_COMPANIES_ENABLED !== "true")
-      return null;
-    const allowed = demoRecipientsAllowed(item,[draft.to??""],[...(draft.cc??[]),item.chase.email],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS);
-    const inputs = await ctx.db
-      .query("inputs")
-      .withIndex("by_case", (q) => q.eq("caseId", item._id))
-      .order("desc")
-      .take(30);
-    if (
-      !item.demo &&
-      ![draft.to ?? "", ...(draft.cc ?? [])].every((a) =>
-        chaseCompanyAddress(
-          a,
-          [item.facts?.airline, item.facts?.bookedVia],
-          inputs.flatMap((i) =>
-            i.kind === "reply" && i.sender ? [i.sender] : [],
-          ),
-        ),
-      )
-    )
-      return null;
+    const realPublic=!item.demo&&process.env.CHASE_REAL_COMPANIES_ENABLED==='true';
+    if(!item.demo&&!realPublic)return null;
+    const inputs=await ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(30);
+    const senders=inputs.flatMap(i=>i.kind==='reply'&&i.sender?[i.sender]:[]);
+    const allowed=realPublic?realChaseRecipients(item,[draft.to??''],draft.cc??[],senders):demoRecipientsAllowed(item,[draft.to??''],[...(draft.cc??[]),item.chase.email],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS);
+    if(!allowed)return null;
     if (
       await ctx.db
         .query("chaseOutbox")
@@ -304,7 +287,19 @@ export const reserve = internalMutation({
         );
       return null;
     }
+    const capDay=todayIST();
+    if(realPublic){
+      const cap=await ctx.db.query('chaseDaily').withIndex('by_day',q=>q.eq('day',capDay)).unique();
+      if((cap?.count??0)>=chaseDailyCap(process.env.CHASE_DAILY_CAP)){
+        const tomorrow=addDays(capDay,1);
+        if(item.mailDeferredUntil!==tomorrow){await ctx.db.patch(item._id,{mailDeferredUntil:tomorrow});await ctx.scheduler.runAt(Date.parse(tomorrow+'T04:30:00Z'),internal.chaseActions.send,{caseId:item._id});}
+        return null;
+      }
+      if(cap)await ctx.db.patch(cap._id,{count:cap.count+1});else await ctx.db.insert('chaseDaily',{day:capDay,count:1});
+      if(item.mailDeferredUntil)await ctx.db.patch(item._id,{mailDeferredUntil:undefined});
+    }
     const id = await ctx.db.insert("chaseOutbox", {
+      dailyCapDay:realPublic?capDay:undefined,
       caseId: item._id,
       draftId: draft._id,
       company,
@@ -383,11 +378,12 @@ export const delivered = internalMutation({
   },
 });
 export const uncertain = internalMutation({
-  args: { id: v.id("chaseOutbox") },
+  args: { id: v.id("chaseOutbox"), releaseDaily:v.optional(v.boolean()) },
   returns: v.null(),
-  handler: async (ctx, { id }) => {
+  handler: async (ctx, { id,releaseDaily }) => {
     const row = await ctx.db.get(id);
-    if (row) {
+    if (row&&row.state==='reserved') {
+      if(releaseDaily!==false&&row.dailyCapDay&&!row.dailyCapReleased){const cap=await ctx.db.query('chaseDaily').withIndex('by_day',q=>q.eq('day',row.dailyCapDay!)).unique();if(cap)await ctx.db.patch(cap._id,{count:Math.max(0,cap.count-1)});await ctx.db.patch(id,{dailyCapReleased:true});}
       await ctx.db.patch(id, { state: "uncertain" });
       await ctx.db.insert("caseEvents", {
         caseId: row.caseId,
@@ -532,6 +528,7 @@ export const status = query({
   handler: async (ctx, args) => {
     const item = await assertAccess(ctx, args.code, args.token);
     if (!item.chase?.active) return "Genie is stopped.";
+    if(!item.demo&&process.env.CHASE_REAL_COMPANIES_ENABLED==='true'&&item.mailDeferredUntil&&item.mailDeferredUntil>todayIST())return "Genie will send this tomorrow";
     const connection = await ctx.db
       .query("googleConnections")
       .withIndex("by_kind", (q) => q.eq("kind", "inbox"))
@@ -559,16 +556,13 @@ export const status = query({
     if (isPassengerEscalation(item, draft)) return escalationSendLine;
     if (draft && draft.channel !== "email")
       return "Follow the next step on your case; Genie cannot send a portal form or make a call in this release.";
-    if (
-      !draft ||
-      !chaseRecipientsAllowed(
-        [draft.to ?? "", ...(draft.cc ?? []), item.chase.email],
-        process.env.CHASE_ALLOWLIST,
-      )
-    )
-      return "Waiting: every recipient must be on Ganesh's test allow-list.";
-    if (!item.demo && process.env.CHASE_REAL_COMPANIES_ENABLED !== "true")
-      return "Real-company sending is off until Ganesh says go.";
+    if(!item.demo&&process.env.CHASE_REAL_COMPANIES_ENABLED==='true'){
+      const inputs=await ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(30);
+      if(!draft||!realChaseRecipients(item,[draft.to??''],draft.cc??[],inputs.flatMap(i=>i.kind==='reply'&&i.sender?[i.sender]:[])))return 'Waiting for checked company contacts and your confirmed email.';
+    }else{
+      if(!draft||!chaseRecipientsAllowed([draft.to??'',...(draft.cc??[]),item.chase.email],process.env.CHASE_ALLOWLIST))return "Waiting: every recipient must be on Ganesh's test allow-list.";
+      if(!item.demo)return 'Real-company sending is off until Ganesh says go.';
+    }
     return "Genie is watching the next ready mail and its date.";
   },
 });
@@ -586,3 +580,11 @@ export const recordMessageId = internalMutation({
     return null;
   },
 });
+
+export const dispatchAllowed=internalQuery({args:{caseId:v.id('cases'),draftId:v.id('drafts'),userCc:v.string(),to:v.string(),cc:v.array(v.string())},returns:v.boolean(),handler:async(ctx,args)=>{
+ const item=await ctx.db.get(args.caseId),draft=await ctx.db.get(args.draftId);if(!item?.chase?.active||!draft||draft.caseId!==item._id||draft.to!==args.to||JSON.stringify(draft.cc??[])!==JSON.stringify(args.cc)||item.stage.startsWith('CLOSED'))return false;
+ if(item.demo)return args.userCc===item.chase.email&&demoRecipientsAllowed(item,[args.to],[...args.cc,args.userCc],process.env.CHASE_ALLOWLIST,process.env.TICKBACK_DEMO_ADDRESS);
+ if(process.env.CHASE_REAL_COMPANIES_ENABLED!=='true'||confirmedChaseCc(item)!==args.userCc)return false;
+ const inputs=await ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(30);
+ return realChaseRecipients(item,[args.to],args.cc,inputs.flatMap(i=>i.kind==='reply'&&i.sender?[i.sender]:[]));
+}});
