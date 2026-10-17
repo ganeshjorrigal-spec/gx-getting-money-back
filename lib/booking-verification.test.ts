@@ -32,3 +32,11 @@ it('booking fields and explicit consent save separately from notification email'
  await t.mutation(api.flights.verification,{code,token,field:'bookingContactReviewed',consent:true});
  item=await t.run(ctx=>ctx.db.get(id));expect(bookingCallFacts(item!.facts).bookingEmail).toBe('booking@example.invalid');
 });
+
+it('review edit saves ticket facts and validates sharing and booking contact',async()=>{
+ const t=convexTest(schema,import.meta.glob('../convex/**/*.ts')),token='x'.repeat(43),code='RG-EDITQA';
+ const id=await t.run(async ctx=>ctx.db.insert('cases',{code,tokenHash:await hashToken(token),stage:'READY',route:'OVERDUE',refundType:'flight',facts:sampleFlight(),email:'user@example.invalid',factsConfirmedAt:1,createdAt:1,updatedAt:1,ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none'}));
+ for(const [field,value] of [['routeFrom','Pune'],['routeTo','Delhi'],['nameOnTicket','Demo Passenger'],['bookingEmail','booking@example.invalid'],['shareBookingContact','Yes']] as const)await t.mutation(api.flights.editFact,{code,token,field,value});
+ const item=await t.run(ctx=>ctx.db.get(id));expect(item!.facts).toMatchObject({routeFrom:'Pune',routeTo:'Delhi',nameOnTicket:'Demo Passenger',bookingEmail:'booking@example.invalid',shareBookingContact:true});expect(item!.email).toBe('user@example.invalid');
+ await expect(t.mutation(api.flights.editFact,{code,token,field:'bookingEmail',value:'not-email'})).rejects.toThrow(/booking email/);
+});

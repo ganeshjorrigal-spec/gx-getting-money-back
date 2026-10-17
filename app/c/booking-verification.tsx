@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {useMutation} from 'convex/react';
 import {api} from '../../convex/_generated/api';
 import type {FlightRead} from '../../lib/flight';
-import {missingVerification,verificationLabels,verificationSamples,bookingContactConsent} from '../../lib/booking-verification';
+import {bookingContactPresent,missingVerification,verificationLabels,verificationSamples,bookingContactConsent} from '../../lib/booking-verification';
 import {AnswerStep,SharedSummary} from '../components/answer-progress';
 import {SampleFieldLabel} from '../components/sample-field-label';
 import {userError} from '../../lib/user-error';
@@ -11,7 +11,7 @@ export function BookingVerification({code,token,facts,demo}:{code:string;token:s
  const save=useMutation(api.flights.verification);
  const [values,setValues]=useState<Record<string,string>>({}),[skipped,setSkipped]=useState<string[]>([]),[consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const field=missingVerification(facts).find(f=>!skipped.includes(f));
- async function submit(skip=false){setBusy(true);setError('');try{if(field){await save({code,token,field,value:skip?'':values[field]??''});if(skip)setSkipped(s=>[...s,field]);}else await save({code,token,field:'bookingContactReviewed',consent});}catch(e){setError(userError(e));}finally{setBusy(false);}}
+ async function submit(skip=false){setBusy(true);setError('');try{if(field){await save({code,token,field,value:skip?'':values[field]??''});if(skip)setSkipped(s=>[...s,field]);const next={...facts,[field]:skip?null:values[field]??null};if(!bookingContactPresent(next)&&missingVerification(next).every(f=>[...skipped,field].includes(f)))await save({code,token,field:'bookingContactReviewed',consent:false});}else await save({code,token,field:'bookingContactReviewed',consent});}catch(e){setError(userError(e));}finally{setBusy(false);}}
  return <section className="case-card"><AnswerStep step={2}/><h2>{field?verificationLabels[field]:'Booking contact permission'}</h2>
  <SharedSummary screen="booking-verification" items={[{label:'From',value:facts.routeFrom},{label:'To',value:facts.routeTo},{label:'Name on ticket',value:facts.nameOnTicket},{label:'Booking mobile',value:facts.bookingMobile},{label:'Booking email',value:facts.bookingEmail}]}/>
  {demo&&<p>Use made-up details. This is a demo.</p>}

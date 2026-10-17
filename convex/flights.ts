@@ -114,17 +114,22 @@ export const replies=query({args:{code:v.string(),token:v.string()},returns:v.an
 
 // Explicit edits at review use the same saved fields. They are distinct from a
 // delayed question tap, which must still ignore an already answered question.
-export const editFact=mutation({args:{code:v.string(),token:v.string(),field:v.union(v.literal('name'),v.literal('contact'),v.literal('airline'),v.literal('bookedVia'),v.literal('paymentMethod'),v.literal('cancellationDate'),v.literal('amountPaid'),v.literal('eTicketNumber'),v.literal('airIndiaRefundRequested')),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
+export const editFact=mutation({args:{code:v.string(),token:v.string(),field:v.union(v.literal('name'),v.literal('contact'),v.literal('airline'),v.literal('bookedVia'),v.literal('paymentMethod'),v.literal('cancellationDate'),v.literal('amountPaid'),v.literal('eTicketNumber'),v.literal('airIndiaRefundRequested'),v.literal('routeFrom'),v.literal('routeTo'),v.literal('nameOnTicket'),v.literal('bookingMobile'),v.literal('bookingEmail'),v.literal('shareBookingContact'),v.literal('flightNumber'),v.literal('departureDate')),value:v.string()},returns:v.null(),handler:async(ctx,args)=>{
  const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=='flight'||item.stage.startsWith('CLOSED')||item.chase?.active)throw new Error('Stop Genie before editing an active chase');
  if(item.demo?.intakeRequired&&['airline','bookedVia'].includes(args.field))throw new Error('Demo roles are fixed');
  const read=flightReadSchema.parse(item.facts);let value:any=redact(args.value.trim()).slice(0,150);
+ if(['routeFrom','routeTo','nameOnTicket'].includes(args.field)&&!value)throw new Error('Add this booking detail');
+ if(args.field==='bookingEmail'&&value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw new Error('Enter a booking email or leave it empty');
+ if(args.field==='bookingMobile'&&value&&!/^\+?[0-9 ()-]{7,20}$/.test(value))throw new Error('Enter a booking mobile or leave it empty');
+ if(args.field==='shareBookingContact'){if(!['Yes','No'].includes(value))throw new Error('Choose Yes or No');if(value==='Yes'&&!read.bookingMobile&&!read.bookingEmail)throw new Error('Add a booking contact before sharing it');value=value==='Yes';read.bookingContactReviewed=true;}
+ if(args.field==='departureDate')value=value?answerDate(value):null;
  if(args.field==='eTicketNumber'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!/^\d{13}$/.test(args.value.trim()))throw new Error('Use the 13 digits from your Air India ticket, not a PNR or card number');value=args.value.trim();}
  if(args.field==='airIndiaRefundRequested'){if(read.airline!=='Air India'||read.bookedVia!=='direct'||!['Yes','No'].includes(value))throw new Error('Choose Yes or No');value=value==='Yes';}
  if(args.field==='cancellationDate')value=item.demo?.intakeRequired?demoFactValue('cancellationDate',value,item.demo.now):answerDate(value);
  if(args.field==='amountPaid')value=item.demo?.intakeRequired?demoFactValue('amountPaid',value,item.demo.now):answerAmount(value);
  if(args.field==='name')value=value.replace(/\s+/g,' ').slice(0,80);
  if(args.field==='name'||args.field==='contact')await ctx.db.patch(item._id,{[args.field]:value||undefined});
- else {Object.assign(read,{[args.field]:value});flightReadSchema.parse(read);}
+ else {Object.assign(read,{[args.field]:value});if(['bookingMobile','bookingEmail'].includes(args.field)){read.shareBookingContact=false;read.bookingContactReviewed=false;}flightReadSchema.parse(read);}
  await ctx.db.patch(item._id,{factsConfirmedAt:undefined});
  await ctx.db.insert('caseEvents',{caseId:item._id,type:'answered',summary:'You edited a case detail',actor:'user',createdAt:Date.now()});
  await rerun(ctx,item,read);return null;

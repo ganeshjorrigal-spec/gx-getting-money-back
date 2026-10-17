@@ -1,6 +1,6 @@
 "use client";
 import {BookingVerification} from "./booking-verification";
-import {verificationReady} from "../../lib/booking-verification";
+import {verificationReady,bookingSummaryRows} from "../../lib/booking-verification";
 import {SampleFieldLabel} from '../components/sample-field-label';
 import {ChaseHistory} from './chase-history';
 import {savedEmail,validEmail} from "../../lib/case-email";
@@ -136,9 +136,9 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  const checkDue=!!checkDate&&(data.demo?.now??todayIST())>=checkDate;
 
  const answering=data.route==='NEED_INFO'||((!data.factsConfirmedAt||(!data.demo&&!savedEmail(data)))&&!data.stage.startsWith('CLOSED'));
- const editFact=(field:string,label:string)=>setEditing({field,label,value:String(field==='name'?data.name??'':field==='contact'?contact:field==='airIndiaRefundRequested'?(facts?.airIndiaRefundRequested?'Yes':'No'):(facts as any)?.[field]??'')});
+ const editFact=(field:string,label:string)=>setEditing({field,label,value:String(field==='name'?data.name??'':field==='contact'?contact:['airIndiaRefundRequested','shareBookingContact'].includes(field)?((facts as any)?.[field]?'Yes':'No'):(facts as any)?.[field]??'')});
  const summaryItems:SummaryItem[]=facts?[
- {label:'From',value:facts.routeFrom},{label:'To',value:facts.routeTo},{label:'Name on ticket',value:facts.nameOnTicket},{label:'Booking mobile',value:facts.bookingMobile},{label:'Booking email',value:facts.bookingEmail},{label:'Share booking contact on calls',value:facts.shareBookingContact?'Yes':'No'},
+ ...bookingSummaryRows(facts,editFact),
  {label:'Airline',value:facts.airline,edit:demoIntake?undefined:()=>editFact('airline','airline')},
  {label:'Booked on',value:facts.bookedVia,edit:demoIntake?undefined:()=>editFact('bookedVia','booking site')},
  {label:'Payment method',value:facts.paymentMethod==='unknown'?'Not yet shared':facts.paymentMethod.replaceAll('_',' '),edit:()=>editFact('paymentMethod','payment method')},
@@ -163,7 +163,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  {error&&<p role="alert" className="error-banner">{error}</p>}
 
  <SavedTick field={saved}/>
- {editing&&<section className='case-card'><label htmlFor='review-edit'>Edit {editing.label}</label>{editing.field==='paymentMethod'?<select id='review-edit' value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}>{['credit_card','debit_card','upi','netbanking','wallet','cash','unknown'].map(v=><option key={v} value={v}>{v.replaceAll('_',' ')}</option>)}</select>:editing.field==='airIndiaRefundRequested'?<select id='review-edit' value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}><option>Yes</option><option>No</option></select>:<input id='review-edit' type={editing.field==='cancellationDate'?'date':'text'} value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}/>}<button className='button button-primary' disabled={busy} onClick={()=>run(async()=>{await editSaved({...args,field:editing.field as any,value:editing.value});markSaved(editing.label);setEditing(null);})}>Save this detail</button><button className='text-button' onClick={()=>setEditing(null)}>Cancel edit</button></section>}
+ {editing&&<section className='case-card'><label htmlFor='review-edit'>Edit {editing.label}</label>{editing.field==='paymentMethod'?<select id='review-edit' value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}>{['credit_card','debit_card','upi','netbanking','wallet','cash','unknown'].map(v=><option key={v} value={v}>{v.replaceAll('_',' ')}</option>)}</select>:['airIndiaRefundRequested','shareBookingContact'].includes(editing.field)?<select id='review-edit' value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}><option>Yes</option><option>No</option></select>:<input id='review-edit' type={['cancellationDate','departureDate'].includes(editing.field)?'date':editing.field==='bookingEmail'?'email':editing.field==='bookingMobile'?'tel':'text'} value={editing.value} onChange={e=>setEditing({...editing,value:e.target.value})}/>}<button className='button button-primary' disabled={busy} onClick={()=>run(async()=>{await editSaved({...args,field:editing.field as any,value:editing.value});markSaved(editing.label);setEditing(null);})}>Save this detail</button><button className='text-button' onClick={()=>setEditing(null)}>Cancel edit</button></section>}
  {demoIntake&&<section className='case-card'><p>Airline: Demo Air · Booked on: DemoTrips</p><p>Demo roles, so no real company is involved.</p><button className='text-button' disabled={busy} onClick={()=>run(()=>fillSamples(args))}>Fill all samples</button></section>}
  {answering&&data.route==='NEED_INFO'&&<SharedSummary screen='flight-questions' items={summaryItems.map(({edit,href,...item})=>item)}/>}
  {waiting?<section className="case-card progress-card" role="status"><Mascot head/><span className="spinner" aria-hidden="true"/><h2>Reading your message…</h2><ol>{["Read message","Confirm facts","Choose next action"].map((label,i)=><li key={label} className={i<({reading:0,route:1,date:1,writing:2,done:3} as Record<string,number>)[data.progress?.step??"reading"]?"progress-done":""}>{i<({reading:0,route:1,date:1,writing:2,done:3} as Record<string,number>)[data.progress?.step??"reading"]?"✓ ":""}{label}</li>)}</ol></section>:<>
