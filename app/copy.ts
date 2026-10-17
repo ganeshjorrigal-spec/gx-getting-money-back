@@ -79,7 +79,7 @@ export const landingCopy = {
 // All editorial calling text lives here; persisted call evidence remains data.
 export const callingCopy = {
  landingSub:"Refund Genie is an AI agent for stuck flight refunds in India. Tell it once what happened. Genie finds who has your money and the date they had to pay by under DGCA rules, then calls and mails them for you, and keeps at it till the money lands. You only step in if they need you.",
- landingRelease:"Calling starts with IndiGo, after separate permission and your call button. Mail sending needs your written permission and is limited to approved test addresses.",
+ landingRelease:"Genie mails and calls only after your written permission. Calls start with IndiGo, Monday to Saturday, 10:00 to 18:00.",
  tellWhy:"So every mail and call already has it.",
  landingOnce:"Genie carries every mail and call.",
  landingControl:"No OTP, bank details or login.",
@@ -89,6 +89,8 @@ export const callingCopy = {
  calledButton: "I've called",
  liveTestOnly: "Live calls can use only approved test numbers and separate permission.",
  simulatedNotice: "Calling is simulated for now. No phone is dialled.",
+ realMailNotice:"With written permission, Genie mails checked company contacts and keeps your confirmed email in CC.",
+ demoMailNotice:"Demo. Genie sends only to the labelled demo desk and confirmed demo email.",
  realCallNotice:"Genie can call IndiGo after your separate permission and a press of the call button. Calls are recorded. If care needs to verify you, you will call them back.",
  realCallButton:(company:string)=>`Ask Genie to call ${company}`,
  privacyRequestsTitle:"Privacy and deletion requests",
@@ -120,8 +122,8 @@ export const callingCopy = {
  roleplayRecording: "Role-play recording. This is not a live company call.",
  callRecording: "Call recording",
  historyTitle: "Calls in this case",
- termsControl: "You can send messages yourself or give written permission for Genie to send and follow up, with your email copied and a letter of authority attached to the first mail. You can stop future sending at any time; already accepted mail cannot be recalled. This release enables only approved test recipients. Calling starts with IndiGo after separate calling permission and your press of the call button. Genie says it is an AI calling with your permission. Calls are recorded. If care needs to verify you, you will call them back. We keep call recordings and safe transcripts for the case, along with call mode, time, duration and cost. The call stops at any request for OTP, card or bank details. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts. You file complaints yourself. Refund Genie never logs in to an airline, travel site, bank or payment account for you. It never asks for an OTP, password or bank details.",
- privacyChase: "Optional written permission lets Genie send refund mails from its case inbox and copy your email. We store your full name, email, permission timestamp, PDF letter of authority and outgoing mail record. We ask for your mobile only when you give separate calling permission, for follow-up about this case. The first mail attaches that letter. Your email gets a short update when Genie sends a mail or reads a reply. Recipients follow the checked playbook or a known company’s own reply. Stop Genie ends queued and future sending; a mail already accepted by Gmail cannot be recalled. The current release sends only to approved test addresses. Real-company sending is off. Calling starts with IndiGo after separate calling permission and your press of the call button. Genie says it is an AI calling with your permission. Calls are recorded. If care needs to verify you, you will call them back. We keep call recordings and safe transcripts for the case, along with call mode, time, duration and cost. The call stops at any request for OTP, card or bank details. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts.",
+ termsControl: "You can send messages yourself or give written permission for Genie to send and follow up, with your email copied and a letter of authority attached to the first mail. You can stop future sending at any time; already accepted mail cannot be recalled. Company recipients must be checked contacts, and your confirmed email stays in CC. Calling starts with IndiGo after separate calling permission and your press of the call button. Genie says it is an AI calling with your permission. Calls are recorded. If care needs to verify you, you will call them back. We keep call recordings and safe transcripts for the case, along with call mode, time, duration and cost. The call stops at any request for OTP, card or bank details. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts. You file complaints yourself. Refund Genie never logs in to an airline, travel site, bank or payment account for you. It never asks for an OTP, password or bank details.",
+ privacyChase: "Optional written permission lets Genie send refund mails from its case inbox and copy your email. We store your full name, email, permission timestamp, PDF letter of authority and outgoing mail record. We ask for your mobile only when you give separate calling permission, for follow-up about this case. The first mail attaches that letter. Your email gets a short update when Genie sends a mail or reads a reply. Recipients follow the checked playbook or a known company’s own reply. Stop Genie ends queued and future sending; a mail already accepted by Gmail cannot be recalled. Company recipients must be checked contacts, and your confirmed email stays in CC. Calling starts with IndiGo after separate calling permission and your press of the call button. Genie says it is an AI calling with your permission. Calls are recorded. If care needs to verify you, you will call them back. We keep call recordings and safe transcripts for the case, along with call mode, time, duration and cost. The call stops at any request for OTP, card or bank details. Codes and private verification details are excluded; unsafe recordings are not retained. Stop ends future calls and requests ending any active call. Simulated calls are labelled and are not real company contacts.",
  permission:(company:string)=>`and to call ${company}'s customer care for me. Genie says it is an AI assistant calling with my permission. The call is recorded. If they need to verify me, I will call them back.`,
  transcript:(mode:string)=>`Read the ${mode==='simulated'?'simulated ':''}call transcript`,
  demoWork:(mails:number,replies:number,simulated:number,real:number)=>`Genie sent ${mails} test mails, read ${replies} replies (including the simulated call), and ran ${simulated} simulated demo call. Real company calls: ${real}.`,
@@ -208,7 +210,7 @@ export const flightLandingCopy = {
  how:[
  ["Paste or upload the mail.","Tell Genie what happened. Don't include OTPs or card numbers."],
  ["See who owes you.","Your due date, its source and the next person to contact."],
- ["Send the mail from your Gmail.","Read your draft, keep the case inbox in CC, then tap I sent it. Written permission is an option for the test-only mail chase."],
+ ["Send the mail from your Gmail.","Read your draft, keep the case inbox in CC, then tap I sent it. Written permission is an option for Genie to mail and follow up."],
  ["Your next step stays ready.","When they reply, Genie reads it and your next step is ready."],
  ],
 };
@@ -309,7 +311,7 @@ export const landingSections = {
  faq:[
  ["Why do you need my PNR?","So every company can find your booking without asking you again."],
  ["Will you ever ask for an OTP or bank details?","No. Never share OTPs, card or bank details, or a login with Genie."],
- ["Who sends the mails?","With written permission, Genie sends support-level follow-ups to approved test addresses. Escalations to officers go from your own Gmail."],
+ ["Who sends the mails?","With written permission, Genie sends support-level follow-ups to checked company contacts and keeps your confirmed email in CC. Escalations to officers go from your own Gmail."],
  [callingCopy.faqQuestion,callingCopy.faqAnswer],
  ["What does it cost?",`${landingPriceLine} ${pricing.landingGuarantee}`],
  ["Is Refund Genie linked to these airlines?","No. Refund Genie is not linked to or endorsed by the airlines or travel sites."],

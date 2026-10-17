@@ -70,8 +70,7 @@ export function ChaseAuthority({
       {!show&&!chase?.active&&<SharedSummary screen="chase-permission" items={[{label:"Company",value:company},{label:"PNR",value:pnr}]}/>}
       <p>You can keep sending from your own Gmail instead.</p>
       <p>
-        Test release: Genie can mail only approved test addresses. Real-company
-        sending is off.
+        {demo?callingCopy.demoMailNotice:callingCopy.realMailNotice}
       </p>
       {demo && <p>Demo. Nothing is sent to a real company.</p>}
       {chase && !chase.active && <p>Genie is stopped. No more queued mail will be sent.</p>}
