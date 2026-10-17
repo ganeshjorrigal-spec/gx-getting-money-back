@@ -1,10 +1,10 @@
 # Current state, 17 October 2026
 
-## Disclosure/facts release published and checked
-Published exact source 8d739af879ac807a4a67ac8e5b6d951db05f6a31 once to Convex, then Cloudflare, under Ganesh's explicit release line. Convex static version a560dd72-7077-4c09-a7ef-8f775883a8a7. Cloudflare Worker version d519ae5f-a59e-4a21-942c-b52bc03963dc. Backend type check and both 16-page builds passed; additive case-link quota indexes deployed. Prior source gates 465/465 tests across 61 files pass; not rerun during publication.
+## Public launch code ready for review, unpublished
+Parts 1 to 3 committed: 0b01172, e0e4816, 94782c9. Exact real-company switch enables checked company To/CC and confirmed case-user CC outside the allow-list; sender revalidates before dispatch. Global IST-day cap defaults to 50, reserves atomically, releases failed sends once, retains accepted sends and defers capped cases until tomorrow. Demo recipient gates, switch-off and call limits remain. Public wording updated; stored flight/date now shown, booking rows editable, empty optional contact skips consent screen with sharing off.
 
-## Live route proof
-At 07:37 IST, refundgenie.app /, /start/, /cases/, /privacy/ and /terms/ each returned 200. Safe release proof docs/qa/disclosure-publish-2026-10-17/release-proof.json. Prior local consent/link-control screenshots remain in docs/qa/disclosure-facts-2026-10-17/ and are labelled mocked.
+## Gates pass
+488/488 tests across 64 files, full suite once, 20.20s. Type check and 16-page static export pass. Local mocked intake walk at 375px verifies skip, sharing off and Edit callbacks. All transport mocked. Read-only RG-FBLJE4 check confirms flight/date were stored and matched source; summary omission fixed without editing that case or extraction logic. Proof docs/qa/public-launch-2026-10-17/.
 
-## Stop
-No calls, company mail, new cases, live case edits, env/key/allow-list/model/calling-setting changes. Nothing DONE. Actual live-person disclosure/booking verification and case-link delivery remain untested by Codex; no live call/mail proof was authorised in this release. Stop after report for Ganesh/HQ.
+## Stop for deployment line
+No calls, real company mail, deploy, live case edits, env/key/allow-list/model/calling-setting changes. Nothing DONE. Main code is not yet live. Published source stays 8d739af879ac807a4a67ac8e5b6d951db05f6a31; Convex static a560dd72-7077-4c09-a7ef-8f775883a8a7 and Cloudflare d519ae5f-a59e-4a21-942c-b52bc03963dc. Owner authorises deploy, then flips launch switches himself. Actual public call/company-mail proof remains untested.

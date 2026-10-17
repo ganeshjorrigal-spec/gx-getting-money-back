@@ -1,6 +1,7 @@
-# Authorised disclosure/facts release checked, stopped
+# Public launch four parts ready for HQ review
 
-- Exact source 8d739af published once to Convex, then Cloudflare; IDs logged.
-- Five requested live pages return 200. Backend check and both 16-page builds pass.
-- No calls, company mail, case edits or environment/settings changes. Nothing DONE.
-- Stop after report. Live call/mail verification requires a separate instruction.
+- Parts 1 to 3 individually committed; gate/proof commit is Part 4.
+- 488/488 tests, type check and 16-page export pass.
+- Read-only fact check plus local mocked intake/callback proof saved.
+- No calls, real company mail, deploy or remote settings changes. Nothing DONE.
+- Stop for Ganesh's deploy line; launch switches are his action afterward.

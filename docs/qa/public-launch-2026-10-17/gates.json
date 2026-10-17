@@ -1,0 +1,19 @@
+{
+ "sourceCommit":"94782c9",
+ "testsPassed":488,
+ "testFilesPassed":64,
+ "fullSuiteRuns":1,
+ "testDurationSeconds":20.20,
+ "typeCheck":"pass",
+ "staticExport":"pass",
+ "staticPages":16,
+ "uiChecks":["empty contact skip advances without permission screen","sharing remains No","six booking edit callbacks","stored flight number and travel date visible"],
+ "uiScope":"Actual intake component and summary helper with mocked local saves; backend edits separately unit tested",
+ "screenshot":"intake-review-mobile.jpg",
+ "viewportWidth":375,
+ "uiDetectorFindings":0,
+ "callsPlaced":0,
+ "realCompanyMailSent":0,
+ "deployments":0,
+ "remoteSettingsChanged":false
+}
