@@ -1,10 +1,10 @@
 # Current state, 17 October 2026
 
-## Disclosure, booking facts and case-link mail built, unpublished
-Parts 1 to 6: 70a1c31, 6d6bf0f, 3dad730, c6bb99d, 9b0c309, b1758ea. Repeat full AI/passenger/recording disclosure to each live person; intake and screenshot schema collect route, ticket name and optional booking contact with unticked separate sharing consent; calls receive only confirmed known facts and consented contact; stored transcripts mask allowed contact while private requests still cut; menu and answer waiting improved. Case-link button sends only to the case-confirmed user via existing inbox, with atomic three-per-day quota and copy fallback. Company mail gates unchanged. Optional schema additions only, no live case facts edited.
+## Disclosure/facts release published and checked
+Published exact source 8d739af879ac807a4a67ac8e5b6d951db05f6a31 once to Convex, then Cloudflare, under Ganesh's explicit release line. Convex static version a560dd72-7077-4c09-a7ef-8f775883a8a7. Cloudflare Worker version d519ae5f-a59e-4a21-942c-b52bc03963dc. Backend type check and both 16-page builds passed; additive case-link quota indexes deployed. Prior source gates 465/465 tests across 61 files pass; not rerun during publication.
 
-## Gates and local proof pass
-465/465 tests across 61 files, full suite once, 8.24s. Type check and 16-page static export pass. Actual components walked in a local fixture with all saves/mail mocked, at 375px and 1280px. Consent off, sample buttons, optional skip, masked sent result, daily limit and copy fallback verified. UI detector finds none. Proof/screenshots docs/qa/disclosure-facts-2026-10-17/.
+## Live route proof
+At 07:37 IST, refundgenie.app /, /start/, /cases/, /privacy/ and /terms/ each returned 200. Safe release proof docs/qa/disclosure-publish-2026-10-17/release-proof.json. Prior local consent/link-control screenshots remain in docs/qa/disclosure-facts-2026-10-17/ and are labelled mocked.
 
-## Stop for deploy line
-No calls, real company mail, deploy, env/key/allow-list/model/calling-setting changes. Nothing DONE. Live site still source b985822, Convex static d8f050e8-4ed3-4b4d-925f-d92a1c0543a7 and Cloudflare e3a9e117-1f63-4721-acb4-8457ba3a9591. No backend push for these new changes. Actual live disclosure/booking verification and case-link delivery remain untested. Wait for Ganesh to authorise deployment.
+## Stop
+No calls, company mail, new cases, live case edits, env/key/allow-list/model/calling-setting changes. Nothing DONE. Actual live-person disclosure/booking verification and case-link delivery remain untested by Codex; no live call/mail proof was authorised in this release. Stop after report for Ganesh/HQ.

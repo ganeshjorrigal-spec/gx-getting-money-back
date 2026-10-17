@@ -1,7 +1,6 @@
-# Seven disclosure/facts parts ready for HQ review
+# Authorised disclosure/facts release checked, stopped
 
-- Parts 1 to 6 committed individually, gate/proof commit is Part 7.
-- 465/465 tests, final type check and 16-page static export pass.
-- Local component browser walk passes; saves and mail mocked. Mobile/desktop screenshots saved.
-- No calls, company mail, deploy, remote environment/key/allow-list/calling-setting changes. Nothing DONE.
-- Stop for Ganesh's deploy line. No live action authorised.
+- Exact source 8d739af published once to Convex, then Cloudflare; IDs logged.
+- Five requested live pages return 200. Backend check and both 16-page builds pass.
+- No calls, company mail, case edits or environment/settings changes. Nothing DONE.
+- Stop after report. Live call/mail verification requires a separate instruction.

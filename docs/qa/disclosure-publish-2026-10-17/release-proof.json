@@ -1,0 +1,33 @@
+{
+  "deployedCommit": "8d739af879ac807a4a67ac8e5b6d951db05f6a31",
+  "convexStaticVersion": "a560dd72-7077-4c09-a7ef-8f775883a8a7",
+  "cloudflareVersion": "d519ae5f-a59e-4a21-942c-b52bc03963dc",
+  "checkedAtIST": "2026-10-17T07:37:35.8679532+05:30",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    },
+    {
+      "route": "/cases/",
+      "status": 200
+    },
+    {
+      "route": "/privacy/",
+      "status": 200
+    },
+    {
+      "route": "/terms/",
+      "status": 200
+    }
+  ],
+  "all200": true,
+  "deployCommandsRunOnceInOrder": true,
+  "callsPlaced": 0,
+  "companyMailSent": 0,
+  "settingsChanged": false
+}
