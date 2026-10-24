@@ -1,6 +1,7 @@
 # Current state, 24 October 2026
 
-## Foundations: Part 3 published; STOP at Part 4 fresh-review handoff
+## Foundations: READY FOR REVIEW
+25 October update: Ganesh confirmed that the independent Part 4 review chat is running. Part 5 read-only scan is complete, with its report in chat only. No findings are saved here and no existing data or history was changed. Parts 1 to 5 handed to Ganesh; independent review results still go to HQ. Wait for HQ. N2 not started, nothing DONE. The earlier progress notes below are historical; this update supersedes their remaining-work status.
 Part 1 complete: public test link https://abundant-marten-136.convex.site is refundgenie-test Production, separate from Development tangible-lemur-692. Owner set six required Production settings with a separate encryption key. Ran deploy:test once from next folder, source f8851d7; backend and 16-page static export/upload pass, static version dd232786-43a5-43cf-a3d7-cde145ab8bfc. Browser /, /start/, /cases/ and made-up RG-Y06F3W free check pass. Proof docs/qa/foundations-2026-10-24/. README now points to Production. Build only in gx-getting-money-back-next; old folder reference only.
 
 ## Part 2 committed

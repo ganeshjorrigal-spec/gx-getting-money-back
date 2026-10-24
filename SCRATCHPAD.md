@@ -1,4 +1,6 @@
-# Foundations: Part 3 published; Part 4 STOP
+# Foundations: READY FOR REVIEW
+
+25 October: Ganesh confirmed the independent Part 4 review is running. Part 5 scan complete, report in chat only. Earlier checklist below is historical. Wait for HQ; do not start N2.
 
 - [x] Part 1: separate Production test link deployed once and browser-proven.
 - [x] Part 2: exact HQ AGENTS rewrite committed bfc097b.
