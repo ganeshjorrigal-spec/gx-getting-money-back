@@ -1,19 +1,13 @@
 # Current state, 25 October 2026
 
-## N3: READY FOR REVIEW, not published
-Branch next, runtime baea415. Owner authorised N3 after confirming N2 passenger mail delivery. Required STOP before deploy:test or N4. Nothing DONE.
+## N3: READY FOR REVIEW, published to test only
+Branch next. Source 08096f8, static 31870f80-1905-4e75-8bfe-c21f136caefd, 135 files. Owner-approved npm run deploy:test passed for refundgenie-test Production abundant-marten-136. Build/export 16 pages, type/schema checks pass. GET /, /start/, /cases/ return 200. Latest suite 563/563 across 76 files. Nothing DONE. N4 waits for Ganesh's phone results.
 
-## Repeat-fire diagnosis and fix
-Test was added and run before app changes. The handed-over WAIT case raised rung 2 to 3 and scheduled a new check at the same instant; the not-handed-over case did not loop. Reported this in chat before implementation. Real WAIT check-ins now ask the passenger without replanning or advancing, whether handed over or not. A stale chase.advance job also refuses WAIT. D-067 check is at 10:00 IST the following calendar day. Duplicate job/daily checks are suppressed, and rereading identical waiting facts preserves an unanswered check without recreating it.
+## Due-date behaviour
+Original fake-clock test reproduced handed-over WAIT rung 2 to 3 and immediate repeated check before app changes. Fixed WAIT checks: day after deadline at 10:00 IST, one passenger mail, no automatic rung change. Duplicate jobs/notices and stale-date answers guarded. It came closes with today's timestamp; Not yet explicitly replans and opens the existing permission form. Opening the form grants nothing. Officer emails remain passenger-sent. Local N3 due-card and Money landed screenshots in docs/qa/n3-2026-10-25/; actual hand-over opening awaits owner phone proof.
 
-## Due-date email and answers
-Only the confirmed passenger receives the due check through the N2 gated/deduplicated transport, outside the company allow-list. Private dated links say It came and Not yet, chase it. Links open the case answer card; a page visit alone cannot mutate a case. It came records recovered amount and today's closedAt; Not yet explicitly starts planning. Answer replay and stale deadlines are rejected/idempotent. Newer deadline suppresses an old queued email. Demo/event paths unchanged.
+## Owner-only delivery proof
+Ganesh approved 23 October for immediate testing because it was before 10:00 on 25 October. The schedule rule and clock are unchanged. scripts/n3-owner-check.mjs requires Convex owner CLI authentication, fixes the target to test Production and refuses non-fictional, closed, unconfirmed or previously attempted fixtures. Prepared RG-ZSROFN, ran normal check twice. Read-only result: DUE, rung 2, deadline 23 October, one sent due-check notice. Actual receipt and It came closure await Ganesh. Only one eligible confirmed open case found. Second must be created/confirmed normally, then prepared with the same owner command. No notice/counter reset.
 
-## Proof
-Final suite 563/563 across 76 files, type check and 16-page static export pass. Development tangible-lemur-692 accepted schema/functions at 02:14:47 IST. N3 tests: 10; focused prior N3/N2/pre-deadline pass. Local fictional RG-R07HSA showed both choices; It came closed at Rs 5400 today. Safe screenshots docs/qa/n3-2026-10-25/. No mail/call/hand-over in that walkthrough. Actual N3 mail delivery not live-tested; transport acceptance mocked. Local preview/server closed. Phone/review checklist docs/handoff/n3-due-date-mail.md.
-
-## Public test and freeze
-Test Production https://abundant-marten-136.convex.site still runs N2 source eea7942, static 4467f7c4-cf5e-4885-b73d-c4f344d792b1. Production mailbox is connected; Development mailbox disconnected. Last read-only verification showed real-company sending off in both. No N3 deploy:test, old deploy, Cloudflare, main, key/env/allow-list/calling-setting changes or company mail/calls.
-
-## Remaining and parked
-Wait for Ganesh review/yes before N3 publish or N4. N5 to N8 untouched; N1 outreach Ganesh. Provider quota deferred. Free-refund resets and manual annual-pass fallback parked. Root HQ prompt remains untracked/uncommitted. Older cases without encrypted private-link tokens not migrated.
+## Safety and remaining
+Production inbox connected, Development disconnected. Real-company sending checked off in both test deployments. No company mail/calls, live/main/Cloudflare, key/env/allow-list/calling changes. Root HQ prompt untracked. N1 outreach Ganesh; N4/N5 to N8 untouched. Provider quota deferred. Free-refund resets and manual annual-pass fallback parked. Owner checklist docs/handoff/n3-due-date-mail.md. Wait for results before N4.

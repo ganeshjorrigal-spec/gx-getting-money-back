@@ -1,11 +1,12 @@
-# N3: READY FOR REVIEW, required STOP
+# N3: published, waiting for owner phone proof
 
-- [ ] Ganesh reviews N3 and approves deploy:test before publication or N4.
-- [ ] After approved publication, prepare two fictional WAIT fixtures (handed over and not handed over), confirmed passenger address, deadline yesterday. Check mail at/after 10:00 IST today and both answer choices.
+- [ ] Ganesh checks exactly one new due-check email and It came closure on RG-ZSROFN.
+- [ ] Ganesh creates/confirms second fictional case; prepare via owner-only command and check Not yet opens hand-over without saving permission.
+- [ ] Wait for Ganesh result before N4.
 - [ ] Provider daily quota remains deferred by owner.
 
 ## Parked from the abuse review
 - [ ] Free-refund count resets: do not build.
 - [ ] Manual annual-pass fallback: do not build.
 
-N3 runtime baea415: 563/563 tests, type check, static export and Development push pass. N2 remains on public test Production. No N3 publish; N4/N5 to N8 untouched; N1 outreach owner. No live/main/Cloudflare, keys/settings/allow-list/calling changes, company mail or calls. Root HQ prompt stays untracked.
+N3 source 08096f8 / static 31870f80-1905-4e75-8bfe-c21f136caefd is on test Production. 563/563 tests and build/type gates pass. Owner approved 23 October for immediate test; RG-ZSROFN has one sent due-check notice and remains rung 2. Nothing DONE. No company mail/calls, live/main/Cloudflare or settings/keys/calling changes. Root HQ prompt untracked.

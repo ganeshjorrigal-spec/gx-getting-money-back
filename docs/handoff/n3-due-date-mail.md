@@ -20,3 +20,20 @@ The test-first run reproduced the bug before the fix: the handed-over WAIT case 
 7. Report case codes and outcomes only, not private URLs, tokens, mailbox addresses or real mail contents.
 
 No Gmail, calling or other settings changed. The frozen live project stays untouched. N4 has not started.
+
+## Owner-only immediate N3 delivery check
+This command requires the owner's existing Convex CLI sign-in. It has one fixed target, test Production abundant-marten-136; there is no live option and no public admin endpoint. It refuses real-company sending enabled, closed/demo/unconfirmed cases, missing saved private-link token, cases without SAMPLE PNR / TEST-ID booking / explicitly fictional initial text, and dates already attempted for that case. It never prints the passenger address or private link.
+
+From the test repository folder, preview an eligible case with:
+
+    node scripts/n3-owner-check.mjs RG-ZSROFN 2026-10-23
+
+To prepare its saved waiting deadline/check date and run the existing due check, add --run:
+
+    node scripts/n3-owner-check.mjs RG-ZSROFN 2026-10-23 --run
+
+The command calls only authenticated internal functions against refundgenie-test Production. It repeats fire intentionally; the normal job/notice deduplication must still send one check-in mail. It neither authorises hand-over nor calls a company. Do not reset a sent/uncertain notice or repeat this with a new date just to force delivery.
+
+Ganesh approved 23 October for an immediate check because the session was before 10:00 IST on 25 October: yesterday's normal check must wait until 10:00. No system clock or schedule rule is changed. For a second test, create a separate fictional case through the normal start/confirmation flow using SAMPLE, TEST-ID and the words made-up or fictional in the initial text, then substitute that confirmed case code in the same command. Do not use a real booking.
+
+After the due-check email opens the case, It came closes it with today's timestamp. On a separate unhanded-over case, Not yet, chase it prepares the next action and opens the written-permission form. Opening that form does not grant permission; officer mail remains passenger-sent. Stop at the form for this proof, without saving permission or calling. Report codes/outcomes only. N4 waits for Ganesh's result.
