@@ -78,6 +78,7 @@ export const landingCopy = {
 
 // All editorial calling text lives here; persisted call evidence remains data.
 export const callingCopy = {
+  startUncertain:'Call start uncertain. The budget stays reserved while we check the provider record. No automatic retry.',
  landingSub:"Refund Genie is an AI agent for stuck flight refunds in India. Tell it once what happened. Genie finds who has your money and the date they had to pay by under DGCA rules, then calls and mails them for you, and keeps at it till the money lands. You only step in if they need you.",
  landingRelease:"Genie mails and calls only after your written permission. Calls start with IndiGo, Monday to Saturday, 10:00 to 18:00.",
  tellWhy:"So every mail and call already has it.",

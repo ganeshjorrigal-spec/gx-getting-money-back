@@ -36,7 +36,7 @@ export const reserve=internalMutation({args:{caseId:v.id("cases"),fixture:v.unio
  return {callId,item,number,passengerNumber,mode,now};
 }});
 export const load=internalQuery({args:{id:v.id("calls")},returns:v.any(),handler:async(ctx,{id})=>{const call=await ctx.db.get(id);if(!call)return null;const item=await ctx.db.get(call.caseId);return item?{call,item}:null;}});
-export const queued=internalMutation({args:{id:v.id("calls"),externalId:v.string()},returns:v.null(),handler:async(ctx,args)=>{const call=await ctx.db.get(args.id);if(call?.status==="reserved")await ctx.db.patch(args.id,{status:"queued",externalId:args.externalId});return null;}});
+export const queued=internalMutation({args:{id:v.id("calls"),externalId:v.string()},returns:v.null(),handler:async(ctx,args)=>{const call=await ctx.db.get(args.id);if(call&&["reserved","start_uncertain"].includes(call.status))await ctx.db.patch(args.id,{status:"queued",externalId:args.externalId});return null;}});
 export const finish=internalMutation({args:{id:v.id("calls"),status:v.union(v.literal("completed"),v.literal("failed")),transcript:v.string(),reason:v.optional(v.string()),recordingUrl:v.optional(v.string()),recordingKind:v.optional(v.literal("roleplay")),costUsd:v.number(),durationSeconds:v.number(),patchIn:v.boolean(),passengerAnswered:v.optional(v.boolean()),privacyNote:v.optional(v.string())},returns:v.null(),handler:async(ctx,args)=>{
  const call=await ctx.db.get(args.id);if(!call||!['reserved','queued'].includes(call.status))return null;const item=await ctx.db.get(call.caseId);if(!item)return null;
  if(call.mode==="live"){const budget=await ctx.db.query("callBudgets").withIndex("by_day",q=>q.eq("day",todayIST(new Date(call.createdAt)))).unique();if(budget)await ctx.db.patch(budget._id,{reserved:Math.max(0,budget.reserved+args.costUsd-call.reservedUsd)});}
@@ -90,4 +90,10 @@ export const callUpdateSent=internalMutation({args:{id:v.id('calls')},returns:v.
  const call=await ctx.db.get(id);if(!call?.confirmingDraftId)return null;
  const draft=await ctx.db.get(call.confirmingDraftId);if(draft?.step!=='FLIGHT_call_update'||draft.status!=='ready')return null;
  await ctx.db.patch(draft._id,{status:'sent'});await ctx.db.insert('caseEvents',{caseId:call.caseId,type:'call_update_sent',summary:'Your call update was emailed to you',actor:'agent',createdAt:Date.now()});return null;
+}});
+
+export const startUncertain=internalMutation({args:{id:v.id('calls')},returns:v.null(),handler:async(ctx,{id})=>{
+ const call=await ctx.db.get(id);if(!call||call.status!=='reserved')return null;
+ await ctx.db.patch(id,{status:'start_uncertain',reason:'Call start uncertain; budget retained'});
+ await ctx.db.insert('caseEvents',{caseId:call.caseId,type:'call_start_uncertain',summary:'Call start uncertain; budget retained until the provider confirms the result',actor:'system',createdAt:Date.now()});return null;
 }});

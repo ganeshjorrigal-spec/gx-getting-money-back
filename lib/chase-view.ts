@@ -9,6 +9,7 @@ export function chaseNext(item:{stage:string;refundType?:string;route?:string;ch
  if(item.flightPlan?.nextStep==='FLIGHT_status')return 'Waiting until the due date. You can send the optional status mail yourself below; Genie will not send it.';
  if(isPassengerEscalation(item,draft))return escalationSendLine;
  if(!item.chase?.active)return 'Genie is stopped. You can keep sending from your own Gmail.';
+ if(call?.status==='start_uncertain')return callingCopy.startUncertain;
  if(call?.status==='queued'||call?.status==='reserved')return callingCopy.nextCall(callLabel(call.mode),call.company);
  if(item.stage==='TRIAGING')return 'Genie is on it. Next: read their reply and choose the next step.';
  if(item.route==='TRACE')return `Genie is on it. Next: check your bank${item.flightPlan?.checkDate?` on ${displayDate(item.flightPlan.checkDate)}`:''}.`;
