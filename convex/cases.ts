@@ -1,5 +1,6 @@
 import {claimCaseFiles} from './lib/files';
 import {hasConfirmedCaseEmail} from '../lib/confirmed-case-email';
+import {dueCheckTime} from '../lib/due-check';
 import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import { visibleTimeline } from "../lib/timeline";
 import { publicAppUrl } from "../lib/app-url";
@@ -232,7 +233,8 @@ export async function recordDraftSent(ctx:MutationCtx,item:import("./_generated/
       const statusMail=draft.step==="FLIGHT_status";
       const checkDate=statusMail?item.flightPlan?.dueDate:flightSendCheckDate(draft.channel,today,item.flightPlan?.checkDate);
       if(checkDate){
-        await scheduleCheckin(ctx,item._id,checkDate,"flight_refund",statusMail&&checkDate<=today?addDays(today,1):checkDate);
+        const scheduledDate=!item.demo&&item.route==='WAIT'?addDays(checkDate,1):statusMail&&checkDate<=today?addDays(today,1):checkDate;
+        await scheduleCheckin(ctx,item._id,checkDate,"flight_refund",scheduledDate);
         if(checkDate!==item.flightPlan?.checkDate)await ctx.db.insert("caseEvents",{caseId:item._id,type:"date_set",summary:`Check-in set for ${checkDate}`,actor:"agent",createdAt:now});
         const passOn=item.facts?.reply?.claim==="paid_site"&&item.dueSource==="estimate";
         await ctx.db.patch(item._id,{flightPlan:{...item.flightPlan,checkDate,...(passOn?{dueDate:checkDate}:{})},...(passOn?{dueDate:checkDate}:{})});
@@ -325,10 +327,16 @@ export const confirmFacts = mutation({
 });
 
 export const answerCheckin = mutation({
-  args: { ...accessArgs, answer: v.union(v.literal("landed"), v.literal("not_yet"), v.literal("replied")), amountPaise: v.optional(v.number()) },
+  args: { ...accessArgs, answer: v.union(v.literal("landed"), v.literal("not_yet"), v.literal("replied")), amountPaise: v.optional(v.number()),checkinDate:v.optional(v.string()) },
   returns: v.null(),
-  handler: async (ctx, { code, token, answer, amountPaise }) => {
+  handler: async (ctx, { code, token, answer, amountPaise,checkinDate }) => {
     const item = await assertAccess(ctx, code, token);
+    if(checkinDate){
+      const checks=await ctx.db.query('checkins').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(100);
+      if(checks.some(c=>c.date===checkinDate&&c.status==='answered'))return null;
+      if(item.demo||item.refundType!=='flight'||item.route!=='WAIT'||item.stage!=='DUE'||item.flightPlan?.checkDate!==checkinDate||Date.now()<dueCheckTime(checkinDate)||!checks.some(c=>c.date===checkinDate&&c.status==='fired'))throw new Error('This check-in is no longer waiting for an answer');
+      for(const c of checks)if(c.date===checkinDate&&c.status==='fired')await ctx.db.patch(c._id,{status:'answered'});
+    }
     if (item.stage.startsWith("CLOSED")) throw new Error("This case is closed");
     const now = Date.now();
     if (answer === "landed") {

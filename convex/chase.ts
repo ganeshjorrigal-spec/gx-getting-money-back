@@ -410,6 +410,7 @@ export const advance = internalMutation({
       !item?.chase?.active ||
       item.refundType !== "flight" ||
       item.stage.startsWith("CLOSED") ||
+      item.route === "WAIT" ||
       item.route === "TRACE"
     )
       return null;

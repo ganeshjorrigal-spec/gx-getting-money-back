@@ -2,6 +2,7 @@
 import {requireConfirmedCaseEmail} from '../lib/confirmed-case-email';
 
 import {updateMailBody} from '../lib/update-mail';
+import {dueCheckChoices} from '../lib/due-check';
 import {demoRecipientsAllowed,confirmedDemoCc,demoEmailSubject,demoEmailBody} from '../lib/demo-email';
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 import { action, internalAction } from "./_generated/server";
@@ -362,11 +363,13 @@ export const notify = internalAction({
     what: v.string(),
     reply: v.string(),
     next: v.string(),
+    dueCheck:v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
     const loaded=await ctx.runQuery(internal.chase.updateContext,{caseId:args.caseId});
     if(!loaded)return null;
+    if(args.dueCheck&&(loaded.item.route!=='WAIT'||loaded.item.stage!=='DUE'||loaded.item.flightPlan?.checkDate!==args.dueCheck))return null;
     const id = await ctx.runMutation(internal.chase.reserveNotice, {
       caseId: args.caseId,
       key: args.key,
@@ -376,12 +379,13 @@ export const notify = internalAction({
       const token = await accessToken(loaded.connection.encryptedRefreshToken);
       const current=await ctx.runQuery(internal.chase.updateContext,{caseId:args.caseId});
       if(!current||current.recipient!==loaded.recipient||current.encryptedCaseToken!==loaded.encryptedCaseToken){await ctx.runMutation(internal.chase.finishNotice,{id,state:'uncertain'});return null;}
+      if(args.dueCheck&&(current.item.route!=='WAIT'||current.item.stage!=='DUE'||current.item.flightPlan?.checkDate!==args.dueCheck)){await ctx.runMutation(internal.chase.finishNotice,{id,state:'uncertain'});return null;}
       const from = caseInboxAddress(
         process.env.TICKBACK_INBOX_ADDRESS!,
         loaded.item.code,
       );
       const url = privateCaseUrl(publicAppUrl(process.env), loaded.item.code, await decryptToken(current.encryptedCaseToken));
-      const body=updateMailBody({what:args.what,reply:args.reply,next:args.next,url,item:current.item});
+      const body=updateMailBody({what:args.what,reply:args.reply,next:args.dueCheck?`${dueCheckChoices(url,args.dueCheck)}\n\n${args.next}`:args.next,url,item:current.item});
       await googleJson(
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
         token,

@@ -53,7 +53,7 @@ export default defineSchema({
     status: v.union(v.literal("ready"), v.literal("opened"), v.literal("sent")), createdAt: v.number(),
   }).index("by_case", ["caseId"]),
   checkins: defineTable({
-    caseId: v.id("cases"), date: v.string(), reason: v.string(), scheduledId: v.optional(v.id("_scheduled_functions")),
+    caseId: v.id("cases"), date: v.string(), reason: v.string(), scheduledId: v.optional(v.id("_scheduled_functions")), firedAt:v.optional(v.number()),
     status: v.union(v.literal("scheduled"), v.literal("fired"), v.literal("answered"), v.literal("cancelled")),
   }).index("by_case", ["caseId"]),
   agentRuns: defineTable({
