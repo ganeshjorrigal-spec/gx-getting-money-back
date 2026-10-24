@@ -17,7 +17,7 @@ afterEach(()=>{vi.useRealTimers();vi.unstubAllEnvs();});
 async function fixture(list='+910000000001,+910000000002') {
  vi.useFakeTimers();vi.stubEnv('CALL_MODE','simulated');vi.stubEnv('CALL_ALLOWLIST',list);
  const t=convexTest(schema,modules);
- const caseId=await t.run(async ctx=>ctx.db.insert('cases',{code:'RG-PRIVATE',tokenHash:'fixture',stage:'READY',refundType:'flight',ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,facts:{airline:'Demo Air',pnr:'SAMPLE'},chase:{active:true,callsAuthorisedAt:1,name:'Sample',mobile:'+910000000001',email:'fixture@example.invalid',authorisedAt:1,letterId:await ctx.storage.store(new Blob(['fixture'])),encryptedCaseToken:'fixture'},demo:{kind:'flight',round:1,now:'2026-10-12',phase:'ready',expiresAt:Date.now()+86400000}}));
+ const caseId=await t.run(async ctx=>ctx.db.insert('cases',{email:'fixture@example.invalid',confirmedCaseEmail:'fixture@example.invalid',emailConfirmedAt:1,code:'RG-PRIVATE',tokenHash:'fixture',stage:'READY',refundType:'flight',ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,facts:{airline:'Demo Air',pnr:'SAMPLE'},chase:{active:true,callsAuthorisedAt:1,name:'Sample',mobile:'+910000000001',email:'fixture@example.invalid',authorisedAt:1,letterId:await ctx.storage.store(new Blob(['fixture'])),encryptedCaseToken:'fixture'},demo:{kind:'flight',round:1,now:'2026-10-12',phase:'ready',expiresAt:Date.now()+86400000}}));
  return {t,caseId};
 }
 it.each(probes)('HQ probe removes passenger answer and recording in saved record: %s',async(care,answer)=>{

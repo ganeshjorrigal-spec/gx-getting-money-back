@@ -54,7 +54,7 @@ it('keeps known PNR, four bounded questions, identity-only transfer and all exis
   'Do not guess menu keys: listen then use dtmf.',
   "When identity verification is required, say I'll connect the passenger now and use transferCall.",
   'If the passenger does not answer, end politely and say they will call back.',
-  'Stop after 25 minutes including hold.'
+  'Stop after 12 minutes including hold.'
  ])expect(prompt).toContain(phrase);
  expect(a.firstMessage).toMatch(/Could you tell me the current status of this refund\?$/);
 });
@@ -67,7 +67,7 @@ it.each([undefined,'false','TRUE','1',' true '])('transfer is off unless the set
 });
 it.each([{}, {CALL_TRANSFER_ENABLED:'true'}])('both modes retain safety, known facts and four questions',env=>{
  const a=assistantOverrides(details,env),prompt=a.model.messages[0].content;
- for(const text of ['Known facts: the booking reference (PNR) is SAMPLE.','current refund status, reference number, processing date, who holds the money.','Never request, repeat, accept or send OTP, password, card or bank details.','Never accept vouchers/credit shells, cancel or change bookings, or pretend to be the passenger.','Stop after 25 minutes including hold.'])expect(prompt).toContain(text);
+ for(const text of ['Known facts: the booking reference (PNR) is SAMPLE.','current refund status, reference number, processing date, who holds the money.','Never request, repeat, accept or send OTP, password, card or bank details.','Never accept vouchers/credit shells, cancel or change bookings, or pretend to be the passenger.','Stop after 12 minutes including hold.'])expect(prompt).toContain(text);
  expect(a.firstMessage).toMatch(/Could you tell me the current status of this refund\?$/);
 });
 

@@ -8,9 +8,18 @@ const modules=import.meta.glob('../convex/**/*.ts');
 afterEach(()=>{vi.unstubAllEnvs();vi.unstubAllGlobals();});
 it('responses setup rejects a public request without the owner secret before any Google request',async()=>{
  vi.stubEnv('RESPONSES_SETUP_SECRET','synthetic-owner-secret');
+ vi.stubEnv('RESPONSES_OWNER_EMAIL','owner@example.invalid');
  const fetcher=vi.fn();vi.stubGlobal('fetch',fetcher);
  await expect(convexTest(schema,modules).action(api.googleActions.beginResponses,{})).rejects.toThrow('Owner setup');
  expect(fetcher).not.toHaveBeenCalled();
+});
+it('wrong setup secrets cannot start OAuth, and the correct secret is never put in the URL',async()=>{
+ vi.stubEnv('RESPONSES_SETUP_SECRET','synthetic-owner-secret');vi.stubEnv('RESPONSES_OWNER_EMAIL','owner@example.invalid');vi.stubEnv('RESPONSES_SHEET_SHARE_EMAIL','reviewer@example.invalid');
+ vi.stubEnv('GOOGLE_OAUTH_CLIENT_ID','synthetic');vi.stubEnv('GOOGLE_OAUTH_CLIENT_SECRET','synthetic');vi.stubEnv('TOKEN_ENC_KEY','synthetic');vi.stubEnv('CONVEX_SITE_URL','https://example.invalid');
+ const t=convexTest(schema,modules);
+ await expect(t.action(api.googleActions.beginResponses,{setupSecret:'wrong'})).rejects.toThrow('Owner setup permission');
+ const result=await t.action(api.googleActions.beginResponses,{setupSecret:'synthetic-owner-secret'});expect(result.url).toContain('accounts.google.com');expect(result.url).not.toContain('synthetic-owner-secret');
+ expect(await t.run(ctx=>ctx.db.query('googleOauthStates').collect())).toHaveLength(1);
 });
 it('responses callback rejects a different account before storing a connection',async()=>{
  vi.stubEnv('RESPONSES_SETUP_SECRET','synthetic-owner-secret');vi.stubEnv('RESPONSES_OWNER_EMAIL','owner@example.invalid');

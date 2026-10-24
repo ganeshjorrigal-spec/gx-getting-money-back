@@ -69,7 +69,7 @@ async function fixture() {
   const t = convexTest(schema, modules);
   const ids = await t.run(async (ctx) => {
     const letterId = await ctx.storage.store(new Blob(["test authority"]));
-    const caseId = await ctx.db.insert("cases", {
+    const caseId = await ctx.db.insert("cases", {email:"passenger@example.invalid",confirmedCaseEmail:"passenger@example.invalid",emailConfirmedAt:1,
       code,
       tokenHash: await hashToken(token),
       stage: "READY",

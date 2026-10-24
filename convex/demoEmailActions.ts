@@ -14,7 +14,7 @@ export const request=action({args:{code:v.string(),token:v.string(),deviceId:v.s
  const id=await ctx.runMutation(internal.demoEmail.reserve,{...a,nonceHash:await hashToken(nonce),encryptedCaseToken:await encryptToken(a.token)});
  try {
  const connection=await ctx.runQuery(internal.googleConnect.connectionByKind,{kind:context.demo?'demo':'inbox'}),desk=context.demo?process.env.TICKBACK_DEMO_ADDRESS:process.env.TICKBACK_INBOX_ADDRESS;
- if(!connection||!desk||connection.email!==desk.toLowerCase())throw new Error('The demo mailbox is unavailable.');
+ if(!connection||!desk||connection.email!==desk.toLowerCase()||!context.demo&&!connection.chaseSendGranted)throw new Error('The demo mailbox is unavailable.');
  const auth=await accessToken(connection.encryptedRefreshToken);
  await googleJson('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',auth,{method:'POST',body:JSON.stringify({raw:confirmationRaw(desk,a.email.trim().toLowerCase(),confirmationLink(publicAppUrl(process.env),nonce),context.demo)})});
  }catch{

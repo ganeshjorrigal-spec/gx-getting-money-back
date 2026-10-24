@@ -44,6 +44,7 @@ import type * as lib_authority_letter from "../lib/authority_letter.js";
 import type * as lib_delete from "../lib/delete.js";
 import type * as lib_demo_intake from "../lib/demo_intake.js";
 import type * as lib_draft from "../lib/draft.js";
+import type * as lib_files from "../lib/files.js";
 import type * as lib_ground from "../lib/ground.js";
 import type * as lib_plan from "../lib/plan.js";
 import type * as lib_prompts from "../lib/prompts.js";
@@ -103,6 +104,7 @@ declare const fullApi: ApiFromModules<{
   "lib/delete": typeof lib_delete;
   "lib/demo_intake": typeof lib_demo_intake;
   "lib/draft": typeof lib_draft;
+  "lib/files": typeof lib_files;
   "lib/ground": typeof lib_ground;
   "lib/plan": typeof lib_plan;
   "lib/prompts": typeof lib_prompts;

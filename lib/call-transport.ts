@@ -5,7 +5,7 @@ export async function startCall(env:Env,body:unknown,fixture:string,request:type
  if(mode==="simulated")return {mode,...safeCallResult({transcript:fixture})};
  try {
   const r=await request("https://api.vapi.ai/call",{method:"POST",headers:{Authorization:`Bearer ${env.VAPI_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify(body),signal:AbortSignal.timeout(15000)});
-  if(!r.ok&&r.status>=400&&r.status<500&&r.status!==408){return {mode,status:"failed",transcript:"",reason:`Call API refused (${r.status})`};}
+  if(!r.ok&&r.status>=400&&r.status<500&&r.status!==408){const detail=await r.json().catch(()=>null);return {mode,status:"failed",transcript:"",reason:typeof detail?.message==="string"?safeTranscript(detail.message).slice(0,500):`Call API refused (${r.status})`};}
   if(!r.ok)return {mode,status:"start_uncertain",transcript:"",reason:"Call start uncertain; budget retained"};
   const data=await r.json();if(typeof data.id!=="string"||!data.id)return {mode,status:"start_uncertain",transcript:"",reason:"Call start uncertain; budget retained"};
   return {mode,status:"queued",transcript:"",externalId:data.id};

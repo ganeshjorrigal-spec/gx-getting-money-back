@@ -1,4 +1,4 @@
-import {requireConfirmedCaseEmail} from '../lib/confirmed-case-email';
+import {requireConfirmedCaseEmail,hasConfirmedCaseEmail} from '../lib/confirmed-case-email';
 import {demoRecipientsAllowed,confirmedDemoCc} from '../lib/demo-email';
 import { isPassengerEscalation, escalationSendLine } from "../lib/chase-escalation";
 import {
@@ -195,6 +195,7 @@ export const reserve = internalMutation({
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId),
       draft = await ctx.db.get(args.draftId);
+    if(!item||!hasConfirmedCaseEmail(item)||item.chase?.email!==item.email)return null;
     if (
       !item?.chase ||
       !draft ||
@@ -324,7 +325,7 @@ export const stillActive = internalQuery({
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
-    if(item?.chase)requireConfirmedCaseEmail(item,item.chase.email);
+    if(!item||!hasConfirmedCaseEmail(item)||item.chase?.email!==item.email)return false;
     if (
       !item?.chase?.active ||
       item.chase.authorisedAt !== args.authorisedAt ||

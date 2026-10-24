@@ -18,11 +18,12 @@ it.each([
  {authenticationResults:'mx.google.com; spf=pass; dkim=fail'},
  {authenticationResults:'attacker.invalid; spf=pass; dkim=pass header.i=@goindigo.in'},
  {authenticationResults:'mx.google.com; spf=pass; dkim=pass header.i=@attacker.invalid'},
+ {authenticationResults:'mx.google.com; spf=pass; dkim=pass header.i=@goindigo.in.attacker.invalid'},
 ])('unverified reply %j is saved without any automatic case change or AI job',async overrides=>{
  const {t,caseId}=await fixture();await t.mutation(internal.googleData.saveReply,{caseId,messageId:'incoming',source:'inbox',text:'Made-up refund processed yesterday',receivedAt:Date.now(),...valid,...overrides} as any);
  expect(await t.run(ctx=>ctx.db.get(caseId))).toMatchObject({stage:'READY'});
  const inputs=await t.run(ctx=>ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',caseId)).collect());expect(inputs).toHaveLength(1);expect(inputs[0]).toMatchObject({verification:'unverified'});
- expect((await t.query(internal.agentData.load,{caseId})).inputs).toEqual([]);
+ expect((await t.query(internal.agentData.load,{caseId}))?.inputs).toEqual([]);
  expect(await t.run(ctx=>ctx.db.system.query('_scheduled_functions').collect())).toEqual([]);
 });
 it('verified company reply in an app-sent thread schedules a read',async()=>{
