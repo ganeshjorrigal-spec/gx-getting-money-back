@@ -20,7 +20,7 @@ export const checkOrganiser = internalAction({
   handler: async (ctx, input) => {
     const started = Date.now();
     const loaded = await ctx.runQuery(internal.demo.load, { caseId: input.caseId });
-    if (!loaded?.item.demo || loaded.item.demo.session !== input.session || loaded.item.demo.phase !== "waiting_organiser" || !loaded.watch) return null;
+    if (!loaded?.item.demo?.chaseStory || !loaded.item.demo.emailRequired || !confirmedDemoCc(loaded.item) || loaded.item.demo.session !== input.session || loaded.item.demo.phase !== "waiting_organiser" || !loaded.watch) return null;
     if (Date.now() > (loaded.item.demo.deadline ?? 0)) { await ctx.runMutation(internal.demo.timeout, input); return null; }
     const connection = await ctx.runQuery(internal.googleConnect.connectionByKind, { kind: "demo" });
     const demoAddress = process.env.TICKBACK_DEMO_ADDRESS; const inboxAddress = process.env.TICKBACK_INBOX_ADDRESS;
@@ -51,7 +51,7 @@ export const checkOrganiser = internalAction({
           } catch { /* The fixed ladder still replies if the greeting cannot be generated quickly. */ }
         }
         const reply = demoReplyBody({ round, chaseStory:loaded.item.demo.chaseStory, kind: loaded.item.demo.kind, cancellationDate: loaded.item.facts?.cancellationDate, platform: loaded.item.platform ?? "District", event: loaded.item.eventName ?? "Sample Concert", amount: (loaded.item.amountPaise ?? 240000) / 100, bookingId: loaded.item.facts?.bookingId, now: loaded.item.demo.now, code: loaded.item.code, opening });
-        const recipients = [...new Set([from, ...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))])].filter(address => !sameDemoMailbox(address, demoAddress) && !sameDemoMailbox(address, inboxAddress));
+        const recipients:string[]=[];
         const passenger=confirmedDemoCc(loaded.item);
         if(loaded.item.demo.emailRequired&&!passenger)continue;
         if(loaded.item.demo.emailRequired)recipients.splice(0,recipients.length);
@@ -78,7 +78,7 @@ export const checkCaseInbox = internalAction({
   handler: async (ctx, input) => {
     const started = Date.now();
     const loaded = await ctx.runQuery(internal.demo.load, { caseId: input.caseId });
-    if (!loaded?.item.demo || loaded.item.demo.session !== input.session || loaded.item.demo.phase !== "waiting_inbox" || !loaded.watch) return null;
+    if (!loaded?.item.demo?.chaseStory || !loaded.item.demo.emailRequired || !confirmedDemoCc(loaded.item) || loaded.item.demo.session !== input.session || loaded.item.demo.phase !== "waiting_inbox" || !loaded.watch) return null;
     if (Date.now() > (loaded.item.demo.deadline ?? 0)) { await ctx.runMutation(internal.demo.timeout, input); return null; }
     const inbox = await ctx.runQuery(internal.googleConnect.inbox, {});
     const inboxAddress = process.env.TICKBACK_INBOX_ADDRESS; const demoAddress = process.env.TICKBACK_DEMO_ADDRESS;

@@ -14,27 +14,7 @@ export const create = mutation({
   args: { platform: v.union(v.literal("bookmyshow"), v.literal("district")), tokenHash: v.string(), deviceId: v.string(), kind: v.optional(v.union(v.literal("flight"), v.literal("event"))) },
   returns: v.object({ code: v.string() }),
   handler: async (ctx, args) => {
-    if (!/^[a-f0-9]{64}$/.test(args.tokenHash) || !/^[A-Za-z0-9_-]{12,100}$/.test(args.deviceId)) throw new Error("Invalid case key");
-    if (!process.env.TICKBACK_DEMO_ADDRESS || !await ctx.db.query("googleConnections").withIndex("by_kind", q => q.eq("kind", "demo")).first()) throw new Error("The demo desk is not connected yet. Please try again shortly.");
-    await takeRate(ctx, `demo:${args.deviceId}`, 5, 3_600_000);
-    await takeRate(ctx, "demo:global", 200, 86_400_000);
-    let code = "";
-    for (let attempt = 0; attempt < 5; attempt++) {
-      code = `RG-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
-      if (!await ctx.db.query("cases").withIndex("by_code", q => q.eq("code", code)).first()) break;
-      if (attempt === 4) throw new Error("Please try again");
-    }
-    const now = Date.now(); const today = todayIST(); const runId = crypto.randomUUID();
-    const flight = args.kind === "flight";
-    const platform = flight ? "DemoTrips" : demoPlatformName(args.platform);
-    const text = flight ? `Domestic flight Delhi to Mumbai, Demo Air, booked through DemoTrips, paid Rs 5,400 by UPI. Airline cancelled on ${addDays(today,-30)}. Full refund not received. Sample flight; no real booking. PNR not supplied yet.` : `${addDays(today, -30)}. ${platform}: Sample Concert has been cancelled. Your payment was Rs 2,400. A full refund will reach your original payment method in 7 to 10 working days. I have not received it.`;
-    const caseId = await ctx.db.insert("cases", { code, refundType: flight ? "flight" : "event", tokenHash: args.tokenHash, stage: "TRIAGING", ladderLevel: 0, draftsShown: 0, tier: "free_check", paidState: "none", platform, amountPaise: flight ? 540000 : 240000, eventName: flight ? "Sample domestic flight" : "Sample Concert", latestRunId: runId, progress: { step: "reading", at: now }, createdAt: now, updatedAt: now, demo: { kind: args.kind ?? "event", round: 0, now: today, expiresAt: demoExpiry(now), phase: "ready" } });
-    await ctx.db.insert("inputs", { caseId, kind: "initial", text, storageIds: [], createdAt: now });
-    await ctx.db.insert("caseEvents", { caseId, type: "created", summary: "Demo case started with a sample cancellation message", actor: "user", createdAt: now });
-    await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId, runId });
-    await ctx.scheduler.runAfter(0, internal.demo.expire, { caseId });
-    await ctx.scheduler.runAfter(0, internal.responsesActions.syncCase, { caseId });
-    return { code };
+    throw new Error('Use the confirmed-email demo from the start page');
   },
 });
 

@@ -35,7 +35,6 @@ export default function StartPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const create = useMutation(api.cases.create);
-  const createDemo = useMutation(api.demo.create);
   const createChaseDemo=useMutation(api.chaseDemo.create);
   const uploadUrl = useMutation(api.files.generateUploadUrl);
 
@@ -110,7 +109,7 @@ export default function StartPage() {
     try {
       const token = makeToken();
       const hash=await tokenHash(token),deviceId=getDeviceId();
-      const result = kind==="flight"&&!selfSend?await createChaseDemo({tokenHash:hash,deviceId}):await createDemo({ platform, kind, tokenHash:hash,deviceId });
+      const result = await createChaseDemo({tokenHash:hash,deviceId});
       saveCase({ code: result.code, token, updatedAt: Date.now() });
       openCase(`/c/index.html?code=${result.code}&demo=1#k=${token}`);
     } catch (error) { setError(userError(error)); setWorking(false); }
