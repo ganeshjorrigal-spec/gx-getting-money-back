@@ -1,4 +1,11 @@
-# Test link and next-build decisions: ready for review
+# Foundations Part 1: paused at required STOP
+
+- deploy:test added with documented production targeting; existing publish scripts unchanged.
+- STOP Part 1 step 2: Ganesh sets six settings on refundgenie-test Production, with a new encryption key and Production site URL.
+- Do not run deploy:test until he confirms. Then run once, prove production pages/sample, update test-link address.
+- Parts 2 to 5 and N2 not started. No live or Cloudflare changes.
+
+## Previous setup
 
 - submitted-v1 tag on 6153907 pushed; main remains frozen.
 - Work only in gx-getting-money-back-next, branch next.

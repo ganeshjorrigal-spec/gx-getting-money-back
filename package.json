@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/build.mjs",
     "deploy:web": "node scripts/build-web.mjs && wrangler deploy",
+    "deploy:test": "npx convex deploy && npx @convex-dev/static-hosting upload --build --prod --dist out",
     "start": "next start",
     "lint": "next lint",
     "convex:dev": "convex dev",

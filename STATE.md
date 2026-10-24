@@ -1,5 +1,8 @@
 # Current state, 24 October 2026
 
+## Foundations Part 1: STOP for production settings
+Read the full 24 Oct foundations prompt from the old folder without editing it. Work stays in this next folder on next. Added deploy:test using npx convex deploy then static-hosting upload --build --prod --dist out; --prod confirmed in the installed component's own README/help, not guessed. Existing deploy/deploy:web unchanged and labelled frozen-live commands in README. No production deployment run yet. Ganesh must open refundgenie-test Production and set the six required settings there; TOKEN_ENC_KEY must be newly generated, PUBLIC_APP_URL must use that production deployment's own .convex.site address. Development settings do not carry over. Stop at Part 1 step 2; Parts 2 to 5 and N2 not started. No live/main/Cloudflare or environment changes.
+
 ## Submitted version frozen; separate test link ready for review
 Tag submitted-v1 points to 6153907df62f36c196a8732f568ddd0c8ce1b427 (Add DESIGN.md), pushed with owner approval. Main was not pushed. Work folder: gx-getting-money-back-next, branch next. Original root prompt stays uncommitted in the original folder; its copy is committed here as 84d6bcb. PRODUCT.md unchanged.
 
