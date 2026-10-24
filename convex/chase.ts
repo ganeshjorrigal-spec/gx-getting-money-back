@@ -1,3 +1,4 @@
+import {requireConfirmedCaseEmail} from '../lib/confirmed-case-email';
 import {demoRecipientsAllowed,confirmedDemoCc} from '../lib/demo-email';
 import { isPassengerEscalation, escalationSendLine } from "../lib/chase-escalation";
 import {
@@ -61,6 +62,7 @@ export const loadAccess = internalQuery({
   returns: v.any(),
   handler: async (ctx, args) => {
     const item = await assertAccess(ctx, args.code, args.token);
+    requireConfirmedCaseEmail(item);
     if (
       item.refundType !== "flight" ||
       !item.factsConfirmedAt ||
@@ -84,6 +86,7 @@ export const authorise = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const item = await assertAccess(ctx, args.code, args.token);
+    requireConfirmedCaseEmail(item,args.email);
     if (
       item.refundType !== "flight" ||
       !item.factsConfirmedAt ||
@@ -321,6 +324,7 @@ export const stillActive = internalQuery({
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
+    if(item?.chase)requireConfirmedCaseEmail(item,item.chase.email);
     if (
       !item?.chase?.active ||
       item.chase.authorisedAt !== args.authorisedAt ||

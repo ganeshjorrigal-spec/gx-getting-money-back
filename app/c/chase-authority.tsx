@@ -1,4 +1,5 @@
 "use client";
+import {ConfirmCaseEmail} from './confirm-case-email';
 import {AnswerStep,SharedSummary,SavedTick,useSavedAnswer} from '../components/answer-progress';
 import {intakeIdentity} from "../../lib/intake-identity";
 import {WhyAsk} from "../components/why-ask";
@@ -19,6 +20,7 @@ export function ChaseAuthority({
   demo,
   saved,
   canSkip = false,
+  emailConfirmed = false,
 }: {
   code: string;
   token: string;
@@ -29,6 +31,7 @@ export function ChaseAuthority({
   demo: boolean;
   saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
+  emailConfirmed?:boolean;
 }) {
   const callAirline=callCompany||company,realCareAvailable=!!flightCare(callAirline);
   const {saved:recentSaved,markSaved}=useSavedAnswer();
@@ -64,6 +67,7 @@ export function ChaseAuthority({
       setBusy(false);
     }
   };
+  if(!emailConfirmed)return <ConfirmCaseEmail code={code} token={token} saved={saved?.contact}/>;
   return (
     <section className="case-card">
       <h2>Let Genie send and follow up</h2><SavedTick field={recentSaved}/>

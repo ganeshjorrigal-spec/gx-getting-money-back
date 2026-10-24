@@ -1,4 +1,6 @@
 "use node";
+import {requireConfirmedCaseEmail} from '../lib/confirmed-case-email';
+
 import {demoRecipientsAllowed,confirmedDemoCc,demoEmailSubject,demoEmailBody} from '../lib/demo-email';
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 import { action, internalAction } from "./_generated/server";
@@ -204,6 +206,7 @@ export const authorise = action({
       code: args.code,
       token: args.token,
     });
+    requireConfirmedCaseEmail(item,args.email);
     const authorisedAt = Date.now();
     const bytes = await makeAuthorityLetter({
       code: item.code,
