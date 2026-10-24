@@ -1,6 +1,7 @@
 # Current state, 24 October 2026
 
 ## Foundations Part 1: STOP for production settings
+Production now exists: abundant-marten-136, reference production, default prod for refundgenie-test. Owner reported it had not been created. Verified CLI deployment-create help, created empty production with --type prod --default, reference production, default US East region; no code/static upload or environment settings written. Development selection remains tangible-lemur-692. Production PUBLIC_APP_URL must be https://abundant-marten-136.convex.site. Still paused for owner settings.
 Read the full 24 Oct foundations prompt from the old folder without editing it. Work stays in this next folder on next. Added deploy:test using npx convex deploy then static-hosting upload --build --prod --dist out; --prod confirmed in the installed component's own README/help, not guessed. Existing deploy/deploy:web unchanged and labelled frozen-live commands in README. No production deployment run yet. Ganesh must open refundgenie-test Production and set the six required settings there; TOKEN_ENC_KEY must be newly generated, PUBLIC_APP_URL must use that production deployment's own .convex.site address. Development settings do not carry over. Stop at Part 1 step 2; Parts 2 to 5 and N2 not started. No live/main/Cloudflare or environment changes.
 
 ## Submitted version frozen; separate test link ready for review
