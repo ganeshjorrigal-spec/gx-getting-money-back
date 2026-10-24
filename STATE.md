@@ -1,5 +1,8 @@
 # Current state, 17 October 2026
 
+## Superseding update, 24 October: next test setup in progress
+This is the separate gx-getting-money-back-next folder, branch next. Submitted-v1 tag points at 6153907; live site/main frozen. HQ prompt saved in next commit 84d6bcb. Owner created refundgenie-test and chose fresh settings, no env copies. CLI configured existing test project and successfully pushed backend to tangible-lemur-692. Test address https://tangible-lemur-692.convex.site, not yet statically published. Waiting for Ganesh to set the six required test settings; names and full grouped inventory in docs/handoff/refundgenie-test-settings.md. Next: test-only static upload, browser sample proof, read-only live-version check, README, Part C exact decisions/milestones and next push. Stop before N2. No changes to live project, main or Cloudflare; no secrets/calls/mail. Nothing DONE. Publication below is historical, not a new release.
+
 ## Public launch source published by owner authorisation
 Parts 1 to 3 committed: 0b01172, e0e4816, 94782c9. Exact real-company switch enables checked company To/CC and confirmed case-user CC outside the allow-list; sender revalidates before dispatch. Global IST-day cap defaults to 50, reserves atomically, releases failed sends once, retains accepted sends and defers capped cases until tomorrow. Demo recipient gates, switch-off and call limits remain. Public wording updated; stored flight/date now shown, booking rows editable, empty optional contact skips consent screen with sharing off.
 

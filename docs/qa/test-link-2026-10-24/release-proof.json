@@ -1,0 +1,42 @@
+{
+  "project": "refundgenie-test",
+  "deployment": "tangible-lemur-692",
+  "address": "https://tangible-lemur-692.convex.site",
+  "staticVersion": "f837629c-5322-4a50-8a20-2f1968628ded",
+  "checkedAtIST": "2026-10-24T13:06:29.5254600+05:30",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "resolvedUrl": "https://tangible-lemur-692.convex.site/"
+    },
+    {
+      "route": "/start/",
+      "status": 200,
+      "resolvedUrl": "https://tangible-lemur-692.convex.site/start/index.html"
+    },
+    {
+      "route": "/cases/",
+      "status": 200,
+      "resolvedUrl": "https://tangible-lemur-692.convex.site/cases/index.html"
+    }
+  ],
+  "liveCloudflareVersion": "69504117-ebf7-44b4-a939-a06294d4a6c9",
+  "liveVersionUnchanged": true,
+  "liveDeploymentsByCodex": 0,
+  "settingsCopied": false,
+  "secretsPrinted": false,
+  "callsPlaced": 0,
+  "mailSent": 0,
+  "browserPagesVerified": ["/", "/start/", "/cases/"],
+  "sampleCase": "RG-23L67W",
+  "sampleFreeCheckVisible": true,
+  "sampleResult": {"company": "IndiGo", "dueDate": "2026-10-08", "paymentMethod": "credit_card"},
+  "sampleScreenshot": "free-check.jpg",
+  "targetedTestsPassed": 6,
+  "targetedTestFilesPassed": 1,
+  "typeCheck": "pass",
+  "backendPush": "pass",
+  "staticExportPages": 16,
+  "mailFeatures": "Unavailable until separate test Google/inbox settings and connections are approved"
+}

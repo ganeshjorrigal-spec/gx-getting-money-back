@@ -2,6 +2,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { registerStaticRoutes } from "@convex-dev/static-hosting";
 import { components, internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 
 const http = httpRouter();
 
@@ -35,7 +36,7 @@ http.route({
 
 // Static Hosting serves exact uploaded paths. Next exports each page as
 // /page/index.html, so direct visits to /page/ need a matching redirect.
-for (const page of ["terms", "refund-policy", "contact", "sample", "start", "privacy", "taste", "m0-font-check", "c", "demo-confirm"]) {
+for (const page of ["terms", "refund-policy", "contact", "sample", "start", "privacy", "taste", "m0-font-check", "c", "cases", "demo-confirm"]) {
   for (const suffix of ["", "/"]) {
     http.route({
       path: `/${page}${suffix}`,
@@ -48,6 +49,29 @@ for (const page of ["terms", "refund-policy", "contact", "sample", "start", "pri
     });
   }
 }
+
+// A static export has one case screen; private case tokens stay in the browser fragment.
+  http.route({
+    pathPrefix: "/c/",
+    method: "GET",
+    handler: httpAction(async (ctx, request) => {
+      const source = new URL(request.url);
+      const code = source.pathname.slice(3).replace(/\/$/, "");
+      if (!/^(RG|TB)-[A-Z0-9]{6}$/.test(code)) {
+        // Preserve the actual exported case assets beneath the same prefix.
+        const asset = await ctx.runQuery(components.staticHosting.lib.resolveAssetForHttp, {path: source.pathname, spaFallback: false});
+        if (!asset) return new Response("Case unavailable", {status: 404});
+        const blob = asset.appStorageId ? await ctx.storage.get(asset.appStorageId as Id<"_storage">) : null;
+        const stored = blob ? null : asset.storageUrl ? await fetch(asset.storageUrl) : null;
+        if (!blob && (!stored?.ok || !stored.body)) return new Response("Case unavailable", {status: 404});
+        return new Response(blob ?? stored!.body, {headers: {"Content-Type": asset.contentType || "text/html; charset=utf-8", "Cache-Control": "no-cache", "X-Content-Type-Options": "nosniff"}});
+      }
+      const target = new URL("/c/index.html", source);
+      target.search = source.search;
+      target.searchParams.set("code", code);
+      return Response.redirect(target, 302);
+    }),
+  });
 
 // Keep root URLs available for the forthcoming Google OAuth callback.
 registerStaticRoutes(http, components.staticHosting);

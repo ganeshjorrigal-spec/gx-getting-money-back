@@ -7,3 +7,7 @@ An AI agent that gets people their money back from the apps and subscriptions th
 - Where things stand: `STATE.md`, `MILESTONES.md`
 - Decisions: `DECISIONS.md`
 - Which skill to use when: `docs/SKILL-ROUTING.md`
+
+## Test link
+
+https://tangible-lemur-692.convex.site is the next-build environment; live deploys must never be run from this folder until HQ says reviews are over.
