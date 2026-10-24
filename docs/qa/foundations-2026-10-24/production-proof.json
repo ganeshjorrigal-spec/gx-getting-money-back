@@ -1,0 +1,29 @@
+{
+  "development": "tangible-lemur-692",
+  "project": "refundgenie-test",
+  "deployTestRuns": 1,
+  "staticVersion": "dd232786-43a5-43cf-a3d7-cde145ab8bfc",
+  "sourceCommit": "f8851d7d1e26fddf33192165e0e6af35c3696682",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    },
+    {
+      "route": "/cases/",
+      "status": 200
+    }
+  ],
+  "mails": 0,
+  "checkedAtIST": "2026-10-24T23:00:11.3042673+05:30",
+  "liveDeployments": 0,
+  "production": "abundant-marten-136",
+  "calls": 0,
+  "productionSite": "https://abundant-marten-136.convex.site",
+  "sampleFreeCheckVisible": true,
+  "sampleCase": "RG-Y06F3W"
+}

@@ -10,8 +10,8 @@ An AI agent that gets people their money back from the apps and subscriptions th
 
 ## Test link
 
-https://tangible-lemur-692.convex.site is the next-build environment; live deploys must never be run from this folder until HQ says reviews are over.
+https://abundant-marten-136.convex.site is the public next-build test link (refundgenie-test Production); live deploys must never be run from this folder until HQ says reviews are over.
 
-Production test-link setup is in progress: build against refundgenie-test Development; publish its separate Production backend and site with `npm run deploy:test` only when authorised. The production address replaces the development address above after its checks pass.
+Build against refundgenie-test Development (tangible-lemur-692); publish its separate Production backend and site with `npm run deploy:test` only when authorised. Open Codex only in gx-getting-money-back-next during the freeze; the old folder is reference only.
 
 <!-- deploy and deploy:web belong to the frozen live setup. Do not run either from this test folder. -->
