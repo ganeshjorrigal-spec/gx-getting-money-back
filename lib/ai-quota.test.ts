@@ -6,7 +6,7 @@ import {internal} from '../convex/_generated/api';
 const {generate} = vi.hoisted(() => ({generate: vi.fn()}));
 vi.mock('ai', () => ({generateObject: generate}));
 const modules = import.meta.glob('../convex/**/*.ts');
-beforeEach(() => {vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-24T10:59:59Z')); vi.stubEnv('GEMINI_MODEL', 'synthetic-model'); generate.mockReset();});
+beforeEach(() => {vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-24T10:59:59Z')); vi.stubEnv('GEMINI_MODEL', 'synthetic-model'); vi.stubEnv('AI_CALLS_PER_CASE_PER_DAY','100'); generate.mockReset();});
 afterEach(() => {vi.useRealTimers(); vi.unstubAllEnvs();});
 async function fixture(demo = false, refundType: 'flight' | 'event' = 'flight') {
   const t = convexTest(schema, modules);

@@ -411,7 +411,7 @@ export default function CaseView({ code }: { code: string }) {
     try { await demoBooking({ code, token, bookingId: bookingId.trim() });markSaved("Booking ID"); setDemoDraftToOpen("DEMO_booking"); } catch (error) { setNotice(userError(error)); } finally { setBusy(false); }
   }
 
-  if (caseData?.progress?.step === 'busy' && token) return <main className="case-shell">{token&&<UnverifiedReplies code={code} token={token}/>}<AiBusyNotice onRetry={()=>caseData.demo?.phase==='timed_out'?demoRetry({code,token}):retry({code,token})}/></main>;
+  if (caseData&&['busy','case_daily_limit'].includes(caseData?.progress?.step??'') && token) return <main className="case-shell">{token&&<UnverifiedReplies code={code} token={token}/>}<AiBusyNotice daily={caseData.progress?.step==='case_daily_limit'} onRetry={()=>caseData.demo?.phase==='timed_out'?demoRetry({code,token}):retry({code,token})}/></main>;
   if (caseData?.refundType === "flight" && token) return <FlightCaseView code={code} token={token} />;
   return <main className="case-shell">
     <header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><span className="case-code">{caseData?.demo && <span className="demo-tag">Demo</span>} {code}</span></header>
