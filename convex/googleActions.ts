@@ -8,6 +8,7 @@ import { encryptToken, decryptToken } from "../lib/token-crypto";
 import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAddress, caseInboxAllowed, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "../lib/google-tracking";
 import { todayIST } from "../lib/dates";
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
+import {requireResponsesSecret,requireResponsesOwner,responsesOwner} from '../lib/responses-owner';
 
 const siteUrl = () => {
   if (!process.env.CONVEX_SITE_URL) throw new Error("Convex site URL is missing");
@@ -43,9 +44,10 @@ export const begin = action({
 });
 
 export const beginResponses = action({
-  args: {},
+  args: {setupSecret:v.optional(v.string())},
   returns: v.object({ url: v.string() }),
-  handler: async (ctx) => {
+  handler: async (ctx,args) => {
+    requireResponsesSecret(args.setupSecret);
     if (!process.env.RESPONSES_SHEET_SHARE_EMAIL) throw new Error("Responses sheet sharing is not configured");
     const state = newState();
     await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), kind: "responses" });
@@ -83,12 +85,17 @@ export const finishOauth = internalAction({
   handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; sheetUrl?: string; caseUrl?: string }> => {
     const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
+    if(state.kind==='responses')responsesOwner();
     const tokens = await exchangeCode(args.code);
     if (!tokens.refresh_token || !tokens.access_token) throw new Error("Google did not grant ongoing access. Try again.");
     const required = scopesFor(state.kind);
     const granted = new Set((tokens.scope || "").split(" "));
     if (required.some((scope) => !granted.has(scope))) throw new Error("Google did not grant the needed permission");
     let email: string | undefined;
+    if(state.kind==='responses'){
+      const profile=await googleJson<{user?:{emailAddress?:string}}>('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)',tokens.access_token);
+      email=profile.user?.emailAddress?.toLowerCase();requireResponsesOwner(email);
+    }
     if (state.kind !== "calendar" && state.kind !== "responses") {
       const profile = await googleJson<{ emailAddress?: string }>("https://gmail.googleapis.com/gmail/v1/users/me/profile", tokens.access_token);
       email = profile.emailAddress?.toLowerCase();

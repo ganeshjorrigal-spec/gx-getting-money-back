@@ -1,5 +1,14 @@
 # Foundations: READY FOR REVIEW
 
+## 25 October: security fixes, then N2 to N4
+- [ ] Part A S1 to S7: tests first, full suite/type check, then STOP for owner before deploy:test or N2.
+- [ ] N2, N3, N4 in order, each with its own STOP; no publish without owner yes.
+- [ ] Frozen live/main/Cloudflare unchanged; no calls or settings changes.
+
+## Parked from the abuse review
+- [ ] Free-refund count resets: do not build.
+- [ ] Manual annual-pass fallback: do not build.
+
 25 October: Ganesh confirmed the independent Part 4 review is running. Part 5 scan complete, report in chat only. Earlier checklist below is historical. Wait for HQ; do not start N2.
 
 - [x] Part 1: separate Production test link deployed once and browser-proven.

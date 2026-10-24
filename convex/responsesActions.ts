@@ -5,6 +5,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { decryptToken } from "../lib/token-crypto";
 import { responseSheetSyncDelay } from "../lib/responses-sheet";
+import {requireResponsesOwner} from '../lib/responses-owner';
 
 const headers = ["case code", "created", "name", "contact", "platform", "amount", "route", "due date", "stage", "channel", "last reply date", "feedback"];
 
@@ -48,6 +49,7 @@ export const finishSetup = internalAction({
     const context = await ctx.runQuery(internal.responsesData.sheetContext, {});
     const connection = context?.connection?._id === connectionId ? context.connection : await ctx.runQuery(internal.googleConnect.connectionById, { connectionId });
     if (!connection || connection.kind !== "responses") throw new Error("Responses connection is unavailable");
+    requireResponsesOwner(connection.email);
     const shareEmail = process.env.RESPONSES_SHEET_SHARE_EMAIL;
     if (!shareEmail) throw new Error("Responses sheet sharing is not configured");
     const token = await accessToken(connection.encryptedRefreshToken);
@@ -81,6 +83,7 @@ export const syncCase = internalAction({
   handler: async (ctx, { caseId }) => {
     const context = await ctx.runQuery(internal.responsesData.sheetContext, {});
     if (!context) return null;
+    requireResponsesOwner(context.connection.email);
     const data = await ctx.runQuery(internal.responsesData.caseRow, { caseId });
     if (!data) return null;
     const row = await ctx.runMutation(internal.responsesData.reserveRow, { caseId });
