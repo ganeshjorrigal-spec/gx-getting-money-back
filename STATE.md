@@ -14,3 +14,6 @@ Mailbox instructions delivered before N2 coding: docs/handoff/test-mailbox-setup
 
 ## Latest blocker: mailbox connected to wrong test deployment
 Read-only checks: Production abundant-marten-136 has no inbox connection. Development tangible-lemur-692 has one with send permission. The earlier success message was not Production proof. Owner must disconnect the Development inbox connection and authorise Production before retrying confirmation. No settings, connection records, code or deploy changed by Codex; no mail sent. Wait before N3.
+
+## Connection blocker cleared
+Read-only verification after owner correction: Production inbox connected with sending granted; Development disconnected. Real-company sending remains off on both. Waiting for owner to retry confirmation and complete N2 update-mail check on the same case. No mail/deploy/settings changes by Codex; N3 not started.
