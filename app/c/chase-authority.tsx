@@ -21,6 +21,7 @@ export function ChaseAuthority({
   saved,
   canSkip = false,
   emailConfirmed = false,
+  initiallyOpen = false,
 }: {
   code: string;
   token: string;
@@ -32,6 +33,7 @@ export function ChaseAuthority({
   saved?:{name?:string|null;contact?:string|null};
   canSkip?: boolean;
   emailConfirmed?:boolean;
+  initiallyOpen?:boolean;
 }) {
   const callAirline=callCompany||company,realCareAvailable=!!flightCare(callAirline);
   const {saved:recentSaved,markSaved}=useSavedAnswer();
@@ -47,7 +49,7 @@ export function ChaseAuthority({
     chase?.active ? { code, token } : "skip",
   );
   const [callAccepted, setCallAccepted] = useState(false),
-    [show, setShow] = useState(false),
+    [show, setShow] = useState(initiallyOpen),
     [name, setName] = useState(""),
     [mobile, setMobile] = useState(chase?.mobile || intakeIdentity(saved).mobile),
     [email, setEmail] = useState(""),

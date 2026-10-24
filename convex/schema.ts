@@ -10,7 +10,7 @@ export default defineSchema({
   caseLinkMails:defineTable({caseId:v.id('cases'),day:v.string(),state:v.union(v.literal('reserved'),v.literal('sent'),v.literal('uncertain'))}).index('by_case',['caseId']).index('by_case_day',['caseId','day']),
   chaseDaily:defineTable({day:v.string(),count:v.number()}).index('by_day',['day']),
   cases: defineTable({
-    mailDeferredUntil:v.optional(v.string()),
+    mailDeferredUntil:v.optional(v.string()), handoverRequestedAt:v.optional(v.number()),
     chase: v.optional(v.object({active:v.boolean(),callsAuthorisedAt:v.optional(v.number()),name:v.string(),mobile:v.string(),email:v.string(),authorisedAt:v.number(),stoppedAt:v.optional(v.number()),letterId:v.id("_storage"),priorLetterIds:v.optional(v.array(v.id("_storage"))),encryptedCaseToken:v.string()})),
     code: v.string(), tokenHash: v.string(), stage, route: v.optional(route),
     firstFlightSentAt: v.optional(v.number()), deviceHash: v.optional(v.string()), handHelped: v.optional(v.boolean()), refundType: v.optional(v.union(v.literal("event"), v.literal("flight"))), owner: v.optional(v.string()), moneyWith: v.optional(v.string()), flightPlan: v.optional(v.any()),

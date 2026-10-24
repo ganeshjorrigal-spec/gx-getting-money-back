@@ -112,7 +112,7 @@ export const get = query({
     const flightLocked=trial.locked;
     const latestTrackedReply = recentInputs.find((input) => input.kind === "reply" && input.sender && input.receivedAt && input.summary && input.keySentence);
     return {
-      publicAppUrl: publicAppUrl(process.env), emailConfirmed:hasConfirmedCaseEmail(item),
+      publicAppUrl: publicAppUrl(process.env), emailConfirmed:hasConfirmedCaseEmail(item),handoverRequestedAt:item.handoverRequestedAt??null,
       chase: item.chase?{active:item.chase.active,mobile:item.chase.mobile,callsAuthorisedAt:item.chase.callsAuthorisedAt??null,authorisedAt:item.chase.authorisedAt,letterUrl:await ctx.storage.getUrl(item.chase.letterId)}:null, cancellationProofAdded: recentInputs.some(input=>input.kind==="initial"&&input.storageIds.length>0), code: item.code, trialLanded:trial.landed, trialLimit:trial.limit, trialLocked:trial.locked, annualPaid: annualActive(annual,Date.now()), annualUntil:annual?.expiresAt??null, annualState:annual?.state??null, handHelped:item.handHelped??false, checkoutEnabled:!!process.env.RAZORPAY_KEY_ID, razorpayLink:!process.env.RAZORPAY_KEY_ID?razorpayPaymentLink(process.env.NEXT_PUBLIC_RAZORPAY_PAYMENT_LINK):null, refundType: item.refundType ?? "event", owner: item.owner ?? null, moneyWith: item.moneyWith ?? null, flightPlan: item.flightPlan ? {...item.flightPlan,body:flightLocked?null:currentProductCopy(item.flightPlan.body),note:currentProductCopy(item.flightPlan.note),dueSourceText:currentProductCopy(item.flightPlan.dueSourceText)} : null, stage: item.stage, route: item.route ?? null, routeConfidence: item.routeConfidence ?? null,
       platform: item.platform ?? null, eventName: item.eventName ?? null, amountPaise: item.amountPaise ?? null,
       dueDate: item.dueDate ?? null, dueSource: item.dueSource ?? null, dueSourceText: currentProductCopy(item.dueSourceText) ?? null,
@@ -360,7 +360,7 @@ export const answerCheckin = mutation({
       const bank=item.route==="TRACE";const rung=bank?item.ladderLevel:sent.some(d=>d.status==="sent")?Math.min(5,item.ladderLevel+1):2;
       const facts=bank?item.facts:{...item.facts,reply:{...item.facts.reply,claim:"none"}};
       await clearCheckins(ctx,item._id);
-      await ctx.db.patch(item._id,{facts,ladderLevel:rung,stage:"TRIAGING",latestRunId:runId,updatedAt:now});
+      await ctx.db.patch(item._id,{facts,ladderLevel:rung,stage:"TRIAGING",latestRunId:runId,updatedAt:now,...(checkinDate?{handoverRequestedAt:now}:{})});
       await ctx.db.insert("caseEvents",{caseId:item._id,type:"checkin_answered",summary:bank?"Refund has not landed; bank trace ready":"Refund has not landed; next rung ready",actor:"user",createdAt:now});
       await ctx.scheduler.runAfter(0,internal.flightAgent.triage,{caseId:item._id,runId,reuseFacts:true});
     } else if (answer === "not_yet") {

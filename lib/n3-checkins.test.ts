@@ -77,7 +77,7 @@ it('Not yet only starts planning after the explicit answer and is idempotent',as
  const f=await dueFixture(true);vi.setSystemTime(new Date('2026-10-25T04:30:00Z'));await f.t.mutation(internal.checkins.fire,{checkinId:f.checkinId});
  await f.t.mutation(api.cases.answerCheckin,{...f.args,answer:'not_yet',checkinDate:'2026-10-24'});await f.t.mutation(api.cases.answerCheckin,{...f.args,answer:'not_yet',checkinDate:'2026-10-24'});
  const jobs=await f.t.run(ctx=>ctx.db.system.query('_scheduled_functions').collect());expect(jobs.filter(j=>j.name==='flightAgent:triage')).toHaveLength(1);
- const item=await f.t.run(ctx=>ctx.db.get(f.caseId));expect(item!.ladderLevel).toBe(2);expect(item!.stage).toBe('TRIAGING');
+ const item=await f.t.run(ctx=>ctx.db.get(f.caseId));expect(item!.ladderLevel).toBe(2);expect(item!.stage).toBe('TRIAGING');expect((item as any).handoverRequestedAt).toBe(Date.now());
 });
 it('early or stale check-in answers cannot change a case',async()=>{
  const f=await dueFixture(false);await expect(f.t.mutation(api.cases.answerCheckin,{...f.args,answer:'landed',checkinDate:'2026-10-24'})).rejects.toThrow('no longer waiting');
