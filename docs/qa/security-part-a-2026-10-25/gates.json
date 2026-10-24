@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-25",
+  "timezone": "Asia/Kolkata",
+  "branch": "next",
+  "verifiedCodeCommit": "83d8342",
+  "status": "READY FOR REVIEW",
+  "tests": {
+    "passed": 546,
+    "failed": 0,
+    "files": 74,
+    "startedAtIST": "00:36:56",
+    "durationSeconds": 10.25
+  },
+  "typecheck": "pass",
+  "staticExport": {
+    "result": "pass",
+    "generatedPages": 16,
+    "note": "Frontend export passed before the final server-only closed-case upload correction; frontend unchanged."
+  },
+  "developmentBackend": {
+    "deployment": "tangible-lemur-692",
+    "result": "schema and functions accepted"
+  },
+  "productionPublication": "not run; owner STOP",
+  "realMailSent": false,
+  "callsPlaced": false,
+  "settingsChanged": false,
+  "nextMilestonesStarted": false
+}
