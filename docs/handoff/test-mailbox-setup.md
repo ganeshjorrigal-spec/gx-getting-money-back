@@ -33,6 +33,7 @@ Google's current guide: https://developers.google.com/workspace/gmail/api/quicks
 6. Create. Keep the client ID and client secret private. Do not paste them in chat or save them in repository files.
 
 ## 4. Add settings in the two test deployments
+Stay signed in to Convex with the usual project-owner account. The new Gmail account is the mailbox, not a new Convex owner.
 Open https://dashboard.convex.dev/d/tangible-lemur-692 and verify refundgenie-test / Development. Then Settings > Environment Variables > Add. Repeat in https://dashboard.convex.dev/d/abundant-marten-136 after checking refundgenie-test / Production.
 
 Set these names separately in BOTH deployments:
@@ -46,7 +47,7 @@ Set these names separately in BOTH deployments:
 | CHASE_ALLOWLIST | Only the new test Gmail address for now |
 | CHASE_REAL_COMPANIES_ENABLED | false |
 
-Keep existing TOKEN_ENC_KEY separately in each deployment, keep PUBLIC_APP_URL pointing to that deployment's site, and do not edit CONVEX_SITE_URL. Do not change Gemini or calling settings. Leave demo desk and responses-sheet settings unset now. N2 confirmed-passenger updates do not require the passenger's address on CHASE_ALLOWLIST; that list still restricts test company mail.
+Keep existing TOKEN_ENC_KEY separately in each deployment, keep PUBLIC_APP_URL pointing to that deployment's site, and do not edit CONVEX_SITE_URL. Do not change Gemini or calling settings. Leave demo desk and responses-sheet settings unset now. Use a different mailbox for the passenger receiving test updates. Once N2 is published, confirmed-passenger updates do not require the passenger's address on CHASE_ALLOWLIST; that list still restricts test company mail.
 
 ## 5. Authorise Production only
 Adding settings does not connect the mailbox.

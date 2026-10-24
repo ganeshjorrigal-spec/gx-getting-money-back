@@ -9,6 +9,7 @@ Rewritten on 2026-10-04 to match the PRD in `docs/prd/` (D-010 to D-015). Build 
 N1. I can show 5 overdue cases started on Genie by 6 Nov, each with its due date already passed on the day it started. Owner: Ganesh (outreach). No code.
 
 N2. I can paste a "we paid MakeMyTrip" reply into a case on the test link and see Genie's update mail land in my inbox, saying who holds the money now.
+Status: READY FOR REVIEW
 Acceptance: a mocked-transport test with a confirmed case email that is NOT on CHASE_ALLOWLIST gets exactly one update mail; the demo still works; every update mail ends with what Genie does next and when (D-069).
 
 N3. I can set a test case's due date to yesterday and get exactly one Genie mail asking if it came, with my case still at its first step.

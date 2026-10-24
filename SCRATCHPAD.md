@@ -1,12 +1,13 @@
-# Security Part A: READY FOR REVIEW, required STOP
+# N2: READY FOR REVIEW, required STOP
 
-- [ ] Ganesh approves deploy:test for Part A before public test publication or N2.
-- [ ] N2 update mails, N3 due-date mail, N4 transcript checker and call quality, in that order with each STOP.
-- [ ] Test mailbox setup remains deferred; real email delivery is not live-proven in the isolated test project.
-- [ ] Provider daily request quota remains deferred by owner.
+- [ ] Ganesh reviews N2 and approves deploy:test before publication or N3.
+- [ ] Ganesh finishes separate test mailbox setup; authorise Production only, never the live inbox.
+- [ ] After approval/publication, prove actual confirmation and update delivery using the phone checklist.
+- [ ] N3 due-date mail, then N4 transcript checker and call quality, with each STOP.
+- [ ] Provider daily quota remains deferred by owner.
 
 ## Parked from the abuse review
 - [ ] Free-refund count resets: do not build.
 - [ ] Manual annual-pass fallback: do not build.
 
-S1 to S7 built, final 546/546 tests across 74 files, type check and static export pass. Test Development backend accepts schema/functions. Public test Production unchanged, no deploy:test here. N1 outreach stays with Ganesh; N5 to N8 untouched. No frozen live/main/Cloudflare, keys/settings/allow-list changes, calls or mail. Root HQ prompt stays untracked and untouched. See STATE and today's log for proof.
+Part A published. N2 b0ed54f passes 553/553 tests, type check, static export and Development push. N2 not published. N1 outreach stays with Ganesh; N5 to N8 untouched. No frozen live/main/Cloudflare, settings, calls or mail. Root HQ prompt stays untracked.
