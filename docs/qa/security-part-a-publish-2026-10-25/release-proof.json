@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-25",
+  "sourceCommit": "45c8e91",
+  "project": "refundgenie-test",
+  "deployment": "abundant-marten-136",
+  "staticVersion": "ea0e45ed-3e9a-41de-be48-c7486621aeda",
+  "script": "npm run deploy:test",
+  "result": "passed",
+  "publishedFiles": 135,
+  "routes": {
+    "/": 200,
+    "/start/": 200,
+    "/cases/": 200
+  },
+  "browserProof": {
+    "caseCode": "RG-BBYQJW",
+    "data": "made up",
+    "freeCheck": "IndiGo, due 8 Oct 2026",
+    "draft": "officer mail prepared; no mail sent",
+    "screenshot": "sample-case.png"
+  },
+  "keysOrSettingsChanged": false,
+  "liveProjectTouched": false
+}
