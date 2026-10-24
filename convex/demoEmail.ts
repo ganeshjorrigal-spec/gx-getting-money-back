@@ -32,7 +32,7 @@ export const consume=internalMutation({args:{nonceHash:v.string()},returns:v.obj
  const item=await ctx.db.get(row.caseId);if(!item||item.stage.startsWith('CLOSED')||hasConfirmedCaseEmail(item)||item.demo&&(!item.demo.chaseStory||!item.demo.emailRequired||item.chase||item.demo.expiresAt<=Date.now()))throw new Error('Case unavailable');
  const canonical=foldGmailAddress(row.email);
  if(item.demo){const addressKey=`demo-confirm-address:${await hashToken(canonical)}:${todayIST()}`;const used=await ctx.db.query('rateCounters').withIndex('by_key',q=>q.eq('key',addressKey)).unique();if(used&&used.count>=1)throw new Error('One demo per email per day. Try tomorrow.');await takeRate(ctx,addressKey,1,86400000);}
- await ctx.db.patch(row._id,{usedAt:Date.now()});await ctx.db.patch(item._id,{email:row.email,confirmedCaseEmail:row.email,emailConfirmedAt:Date.now(),...(item.demo?{demo:{...item.demo,emailConfirmedAt:Date.now()}}:{})});return {code:item.code,encryptedCaseToken:row.encryptedCaseToken};
+ await ctx.db.patch(row._id,{usedAt:Date.now()});await ctx.db.patch(item._id,{email:row.email,confirmedCaseEmail:row.email,emailConfirmedAt:Date.now(),confirmedEncryptedCaseToken:row.encryptedCaseToken,...(item.demo?{demo:{...item.demo,emailConfirmedAt:Date.now()}}:{})});return {code:item.code,encryptedCaseToken:row.encryptedCaseToken};
 }});
 export const expire=internalMutation({args:{id:v.id('demoEmailConfirmations')},returns:v.null(),handler:async(ctx,{id})=>{const row=await ctx.db.get(id);if(row&&row.expiresAt<=Date.now())await ctx.db.delete(id);return null;}});
 

@@ -1,5 +1,6 @@
 "use client";
 import {UnverifiedReplies} from "./unverified-replies";
+import {ConfirmCaseEmail} from './confirm-case-email';
 import {BookingVerification} from "./booking-verification";
 import {AiBusyNotice} from './ai-busy-notice';
 import {verificationReady,bookingSummaryRows} from "../../lib/booking-verification";
@@ -160,6 +161,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&!passengerEscalation&&data.chase&&<p role="status">{chaseView?.next}</p>}
 
  <EmailCaseLink code={code} token={token || ""} confirmedEmail={caseLinkRecipient(data)} link={privateCaseUrl(data.publicAppUrl || location.origin, code, token)}/>
+ {!data.demo&&data.factsConfirmedAt&&!data.emailConfirmed&&!data.stage.startsWith('CLOSED')&&(passengerEscalation||plan?.nextStep==='FLIGHT_status')&&<ConfirmCaseEmail code={code} token={token} saved={data.email}/>}
 
  <p>{tracking?.firstSent&&tracking?.configured?"Reply tracking is on through the case inbox.":"Once you send the mail, tap 'I sent it' and we'll watch for their reply."}</p>
 

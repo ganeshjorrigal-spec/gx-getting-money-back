@@ -83,8 +83,8 @@ export const callUpdateEnvelope=internalQuery({args:{id:v.id('calls')},returns:v
  const recipient=callUpdateRecipient(item),draft=await ctx.db.get(call.confirmingDraftId);
  if(!recipient||!draft||draft.caseId!==item._id||draft.step!=='FLIGHT_call_update'||draft.channel!=='email'||draft.status!=='ready'||draft.to!==recipient||(draft.cc??[]).length||!draft.body||!draft.subject)return null;
  const connection=await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','inbox')).first();
- if(!connection?.chaseSendGranted)return null;
- return {caseId:item._id,code:item.code,recipient,draft,connection};
+ if(!connection?.chaseSendGranted||!process.env.TICKBACK_INBOX_ADDRESS||connection.email!==process.env.TICKBACK_INBOX_ADDRESS.toLowerCase())return null;
+ return {caseId:item._id,code:item.code,recipient,draft,connection,item,encryptedCaseToken:item.chase.encryptedCaseToken};
 }});
 export const callUpdateSent=internalMutation({args:{id:v.id('calls')},returns:v.null(),handler:async(ctx,{id})=>{
  const call=await ctx.db.get(id);if(!call?.confirmingDraftId)return null;

@@ -5,6 +5,7 @@ import schema from '../convex/schema';
 import {internal} from '../convex/_generated/api';
 import {callUpdateBody} from './call-update';
 const transport=vi.hoisted(()=>({accessToken:vi.fn().mockResolvedValue('synthetic-token'),googleJson:vi.fn().mockResolvedValue({id:'synthetic'})}));
+vi.mock('../lib/token-crypto',()=>({decryptToken:vi.fn().mockResolvedValue('n'.repeat(43))}));
 vi.mock('../convex/googleActions',async original=>({...await original<Record<string,unknown>>(),...transport}));
 afterEach(()=>{vi.useRealTimers();vi.unstubAllEnvs();vi.clearAllMocks();});
 async function setup(options:{demo?:boolean;confirmed?:boolean;status?:'completed'|'failed';email?:string;mode?:'live'|'simulated'}={}){
@@ -12,9 +13,9 @@ async function setup(options:{demo?:boolean;confirmed?:boolean;status?:'complete
  const t=convexTest(schema,import.meta.glob('../convex/**/*.ts'));
  const ids=await t.run(async ctx=>{
  const letterId=await ctx.storage.store(new Blob(['synthetic']));
- const caseId=await ctx.db.insert('cases',{code:'RG-UPDATE',tokenHash:'synthetic',stage:'READY',refundType:'flight',ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,email:options.email??'owner@example.invalid',factsConfirmedAt:options.confirmed===false?undefined:1,facts:{reply:{summary:'Refund is pending.',reference:'REF-SAMPLE',paidDate:'2026-10-16'}},chase:{active:true,name:'Demo Passenger',mobile:'',email:'authority@example.invalid',authorisedAt:1,letterId,encryptedCaseToken:'synthetic'},...(options.demo?{demo:{kind:'flight' as const,round:0,phase:'ready' as const,now:'2026-10-16',expiresAt:Date.now()+86400000}}:{})});
+ const caseId=await ctx.db.insert('cases',{confirmedCaseEmail:options.email??'owner@example.invalid',emailConfirmedAt:options.confirmed===false?undefined:1,code:'RG-UPDATE',tokenHash:'synthetic',stage:'READY',refundType:'flight',ladderLevel:0,draftsShown:0,tier:'free_check',paidState:'none',createdAt:1,updatedAt:1,email:options.email??'owner@example.invalid',factsConfirmedAt:options.confirmed===false?undefined:1,facts:{reply:{summary:'Refund is pending.',reference:'REF-SAMPLE',paidDate:'2026-10-16'}},chase:{active:true,name:'Demo Passenger',mobile:'',email:'authority@example.invalid',authorisedAt:1,letterId,encryptedCaseToken:'synthetic'},...(options.demo?{demo:{kind:'flight' as const,round:0,phase:'ready' as const,now:'2026-10-16',expiresAt:Date.now()+86400000}}:{})});
  const id=await ctx.db.insert('calls',{caseId,mode:options.mode??'live',label:'Live call',status:options.status??'completed',company:'IndiGo',day:'2026-10-16',startedAt:1,createdAt:1,durationSeconds:30,costUsd:0.03,reservedUsd:0.3,authorisedAt:1,transcript:'Care: Please verify the passenger.'});
- await ctx.db.insert('googleConnections',{kind:'inbox',chaseSendGranted:true,encryptedRefreshToken:'synthetic',connectedAt:1});return {id,caseId};
+ await ctx.db.insert('googleConnections',{kind:'inbox',email:'inbox@example.invalid',chaseSendGranted:true,encryptedRefreshToken:'synthetic',connectedAt:1});return {id,caseId};
  });return {t,...ids};
 }
 it('real completed live call creates exactly one user-only update draft',async()=>{
@@ -31,7 +32,7 @@ it('demo confirming-mail path remains addressed to demo airline',async()=>{
 it('only exact confirmed user receives mocked summary despite list/real-company gates, once',async()=>{
  const {t,id,caseId}=await setup();const draftId=await t.mutation(internal.calls.prepareConfirmation,{id});expect(await t.mutation(internal.chase.reserve,{caseId,draftId:draftId!})).toBeNull();
  await t.action(internal.chaseActions.sendCallUpdate,{id});await t.action(internal.chaseActions.sendCallUpdate,{id});expect(transport.googleJson).toHaveBeenCalledTimes(1);
- const raw=Buffer.from(JSON.parse((transport.googleJson.mock.calls[0] as any)[2].body).raw,'base64url').toString();expect(raw).toContain('To: owner@example.invalid\r\nCc: \r\n');expect(raw).not.toContain('Bcc:');expect(raw).not.toContain('authority@example.invalid');expect((await t.run(ctx=>ctx.db.get(draftId!)))!.status).toBe('sent');
+ const raw=Buffer.from(JSON.parse((transport.googleJson.mock.calls[0] as any)[2].body).raw,'base64url').toString();expect(raw).toContain('To: owner@example.invalid\r\nCc: \r\n');expect(raw).not.toContain('Bcc:');expect(raw).not.toContain('authority@example.invalid');const body=Buffer.from(raw.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n')[0],'base64').toString();expect(body).toContain('/c/index.html?code=RG-UPDATE#k=');expect(body).toMatch(/Next: Genie .+\d{1,2} [A-Z][a-z]{2} 2026\.$/);expect((await t.run(ctx=>ctx.db.get(draftId!)))!.status).toBe('sent');
 });
 it.each(['to','cc','unconfirmed'])('summary exception cannot be widened by %s',async change=>{
  const {t,id,caseId}=await setup();const draftId=await t.mutation(internal.calls.prepareConfirmation,{id});

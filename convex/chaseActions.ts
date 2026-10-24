@@ -1,6 +1,7 @@
 "use node";
 import {requireConfirmedCaseEmail} from '../lib/confirmed-case-email';
 
+import {updateMailBody} from '../lib/update-mail';
 import {demoRecipientsAllowed,confirmedDemoCc,demoEmailSubject,demoEmailBody} from '../lib/demo-email';
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
 import { action, internalAction } from "./_generated/server";
@@ -364,15 +365,8 @@ export const notify = internalAction({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const loaded = await ctx.runQuery(internal.chase.load, {
-      caseId: args.caseId,
-    });
-    if (
-      !loaded?.item.chase || loaded.item.demo?.chaseStory ||
-      !loaded.connection?.chaseSendGranted ||
-      !(chaseAddressAllowed(loaded.item.chase.email, process.env.CHASE_ALLOWLIST)||confirmedDemoCc(loaded.item)===loaded.item.chase.email)
-    )
-      return null;
+    const loaded=await ctx.runQuery(internal.chase.updateContext,{caseId:args.caseId});
+    if(!loaded)return null;
     const id = await ctx.runMutation(internal.chase.reserveNotice, {
       caseId: args.caseId,
       key: args.key,
@@ -380,27 +374,14 @@ export const notify = internalAction({
     if (!id) return null;
     try {
       const token = await accessToken(loaded.connection.encryptedRefreshToken);
-      if (
-        !(await ctx.runQuery(internal.chase.stillActive, {
-          caseId: args.caseId,
-          authorisedAt: loaded.item.chase.authorisedAt,
-        }))
-      )
-        return null;
+      const current=await ctx.runQuery(internal.chase.updateContext,{caseId:args.caseId});
+      if(!current||current.recipient!==loaded.recipient||current.encryptedCaseToken!==loaded.encryptedCaseToken){await ctx.runMutation(internal.chase.finishNotice,{id,state:'uncertain'});return null;}
       const from = caseInboxAddress(
         process.env.TICKBACK_INBOX_ADDRESS!,
         loaded.item.code,
       );
-      const url = privateCaseUrl(publicAppUrl(process.env), loaded.item.code, await decryptToken(loaded.item.chase.encryptedCaseToken));
-      const body = [
-        args.what,
-        args.reply ? `Their reply: ${args.reply}` : "",
-        `Next: ${args.next}`,
-        `Your case: ${url}`,
-        "You can stop Genie from your case screen.",
-      ]
-        .filter(Boolean)
-        .join("\n\n");
+      const url = privateCaseUrl(publicAppUrl(process.env), loaded.item.code, await decryptToken(current.encryptedCaseToken));
+      const body=updateMailBody({what:args.what,reply:args.reply,next:args.next,url,item:current.item});
       await googleJson(
         "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
         token,
@@ -409,7 +390,7 @@ export const notify = internalAction({
           body: JSON.stringify({
             raw: rawMail(
               from,
-              [loaded.item.chase.email],
+              [current.recipient],
               [],
               loaded.item.demo?demoEmailSubject(`Genie update [${loaded.item.code}]`):`Genie update [${loaded.item.code}]`,
               loaded.item.demo?demoEmailBody(body):body,
@@ -492,7 +473,7 @@ export const sendCallUpdate=internalAction({args:{id:v.id('calls')},returns:v.nu
   const token=await accessToken(loaded.connection.encryptedRefreshToken);
   const current=await ctx.runQuery(internal.calls.callUpdateEnvelope,{id});if(!current||current.recipient!==loaded.recipient||!current.draft.subject||!current.draft.body)return null;
   const from=caseInboxAddress(process.env.TICKBACK_INBOX_ADDRESS!,current.code);
-  await googleJson('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',token,{method:'POST',body:JSON.stringify({raw:rawMail(from,[current.recipient],[],current.draft.subject,current.draft.body,`<${crypto.randomUUID()}@refundgenie.local>`)})});
+  await googleJson('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',token,{method:'POST',body:JSON.stringify({raw:rawMail(from,[current.recipient],[],current.draft.subject,updateMailBody({what:current.draft.body,url:privateCaseUrl(publicAppUrl(process.env),current.code,await decryptToken(current.encryptedCaseToken)),item:current.item}),`<${crypto.randomUUID()}@refundgenie.local>`)})});
   await ctx.runMutation(internal.chase.finishNotice,{id:notice,state:'sent'});await ctx.runMutation(internal.calls.callUpdateSent,{id});
  }catch{await ctx.runMutation(internal.chase.finishNotice,{id:notice,state:'uncertain'});}return null;
 }});

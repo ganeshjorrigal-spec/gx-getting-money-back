@@ -19,7 +19,7 @@ import {
 } from "../lib/chase";
 import { caseTrial } from "./lib/trial";
 import { takeRate } from "./lib/rate";
-import { todayIST, addDays } from "../lib/dates";
+import { todayIST, addDays,addWorkingDays } from "../lib/dates";
 const access = { code: v.string(), token: v.string() };
 export const demoProofAccess=internalQuery({args:{caseId:v.id('cases')},returns:v.any(),handler:async(ctx,{caseId})=>{const item=await ctx.db.get(caseId);if(!item?.demo||!item.chase)return null;const connection=await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','inbox')).first();return {item:{chase:{email:item.chase.email}},connection};}});
 export const inspectByCode = internalQuery({
@@ -498,7 +498,7 @@ export const reserveNotice = internalMutation({
   returns: v.union(v.id("chaseNotices"), v.null()),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
-    if (!item?.chase?.active || item.stage.startsWith("CLOSED")) return null;
+    if (!item||item.demo||!hasConfirmedCaseEmail(item)||item.chase&&!item.chase.active||item.stage.startsWith('CLOSED')) return null;
     if (
       await ctx.db
         .query("chaseNotices")
@@ -592,4 +592,23 @@ export const dispatchAllowed=internalQuery({args:{caseId:v.id('cases'),draftId:v
  if(process.env.CHASE_REAL_COMPANIES_ENABLED!=='true'||confirmedChaseCc(item)!==args.userCc)return false;
  const inputs=await ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(30);
  return realChaseRecipients(item,[args.to],args.cc,inputs.flatMap(i=>i.kind==='reply'&&i.sender?[i.sender]:[]));
+}});
+
+export const updateContext=internalQuery({args:{caseId:v.id('cases')},returns:v.any(),handler:async(ctx,{caseId})=>{
+ const item=await ctx.db.get(caseId);if(!item||item.demo||!hasConfirmedCaseEmail(item)||item.stage.startsWith('CLOSED')||item.chase&&!item.chase.active)return null;
+ const encryptedCaseToken=item.confirmedEncryptedCaseToken??item.chase?.encryptedCaseToken;if(!encryptedCaseToken)return null;
+ const connection=await ctx.db.query('googleConnections').withIndex('by_kind',q=>q.eq('kind','inbox')).first();
+ if(!connection?.chaseSendGranted||!process.env.TICKBACK_INBOX_ADDRESS||connection.email!==process.env.TICKBACK_INBOX_ADDRESS.toLowerCase())return null;
+ return {item,connection,recipient:item.email!,encryptedCaseToken};
+}});
+export const quietUpdates=internalMutation({args:{cursor:v.optional(v.string())},returns:v.null(),handler:async(ctx,{cursor})=>{
+ const page=await ctx.db.query('cases').withIndex('by_email_confirmed',q=>q.gt('emailConfirmedAt',0)).paginate({numItems:50,cursor:cursor??null});
+ for(const item of page.page){
+  if(item.demo||!hasConfirmedCaseEmail(item)||item.stage.startsWith('CLOSED')||item.chase&&!item.chase.active)continue;
+  const last=await ctx.db.query('chaseNotices').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').first();
+  const anchor=last?.createdAt??Math.max(item.createdAt,item.emailConfirmedAt??0,item.chase?.authorisedAt??0);
+  if(addWorkingDays(todayIST(new Date(anchor)),5)>todayIST())continue;
+  await ctx.scheduler.runAfter(0,internal.chaseActions.notify,{caseId:item._id,key:`quiet:${last?._id??anchor}`,what:'Genie is still watching your case. No new reply has been confirmed.',reply:'',next:item.nextStep??'Review your case for the next step.'});
+ }
+ if(!page.isDone)await ctx.scheduler.runAfter(0,internal.chase.quietUpdates,{cursor:page.continueCursor});return null;
 }});
