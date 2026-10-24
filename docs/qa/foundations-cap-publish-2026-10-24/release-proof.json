@@ -1,0 +1,38 @@
+{
+  "priorTests": 507,
+  "mails": 0,
+  "providerDailyQuotaChange": "deferred by owner",
+  "deployedCommit": "2c35c365aa82ebfb74ae59fa33068307a6916d09",
+  "settingsChanged": false,
+  "liveDeployments": 0,
+  "priorTestFiles": 67,
+  "checkedAtIST": "2026-10-24T23:25:48.9433596+05:30",
+  "project": "refundgenie-test",
+  "calls": 0,
+  "deployment": "abundant-marten-136",
+  "deployTestRunsThisApproval": 1,
+  "address": "https://abundant-marten-136.convex.site",
+  "typeCheck": "pass",
+  "staticVersion": "4533f171-bdc1-452e-973a-806832855c80",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/start/",
+      "status": 200
+    },
+    {
+      "route": "/cases/",
+      "status": 200
+    }
+  ],
+  "sampleCase": "RG-IGT6CF",
+  "sampleFreeCheckVisible": true,
+  "browserPagesVerified": [
+    "/",
+    "/start/",
+    "/cases/"
+  ]
+}

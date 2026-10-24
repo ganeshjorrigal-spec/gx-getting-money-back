@@ -1,6 +1,6 @@
 # Shared Gemini cap
 
-Prepared on next; not yet published to the Production test link. No live-project changes.
+Owner-approved publication: AI cap deployed to refundgenie-test Production at https://abundant-marten-136.convex.site, source 2c35c36, static version 4533f171-bdc1-452e-973a-806832855c80. GET/browser pages and sample free check pass; proof docs/qa/foundations-cap-publish-2026-10-24/. No frozen-live-project changes. Preparation/gate notes below are historical where they say approval pending.
 
 ## App call sites
 
