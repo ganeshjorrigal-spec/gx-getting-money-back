@@ -1,11 +1,11 @@
-# N2: READY FOR REVIEW, required STOP
+# N3: READY FOR REVIEW, required STOP
 
-- [ ] Wait for Ganesh phone-test result: actual confirmation and update delivery using the phone checklist. Do not start N3.
-- [ ] N3 due-date mail, then N4 transcript checker and call quality, with each STOP.
+- [ ] Ganesh reviews N3 and approves deploy:test before publication or N4.
+- [ ] After approved publication, prepare two fictional WAIT fixtures (handed over and not handed over), confirmed passenger address, deadline yesterday. Check mail at/after 10:00 IST today and both answer choices.
 - [ ] Provider daily quota remains deferred by owner.
 
 ## Parked from the abuse review
 - [ ] Free-refund count resets: do not build.
 - [ ] Manual annual-pass fallback: do not build.
 
-Part A published. N2 b0ed54f passes 553/553 tests, type check, static export and Development push. N2 published under source eea7942 / static 4467f7c4-cf5e-4885-b73d-c4f344d792b1. Company sending switch is not true in either test deployment. N1 outreach stays with Ganesh; N5 to N8 untouched. No frozen live/main/Cloudflare, settings, calls or mail. Root HQ prompt stays untracked.
+N3 runtime baea415: 563/563 tests, type check, static export and Development push pass. N2 remains on public test Production. No N3 publish; N4/N5 to N8 untouched; N1 outreach owner. No live/main/Cloudflare, keys/settings/allow-list/calling changes, company mail or calls. Root HQ prompt stays untracked.

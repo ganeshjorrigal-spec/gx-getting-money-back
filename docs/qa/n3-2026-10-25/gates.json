@@ -1,0 +1,20 @@
+{
+  "codeCommit": "baea415",
+  "status": "READY FOR REVIEW",
+  "published": false,
+  "testFirst": {
+    "runStartIST": "2026-10-25 02:10:57",
+    "failed": 1,
+    "passed": 1,
+    "handedOverWait": {"ladderBefore": 2, "ladderAfter": 3, "immediateRepeatChecks": 1},
+    "reportedBeforeAppChanges": true
+  },
+  "finalTests": {"passed": 563, "files": 76, "durationSeconds": 7.97, "n3Tests": 10},
+  "typecheck": "pass",
+  "staticExport": {"result": "pass", "pages": 16},
+  "developmentPush": {"deployment": "tangible-lemur-692", "result": "pass"},
+  "browser": {"target": "local static export with test Development", "case": "RG-R07HSA", "result": "It came closed at Rs 5400", "mailSent": false},
+  "mailTransport": "mocked",
+  "actualN3MailDelivery": "not tested",
+  "publicTestStillRuns": "N2"
+}

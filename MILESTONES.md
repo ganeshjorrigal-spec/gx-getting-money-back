@@ -13,6 +13,7 @@ Status: READY FOR REVIEW
 Acceptance: a mocked-transport test with a confirmed case email that is NOT on CHASE_ALLOWLIST gets exactly one update mail; the demo still works; every update mail ends with what Genie does next and when (D-069).
 
 N3. I can set a test case's due date to yesterday and get exactly one Genie mail asking if it came, with my case still at its first step.
+Status: READY FOR REVIEW
 Acceptance: convex-test with a fake clock, for a handed-over and a not-handed-over WAIT case: one check fires per day at most, the ladder does not move, exactly one mail with "It came" and "Not yet, chase it" (D-067). Covers the suspected repeat-fire bug where checkins.fire calls chase.advance on a WAIT case and reschedules itself for "now".
 
 N4. I can play back a test call where Genie tells the first live person it is an AI calling for me, doesn't say any line twice, and doesn't ask for anything it already gave.
