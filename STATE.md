@@ -11,3 +11,6 @@ https://abundant-marten-136.convex.site runs N2 source eea7942, static 4467f7c4-
 
 ## Remaining
 Mailbox instructions delivered before N2 coding: docs/handoff/test-mailbox-setup.md. Owner sets both test deployments and authorises Production only; Development stays unconnected. Owner confirmed new test inbox connection succeeded. No live inbox connected. Phone checklist docs/handoff/n2-update-mail.md. Waiting for owner phone-test result before N3. N3/N4 and N5 to N8 untouched; N1 outreach owner. Provider quota deferred; free-refund resets and manual annual-pass fallback parked. Root HQ prompt stays untracked. Nothing DONE.
+
+## Latest blocker: mailbox connected to wrong test deployment
+Read-only checks: Production abundant-marten-136 has no inbox connection. Development tangible-lemur-692 has one with send permission. The earlier success message was not Production proof. Owner must disconnect the Development inbox connection and authorise Production before retrying confirmation. No settings, connection records, code or deploy changed by Codex; no mail sent. Wait before N3.
