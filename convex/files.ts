@@ -7,7 +7,6 @@ export const generateUploadUrl=mutation({
  args:{deviceId:v.string(),code:v.optional(v.string()),token:v.optional(v.string())},returns:v.string(),handler:async(ctx,a)=>{
   if(!/^[A-Za-z0-9_-]{12,100}$/.test(a.deviceId))throw new Error('Invalid device');
   const item=a.code&&a.token?await assertAccess(ctx,a.code,a.token):null;
-  if(item?.stage.startsWith('CLOSED'))throw new Error('Case is closed');
   const origin=process.env.CONVEX_SITE_URL;if(!origin)throw new Error('Upload service unavailable');
   await takeRate(ctx,`upload:${a.deviceId}`,20,3600000);
   const ticket=crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-','');

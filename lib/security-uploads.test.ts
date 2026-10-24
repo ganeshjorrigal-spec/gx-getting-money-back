@@ -26,6 +26,13 @@ it('a registered file belongs to exactly one case and deletion removes only its 
  const own=await t.run(async ctx=>{const id=await ctx.storage.store(new Blob(['own sample']));await ctx.db.insert('caseFiles',{caseId,storageId:id,deviceHash:await hashToken(deviceA),createdAt:Date.now()});return id;});
  await t.mutation(api.cases.remove,{code:'RG-FILE01',token});expect(await t.run(async ctx=>!!await ctx.storage.get(storageId))).toBe(true);expect(await t.run(async ctx=>!!await ctx.storage.get(own))).toBe(false);
 });
+it('closed cases still accept an owner-bound screenshot as new evidence',async()=>{
+ vi.stubEnv('CONVEX_SITE_URL','https://test.example.invalid');const {t,caseId}=await fixture();await t.run(ctx=>ctx.db.patch(caseId,{stage:'CLOSED_NO_ROUTE'}));
+ const url=new URL(await t.mutation(api.files.generateUploadUrl,{code:'RG-FILE01',token,deviceId:deviceB}));
+ const response=await t.fetch(url.pathname+url.search,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:new Uint8Array([1,2,3])});expect(response.status).toBe(200);
+ const {storageId}=await response.json();expect(await t.query(internal.files.owns,{caseId,storageId})).toBe(true);
+ await t.mutation(api.cases.addReply,{code:'RG-FILE01',token,storageIds:[storageId]});expect(await t.run(ctx=>ctx.db.get(caseId))).toMatchObject({stage:'TRIAGING'});
+});
 it('a one-use upload ticket records ownership and cannot be replayed or claimed by another device',async()=>{
  vi.stubEnv('CONVEX_SITE_URL','https://test.example.invalid');const {t}=await fixture();const url=await t.mutation(api.files.generateUploadUrl,{deviceId:deviceA});const path=new URL(url).pathname+new URL(url).search;
  const response=await t.fetch(path,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:new Uint8Array([1,2,3])});expect(response.status).toBe(200);const {storageId}=await response.json();
