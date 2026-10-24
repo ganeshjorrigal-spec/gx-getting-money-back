@@ -313,7 +313,7 @@ export default function CaseView({ code }: { code: string }) {
       const storageIds: Id<"_storage">[] = [];
       if (replyImage) {
         const blob = await compressScreenshot(replyImage);
-        const url = await uploadUrl({ deviceId: getDeviceId() });
+        const url = await uploadUrl({ deviceId: getDeviceId(),code,token:token! });
         const response = await fetch(url, { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: blob });
         if (!response.ok) throw new Error("Could not upload screenshot");
         const result = await response.json() as { storageId: Id<"_storage"> };

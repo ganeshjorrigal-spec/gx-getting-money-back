@@ -1,3 +1,4 @@
+import {deleteOwnedFiles} from './lib/files';
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { deleteCaseData } from "./lib/delete";
@@ -11,8 +12,9 @@ export const run = internalMutation({
     const oldClosed = await ctx.db.query("cases").withIndex("by_purge_after", (q) => q.gt("purgeAfter", 0).lt("purgeAfter", now)).take(20);
     for (const item of oldClosed) {
       if (!item.purgeAfter || item.purgeAfter > now) continue;
+      await deleteOwnedFiles(ctx,item._id);
       for (const input of await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", item._id)).collect()) {
-        for (const file of input.storageIds) await ctx.storage.delete(file);
+
         if (input.storageIds.length) await ctx.db.patch(input._id, { storageIds: [] });
       }
       await ctx.db.patch(item._id, { purgeAfter: undefined });

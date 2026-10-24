@@ -5,6 +5,8 @@ const route = v.union(v.literal("WAIT"), v.literal("OVERDUE"), v.literal("ACTION
 const stage = v.union(v.literal("TRIAGING"), v.literal("NEED_INFO"), v.literal("READY"), v.literal("ACTED"), v.literal("WAITING"), v.literal("DUE"), v.literal("CLOSED_LANDED"), v.literal("CLOSED_NO_ROUTE"), v.literal("CLOSED_OUT_OF_SCOPE"), v.literal("ERROR"));
 
 export default defineSchema({
+  uploadTickets:defineTable({tokenHash:v.string(),deviceHash:v.string(),caseId:v.optional(v.id('cases')),expiresAt:v.number(),usedAt:v.optional(v.number()),storageId:v.optional(v.id('_storage'))}).index('by_hash',['tokenHash']).index('by_expiry',['expiresAt']),
+  caseFiles:defineTable({storageId:v.id('_storage'),deviceHash:v.string(),caseId:v.optional(v.id('cases')),createdAt:v.number()}).index('by_storage',['storageId']).index('by_case',['caseId']).index('by_created',['createdAt']),
   caseLinkMails:defineTable({caseId:v.id('cases'),day:v.string(),state:v.union(v.literal('reserved'),v.literal('sent'),v.literal('uncertain'))}).index('by_case',['caseId']).index('by_case_day',['caseId','day']),
   chaseDaily:defineTable({day:v.string(),count:v.number()}).index('by_day',['day']),
   cases: defineTable({

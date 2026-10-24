@@ -1,9 +1,11 @@
+import {deleteOwnedFiles} from './files';
 import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx } from "../_generated/server";
 import { internal } from "../_generated/api";
 
 export async function deleteCaseData(ctx: MutationCtx, item: Doc<"cases">): Promise<void> {
   const caseId = item._id;
+  await deleteOwnedFiles(ctx,caseId);
   for(const row of await ctx.db.query("caseLinkMails").withIndex("by_case",q=>q.eq("caseId",caseId)).take(10))await ctx.db.delete(row._id);
   for(const confirmation of await ctx.db.query('demoEmailConfirmations').withIndex('by_case',q=>q.eq('caseId',caseId)).take(4))await ctx.db.delete(confirmation._id);
   for(const row of await ctx.db.query("calls").withIndex("by_case",q=>q.eq("caseId",caseId)).take(100))await ctx.db.delete(row._id);
@@ -29,7 +31,7 @@ export async function deleteCaseData(ctx: MutationCtx, item: Doc<"cases">): Prom
     await ctx.db.delete(checkin._id);
   }
   for (const input of await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect()) {
-    for (const file of input.storageIds) await ctx.storage.delete(file);
+
     await ctx.db.delete(input._id);
   }
   for (const draft of await ctx.db.query("drafts").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect()) await ctx.db.delete(draft._id);

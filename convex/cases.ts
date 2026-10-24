@@ -1,3 +1,4 @@
+import {claimCaseFiles} from './lib/files';
 import {hasConfirmedCaseEmail} from '../lib/confirmed-case-email';
 import {confirmedEmail,canDraftCompany,savedEmail} from '../lib/case-email';
 import { visibleTimeline } from "../lib/timeline";
@@ -86,6 +87,7 @@ export const create = mutation({
       refundType: args.refundType,
       createdAt: now, updatedAt: now,
     });
+    await claimCaseFiles(ctx,args.storageIds,caseId,await hashToken(args.deviceId));
     await ctx.db.insert("inputs", { caseId, kind: "initial", text: args.text ? redact(args.text) : undefined, storageIds: args.storageIds, createdAt: now });
     await ctx.db.insert("caseEvents", { caseId, type: "created", summary: "Case started", actor: "user", createdAt: now });
     await ctx.scheduler.runAfter(0, internal.agent.triage, { caseId, runId });
@@ -188,6 +190,7 @@ export const addReply = mutation({
     const item = await assertAccess(ctx, code, token);
     if (!text?.trim() && !storageIds.length) throw new Error("Add their reply first");
     if ((text?.length ?? 0) > 8_000 || storageIds.length > 4) throw new Error("Reply is too long");
+    await claimCaseFiles(ctx,storageIds,item._id,item.deviceHash);
     const now = Date.now();
     const runId = Math.random().toString(36).slice(2);
     await ctx.db.insert("inputs", { caseId: item._id, kind: "reply", text: text ? redact(text) : undefined, storageIds, createdAt: now, ...(item.refundType === "flight" ? {runId} : {}) });

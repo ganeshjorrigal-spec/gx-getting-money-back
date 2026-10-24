@@ -16,7 +16,7 @@ export const triage=internalAction({args:{caseId:v.id("cases"),runId:v.string(),
  if(args.reuseFacts)read=flightReadSchema.parse(loaded.item.facts);
  else {
  const content:Array<{type:"text";text:string}|{type:"image";image:Uint8Array;mediaType:string}>=[{type:"text",text:`Today: ${today}. Prior facts: ${JSON.stringify(loaded.item.facts??null)}. User inputs oldest to newest: ${loaded.inputs.map(i=>JSON.stringify({kind:i.kind,text:i.kind==="reply"?latestReplyText(i.text??""):i.text??"",receivedDate:i.receivedAt?todayIST(new Date(i.receivedAt)):null})).join("\n")}`}];
- for(const id of loaded.inputs.at(-1)?.storageIds??[]){const blob=await ctx.storage.get(id);if(blob)content.push({type:"image",image:new Uint8Array(await blob.arrayBuffer()),mediaType:blob.type||"image/jpeg"});}
+ for(const id of loaded.inputs.at(-1)?.storageIds??[]){if(!await ctx.runQuery(internal.files.owns,{caseId:args.caseId,storageId:id}))continue;const blob=await ctx.storage.get(id);if(blob)content.push({type:"image",image:new Uint8Array(await blob.arrayBuffer()),mediaType:blob.type||"image/jpeg"});}
  if(!process.env.GEMINI_MODEL)throw new Error("Model unavailable");
  if(!await ctx.runMutation(internal.aiQuota.take,{caseId:args.caseId,runId:args.runId}))return null;
  const started=Date.now();const result=await generateObject({model:google(process.env.GEMINI_MODEL),schema:flightAiSchema,system:flightSystem,messages:[{role:"user",content}],maxOutputTokens:1800,maxRetries:0,abortSignal:AbortSignal.timeout(25000),providerOptions:{google:{thinkingConfig:{thinkingLevel:"low"}}}});

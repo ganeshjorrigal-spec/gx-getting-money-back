@@ -44,6 +44,7 @@ export const triage = internalAction({
         { type: "text", text: `Today in India: ${today}.\nPrior facts: ${previous ? JSON.stringify(previous) : "none"}\nCase history (older context): ${loaded.events.map((e: { summary: string }) => e.summary).join("; ")}\nUser inputs, oldest to newest: ${loaded.inputs.map((i) => JSON.stringify({ kind: i.kind, receivedDate: i.receivedAt ? todayIST(new Date(i.receivedAt)) : null, text: i.kind === "reply" && i.receivedAt ? latestReplyText(i.text ?? "") : i.text ?? "" })).join("\n")}\nFor tracked replies, receivedDate is the actual message date from Gmail. The newest reply's refund status and promise override older promises, dates and lateness claims. Keep unrelated booking and payment facts. Quoted history is not a new promise.` },
       ];
       for (const storageId of latest?.storageIds ?? []) {
+        if(!await ctx.runQuery(internal.files.owns,{caseId,storageId}))continue;
         const blob = await ctx.storage.get(storageId);
         if (blob) content.push({ type: "image", image: new Uint8Array(await blob.arrayBuffer()), mediaType: blob.type || "image/jpeg" });
       }

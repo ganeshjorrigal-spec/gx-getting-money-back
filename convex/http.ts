@@ -5,6 +5,21 @@ import { components, internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 
 const http = httpRouter();
+const uploadCors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type'};
+http.route({path:'/case-upload',method:'OPTIONS',handler:httpAction(async()=>new Response(null,{status:204,headers:uploadCors}))});
+http.route({path:'/case-upload',method:'POST',handler:httpAction(async(ctx,request)=>{
+ let storageId:Id<'_storage'>|undefined;
+ try{
+  if(!['image/jpeg','image/png','image/webp'].includes(request.headers.get('content-type')??''))throw new Error('Image required');
+  const bytes=await request.arrayBuffer();if(!bytes.byteLength||bytes.byteLength>4*1024*1024)throw new Error('Image too large');
+  const ticket=new URL(request.url).searchParams.get('ticket')??'';
+  const ticketId=await ctx.runMutation(internal.files.takeTicket,{ticket:await crypto.subtle.digest('SHA-256',new TextEncoder().encode(ticket)).then(d=>[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join(''))});
+  storageId=await ctx.storage.store(new Blob([bytes],{type:request.headers.get('content-type')!}));
+  await ctx.runMutation(internal.files.record,{ticketId,storageId});
+  return new Response(JSON.stringify({storageId}),{headers:{...uploadCors,'Content-Type':'application/json'}});
+ }catch{if(storageId)await ctx.storage.delete(storageId);return new Response('Upload unavailable or expired',{status:400,headers:uploadCors});}
+})});
+
 
 http.route({
   path: "/oauth/google/callback", method: "GET",
