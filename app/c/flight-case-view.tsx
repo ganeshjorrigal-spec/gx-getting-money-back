@@ -1,4 +1,5 @@
 "use client";
+import {UnverifiedReplies} from "./unverified-replies";
 import {BookingVerification} from "./booking-verification";
 import {AiBusyNotice} from './ai-busy-notice';
 import {verificationReady,bookingSummaryRows} from "../../lib/booking-verification";
@@ -154,7 +155,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
  ...(facts.airIndiaRefundRequested!==undefined?[{label:'Refund requested',value:facts.airIndiaRefundRequested?'Yes':'No',edit:()=>editFact('airIndiaRefundRequested','refund requested')}]:[])]:[];
  const waiting=busy||data.stage==="TRIAGING";
 
- return <main className="case-shell flight-case"><header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><Link className="text-link" href="/start">Start another case</Link></header><div className="case-wrap">
+ return <main className="case-shell flight-case"><header className="site-header"><Link className="wordmark" href="/"><BrandMark/></Link><Link className="text-link" href="/start">Start another case</Link></header><div className="case-wrap"><UnverifiedReplies code={code} token={token}/>
 
  <p className="case-code">{data.demo?"Demo · ":""}{code} · Domestic flight refund</p><h1>{facts?.flightName??"Your flight refund"}</h1>{!selfSendDemo&&!passengerEscalation&&data.chase&&<p role="status">{chaseView?.next}</p>}
 

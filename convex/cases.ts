@@ -26,6 +26,21 @@ const accessArgs = { code: v.string(), token: v.string() };
 const makeCode = () => `RG-${Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, "X")}`;
 const cleanLine = (value: string | undefined, max: number) => value?.trim().replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").slice(0, max) || undefined;
 
+export const unverifiedReplies=query({args:accessArgs,returns:v.any(),handler:async(ctx,a)=>{
+ const item=await assertAccess(ctx,a.code,a.token);const rows=await ctx.db.query('inputs').withIndex('by_case',q=>q.eq('caseId',item._id)).order('desc').take(50);
+ return rows.filter(i=>i.verification==='unverified').map(i=>({_id:i._id,text:i.text??'',sender:i.sender??'',receivedAt:i.receivedAt??i.createdAt}));
+}});
+export const useUnverifiedReply=mutation({args:{...accessArgs,inputId:v.id('inputs')},returns:v.null(),handler:async(ctx,a)=>{
+ const item=await assertAccess(ctx,a.code,a.token),input=await ctx.db.get(a.inputId);
+ if(!input||input.caseId!==item._id||item.stage.startsWith('CLOSED'))throw new Error('Reply unavailable');
+ if(input.verification!=='unverified')return null;
+ const runId=crypto.randomUUID(),now=Date.now();
+ await ctx.db.patch(input._id,{verification:'approved',runId});
+ await ctx.db.patch(item._id,{stage:'TRIAGING',latestRunId:runId,progress:{step:'reading',at:now},updatedAt:now});
+ await ctx.db.insert('caseEvents',{caseId:item._id,type:'reply_approved',summary:'You confirmed this mail is real; preparing the next step',actor:'user',createdAt:now});
+ await ctx.scheduler.runAfter(0,internal.agent.triage,{caseId:item._id,runId});return null;
+}});
+
 async function clearCheckins(ctx: MutationCtx, caseId: Id<"cases">) {
   const rows = await ctx.db.query("checkins").withIndex("by_case", (q) => q.eq("caseId", caseId)).collect();
   for (const row of rows) if (row.status === "scheduled") {

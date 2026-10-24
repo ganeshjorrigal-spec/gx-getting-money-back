@@ -91,7 +91,7 @@ export const checkCaseInbox = internalAction({
         const from = fromAddress(header(message, "from")); const receivedAt = Number(message.internalDate ?? 0);
         if (from !== demoAddress.toLowerCase() || !messageMatchesCase({ to: header(message, "to"), subject: header(message, "subject"), from, code: loaded.item.code, inbox: inboxAddress, ownEmail: inbox.email, sentAt: loaded.watch.sentAt, receivedAt })) continue;
         const text = messageText(message);
-        if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: input.caseId, messageId: header(message, "message-id") || message.id, source: "inbox", text, sender: from, receivedAt });
+        if (text) await ctx.runMutation(internal.googleData.saveReply, { caseId: input.caseId, messageId: header(message, "message-id") || message.id, source: "inbox", text, sender: from, receivedAt,threadId:message.threadId,authenticationResults:header(message,"authentication-results") });
       }
     } catch { /* The next bounded check retries. */ }
     await ctx.scheduler.runAfter(Math.max(0, 10_000 - (Date.now() - started)), internal.demoActions.checkCaseInbox, input);

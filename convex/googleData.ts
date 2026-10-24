@@ -3,17 +3,23 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { redact } from "../lib/redact";
 import { replyKeySentence } from "../lib/reply-banner";
+import {authenticatedReply,checkedReplySender} from '../lib/verified-reply';
 
 export const saveReply = internalMutation({
-  args: { caseId: v.id("cases"), messageId: v.string(), source: v.union(v.literal("inbox"), v.literal("gmail")), text: v.string(), sender: v.string(), receivedAt: v.number() },
+  args: { caseId: v.id("cases"), messageId: v.string(), source: v.union(v.literal("inbox"), v.literal("gmail")), text: v.string(), sender: v.string(), receivedAt: v.number(),threadId:v.optional(v.string()),authenticationResults:v.optional(v.string()) },
   returns: v.boolean(),
   handler: async (ctx, args) => {
     const item = await ctx.db.get(args.caseId);
     if (!item || item.stage.startsWith("CLOSED") || Date.now() - args.receivedAt > 45 * 86_400_000) return false;
-    if (args.sender.toLowerCase() === process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase() && !item.demo) return false;
-    if (item.demo && (args.sender.toLowerCase() !== process.env.TICKBACK_DEMO_ADDRESS?.toLowerCase() || item.demo.round >= 3)) return false;
     const existing = await ctx.db.query("gmailReplies").withIndex("by_case_message", (q) => q.eq("caseId", args.caseId).eq("messageId", args.messageId)).unique();
     if (existing) return false;
+    const sent=await ctx.db.query('chaseOutbox').withIndex('by_case_state',q=>q.eq('caseId',item._id).eq('state','sent')).take(100);
+    const verified=!!args.threadId&&sent.some(mail=>mail.threadId===args.threadId)&&checkedReplySender(item,args.sender,process.env.TICKBACK_DEMO_ADDRESS)&&authenticatedReply(args.sender,args.authenticationResults??'');
+    if(!verified){
+      await ctx.db.insert('gmailReplies',{caseId:item._id,messageId:args.messageId,source:args.source,receivedAt:args.receivedAt});
+      await ctx.db.insert('inputs',{caseId:item._id,kind:'reply',text:redact(args.text.slice(0,8000)),storageIds:[],createdAt:Date.now(),sender:args.sender.toLowerCase().slice(0,254),receivedAt:args.receivedAt,verification:'unverified'});
+      return true;
+    }
     if (item.demo) {
       const demoReplies = await ctx.db.query("demoReplies").withIndex("by_case", q => q.eq("caseId", item._id)).take(4);
       const outgoing = demoReplies.find(reply => reply.round === item.demo!.round + 1);
@@ -29,6 +35,7 @@ export const saveReply = internalMutation({
       caseId: args.caseId, kind: "reply", text, storageIds: [], createdAt: now,
       sender: args.sender.trim().toLowerCase().slice(0, 254), receivedAt: args.receivedAt,
       keySentence: replyKeySentence(text), runId,
+      verification:'verified',
     });
     await ctx.db.patch(args.caseId, { stage: "TRIAGING", latestRunId: runId, progress: { step: "reading", at: now }, lastTrackedReplyAt: now, updatedAt: now });
     await ctx.db.insert("caseEvents", { caseId: args.caseId, type: "reply_added", summary: "Their reply arrived; preparing your next step", actor: "system", createdAt: now });

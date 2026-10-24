@@ -39,6 +39,7 @@ export default defineSchema({
     text: v.optional(v.string()), storageIds: v.array(v.id("_storage")), createdAt: v.number(),
     sender: v.optional(v.string()), receivedAt: v.optional(v.number()), summary: v.optional(v.string()),
     keySentence: v.optional(v.string()), seenAt: v.optional(v.number()), runId: v.optional(v.string()),
+    verification:v.optional(v.union(v.literal('verified'),v.literal('unverified'),v.literal('approved'))),
   }).index("by_case", ["caseId"]),
   caseEvents: defineTable({
     caseId: v.id("cases"), type: v.string(), summary: v.string(), actor: v.union(v.literal("user"), v.literal("agent"), v.literal("system")),

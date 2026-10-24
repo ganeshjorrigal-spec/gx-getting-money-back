@@ -9,6 +9,6 @@ export const load = internalQuery({
     if (!item) return null;
     const inputs = await ctx.db.query("inputs").withIndex("by_case", (q) => q.eq("caseId", caseId)).order("desc").take(10);
     const events = await ctx.db.query("caseEvents").withIndex("by_case", (q) => q.eq("caseId", caseId)).order("desc").take(10);
-    return { item, inputs: inputs.reverse(), events: events.reverse() };
+    return { item, inputs: inputs.reverse().filter(i=>i.verification!=='unverified'), events: events.reverse() };
   },
 });

@@ -96,7 +96,7 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
  if(plan.body && item.factsConfirmedAt&&canDraftCompany(item)){
  if(plan.rung>=3&&plan.channel!=="bank"&&plan.nextStep!=="FLIGHT_status"){
    const all=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).collect();
-   plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.map(i=>`${todayIST(new Date(i.receivedAt??i.createdAt))} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");
+   plan.body += "\n\nDated record (attach the original messages and screenshots):\n"+all.filter(i=>i.verification!=="unverified").map(i=>`${todayIST(new Date(i.receivedAt??i.createdAt))} · ${i.kind}: ${redact(i.text??"Screenshot attached")}`).join("\n\n");
  }await ctx.db.insert("drafts",{caseId:item._id,step:plan.nextStep,channel:plan.channel,recipientRole:plan.nextPerson?.role,rung:plan.rung,to:plan.to??undefined,cc:plan.cc,subject:demoSubject(!!item.demo,codedSubject(plan.subject,item.code)),body:plan.channel==="email"?finishMail(redact(plan.body),item.code,[],item.name):redact(plan.body),attachChecklist:item.demo?[]:["Cancellation confirmation","Booking receipt","Dated replies so far"],status:"ready",createdAt:now});await ctx.db.patch(item._id,{draftsShown:item.draftsShown+1});await ctx.db.insert("caseEvents",{caseId:item._id,type:"draft_written",summary:`Prepared ${plan.nextStep}`,actor:"agent",createdAt:now});}
  await ctx.db.insert("agentRuns",{caseId:item._id,runId:args.runId,step:"triage",model:args.model,attempt:1,status:"done",latencyMs:args.latencyMs,inputTokens:args.inputTokens,outputTokens:args.outputTokens,totalTokens:args.totalTokens,createdAt:now});
  if(item.chase?.active&&reply)await ctx.scheduler.runAfter(0,internal.chaseActions.notify,{caseId:item._id,key:`reply:${reply._id}`,what:"Genie read a new reply.",reply:redact(read.reply.summary).slice(0,240),next:`${plan.channel==="bank"?"Check your bank":plan.nextPerson?`Contact ${plan.nextPerson.company}`:"Watch for their reply"}${plan.checkDate?` · check-in ${plan.checkDate}`:""}`});
@@ -110,7 +110,7 @@ export const apply=internalMutation({args:{caseId:v.id("cases"),runId:v.string()
 }});
 
 
-export const replies=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")return [];const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(50);return inputs.filter(i=>i.kind==="reply").map(i=>({_id:i._id,text:redact(i.text??"Screenshot attached"),summary:i.summary??"",date:todayIST(new Date(i.receivedAt??i.createdAt))}));}});
+export const replies=query({args:{code:v.string(),token:v.string()},returns:v.any(),handler:async(ctx,args)=>{const item=await assertAccess(ctx,args.code,args.token);if(item.refundType!=="flight")return [];const inputs=await ctx.db.query("inputs").withIndex("by_case",q=>q.eq("caseId",item._id)).order("desc").take(50);return inputs.filter(i=>i.kind==="reply"&&i.verification!=="unverified").map(i=>({_id:i._id,text:redact(i.text??"Screenshot attached"),summary:i.summary??"",date:todayIST(new Date(i.receivedAt??i.createdAt))}));}});
 
 // Explicit edits at review use the same saved fields. They are distinct from a
 // delayed question tap, which must still ignore an already answered question.
