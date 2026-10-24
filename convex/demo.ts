@@ -153,7 +153,7 @@ export const retry = mutation({
     const pending = replies.find(reply => reply.round === item.demo!.round + 1);
     if (pending?.status === "reserved") throw new Error("The demo desk could not confirm delivery. Start a new demo to avoid a duplicate reply.");
     const session = crypto.randomUUID(); const phase = pending?.status === "sent" ? "waiting_inbox" as const : "waiting_organiser" as const;
-    await ctx.db.patch(item._id, { demo: { ...item.demo, session, phase, deadline: Date.now() + (phase === "waiting_inbox" ? 60_000 : 120_000) }, updatedAt: Date.now() });
+      await ctx.db.patch(item._id, { demo: { ...item.demo, session, phase, deadline: Date.now() + (phase === "waiting_inbox" ? 60_000 : 120_000) }, ...(item.progress?.step === 'busy' ? {stage: 'READY' as const, progress: {step: 'reading', at: Date.now()}} : {}), updatedAt: Date.now() });
     await ctx.scheduler.runAfter(0, phase === "waiting_inbox" ? internal.demoActions.checkCaseInbox : internal.demoActions.checkOrganiser, { caseId: item._id, session });
     return null;
   },

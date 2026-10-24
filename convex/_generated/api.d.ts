@@ -11,6 +11,7 @@
 import type * as agent from "../agent.js";
 import type * as agentData from "../agentData.js";
 import type * as agentWrites from "../agentWrites.js";
+import type * as aiQuota from "../aiQuota.js";
 import type * as annualPayments from "../annualPayments.js";
 import type * as callActions from "../callActions.js";
 import type * as callQa from "../callQa.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   agent: typeof agent;
   agentData: typeof agentData;
   agentWrites: typeof agentWrites;
+  aiQuota: typeof aiQuota;
   annualPayments: typeof annualPayments;
   callActions: typeof callActions;
   callQa: typeof callQa;

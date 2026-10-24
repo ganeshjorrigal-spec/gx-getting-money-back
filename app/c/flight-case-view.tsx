@@ -1,5 +1,6 @@
 "use client";
 import {BookingVerification} from "./booking-verification";
+import {AiBusyNotice} from './ai-busy-notice';
 import {verificationReady,bookingSummaryRows} from "../../lib/booking-verification";
 import {SampleFieldLabel} from '../components/sample-field-label';
 import {ChaseHistory} from './chase-history';
@@ -106,6 +107,7 @@ export default function FlightCaseView({code,token}:{code:string;token:string}) 
 
  useEffect(()=>{if(data?.facts){setName(data.name??"");setFlightName(data.facts.flightName??"");setPnr(data.facts.pnr??"");setBooking(data.facts.bookingId??"");setContact(data.contact?.includes("@")?"":data.contact??"");setEmail(savedEmail(data));}},[data?.factsConfirmedAt,data?.facts?.pnr,data?.facts?.bookingId,data?.facts?.flightName]);
 
+ if(data?.progress?.step==='busy')return <main className="case-shell"><AiBusyNotice onRetry={()=>data.demo?.phase==='timed_out'?retryDemo(args):retry(args)}/></main>;
  if(data?.demo?.chaseStory&&(!demoIntake||!data.demo.emailConfirmedAt))return <PublicChaseDemo code={code} token={token} data={data}/>;
 
  if(!data)return <main className="case-shell"><Mascot head/><p>Opening your case…</p></main>;

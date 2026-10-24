@@ -49,6 +49,7 @@ export const triage = internalAction({
       }
       await ctx.runMutation(internal.agentWrites.progress, { caseId, runId, step: "reading" });
       for (const modelId of modelIds.slice(0, 2)) {
+        if (!await ctx.runMutation(internal.aiQuota.take, {caseId, runId})) return null;
         const started = Date.now();
         try {
           const result = await generateObject({
@@ -93,6 +94,7 @@ export const triage = internalAction({
     let draftUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
     const draftModelId = process.env.GEMINI_MODEL;
     if (draftModelId && ["L0_email", "L0_chat"].includes(plan.nextStep)) {
+      if (!await ctx.runMutation(internal.aiQuota.take, {caseId, runId})) return null;
       const started = Date.now();
       try {
         const output = await generateObject({

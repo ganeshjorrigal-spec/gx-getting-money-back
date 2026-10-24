@@ -17,7 +17,9 @@ export const triage=internalAction({args:{caseId:v.id("cases"),runId:v.string(),
  else {
  const content:Array<{type:"text";text:string}|{type:"image";image:Uint8Array;mediaType:string}>=[{type:"text",text:`Today: ${today}. Prior facts: ${JSON.stringify(loaded.item.facts??null)}. User inputs oldest to newest: ${loaded.inputs.map(i=>JSON.stringify({kind:i.kind,text:i.kind==="reply"?latestReplyText(i.text??""):i.text??"",receivedDate:i.receivedAt?todayIST(new Date(i.receivedAt)):null})).join("\n")}`}];
  for(const id of loaded.inputs.at(-1)?.storageIds??[]){const blob=await ctx.storage.get(id);if(blob)content.push({type:"image",image:new Uint8Array(await blob.arrayBuffer()),mediaType:blob.type||"image/jpeg"});}
- if(!process.env.GEMINI_MODEL)throw new Error("Model unavailable");const started=Date.now();const result=await generateObject({model:google(process.env.GEMINI_MODEL),schema:flightAiSchema,system:flightSystem,messages:[{role:"user",content}],maxOutputTokens:1800,maxRetries:0,abortSignal:AbortSignal.timeout(25000),providerOptions:{google:{thinkingConfig:{thinkingLevel:"low"}}}});
+ if(!process.env.GEMINI_MODEL)throw new Error("Model unavailable");
+ if(!await ctx.runMutation(internal.aiQuota.take,{caseId:args.caseId,runId:args.runId}))return null;
+ const started=Date.now();const result=await generateObject({model:google(process.env.GEMINI_MODEL),schema:flightAiSchema,system:flightSystem,messages:[{role:"user",content}],maxOutputTokens:1800,maxRetries:0,abortSignal:AbortSignal.timeout(25000),providerOptions:{google:{thinkingConfig:{thinkingLevel:"low"}}}});
  const newest=loaded.inputs.at(-1);
  read=groundFlightRead(flightReadSchema.parse(result.object),loaded.inputs.map(i=>i.kind==="reply"?latestReplyText(i.text??""):i.text??"").join("\n"),loaded.item.facts,(newest?.storageIds.length??0)>0,newest?.sender,!!loaded.item.demo,newest?.kind==="reply"?latestReplyText(newest.text??""):newest?.text??"");model=process.env.GEMINI_MODEL;latencyMs=Date.now()-started;inputTokens=result.usage.inputTokens??0;outputTokens=result.usage.outputTokens??0;totalTokens=result.usage.totalTokens??0;
  }

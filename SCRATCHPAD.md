@@ -1,18 +1,12 @@
-# Foundations Part 1: paused at required STOP
+# Foundations: paused at Part 3 step 4
 
-- deploy:test added with documented production targeting; existing publish scripts unchanged.
-- STOP Part 1 step 2: Ganesh sets six settings on refundgenie-test Production, with a new encryption key and Production site URL.
-- Empty Production created as abundant-marten-136; PUBLIC_APP_URL must be https://abundant-marten-136.convex.site. Development selection unchanged; still no production code/site publish.
-- Do not run deploy:test until he confirms. Then run once, prove production pages/sample, update test-link address.
-- Parts 2 to 5 and N2 not started. No live or Cloudflare changes.
+- [x] Part 1: separate Production test link deployed once and browser-proven.
+- [x] Part 2: exact HQ AGENTS rewrite committed bfc097b.
+- [x] Part 3 steps 1 to 3: all four app Gemini sites guarded, 40 targeted tests pass.
+- [ ] STOP: Ganesh chooses/sets provider daily requests limit, suggested 1000/day.
+- [ ] After reply: full suite and type check; separate yes before publishing cap.
+- [ ] Part 4 STOP: ask for fresh read-only abuse-review chat; no findings fixes.
+- [ ] Part 5: read-only personal-data scan, findings in chat only.
+- [ ] Final READY FOR REVIEW log/state after all parts. Do not start N2.
 
-## Previous setup
-
-- submitted-v1 tag on 6153907 pushed; main remains frozen.
-- Work only in gx-getting-money-back-next, branch next.
-- Test project refundgenie-test, deployment tangible-lemur-692; site https://tangible-lemur-692.convex.site.
-- Owner set six needed-now settings; no env copies or secret disclosure.
-- Test route repair and free-check browser proof pass; six route tests, type check, export and backend push pass.
-- Exact HQ decisions D-062 to D-070 and milestones N1 to N8 copied; history preserved.
-- Google/inbox/chase, calls and test-only payment settings deferred; see settings handoff.
-- Stop after next push. Do not start N2. No live deployment/settings changes, calls or mail. Nothing DONE.
+Production test https://abundant-marten-136.convex.site; Development tangible-lemur-692. Work only in next folder/next branch. No live/main/Cloudflare, secrets/settings, calls or mail.

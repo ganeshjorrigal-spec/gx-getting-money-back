@@ -27,6 +27,8 @@ Open https://dashboard.convex.dev/d/tangible-lemur-692, confirm refundgenie-test
 
 ## AI optional
 
+Foundations update: public test link is now refundgenie-test Production, https://abundant-marten-136.convex.site. Development remains tangible-lemur-692. Ganesh has set the six required names separately in both. The new AI_CALLS_PER_HOUR non-secret setting defaults to 100 in the prepared cap code; no need to set it unless choosing another hourly limit. The cap is not deployed to Production yet. No settings copied or written by Codex.
+
 | Name | Purpose and action |
 | --- | --- |
 | GEMINI_MODEL_FALLBACK | Optional event-reader fallback; leave unset unless Ganesh chooses it. No model switch by Codex. |

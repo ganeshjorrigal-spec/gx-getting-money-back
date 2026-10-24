@@ -36,6 +36,8 @@ export const checkOrganiser = internalAction({
         if (!demoMayReply({ isDemo: !!loaded.item.demo, code: loaded.item.code, subject: header(message, "subject"), from:chaseMail?loaded.item.chase!.email:from, demoAddress, inboxAddress, autoSubmitted: header(message, "auto-submitted"), precedence: header(message, "precedence"), suppress: header(message, "x-auto-response-suppress"), replies: loaded.replies.length, expired: loaded.item.demo.expiresAt <= Date.now() })) continue;
         const messageId = header(message, "message-id");
         if (!messageId || !/^<[^\r\n<>]+>$/.test(messageId.trim())) continue;
+        // Reserve AI budget before the mail reservation, so a busy retry cannot strand it.
+        if (process.env.GEMINI_MODEL && !await ctx.runMutation(internal.aiQuota.take, {caseId: input.caseId, demoSession: input.session})) return null;
         const reservation: Id<"demoReplies"> | null = await ctx.runMutation(internal.demo.reserve, { ...input, messageId: message.id });
         if (!reservation) continue;
         const round = loaded.item.demo.round + 1;
