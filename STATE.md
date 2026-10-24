@@ -1,16 +1,13 @@
-# Current state, 17 October 2026
+# Current state, 24 October 2026
 
-## Superseding update, 24 October: next test setup in progress
-This is the separate gx-getting-money-back-next folder, branch next. Submitted-v1 tag points at 6153907; live site/main frozen. HQ prompt saved in next commit 84d6bcb. Owner created refundgenie-test and chose fresh settings, no env copies. CLI configured existing test project and successfully pushed backend to tangible-lemur-692. Test address https://tangible-lemur-692.convex.site, not yet statically published. Waiting for Ganesh to set the six required test settings; names and full grouped inventory in docs/handoff/refundgenie-test-settings.md. Next: test-only static upload, browser sample proof, read-only live-version check, README, Part C exact decisions/milestones and next push. Stop before N2. No changes to live project, main or Cloudflare; no secrets/calls/mail. Nothing DONE. Publication below is historical, not a new release.
+## Submitted version frozen; separate test link ready for review
+Tag submitted-v1 points to 6153907df62f36c196a8732f568ddd0c8ce1b427 (Add DESIGN.md), pushed with owner approval. Main was not pushed. Work folder: gx-getting-money-back-next, branch next. Original root prompt stays uncommitted in the original folder; its copy is committed here as 84d6bcb. PRODUCT.md unchanged.
 
-## Public launch source published by owner authorisation
-Parts 1 to 3 committed: 0b01172, e0e4816, 94782c9. Exact real-company switch enables checked company To/CC and confirmed case-user CC outside the allow-list; sender revalidates before dispatch. Global IST-day cap defaults to 50, reserves atomically, releases failed sends once, retains accepted sends and defers capped cases until tomorrow. Demo recipient gates, switch-off and call limits remain. Public wording updated; stored flight/date now shown, booking rows editable, empty optional contact skips consent screen with sharing off.
+## Test environment
+Project refundgenie-test, deployment tangible-lemur-692, https://tangible-lemur-692.convex.site. Static version f837629c-5322-4a50-8a20-2f1968628ded. No env copies. Owner set the six required settings; Codex checked names/presence without disclosing values. Backend and 16-page static export/upload pass. Test setup commit f2aa131 includes necessary static route fixes and six passing tests; full type check and final backend push pass. Browser opens /, /start/, /cases/ and a made-up cancellation reaches Your free check on RG-23L67W. Screenshot and safe proof in docs/qa/test-link-2026-10-24/. README includes test link and live-deploy prohibition.
 
-## Gates pass
-488/488 tests across 64 files, full suite once, 20.20s. Type check and 16-page static export pass. Local mocked intake walk at 375px verifies skip, sharing off and Edit callbacks. All transport mocked. Read-only RG-FBLJE4 check confirms flight/date were stored and matched source; summary omission fixed without editing that case or extraction logic. Proof docs/qa/public-launch-2026-10-17/.
+## Live unchanged
+Read-only Cloudflare check confirms refundgenie-web remains on 69504117-ebf7-44b4-a939-a06294d4a6c9 at 100%. No live deployment, main push, Cloudflare mutation, live Convex setting change, calls or mail. Test-only code change: cases and private case links now resolve exported HTML instead of landing fallback. No product/planner changes.
 
-## Publication and live proof
-Deployed main 8496aebe2d45720cb4f45f9e4329b1140ef5e210 once, Convex then Cloudflare. Convex static version 231606b8-2445-4544-94fa-8c3c76d6adf7; Cloudflare version 69504117-ebf7-44b4-a939-a06294d4a6c9. Both backend/build/export/upload commands passed. At 10:59:31 IST, /, /start/, /cases/, /privacy/, /terms/ on https://refundgenie.app returned 200. Old approved-test-addresses wording absent in HTML; new written-permission wording also verified in the live browser. Proof docs/qa/public-launch-publish-2026-10-17/release-proof.json.
-
-## Stop after requested checks
-No calls, company mail, seeds, live case edits, env/key/allow-list/model/calling-setting changes by Codex. Nothing marked DONE. Owner controls launch switches. Actual public call/company-mail delivery remains untested. Await HQ review or Ganesh's next instruction.
+## Next-build decisions logged; stop before N2
+D-062 through D-070 and N1 through N8 copied exactly from HQ's prompt on next, old milestone history preserved. Nothing marked DONE; N2 not started. All six needed-now settings are present. Deferred settings remain for Ganesh: test-only Razorpay credentials when payments are needed; VAPI/call settings before N4; separate test Google OAuth, case inbox, demo desk, Gmail test accounts, responses Sheet sharing and CHASE settings after HQ/Ganesh choose a test inbox before N6. Never connect the live inbox here. Full names/purposes in docs/handoff/refundgenie-test-settings.md. Demo mail and case-link mail stay unavailable meanwhile. Await HQ review/Ganesh's next instruction.

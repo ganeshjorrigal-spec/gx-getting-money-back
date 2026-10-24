@@ -4,6 +4,29 @@ Status values: PROPOSED, ACTIVE, READY FOR REVIEW, DONE (after independent revie
 Order follows the sprint guidance: landing page, then onboarding, then value, then communication.
 Rewritten on 2026-10-04 to match the PRD in `docs/prd/` (D-010 to D-015). Build in order; one milestone ACTIVE at a time. Which PRD files each milestone needs: `docs/prd/07-build-plan.md` section 1.
 
+## Current: next build (N1 to N8), on branch next and the test link only (D-062)
+
+N1. I can show 5 overdue cases started on Genie by 6 Nov, each with its due date already passed on the day it started. Owner: Ganesh (outreach). No code.
+
+N2. I can paste a "we paid MakeMyTrip" reply into a case on the test link and see Genie's update mail land in my inbox, saying who holds the money now.
+Acceptance: a mocked-transport test with a confirmed case email that is NOT on CHASE_ALLOWLIST gets exactly one update mail; the demo still works; every update mail ends with what Genie does next and when (D-069).
+
+N3. I can set a test case's due date to yesterday and get exactly one Genie mail asking if it came, with my case still at its first step.
+Acceptance: convex-test with a fake clock, for a handed-over and a not-handed-over WAIT case: one check fires per day at most, the ladder does not move, exactly one mail with "It came" and "Not yet, chase it" (D-067). Covers the suspected repeat-fire bug where checkins.fire calls chase.advance on a WAIT case and reschedules itself for "now".
+
+N4. I can play back a test call where Genie tells the first live person it is an AI calling for me, doesn't say any line twice, and doesn't ask for anything it already gave.
+Acceptance: a transcript checker script runs on saved call results and on 3 fixtures (menu then person; transfer to a second person; care asks for an OTP): disclosure is the first Genie line after the first care line; no Genie sentence repeated (normalised); no re-ask of PNR, route or name already in known facts; at most one re-ask per question. Voice, language, transcriber and interruption settings are written down in docs/calling.md with their exact values (or moved into assistantOverrides), so they can be reviewed. One supervised call on the test project passes the checker.
+
+N5. I can get a mail within five minutes of a call that says what care told Genie, and if care wants me, the number, the menu choices and the reference to quote.
+
+N6. I can hand over an overdue case and see Genie's first mail go to the company's care team with me in CC, and the officer's mail ready for me to send in one tap (D-063). Needs a test case inbox decision first.
+
+N7. I can add only a screenshot and my email on one card and see who has my money, what Genie does next, and Genie's first mail in my inbox (D-064, D-065, D-066).
+
+N8. I can close it, reopen my case from the link in Genie's mail on another phone, and everything, including the calls, is still there.
+
+## Prior milestones (history)
+
 ## M0. Project skeleton | DONE (HQ review 2026-10-05)
 Goal: Next.js + Convex (D-006) runs locally and deploys a blank page to a public URL.
 Acceptance checks:
