@@ -23,4 +23,6 @@ On refusal, input records and uploaded files stay unchanged. The case enters ERR
 
 40 targeted tests across five files pass: 12 quota checks, one rendered busy-message check, plus existing demo-confirmation/demo-email/static-route checks. Quota tests cover 100/101, next hour, mixed cases, actual demo/real reader actions, event/flight blocked calls preserving text and storage, no scheduled retry, stale runs, zero/invalid settings, demo retry state, and concurrent reservations. All provider/Google paths mocked. Generated local API bindings include the new internal mutation.
 
-Full suite and type check wait until after Part 3 step 4's provider-quota STOP, as HQ ordered. Production deploy of the cap needs Ganesh's separate yes. Parts 4/5 and N2 not started.
+Owner explicitly deferred provider quota changes and said continue. He reports 2114 shown in Google quota/system-limit screens; not independently confirmed as the active daily request quota, and not explained as a credit-derived cap. No Google settings changed; do not claim 1000/day configured.
+
+Part 3 step 5 gates now pass: full suite 507/507 across 67 files, full type check pass. Initial type check found a test fixture used district instead of the allowed event demo-kind; corrected to refundType, app runtime unchanged. Full suite passed before correction and again on the final corrected tree (10.70s final run). See docs/qa/foundations-2026-10-24/cap-gates.json. Production deploy of the cap still needs Ganesh's separate yes. Parts 4/5 and N2 not started.

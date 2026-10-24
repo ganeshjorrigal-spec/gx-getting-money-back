@@ -12,7 +12,7 @@ async function fixture(demo = false, refundType: 'flight' | 'event' = 'flight') 
   const t = convexTest(schema, modules);
   const ids = await t.run(async ctx => {
     const storageId = await ctx.storage.store(new Blob(['made-up screenshot'], {type: 'image/jpeg'}));
-    const caseId = await ctx.db.insert('cases', {code: 'RG-AI0001', tokenHash: 'synthetic', stage: 'TRIAGING', refundType, latestRunId: 'run', ladderLevel: 0, draftsShown: 0, tier: 'free_check', paidState: 'none', createdAt: Date.now(), updatedAt: Date.now(), ...(demo ? {demo: {kind: refundType === 'flight' ? 'flight' as const : 'district' as const, round: 0, phase: 'ready' as const, now: '2026-10-24', expiresAt: Date.now() + 86400000}} : {})});
+    const caseId = await ctx.db.insert('cases', {code: 'RG-AI0001', tokenHash: 'synthetic', stage: 'TRIAGING', refundType, latestRunId: 'run', ladderLevel: 0, draftsShown: 0, tier: 'free_check', paidState: 'none', createdAt: Date.now(), updatedAt: Date.now(), ...(demo ? {demo: {kind: refundType, round: 0, phase: 'ready' as const, now: '2026-10-24', expiresAt: Date.now() + 86400000}} : {})});
     const inputId = await ctx.db.insert('inputs', {caseId, kind: 'initial', text: 'Made-up cancelled booking, refund not received.', storageIds: [storageId], runId: 'run', createdAt: Date.now()});
     return {caseId, storageId, inputId};
   });

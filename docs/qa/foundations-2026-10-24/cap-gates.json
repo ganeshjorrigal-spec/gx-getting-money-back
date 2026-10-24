@@ -1,0 +1,17 @@
+{
+  "baseCommit": "4d45b94",
+  "additionalChange": "Test fixture demo.kind uses its event/flight refundType",
+  "testsPassed": 507,
+  "testFilesPassed": 67,
+  "fullSuiteRuns": 2,
+  "finalTestDurationSeconds": 10.70,
+  "finalTestStartedAtIST": "2026-10-24T23:16:55+05:30",
+  "typeCheck": "pass",
+  "providerQuota": "Owner deferred changing it; reported 2114 is unverified as a daily cap",
+  "googleSettingsChanged": false,
+  "productionCapDeployments": 0,
+  "liveDeployments": 0,
+  "callsPlaced": 0,
+  "mailSent": 0,
+  "remainingApproval": "Ganesh's separate yes for deploy:test"
+}
