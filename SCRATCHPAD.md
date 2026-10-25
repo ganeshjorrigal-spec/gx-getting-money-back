@@ -1,31 +1,16 @@
-# N4 implementation built; STOP before publication and supervised proof
+# Current: N4 HQ call review fixes
 
-- [x] N2 and N3 marked DONE on Ganesh's explicit phone approval.
-- [x] Read actual saved 17 October call after owner Vapi sign-in; show original 2/5 baseline before prompt changes.
-- [x] Keep original call text in memory only; save safe scores, clear private text.
-- [x] Read exact Vapi voice/language/transcriber/interruption settings; document values and app override differences; no settings changed.
-- [x] Write red tests, improve call instructions and current fictional scenarios, preserve old baseline.
-- [x] Full suite 584/584, type check pass; build result in log.
-- [x] Owner approved N4 test publication; ced3e6f deployed, static 991a2b00-2bf7-4dee-b00b-94c2a503e56e; three pages 200 and browser intake loads.
-- [ ] Supervised test ONLY when separately authorised, only Ganesh's own mobile. No company without direct chat yes. N4 not READY FOR REVIEW yet.
-- [ ] Provider daily quota remains deferred.
+- [x] Ganesh restored agent access to refundgenie-test only; earlier no-access restriction superseded.
+- [x] N2/N3 remain DONE by Ganesh's phone approval.
+- [x] Report duration investigation before changes: already 12-minute/720-second limit; end tool, not timeout/budget; provider durations 131.60/118.78s, saved estimates 120/120.
+- [x] Red tests before code; smallest prompt/endCallMessage fix, accurate future duration, expanded nine-rule checker.
+- [x] Re-score original saved calls in memory only, 6/9 and 5/9, neither passes. No personal call data saved.
+- [x] Supply two Azure Indian English listening samples; isolated assistant speed already 1.00. No voice/transcriber/model switch made.
+- [ ] Ganesh chooses voice by ear; audition question pending.
+- [ ] Test publication only after approval. No deployment in this fix session.
+- [ ] One more supervised mobile-only test only after Ganesh's separate yes and final guards. Existing case used both daily slots, never reset the limit.
+- [ ] Audio/owner feedback still required on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
+- [ ] Provider daily Gemini quota remains owner-deferred; no inference from credits.
 
-## Parked from the abuse review
-- [ ] Free-refund count resets: do not build.
-- [ ] Manual annual-pass fallback: do not build.
-
-Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouched. No env, key, allow-list, CALL_MODE, calling settings, company mail or call changes.
-
-- [x] Owner picked Neerja; isolated Refund Genie Test N4 v3 published with Azure en-IN-NeerjaNeural. Shared assistant untouched.
-- [x] Both test environments settings verified: isolated Neerja assistant, same own-mobile allow-list, budgets valid, mode simulated, transfer/company mail off. No values changed by Codex.
-- [ ] Then prepare one fictional case through existing authorised seed path without executing a call, preserve email-confirmation gate, run read-only precheck, and WAIT for explicit go-ahead before dialling.
-
-- [x] Owner confirmed RG-L07KB7; server verifies normal per-case email ownership. No active chase/calls.
-- [ ] After genuine confirmation, finish owner-only demo targeting/permission preparation. Normal intake is NOT yet dial-ready; never use real airline destination. Legacy seed cannot pass new confirmation flow unchanged. No permission gate bypass.
-
-- [ ] Owner signs into kept Convex dashboard tab. Saved Google browser permission blocks agent sign-in; no workaround. Demo field remains absent after failed system function lookup. No data/code/settings changed.
-
-## New owner restriction, takes precedence
-- [ ] Do NOT use Convex CLI, API or dashboard, even read-only or with existing credentials. Owner cannot grant access and will perform all Convex steps himself.
-- [ ] Owner manually tags RG-L07KB7 demo field only in test Production; awaiting demo saved. Keep simulated. No call queued.
-- [ ] Then guide owner through case permissions and owner-run read-only checks; stop before dialling until explicit go-ahead. Do not ask for credentials/private case links.
+Parked: free-refund counter reset and manual annual-pass fallback, do not build.
+Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouched. Owner controls env, keys, allow-list and calling mode. No real-company contact without direct chat yes.

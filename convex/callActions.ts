@@ -8,7 +8,7 @@ import { randomBytes } from "node:crypto";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { callFixture, needsPassenger, callMode } from "../lib/calls";
-import { startCall, assistantOverrides, safeCallResult, callMaxMinutes } from "../lib/call-transport";
+import { startCall, assistantOverrides, safeCallResult, callMaxMinutes, callDurationSeconds } from "../lib/call-transport";
 export const run=internalAction({args:{caseId:v.id("cases"),fixture:v.union(v.literal("reference"),v.literal("identity")),expectedMode:v.optional(v.union(v.literal("live"),v.literal("simulated")))},returns:v.null(),handler:async(ctx,args)=>{
  const r=await ctx.runMutation(internal.calls.reserve,args);if(!r?.item.chase)return null;
  if(!await ctx.runQuery(internal.chase.stillActive,{caseId:r.item._id,authorisedAt:r.item.chase.authorisedAt}))return null;
@@ -23,7 +23,7 @@ export const run=internalAction({args:{caseId:v.id("cases"),fixture:v.union(v.li
 export const poll=internalAction({args:{id:v.id("calls"),attempt:v.number(),consecutiveErrors:v.optional(v.number())},returns:v.null(),handler:async(ctx,args)=>{const loaded=await ctx.runQuery(internal.calls.load,{id:args.id});if(!loaded||loaded.call.status!=="queued"||!loaded.call.externalId)return null;
  try{const r=await fetch(`https://api.vapi.ai/call/${encodeURIComponent(loaded.call.externalId)}`,{headers:{Authorization:`Bearer ${process.env.VAPI_API_KEY}`},signal:AbortSignal.timeout(10000)});if(!r.ok)throw new Error("Call status unavailable");const data=await r.json();if(data.status!=="ended"&&Date.now()-loaded.call.createdAt<callMaxMinutes(process.env)*60000&&loaded.item.chase?.active){await ctx.scheduler.runAfter(15000,internal.callActions.poll,{...args,attempt:args.attempt+1,consecutiveErrors:0});return null;}
  if(data.status!=="ended"){if(data.monitor?.controlUrl&&/^https:\/\/(?:[a-z0-9-]+\.)?vapi\.ai\//i.test(data.monitor.controlUrl))await fetch(data.monitor.controlUrl,{method:"POST",headers:{Authorization:`Bearer ${process.env.VAPI_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({type:"end-call"}),signal:AbortSignal.timeout(10000)});data.endedReason=loaded.item.chase?.active?"max-duration: hold too long":"stopped";}
- const result=safeCallResult(data,{shareBookingContact:loaded.call.shareBookingContact===true});await ctx.runMutation(internal.calls.finish,{id:args.id,status:result.status,reason:result.reason,transcript:result.transcript,recordingUrl:result.recordingUrl,costUsd:typeof data.cost==="number"?result.cost:loaded.call.reservedUsd,durationSeconds:Math.min(1500,args.attempt*15),patchIn:result.patchIn,passengerAnswered:result.passengerAnswered,privacyNote:result.privacyNote});
+ const result=safeCallResult(data,{shareBookingContact:loaded.call.shareBookingContact===true});await ctx.runMutation(internal.calls.finish,{id:args.id,status:result.status,reason:result.reason,transcript:result.transcript,recordingUrl:result.recordingUrl,costUsd:typeof data.cost==="number"?result.cost:loaded.call.reservedUsd,durationSeconds:callDurationSeconds(data,args.attempt*15),patchIn:result.patchIn,passengerAnswered:result.passengerAnswered,privacyNote:result.privacyNote});
  }catch{
  const consecutiveErrors=(args.consecutiveErrors??0)+1;
  if(consecutiveErrors<8)await ctx.scheduler.runAfter(15000,internal.callActions.poll,{id:args.id,attempt:args.attempt+1,consecutiveErrors});

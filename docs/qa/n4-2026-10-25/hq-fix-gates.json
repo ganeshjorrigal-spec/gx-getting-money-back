@@ -1,0 +1,24 @@
+{
+  "redFirst": {
+    "focusedTests": 20,
+    "failedBeforeCode": 19
+  },
+  "finalSuite": {
+    "passed": 606,
+    "total": 606,
+    "files": 79
+  },
+  "typeCheck": "pass",
+  "staticExport": {
+    "passed": true,
+    "pages": 16
+  },
+  "callsPlacedDuringFix": 0,
+  "deploymentPerformed": false,
+  "savedProviderSettingsChanged": false,
+  "expandedSavedCallScores": [
+    "6/9",
+    "5/9"
+  ],
+  "audioAcceptance": "pending supervised retest"
+}

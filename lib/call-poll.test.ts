@@ -37,3 +37,9 @@ it('a successful ongoing status resets consecutive errors',async()=>{
  await t.action(internal.callActions.poll,{id,attempt:7,consecutiveErrors:7});
  const jobs=await t.run(ctx=>ctx.db.system.query('_scheduled_functions').collect());expect(jobs.find(j=>j.name==='callActions:poll')!.args[0]).toMatchObject({attempt:8,consecutiveErrors:0});expect((await t.run(ctx=>ctx.db.get(id)))!.status).toBe('queued');
 });
+
+it('saves actual provider duration rather than the rounded poll count',async()=>{
+ const {t,id}=await setup();vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({status:'ended',endedReason:'assistant-ended-call',startedAt:'2026-10-16T05:30:00.000Z',endedAt:'2026-10-16T05:32:11.600Z',cost:0.03,transcript:'Care: Refund pending.'})}));
+ await t.action(internal.callActions.poll,{id,attempt:8});
+ expect((await t.run(ctx=>ctx.db.get(id)))!.durationSeconds).toBeCloseTo(131.6);
+});

@@ -22,7 +22,7 @@ it('Google is used only when explicitly selected for calls',()=>{
  const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:'true',VAPI_MODEL_PROVIDER:'google',VAPI_MODEL:'fixture-model'});
  expect(a.model.provider).toBe('google');expect(transfer(a).model.provider).toBe('google');
 });
-it('instructions, first messages, tools, recording and time limits match the pre-change contract',()=>{
+it('instructions, first messages, tools, recording and time limits match the reviewed N4 contract',()=>{
  const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:'true'});
  const {provider:mainProvider,model:mainModel,...main}=a.model;
  const {provider:transferProvider,model:transferModel,...handoff}=transfer(a).model;
@@ -45,8 +45,8 @@ it('keeps known PNR, four bounded questions, identity-only transfer and all exis
  const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:'true'}),prompt=a.model.messages[0].content;
  for(const phrase of [
   'Known facts: the booking reference (PNR) is SAMPLE. You already have it. Never ask for it. If care asks for it, say it.',
-  'Learn four things, asking one at a time: current refund status, reference number, processing date, who holds the money.',
-  'Once you have all four, thank them and end the call. If care cannot answer one after two tries, move on.',
+  'Learn current refund status, reference number, processing date, who holds the money.',
+  'status AND a reference AND either a date or who holds the money',
   "Call transferCall only if care says they need to verify the passenger's identity or speak to the passenger. Never for silence, hesitation, a slow answer or a pause.",
   'Use only PNR and confirmed booking facts.',
   'Never request, repeat, accept or send OTP, password, card or bank details.',
@@ -62,7 +62,7 @@ it('keeps known PNR, four bounded questions, identity-only transfer and all exis
 it.each([undefined,'false','TRUE','1',' true '])('transfer is off unless the setting is exactly true: %s',value=>{
  const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:value});expect(a.model.tools.map(t=>t.type)).toEqual(['dtmf']);
  const prompt=a.model.messages[0].content;
- expect(prompt).toContain('The passenger will call you back to verify. Ask for the reference number, the number or channel to call back on, and the hours.');
+ expect(prompt).toContain('The passenger will call you back to verify. First ask for the reference. After its answer, ask for the callback number or channel. After that answer, ask for the hours.');
  expect(prompt).not.toContain("I'll connect the passenger now");expect(prompt).not.toContain('If the passenger does not answer');expect(JSON.stringify(a)).not.toContain('transferPlan');
 });
 it.each([{}, {CALL_TRANSFER_ENABLED:'true'}])('both modes retain safety, known facts and four questions',env=>{

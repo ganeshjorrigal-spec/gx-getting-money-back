@@ -11,5 +11,5 @@ if(args.includes('--fixtures')){
  const data=JSON.parse(source);
  const transcript=data.artifact?.transcript??data.transcript??data.call?.transcript;
  const known=data.knownFacts??{pnr:data.facts?.pnr,name:data.facts?.nameOnTicket,route:data.facts?.routeFrom&&data.facts?.routeTo?`${data.facts.routeFrom} to ${data.facts.routeTo}`:undefined};
- console.log(JSON.stringify({id:'saved-call',...checkTranscript(transcript,known)},null,2));
+ console.log(JSON.stringify({id:'saved-call',...checkTranscript(transcript,known,{endedReason:data.endedReason??data.reason,ended:data.status==='ended'||data.status==='completed'||data.status==='failed'})},null,2));
 }

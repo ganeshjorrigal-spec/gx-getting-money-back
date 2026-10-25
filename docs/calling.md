@@ -81,3 +81,43 @@ Sources checked 11 Oct 2026: [Vapi warm transfer](https://docs.vapi.ai/calls/ass
 The public demo always runs a simulated call, even when CALL_MODE is live. It checks the saved CALL_ALLOWLIST and sample calling permission. No visitor phone is requested or dialled. Test mail recipients are selected only from the existing CHASE_ALLOWLIST; the public sample PDF uses made-up contact details, never an operator's real details. Two actual demo-desk mails/replies share the existing Gmail thread; the normal reader handles both and the safe simulated care transcript.
 
 Until a role-play recording is attached, the Play button reads the saved fixture aloud using the browser's speech playback, with a visible simulated label. The complete transcript remains readable if playback is unavailable. Attaching an admin-approved, reference-ending demo role-play recording makes its link available to later public demos; use sample details only and a link intended for public playback. It is labelled role-play and never changes the call's simulated mode. Identity-check recordings are not reused.
+
+
+## Superseding HQ review fixes, 25 October 2026
+
+This section supersedes the earlier N4 prompt and the shared-assistant inventory for the isolated test assistant. No shared/live assistant, env, key, phone allow-list, budget, model or transfer setting was changed. No new call or publication in this fix session.
+
+### Two-minute ending investigation (reported before code changes)
+
+refundgenie-test Production has CALL_MAX_MINUTES unset; callMaxMinutes defaults to 12 and caps at 12. Both actual Vapi call records carry assistantOverrides.maxDurationSeconds=720. The selected isolated assistant has no saved maxDurationSeconds override. Both endedReason values are assistant-ended-call, with the linked end_refund_support_call/endCall tool invoked, not exceeded-max-duration, silence-timed-out or a budget failure. Provider startedAt/endedAt measure 131.60 and 118.78 seconds. The saved 120/120 figures were poll-attempt estimates. Future completed records use valid provider timestamps, with the existing conservative estimate only when timestamps are missing/invalid. Historical database records are not rewritten; the corrected evidence is in the log.
+
+No duration setting needs changing for a supervised test: the effective hard limit is already 12 minutes including hold. Budgets and the two-per-case-per-day limit remain unchanged.
+
+### Small conversation fix
+
+The per-call prompt now requires status plus reference plus date or money holder, two explicit refusals, care ending, or a completed verification callback handoff before an end tool call. Holds and acknowledgements are not refusals/results. Callback reference, number/channel and hours are asked separately. A one-sentence factual recap finishes before the tool is invoked. The complete polite close is supplied as the per-call endCallMessage fallback, because the isolated assistant's existing linked endCall tool has no messages. No second endCall tool is added and no shared tool is edited. Vapi documents this fallback at https://docs.vapi.ai/tools/hang-up . Actual audible completion still needs the supervised retest; unit tests cannot prove speech delivery.
+
+A direct human who hears the opening has already heard AI/permission/recording disclosure. Repeat it after an IVR/menu or when a new person joins, not on every question. All instructions/ledger/reasoning stay private; identity replies use the supplied passenger name naturally. Credit shells are declined pending passenger agreement. Confirmed facts, private-code protections and transfer-off default remain intact.
+
+### Voice auditions (owner picks)
+
+Current isolated Refund Genie Test N4 is Azure en-IN-NeerjaNeural. Its Voice Settings panel shows Speed 1.00. It was already 1.00, so no edit was needed or made.
+
+| Option | Provider / exact ID | Playable sample |
+| --- | --- | --- |
+| Neerja (female, current) | Azure / en-IN-NeerjaNeural | https://ai.azure.com/speechassetscache/ttsvoice/Masterpieces/en-IN-Neerja-General-Audio.wav |
+| Prabhat (male) | Azure / en-IN-PrabhatNeural | https://ai.azure.com/speechassetscache/ttsvoice/Masterpieces/en-IN-Prabhat-General-Audio.wav |
+
+Both samples were located and playback controls exercised in Microsoft's public https://speech.microsoft.com/portal/voicegallery with Language English (India), searching Neerja or Prabhat and using the ordinary voice, not the separate Indic or Dragon HD variants. Vapi's Azure voice catalog and Microsoft's language support identify these IDs. Azure's language is determined by the voice ID: https://docs.vapi.ai/providers/voice/azure and https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support . Samples are previews, not a phone-quality promise. No sample/audio was downloaded into the repository. Cartesia's Aarav preview was also explored, but two consistent Azure en-IN options suffice; no provider switch was made.
+
+Exact dashboard path: Assistants > Refund Genie Test N4 (not Recovery Agent) > Assistant tab > pencil/Edit VOICE > Voice model Azure > Voice dropdown, choose En IN NeerjaNeural or En IN PrabhatNeural (or Custom voice ID with the exact ID above) > Speed 1.00 > Close panel > Publish. If a version dialog appears, publish only the isolated test assistant. Changing a voice waits for Ganesh's choice. Do not touch the model, phone or shared assistant.
+
+Transcriber: Soniox stt-rt-v5, Automatic; fallback Deepgram nova-2, en-IN. Soniox exposes English en rather than en-IN; it supports automatic language detection/code switching. Recommendation: keep this configuration for the next comparison, since these two calls do not establish an accent-transcription failure. Do not assume a voice accent requires a matching locale on Soniox. If actual speech-to-text errors justify a later comparison, Deepgram English (India) is already the saved fallback. No transcriber or interruption setting changed. Source: https://docs.vapi.ai/providers/transcriber/soniox .
+
+### Expanded checker and safe scores
+
+Nine checks now include ending before a useful result, final closing fragments (including a tool goodbye following a fragment), spoken instructions and bundled questions. Completion is based on care-supplied facts, explicit refusals/end, or all three callback details, not Genie's assertions. It treats a direct opening as disclosure and distinguishes asking for PNR from asking refund status for a known PNR. An ended call supplies endedReason/status through the CLI. Partial snippets without an ending are not mistaken for prematurely ended calls.
+
+Saved calls re-scored from original Vapi transcripts in memory: supervised-1 6/9; supervised-2 5/9. Counts/rule indexes only: docs/qa/n4-2026-10-25/hq-expanded-scores.json. Neither passes. Both flag repetition, early ending and bundled questions; second also flags excess re-asking. Known-PNR warnings from the former checker were false positives. Both pass textual final-sentence and spoken-instructions heuristics: the quoted incomplete phrases occur at turn 15 before further care/Genie turns (final turns 21 and 17). Thus this check does not corroborate a final audible cut; review audio for that question. Never turn a heuristic pass into proof of untested audio behaviour. Interruption timing and hold length require audio/owner observations.
+
+N4 remains in progress. After owner-approved test publication and voice choice, wait for Ganesh's separate yes before one own-mobile supervised call. RG-L07KB7 has used both daily slots; do not reset counts or widen limits. A subsequent-day reuse or a fresh normally confirmed demo fixture is required. Retest: care asks PNR; interrupts; holds 20 seconds; says only passenger; supplies reference only when asked; offers a credit shell. No company call without separate direct chat yes.

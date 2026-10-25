@@ -1,0 +1,97 @@
+[
+  {
+    "id": "supervised-1",
+    "score": 6,
+    "total": 9,
+    "passed": false,
+    "turns": 21,
+    "humanTurns": 9,
+    "checks": {
+      "disclosure": true,
+      "noRepeatedSentences": false,
+      "noKnownFactQuestions": true,
+      "atMostOneReask": true,
+      "privateCodeSafety": true,
+      "jobCompletedBeforeEnding": false,
+      "completeFinalSentence": true,
+      "noSpokenInstructions": true,
+      "oneQuestionPerTurn": false
+    },
+    "findings": [
+      {
+        "rule": "repeated-sentence",
+        "turn": 17,
+        "relatedTurn": 13
+      },
+      {
+        "rule": "repeated-sentence",
+        "turn": 19,
+        "relatedTurn": 13
+      },
+      {
+        "rule": "ended-before-job-done",
+        "turn": 21
+      },
+      {
+        "rule": "multiple-questions-one-turn",
+        "turn": 19
+      }
+    ],
+    "providerElapsedSeconds": 131.6,
+    "costUsd": 0.1624,
+    "endedReason": "assistant-ended-call",
+    "maxDurationSeconds": 720
+  },
+  {
+    "id": "supervised-2",
+    "score": 5,
+    "total": 9,
+    "passed": false,
+    "turns": 17,
+    "humanTurns": 7,
+    "checks": {
+      "disclosure": true,
+      "noRepeatedSentences": false,
+      "noKnownFactQuestions": true,
+      "atMostOneReask": false,
+      "privateCodeSafety": true,
+      "jobCompletedBeforeEnding": false,
+      "completeFinalSentence": true,
+      "noSpokenInstructions": true,
+      "oneQuestionPerTurn": false
+    },
+    "findings": [
+      {
+        "rule": "repeated-sentence",
+        "turn": 3,
+        "relatedTurn": 1
+      },
+      {
+        "rule": "repeated-sentence",
+        "turn": 11,
+        "relatedTurn": 7
+      },
+      {
+        "rule": "too-many-reasks",
+        "turn": 11
+      },
+      {
+        "rule": "repeated-sentence",
+        "turn": 17,
+        "relatedTurn": 17
+      },
+      {
+        "rule": "ended-before-job-done",
+        "turn": 17
+      },
+      {
+        "rule": "multiple-questions-one-turn",
+        "turn": 13
+      }
+    ],
+    "providerElapsedSeconds": 118.78,
+    "costUsd": 0.1476,
+    "endedReason": "assistant-ended-call",
+    "maxDurationSeconds": 720
+  }
+]
