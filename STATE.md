@@ -1,10 +1,10 @@
-# Refund Genie test build: N4 supervised overnight patch prepared
+# Refund Genie test build: N4 overnight patch published, waiting for owner
 
 ## Scope and freeze
 - Folder gx-getting-money-back-next; branch next only.
 - Frozen refundgenie.app/main/original Convex/Cloudflare untouched (submitted-v1, 6153907).
 - Test Development tangible-lemur-692; test Production abundant-marten-136, https://abundant-marten-136.convex.site.
-- Latest test release: source 71ea7b4 (call fixes 4e55c7f), static version 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0; backend and static test upload succeeded after owner approval. Six checked pages return 200.
+- Latest test release: source 388f50f, static version 4e9ca264-deb2-42f2-8425-4cfdbb06e56c; owner-approved npm run deploy:test succeeded on abundant-marten-136 only. Six checked pages return 200.
 - N2/N3 DONE by Ganesh's phone checks. N4 in progress, not READY FOR REVIEW or DONE.
 
 ## Latest work
@@ -31,7 +31,7 @@ Expanded checker has nine checks. Safe original-call re-scores 6/9 and 5/9, neit
 - Retest: ask PNR, interrupt, hold 20 seconds, passenger-only verification, reference only on request, credit-shell offer. Audio/owner feedback required before N4 acceptance.
 - Provider daily Gemini quota remains owner-deferred. Root HQ prompt untracked/uncommitted. Parked trial reset/manual annual pass not built.
 
-## Prepared overnight patch, not published
-Ganesh explicitly approved building a test-only supervised overnight option and waiting before publish/call. CALL_SUPERVISED_DEMO_CODE must exactly match one RG demo case; Convex system deployment URL must be one of the two refundgenie-test deployments. Only non-story demo hours can be skipped; real-company hours and all other guards remain. Owner will set/remove this code and live mode after publishing is approved. Nothing enabled or changed remotely.
+## Overnight patch published; no call
+Ganesh approved npm run deploy:test for 388f50f. Backend type/schema push, static 16-page export and 135-file upload succeeded. Proof docs/qa/n4-2026-10-26/overnight-release-check.json. Frozen project untouched. Previous source gates 625/625 tests across 79 files and type check pass; deployment also type-checks.
 
-Red first: 3 failed / 23 passed. Final focused 55/55; full suite 625/625 in 79 files; type check and 16-page local static export pass. In-memory backend tests only, no deployed reservation/call. Proof docs/qa/n4-2026-10-26/overnight-gates.json. Backend deploy deliberately not run because Ganesh requires approval first. N4 still in progress, nothing DONE. Next: wait for approval to publish this patch to the test project; calling needs separate go and fresh read-only checks.
+Read-only check at 00:24 IST: RG-T53DCT unexpired non-story demo, email confirmed, both permissions saved, zero calls total/today, only approved own mobile selected, budget available, max 12 minutes. Vapi assistant and phone accessible; Prabhat speed 1.00, gpt-4.1. Transfers and real-company sending off. Current mode simulated; CALL_SUPERVISED_DEMO_CODE does not match yet. Owner must save CALL_SUPERVISED_DEMO_CODE=RG-T53DCT and CALL_MODE=live on test Production. No agent setting changes or calls. Next: owner saves settings, agent rechecks, WAIT for separate go before one call. Remove the selected-code setting and restore simulated after the supervised session. Nothing marked DONE.
