@@ -24,3 +24,8 @@ Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouc
 - [ ] After genuine confirmation, finish owner-only demo targeting/permission preparation. Normal intake is NOT yet dial-ready; never use real airline destination. Legacy seed cannot pass new confirmation flow unchanged. No permission gate bypass.
 
 - [ ] Owner signs into kept Convex dashboard tab. Saved Google browser permission blocks agent sign-in; no workaround. Demo field remains absent after failed system function lookup. No data/code/settings changed.
+
+## New owner restriction, takes precedence
+- [ ] Do NOT use Convex CLI, API or dashboard, even read-only or with existing credentials. Owner cannot grant access and will perform all Convex steps himself.
+- [ ] Owner manually tags RG-L07KB7 demo field only in test Production; awaiting demo saved. Keep simulated. No call queued.
+- [ ] Then guide owner through case permissions and owner-run read-only checks; stop before dialling until explicit go-ahead. Do not ask for credentials/private case links.
