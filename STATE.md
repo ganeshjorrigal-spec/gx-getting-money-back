@@ -11,3 +11,6 @@ Ganesh approved 23 October for immediate testing because it was before 10:00 on 
 
 ## Safety and remaining
 Production inbox connected, Development disconnected. Real-company sending checked off in both test deployments. No company mail/calls, live/main/Cloudflare, key/env/allow-list/calling changes. Root HQ prompt untracked. N1 outreach Ganesh; N4/N5 to N8 untouched. Provider quota deferred. Free-refund resets and manual annual-pass fallback parked. Owner checklist docs/handoff/n3-due-date-mail.md. Wait for results before N4.
+
+## Second N3 phone fixture ready
+RG-07A4FC now confirmed and prepared with approved 23 October deadline on test Production. One sent due notice verified; DUE at rung 2. Waiting for owner to verify receipt and Not yet opens hand-over. N4 not started.
