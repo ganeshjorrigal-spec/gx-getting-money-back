@@ -1,0 +1,40 @@
+{
+  "id": "saved-call",
+  "score": 2,
+  "total": 5,
+  "passed": false,
+  "turns": 37,
+  "humanTurns": 10,
+  "checks": {
+    "disclosure": false,
+    "noRepeatedSentences": false,
+    "noKnownFactQuestions": true,
+    "atMostOneReask": false,
+    "privateCodeSafety": true
+  },
+  "findings": [
+    {
+      "rule": "missing-disclosure",
+      "turn": 18
+    },
+    {
+      "rule": "repeated-sentence",
+      "turn": 25,
+      "relatedTurn": 16
+    },
+    {
+      "rule": "repeated-sentence",
+      "turn": 27,
+      "relatedTurn": 22
+    },
+    {
+      "rule": "too-many-reasks",
+      "turn": 29
+    },
+    {
+      "rule": "repeated-sentence",
+      "turn": 31,
+      "relatedTurn": 16
+    }
+  ]
+}

@@ -21,10 +21,12 @@ export function transcriptTurns(source:unknown):Turn[]{
 const menu=(text:string)=>/\b(?:press|dial|select|choose)\s+(?:\d|one|two|three|four|five|six|seven|eight|nine|zero)|please (?:hold|stay on the line)|hold music|recorded menu|your call is (?:important|being recorded)|did not receive.*input/i.test(text);
 const normal=(s:string)=>s.toLowerCase().replace(/[’‘]/g,"'").replace(/[^a-z0-9]+/g,' ').trim();
 function questions(text:string){return text.split(/(?<=[.!?])\s+/).filter(s=>/\?$/.test(s.trim())||/\b(?:please (?:provide|share|give)|could you|can you|may I have|tell me|what|which|where)\b/i.test(s));}
+function asksKnown(text:string,key:string){
+ const field=key==='pnr'?'(?:pnr|booking (?:reference|id|number))':key==='name'?'(?:(?:your|passenger(?:.s)?|ticket|full) name|name (?:on|of))':'(?:route|origin|destination|from where|where.*(?:fly|flying|travel))';
+ return new RegExp(`(?:what(?:.s| is)?|which|may I have|can I have|(?:could|can) you (?:please )?(?:provide|share|give|tell me)|please (?:provide|share|give)|tell me).{0,45}${field}`,'i').test(text)||key==='route'&&/from where to where/i.test(text);
+}
 function intent(text:string){
- if(/\bpnr\b|booking (?:reference|id|number)/i.test(text))return 'pnr';
- if(/(?:your|passenger(?:'s)?|ticket|full) name|name (?:on|of)/i.test(text))return 'name';
- if(/\broute\b|from where|where.*(?:fly|flying|travel)|origin|destination/i.test(text))return 'route';
+ for(const key of ['pnr','name','route'])if(asksKnown(text,key))return key;
  if(/refund.*status|status.*refund|current status/i.test(text))return 'status';
  if(/reference|\butr\b|\barn\b/i.test(text))return 'refund-reference';
  if(/(?:what|which|when).*(?:date|process|paid)|processing date/i.test(text))return 'processing-date';
@@ -33,16 +35,19 @@ function intent(text:string){
 }
 export function checkTranscript(source:unknown,known:KnownCallFacts={}):TranscriptScore{
  const turns=transcriptTurns(source),findings:TranscriptScore['findings']=[];
- let humanTurns=0,waitingForDisclosure=false,person=false,otpPending=false;
+ let humanTurns=0,waitingForDisclosure=false,person=false,otpPending=false,inMenu=false;
  const sentences=new Map<string,number>(),asked=new Map<string,number>();
  for(let index=0;index<turns.length;index++){
   const turn=turns[index],n=index+1;
   if(turn.role==='transfer'){person=false;continue;}
+  if(turn.role==='menu'){inMenu=true;continue;}
   if(turn.role==='care'){
-   if(menu(turn.text))continue;
+   if(menu(turn.text)){if(!person)inMenu=true;continue;}
+   const greeting=/my name is|\bhello\b|good (?:morning|afternoon|evening)|how (?:may|can) I (?:help|assist)|(?:refund|support) desk|please (?:give|provide|share).*(?:pnr|booking)/i.test(turn.text);
+   if(!person&&inMenu&&!greeting)continue;
    humanTurns++;
    const newPerson=!person||/\b(?:my name is|this is .+ speaking|you(?:'re| are) speaking (?:to|with))\b/i.test(turn.text);
-   if(newPerson){if(waitingForDisclosure)findings.push({rule:'missing-disclosure',turn:n});waitingForDisclosure=true;person=true;}
+   if(newPerson){if(waitingForDisclosure)findings.push({rule:'missing-disclosure',turn:n});waitingForDisclosure=true;person=true;inMenu=false;}
    if(/\botp\b|one.time (?:pass|code)|verification code/i.test(turn.text))otpPending=true;
    continue;
   }
@@ -58,10 +63,10 @@ export function checkTranscript(source:unknown,known:KnownCallFacts={}):Transcri
    const key=normal(s);if(!key)continue;const previous=sentences.get(key);
    if(previous)findings.push({rule:'repeated-sentence',turn:n,relatedTurn:previous});else sentences.set(key,n);
   }
-  for(const q of questions(turn.text)){
+  for(const q of person?questions(turn.text):[]){
    const key=intent(q),count=(asked.get(key)??0)+1;asked.set(key,count);
    if(count>2)findings.push({rule:'too-many-reasks',turn:n,fact:['pnr','name','route'].includes(key)?key:undefined});
-   if(['pnr','name','route'].includes(key)&&known[key as keyof KnownCallFacts]&&/(?:what|which|where|may I have|can you|could you|please (?:provide|share|give)|tell me)/i.test(q))findings.push({rule:'asked-known-fact',turn:n,fact:key});
+   if(['pnr','name','route'].includes(key)&&known[key as keyof KnownCallFacts]&&asksKnown(q,key))findings.push({rule:'asked-known-fact',turn:n,fact:key});
   }
  }
  if(waitingForDisclosure)findings.push({rule:'missing-disclosure',turn:turns.length});

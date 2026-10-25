@@ -29,3 +29,11 @@ Input supports transcript or artifact.transcript, text speaker labels or provide
 
 ## Required next step
 Sign in at https://dashboard.vapi.ai/login with the account holding the saved 17 October call. Only read call history and saved assistant settings. Score the actual call before changing instructions or settings. Then inventory exact voice, language, transcriber and interruption values; if dashboard-only changes are needed, stop with exact observed clicks for Ganesh. No call permitted until Ganesh explicitly authorises one, only to his own mobile; no company call without direct yes in this chat. No permission expansion or setting changes are authorised by a sign-in alone.
+
+## Superseding checkpoint after owner sign-in, 25 October
+
+Actual original saved call was read from Vapi, 37 spoken turns. Score 2/5: first-live notice missing (turn 18), repeated sentences (25/27/31), third status question (29). Known supplied PNR/name requests and private-code safety pass; route was not known, so not evaluated as supplied. Original call text stayed in memory and was cleared; only safe score output saved. Baseline was shown in chat before changing instructions. Initial automated false positives from partial IVR and status-with-PNR were corrected with regression tests and manual boundary review. This supersedes the missing-transcript/sign-in blocker above.
+
+N4 instructions and current fixtures now implemented. Menu/person, second person and OTP all score 5/5; baseline fixtures remain frozen and can be run with --fixtures --baseline. These are authored sample conversations, not proof a real model followed the instructions. N4-quality tests were red before implementation. Exact Vapi settings and current app override differences are documented in docs/calling.md. No provider setting, model or environment change; no dashboard-only required edit identified.
+
+584/584 tests across 78 files and type check pass. Build result in today's log. No publish or call. N4 remains in progress, awaiting owner-approved test publication and then separately authorised supervised call only to his own mobile. No company call without direct chat yes. Do not mark READY FOR REVIEW until supervised acceptance proof is present. N2/N3 DONE remains owner-authorised.
