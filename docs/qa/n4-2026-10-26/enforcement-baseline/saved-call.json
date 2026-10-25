@@ -1,0 +1,61 @@
+{
+  "case": "RG-T53DCT",
+  "caseCallCount": 1,
+  "savedStatus": "completed",
+  "savedReason": "assistant-ended-call",
+  "savedDurationSeconds": 165.096,
+  "savedCostUsd": 0.1979,
+  "transfer": false,
+  "providerStatus": "ended",
+  "providerEndReason": "assistant-ended-call",
+  "providerCostUsd": 0.1979,
+  "providerModel": "gpt-4.1",
+  "providerDurationSeconds": 165.096,
+  "transcriptScore": {
+    "score": 6,
+    "total": 9,
+    "passed": false,
+    "turns": 21,
+    "humanTurns": 10,
+    "checks": {
+      "disclosure": true,
+      "noRepeatedSentences": false,
+      "noKnownFactQuestions": true,
+      "atMostOneReask": true,
+      "privateCodeSafety": true,
+      "jobCompletedBeforeEnding": false,
+      "completeFinalSentence": true,
+      "noSpokenInstructions": true,
+      "oneQuestionPerTurn": false
+    },
+    "findings": [
+      {
+        "rule": "repeated-sentence",
+        "turn": 13,
+        "relatedTurn": 11
+      },
+      {
+        "rule": "repeated-sentence",
+        "turn": 21,
+        "relatedTurn": 11
+      },
+      {
+        "rule": "ended-before-job-done",
+        "turn": 21
+      },
+      {
+        "rule": "multiple-questions-one-turn",
+        "turn": 3
+      },
+      {
+        "rule": "multiple-questions-one-turn",
+        "turn": 7
+      }
+    ]
+  },
+  "checkedAtIST": "2026-10-26T00:58:09.950020+05:30",
+  "noRetry": true,
+  "callsRequested": 1,
+  "baselineReadOnly": true,
+  "newCallsRequested": 0
+}

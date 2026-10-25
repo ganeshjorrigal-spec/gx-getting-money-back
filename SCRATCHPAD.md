@@ -21,3 +21,10 @@
 
 Parked: free-refund counter reset and manual annual-pass fallback, do not build.
 Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouched. Owner controls env, keys, allow-list and calling mode. No real-company contact without direct chat yes.
+
+## HQ enforcement request
+- [x] Read current provider temperature: unset. Reported before changes. Red test first, local 0.2 pin, full suite 626/626 and type check pass. No publish.
+- [x] Re-score saved RG-T53DCT 6/9; three fixture scores 9/9. Research Workflows/Squads/server fixed steps and explain cost before building. Proposal docs/handoff/n4-server-finish-proposal.md.
+- [ ] Required owner answer: may complete callback reference/number/hours close without date/holder? Question pending in chat. Do not invent the exception.
+- [ ] Tests-first finish_call server gate and persistent facts/spoken ledger, then fixed-step build choice. Not built yet; no misleading ready claim.
+- [ ] No publishing or calls; another supervised own-mobile call needs separate yes.

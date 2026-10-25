@@ -2,6 +2,11 @@ import {expect,it,vi} from 'vitest';
 import {assistantOverrides,startCall} from './call-transport';
 const details={name:'Demo Passenger',pnr:'SAMPLE',company:'Demo Air',mobile:'synthetic-passenger'};
 const transfer=(a:ReturnType<typeof assistantOverrides>)=>{const tool=a.model.tools.find(t=>t.type==='transferCall');if(!tool||!('destinations' in tool))throw new Error('Transfer missing');return tool.destinations[0].transferPlan.transferAssistant;};
+it('pins conversation and optional transfer model temperature to 0.2',()=>{
+ const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:'true'});
+ expect(a.model).toHaveProperty('temperature',0.2);
+ expect(transfer(a).model).toHaveProperty('temperature',0.2);
+});
 it('does not duplicate the saved assistant End Call tool and keeps exactly one passenger transfer',()=>{
  const a=assistantOverrides(details,{CALL_TRANSFER_ENABLED:'true'}),types=['endCall',...a.model.tools.map(t=>t.type)];
  expect(new Set(types).size).toBe(types.length);
