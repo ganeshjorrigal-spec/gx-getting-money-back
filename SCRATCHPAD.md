@@ -25,6 +25,11 @@ Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouc
 ## HQ enforcement request
 - [x] Read current provider temperature: unset. Reported before changes. Red test first, local 0.2 pin, full suite 626/626 and type check pass. No publish.
 - [x] Re-score saved RG-T53DCT 6/9; three fixture scores 9/9. Research Workflows/Squads/server fixed steps and explain cost before building. Proposal docs/handoff/n4-server-finish-proposal.md.
-- [ ] Required owner answer: may complete callback reference/number/hours close without date/holder? Question pending in chat. Do not invent the exception.
-- [ ] Tests-first finish_call server gate and persistent facts/spoken ledger, then fixed-step build choice. Not built yet; no misleading ready claim.
+- [x] Owner approved callback branch: reference + callback number + hours allow closing without refund details. Do not press for refund facts after passenger-only restriction. Two refusals of a missing callback detail may close; update mail must name missing details. Normal branch unchanged.
+- [x] Tests-first finish_call server gate and persistent facts/spoken ledger built locally; 651/651 tests, type check, 16-page export pass. Full spoken fixed steps remain a separate build decision. Not deployed/live proven.
 - [ ] No publishing or calls; another supervised own-mobile call needs separate yes.
+
+## Voice review steering
+- [x] Inspect actual RG-T53DCT chunk/format/timing logs; distinguish within-speech gaps, response delay and user hold. Propose, do not silently switch.
+- [x] Compare current Azure cost with two verified Indian English streaming voices, plus OpenAI speech-to-speech cost and implications.
+- [x] Tests-first short/natural wording. Future voice auditions target 30 seconds, hard maximum 3 minutes, own mobile only after explicit call approval. No call now.

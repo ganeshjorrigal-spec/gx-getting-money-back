@@ -23,6 +23,23 @@ it('real completed live call creates exactly one user-only update draft',async()
  const drafts=await t.run(ctx=>ctx.db.query('drafts').collect());expect(drafts).toHaveLength(1);expect(drafts[0]).toMatchObject({to:'owner@example.invalid',cc:[],step:'FLIGHT_call_update',subject:'Refund Genie call update: IndiGo · RG-UPDATE'});
  expect(drafts[0].body).toContain('Reference: REF-SAMPLE');expect(drafts[0].body).toContain('Processing date: 16 Oct 2026');expect(drafts[0].body).toContain('IndiGo asked you to call them back to verify your identity. Quote reference REF-SAMPLE.');expect(drafts[0].body).toMatch(/Genie keeps chasing by mail\. Reply to this mail with any question\.$/);
 });
+it('controlled supervised demo update goes only to confirmed owner and names missing callback details',async()=>{
+ const {t,id}=await setup({demo:true});
+ await t.run(ctx=>ctx.db.patch(id,{finishControl:{tokenHash:'synthetic',closing:true,toolIds:['synthetic-tool'],missingDetails:['callback number','callback hours']}}));
+ const draftId=await t.mutation(internal.calls.prepareConfirmation,{id});expect(draftId).not.toBeNull();
+ const draft=await t.run(ctx=>ctx.db.get(draftId!));expect(draft).toMatchObject({to:'owner@example.invalid',cc:[],step:'FLIGHT_call_update'});
+ expect(draft?.body).toContain('Care did not provide: callback number, callback hours.');
+});
+it.each(['TRIAGING','ERROR'])('verified callback handover produces the owner update even while reader is %s',async stage=>{
+ const {t,id,caseId}=await setup({demo:true});
+ await t.run(async ctx=>{await ctx.db.patch(caseId,{stage:stage as 'TRIAGING'|'ERROR'});await ctx.db.patch(id,{finishControl:{tokenHash:'synthetic',closing:true,toolIds:['synthetic-tool'],missingDetails:['callback hours'],ledger:{branch:'callback',facts:{reference:'REF-CB',callback_number:'+910000000001'},refusals:{callback_hours:2},normalRefusals:0,spoken:[]}}});});
+ const draftId=await t.mutation(internal.calls.prepareConfirmation,{id});expect(draftId).not.toBeNull();
+ const draft=await t.run(ctx=>ctx.db.get(draftId!));expect(draft?.body).toContain('Reference: REF-CB');expect(draft?.body).toContain('Callback number: +910000000001');expect(draft?.body).toContain('Care did not provide: callback hours.');expect(draft?.body).not.toContain('Processing date:');
+ expect((await t.run(ctx=>ctx.db.get(caseId)))?.stage).toBe(stage);
+});
+it('ordinary triaging calls still wait for the reader',async()=>{
+ const {t,id,caseId}=await setup();await t.run(ctx=>ctx.db.patch(caseId,{stage:'TRIAGING'}));expect(await t.mutation(internal.calls.prepareConfirmation,{id})).toBeNull();
+});
 it.each([{status:'failed' as const},{confirmed:false},{email:'not-email'},{email:''},{mode:'simulated' as const}])('non-eligible call or unconfirmed email gives no summary: %j',async options=>{
  const {t,id}=await setup(options);expect(await t.mutation(internal.calls.prepareConfirmation,{id})).toBeNull();expect(await t.run(ctx=>ctx.db.query('drafts').collect())).toHaveLength(0);
 });

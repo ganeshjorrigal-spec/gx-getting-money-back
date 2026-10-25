@@ -14,6 +14,8 @@ import type * as agentWrites from "../agentWrites.js";
 import type * as aiQuota from "../aiQuota.js";
 import type * as annualPayments from "../annualPayments.js";
 import type * as callActions from "../callActions.js";
+import type * as callControl from "../callControl.js";
+import type * as callControlHttp from "../callControlHttp.js";
 import type * as callQa from "../callQa.js";
 import type * as calls from "../calls.js";
 import type * as caseLinkMail from "../caseLinkMail.js";
@@ -74,6 +76,8 @@ declare const fullApi: ApiFromModules<{
   aiQuota: typeof aiQuota;
   annualPayments: typeof annualPayments;
   callActions: typeof callActions;
+  callControl: typeof callControl;
+  callControlHttp: typeof callControlHttp;
   callQa: typeof callQa;
   calls: typeof calls;
   caseLinkMail: typeof caseLinkMail;

@@ -30,3 +30,15 @@ Sources read 26 Oct 2026:
 Verification branch ends after reference, callback number/channel and hours in prior policy; latest normal finish rule instead requires status, reference and date/holder (or two refusals). May a fully collected verification callback hand-over end without date/holder? Until answered, do not wire a policy exception or publish/place a call. This is a product completion rule, not a technical default.
 
 Finish handler, persistent call ledger and fixed-step integration are NOT built yet. Only tested temperature pin and baseline research are completed. No publishing or calls. Continue tests-first after the verification branch is resolved.
+
+## Superseding update: owner decision and local implementation
+
+Ganesh approved the callback exception in chat: collect reference, callback number and hours without pressing for refund date/holder; after two explicit refusals of one callback detail, finish with what is known and name missing details in the owner update. Normal branch unchanged.
+
+Implemented tests first: synchronous finish_call with required nullable facts, care-evidence validation, distinct refusal counting and exactly one missing-field question on denial. Actual facts and recently spoken sentences are stored in a bounded per-call ledger. An authenticated per-call endpoint binds the hashed bearer credential to the reserved internal call and provider call ID, rejects stale/cross-call messages, and atomically claims one close. It reads the actual provider control URL, validates its host and call binding, then queues the recap and full polite close with endCallAfterSpoken. It does not execute a bare hang-up. Care can still physically end the call and the duration safety cap remains.
+
+Only non-story supervised demos on the two exact refundgenie-test deployments use the new transient assistant. It preserves the saved voice/transcriber/interruption configuration while removing inherited endCall tools, tool IDs, hooks and end phrases. Shared Vapi assistant/tools and real-call path are not edited. Supervised tests are capped at 180 seconds under the owner's latest voice-test limit, below the general CALL_MAX_MINUTES limit. Unknown configuration fails closed without dialling. No settings, keys or allow-lists added/changed.
+
+Controlled callback owner mail uses verified reference/number/hours, names every missing detail, and suppresses an older reader's processing date. It can prepare while the reader is TRIAGING/ERROR without changing that case stage; confirmation/send idempotency and exact confirmed recipient checks remain. Mail transport mocked in tests only.
+
+Limit: this enforces completion and returns one next question, but does not prevent every free-form spoken turn from bundling questions or repeating a sentence. Guaranteed one-question spoken steps remain the separate proposed integration above. No claim that synthetic passing tests fix a recorded call retroactively. Provider webhook delivery, final audible close and new voice quality still need an approved test release and a separately approved own-mobile call. No publication or call made.

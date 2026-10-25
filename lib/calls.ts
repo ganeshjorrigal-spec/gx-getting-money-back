@@ -5,9 +5,12 @@ export const callMode = (env: Record<string,string|undefined>):CallMode => env.C
 export function phone(value:string) { const n=value.replace(/[ ()-]/g,""); return /^\+[1-9]\d{7,14}$/.test(n)?n:null; }
 export function phoneAllowed(value:string,list:string|undefined) { const n=phone(value);return !!n&&!!list?.split(/[\s,;]+/).some(v=>phone(v)===n); }
 export function demoEndHour(value:string|undefined) {const hour=Number(value);return Number.isInteger(hour)&&hour>=21&&hour<=24?hour:21;}
+export function testCallDeployment(env:Record<string,string|undefined>) {
+ return env.CONVEX_CLOUD_URL==='https://abundant-marten-136.convex.cloud'||env.CONVEX_CLOUD_URL==='https://tangible-lemur-692.convex.cloud';
+}
 export function supervisedDemoAnyHour(code:string,env:Record<string,string|undefined>) {
  // CONVEX_CLOUD_URL is provided by Convex, not by the caller or the case.
- const testDeployment=env.CONVEX_CLOUD_URL==='https://abundant-marten-136.convex.cloud'||env.CONVEX_CLOUD_URL==='https://tangible-lemur-692.convex.cloud';
+ const testDeployment=testCallDeployment(env);
  return testDeployment&&/^RG-[A-Z0-9]{6}$/.test(code)&&env.CALL_SUPERVISED_DEMO_CODE===code;
 }
 export function officeHours(now:number,demo=false,endHour?:string,realAnyHour=false) { if(!demo&&realAnyHour)return true;const d=new Date(now+330*60000);return demo?d.getUTCHours()>=9&&d.getUTCHours()<demoEndHour(endHour):d.getUTCDay()!==0&&d.getUTCHours()>=10&&d.getUTCHours()<18; }

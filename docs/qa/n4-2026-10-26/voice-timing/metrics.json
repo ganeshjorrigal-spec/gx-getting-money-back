@@ -1,0 +1,568 @@
+{
+  "case": "RG-T53DCT",
+  "rawLogEntries": 2050,
+  "azureSpeechRequests": 19,
+  "chunkCharacterCounts": [
+    75,
+    47,
+    112,
+    26,
+    20,
+    68,
+    80,
+    7,
+    118,
+    78,
+    70,
+    75,
+    16,
+    25,
+    105,
+    35,
+    45,
+    92,
+    61
+  ],
+  "chunkEndPunctuationCounts": {
+    "?": 8,
+    ",": 4,
+    ".": 5,
+    ")": 1,
+    ":": 1
+  },
+  "turnMetrics": {
+    "turnLatencies": [
+      {
+        "modelLatency": 579,
+        "voiceLatency": 276,
+        "transcriberLatency": 453,
+        "endpointingLatency": 1,
+        "turnLatency": 1333
+      },
+      {
+        "modelLatency": 437,
+        "voiceLatency": 526,
+        "transcriberLatency": 762,
+        "endpointingLatency": 1,
+        "turnLatency": 1775
+      },
+      {
+        "modelLatency": 634,
+        "voiceLatency": 583,
+        "transcriberLatency": 234,
+        "endpointingLatency": 2,
+        "turnLatency": 1456
+      },
+      {
+        "modelLatency": 557,
+        "voiceLatency": 353,
+        "transcriberLatency": 368,
+        "endpointingLatency": 1,
+        "turnLatency": 1307
+      },
+      {
+        "modelLatency": 599,
+        "voiceLatency": 531,
+        "transcriberLatency": 359,
+        "endpointingLatency": 2,
+        "turnLatency": 1539
+      },
+      {
+        "modelLatency": 530,
+        "voiceLatency": 552,
+        "transcriberLatency": 356,
+        "endpointingLatency": 1,
+        "turnLatency": 1483
+      },
+      {
+        "modelLatency": 928,
+        "voiceLatency": 333,
+        "transcriberLatency": 524,
+        "endpointingLatency": 1,
+        "turnLatency": 1830
+      },
+      {
+        "modelLatency": 594,
+        "voiceLatency": 468,
+        "transcriberLatency": 394,
+        "endpointingLatency": 1,
+        "turnLatency": 1500
+      },
+      {
+        "modelLatency": 0,
+        "voiceLatency": 0,
+        "transcriberLatency": 0,
+        "endpointingLatency": 2,
+        "turnLatency": 113
+      },
+      {
+        "modelLatency": 648,
+        "voiceLatency": 541,
+        "transcriberLatency": 357,
+        "endpointingLatency": 1,
+        "turnLatency": 1550
+      }
+    ],
+    "modelLatencyAverage": 550.6,
+    "voiceLatencyAverage": 416.3,
+    "transcriberLatencyAverage": 380.7,
+    "endpointingLatencyAverage": 1.3,
+    "turnLatencyAverage": 1388.6,
+    "fromTransportLatencyAverage": 20,
+    "toTransportLatencyAverage": 20,
+    "numAssistantInterrupted": 2
+  },
+  "speakerTimeline": [
+    {
+      "at": 0.61,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 18.329,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 22.739,
+      "event": "User started speaking"
+    },
+    {
+      "at": 24.7,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 25.472,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 40.78,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 43.079,
+      "event": "User started speaking"
+    },
+    {
+      "at": 43.967,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 45.175,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 47.893,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 51.255,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 51.711,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 51.878,
+      "event": "User started speaking"
+    },
+    {
+      "at": 53.679,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 54.466,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 63.103,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 65.198,
+      "event": "User started speaking"
+    },
+    {
+      "at": 67.399,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 68.378,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 76.407,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 78.439,
+      "event": "User started speaking"
+    },
+    {
+      "at": 79.159,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 79.319,
+      "event": "User started speaking"
+    },
+    {
+      "at": 82.158,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 82.439,
+      "event": "User started speaking"
+    },
+    {
+      "at": 84.402,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 85.243,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 87.56,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 87.56,
+      "event": "User started speaking"
+    },
+    {
+      "at": 88.479,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 89.75,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 95.863,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 99.399,
+      "event": "User started speaking"
+    },
+    {
+      "at": 100.079,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 100.718,
+      "event": "User started speaking"
+    },
+    {
+      "at": 102.239,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 103.219,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 105.785,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 115.672,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 125.698,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 128.999,
+      "event": "User started speaking"
+    },
+    {
+      "at": 132.039,
+      "event": "User stopped speaking"
+    },
+    {
+      "at": 133.07,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 158.029,
+      "event": "Bot stopped speaking"
+    },
+    {
+      "at": 158.478,
+      "event": "Bot started speaking"
+    },
+    {
+      "at": 164.33,
+      "event": "Bot stopped speaking"
+    }
+  ],
+  "betweenTurnGaps": [
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 17.925,
+      "toStart": 21.621,
+      "gap": 3.696,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 24.321,
+      "toStart": 25.785,
+      "gap": 1.464,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 39.825,
+      "toStart": 43.401,
+      "gap": 3.576,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 43.881,
+      "toStart": 45.345,
+      "gap": 1.464,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 47.205,
+      "toStart": 49.701,
+      "gap": 2.496,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 53.241,
+      "toStart": 51.525,
+      "gap": -1.716,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 60.225,
+      "toStart": 60.141,
+      "gap": -0.084,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 64.521,
+      "toStart": 61.485,
+      "gap": -3.036,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 61.545,
+      "toStart": 65.061,
+      "gap": 3.516,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 66.921,
+      "toStart": 68.625,
+      "gap": 1.704,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 75.465,
+      "toStart": 78.441,
+      "gap": 2.976,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 83.841,
+      "toStart": 85.485,
+      "gap": 1.644,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 87.465,
+      "toStart": 87.681,
+      "gap": 0.216,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 88.041,
+      "toStart": 90.165,
+      "gap": 2.124,
+      "holdCue": true
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 94.785,
+      "toStart": 99.261,
+      "gap": 4.476,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 101.841,
+      "toStart": 103.365,
+      "gap": 1.524,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 104.745,
+      "toStart": 114.261,
+      "gap": 9.516,
+      "holdCue": false
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 115.281,
+      "toStart": 116.085,
+      "gap": 0.804,
+      "holdCue": false
+    },
+    {
+      "from": "bot",
+      "to": "user",
+      "fromEnd": 124.665,
+      "toStart": 127.941,
+      "gap": 3.276,
+      "holdCue": true
+    },
+    {
+      "from": "user",
+      "to": "bot",
+      "fromEnd": 131.601,
+      "toStart": 133.305,
+      "gap": 1.704,
+      "holdCue": false
+    }
+  ],
+  "botSpansVersusReportedDuration": [
+    {
+      "turn": 0,
+      "start": 1.185,
+      "span": 16.74,
+      "reportedSpeech": 14.52,
+      "difference": 2.22
+    },
+    {
+      "turn": 2,
+      "start": 25.785,
+      "span": 14.04,
+      "reportedSpeech": 11.1,
+      "difference": 2.94
+    },
+    {
+      "turn": 4,
+      "start": 45.345,
+      "span": 1.86,
+      "reportedSpeech": 1.86,
+      "difference": 0.0
+    },
+    {
+      "turn": 6,
+      "start": 51.525,
+      "span": 8.7,
+      "reportedSpeech": 5.1,
+      "difference": 3.6
+    },
+    {
+      "turn": 8,
+      "start": 61.485,
+      "span": 0.06,
+      "reportedSpeech": 0.06,
+      "difference": 0.0
+    },
+    {
+      "turn": 10,
+      "start": 68.625,
+      "span": 6.84,
+      "reportedSpeech": 5.52,
+      "difference": 1.32
+    },
+    {
+      "turn": 12,
+      "start": 85.485,
+      "span": 1.98,
+      "reportedSpeech": 0.54,
+      "difference": 1.44
+    },
+    {
+      "turn": 14,
+      "start": 90.165,
+      "span": 4.62,
+      "reportedSpeech": 3.42,
+      "difference": 1.2
+    },
+    {
+      "turn": 16,
+      "start": 103.365,
+      "span": 1.38,
+      "reportedSpeech": 0.6,
+      "difference": 0.78
+    },
+    {
+      "turn": 18,
+      "start": 116.085,
+      "span": 8.58,
+      "reportedSpeech": 5.22,
+      "difference": 3.36
+    },
+    {
+      "turn": 20,
+      "start": 133.305,
+      "span": 30.0,
+      "reportedSpeech": 20.76,
+      "difference": 9.24
+    }
+  ],
+  "recordedVoiceCostUsd": 0.0173,
+  "recordedCharacters": 1155,
+  "recordedTotalCostUsd": 0.1979,
+  "rawTextSaved": false,
+  "settings": {
+    "provider": "azure",
+    "voiceId": "en-IN-PrabhatNeural",
+    "speed": 1,
+    "chunkPlanExplicit": false,
+    "documentedChunkingDefault": true,
+    "documentedMinCharactersDefault": 30,
+    "punctuationBoundaries": "provider-selected default, exact list not exposed in saved config",
+    "formatPlanExplicit": false,
+    "documentedFormatPlanDefault": true,
+    "startSpeakingPlanExplicit": false,
+    "stopSpeakingPlanExplicit": false
+  },
+  "interpretation": {
+    "withinSentenceOneSecondGaps": "Owner audio observation; logs show repeated TTS chunks, exact per-word gap attribution unproven",
+    "largestPositiveCareToGenieGapSeconds": 2.124,
+    "genieToCareGapsSeconds": [
+      4.476,
+      9.516
+    ],
+    "speechSpanMinusDurationIsAcousticSilenceProof": false
+  }
+}
