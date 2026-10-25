@@ -7,8 +7,8 @@
 - [x] Re-score original saved calls in memory only, 6/9 and 5/9, neither passes. No personal call data saved.
 - [x] Supply two Azure Indian English listening samples; isolated assistant speed already 1.00. No voice/transcriber/model switch made.
 - [x] Ganesh chose Prabhat; isolated test assistant saved/verified Azure en-IN-PrabhatNeural, speed 1.00, v4 current. Do not publish stale browser Neerja draft.
-- [ ] Test publication only after approval. No deployment in this fix session.
-- [ ] One more supervised mobile-only test only after Ganesh's separate yes and final guards. Existing case used both daily slots, never reset the limit.
+- [x] Owner approved test release; 71ea7b4 deployed, static 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0, six pages 200.
+- [ ] Fresh RG-T53DCT: normal confirmation mail sent, facts saved, owner must click email link. Do not tag demo or authorise before genuine confirmation. Then finish preparation in simulated mode and WAIT for separate go. Old case limits never reset.
 - [ ] Audio/owner feedback still required on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
 - [ ] Provider daily Gemini quota remains owner-deferred; no inference from credits.
 

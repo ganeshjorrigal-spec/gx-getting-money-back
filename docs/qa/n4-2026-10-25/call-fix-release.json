@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "71ea7b4",
+  "backend": "abundant-marten-136.convex.cloud",
+  "staticVersion": "9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0",
+  "files": 135,
+  "pages": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/start/",
+      "status": 200
+    },
+    {
+      "path": "/cases/",
+      "status": 200
+    },
+    {
+      "path": "/privacy/",
+      "status": 200
+    },
+    {
+      "path": "/terms/",
+      "status": 200
+    },
+    {
+      "path": "/contact/",
+      "status": 200
+    }
+  ],
+  "voice": "Azure en-IN-PrabhatNeural",
+  "speed": 1,
+  "mode": "simulated",
+  "demoEndHour": "21",
+  "callMaxMinutes": 12,
+  "callPlaced": false
+}

@@ -4,7 +4,7 @@
 - Folder gx-getting-money-back-next; branch next only.
 - Frozen refundgenie.app/main/original Convex/Cloudflare untouched (submitted-v1, 6153907).
 - Test Development tangible-lemur-692; test Production abundant-marten-136, https://abundant-marten-136.convex.site.
-- Last test release remains N4 source ced3e6f, static version 991a2b00-2bf7-4dee-b00b-94c2a503e56e. These new fixes have NOT been deployed.
+- Latest test release: source 71ea7b4 (call fixes 4e55c7f), static version 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0; backend and static test upload succeeded after owner approval. Six checked pages return 200.
 - N2/N3 DONE by Ganesh's phone checks. N4 in progress, not READY FOR REVIEW or DONE.
 
 ## Latest work
@@ -25,7 +25,7 @@ Expanded checker has nine checks. Safe original-call re-scores 6/9 and 5/9, neit
 - Soniox stt-rt-v5 Automatic, Deepgram nova-2 en-IN fallback. No transcriber/provider setting changed; recommend retaining for next comparison.
 - Ganesh restored agent access to refundgenie-test only. Earlier owner-only Convex restriction is superseded.
 - Last verified mode simulated; demo cutoff restored to 21:00 by owner. Owner controls modes/env/keys/allow-list/budgets, agent changed none.
-- Wait for explicit test publication approval and separate yes before one supervised own-mobile call. No company contact. No call in this fix session.
-- RG-L07KB7 has two calls today; do not reset limits. Later-day reuse or new genuinely confirmed fictional demo needed.
+- Test publication approved and completed. WAIT for separate go before one supervised own-mobile call. No company contact or call in this publication session.
+- RG-L07KB7 has two calls today; did not reset limits. Fresh fictional RG-T53DCT created normally, facts confirmed, one confirmation email sent to configured test passenger; emailConfirmed=false. Owner must click normal confirmation link before test-only demo targeting and separate permissions. No call queued. Private bundle held only in orchestration memory n4RetestPrivate, never in files. Then WAIT for go.
 - Retest: ask PNR, interrupt, hold 20 seconds, passenger-only verification, reference only on request, credit-shell offer. Audio/owner feedback required before N4 acceptance.
 - Provider daily Gemini quota remains owner-deferred. Root HQ prompt untracked/uncommitted. Parked trial reset/manual annual pass not built.
