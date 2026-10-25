@@ -1,4 +1,4 @@
-# Refund Genie test build: N4 HQ review fixes
+# Refund Genie test build: N4 supervised overnight patch prepared
 
 ## Scope and freeze
 - Folder gx-getting-money-back-next; branch next only.
@@ -30,3 +30,8 @@ Expanded checker has nine checks. Safe original-call re-scores 6/9 and 5/9, neit
 - Read-only recheck 26 Oct 00:02 IST resolves local Vapi 403 with a descriptive User-Agent header: assistant and phone GET both succeed. Prabhat speed 1.00, gpt-4.1, required settings present, own-mobile-only targeting, default 12-minute limit, daily budget available, zero case calls, transfers and real-company sending off. Mode remains simulated; current time outside demo hours 09:00 to 21:00 IST. No key/settings change needed. WAIT for separate go, then recheck mode/hours/budget before any dial. Safe proof docs/qa/n4-2026-10-25/retest-readonly-check.json.
 - Retest: ask PNR, interrupt, hold 20 seconds, passenger-only verification, reference only on request, credit-shell offer. Audio/owner feedback required before N4 acceptance.
 - Provider daily Gemini quota remains owner-deferred. Root HQ prompt untracked/uncommitted. Parked trial reset/manual annual pass not built.
+
+## Prepared overnight patch, not published
+Ganesh explicitly approved building a test-only supervised overnight option and waiting before publish/call. CALL_SUPERVISED_DEMO_CODE must exactly match one RG demo case; Convex system deployment URL must be one of the two refundgenie-test deployments. Only non-story demo hours can be skipped; real-company hours and all other guards remain. Owner will set/remove this code and live mode after publishing is approved. Nothing enabled or changed remotely.
+
+Red first: 3 failed / 23 passed. Final focused 55/55; full suite 625/625 in 79 files; type check and 16-page local static export pass. In-memory backend tests only, no deployed reservation/call. Proof docs/qa/n4-2026-10-26/overnight-gates.json. Backend deploy deliberately not run because Ganesh requires approval first. N4 still in progress, nothing DONE. Next: wait for approval to publish this patch to the test project; calling needs separate go and fresh read-only checks.

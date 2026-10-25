@@ -1,0 +1,27 @@
+{
+  "scope": "refundgenie-test only, owner-selected non-story demo",
+  "redBeforeSource": {
+    "failed": 3,
+    "passed": 23
+  },
+  "newBackendTests": 19,
+  "focused": {
+    "passed": 55,
+    "failed": 0
+  },
+  "fullSuite": {
+    "passed": 625,
+    "failed": 0,
+    "files": 79
+  },
+  "typeCheck": "pass",
+  "localStaticExport": {
+    "result": "pass",
+    "pages": 16
+  },
+  "realCompanyHoursChanged": false,
+  "deployed": false,
+  "callsPlaced": 0,
+  "remoteSettingsChanged": false,
+  "next": "Wait for owner publication approval; separate go before any call"
+}

@@ -125,3 +125,15 @@ N4 remains in progress. After owner-approved test publication and voice choice, 
 
 ### Voice choice saved after auditions
 Ganesh chose Prabhat. Isolated Refund Genie Test N4 now uses Azure en-IN-PrabhatNeural, speed 1.00, verified by fresh Vapi GET; current v4, 100% traffic. Model and transcriber unchanged. No app release or call. An older browser draft showing Neerja was not published; use the current saved version and do not overwrite it with that stale draft.
+
+## Prepared 26 Oct: supervised overnight option on refundgenie-test only
+
+Ganesh approved preparing and testing this change in chat, with a STOP before publishing or calling. It is not deployed or enabled yet. The frozen submitted project is untouched.
+
+Owner-only setting: CALL_SUPERVISED_DEMO_CODE. When its exact value is the selected RG case code, the server skips only the hours check for that unexpired, non-story demo on refundgenie-test. Scope is checked against Convex's system-provided CONVEX_CLOUD_URL: only abundant-marten-136.convex.cloud (test Production) and tangible-lemur-692.convex.cloud (test Development). Unset, wrong case, wrong project or non-demo means no exception. Public story demos remain simulated. No new public argument or UI switch.
+
+After Ganesh approves publishing, and before he approves one call: publish only with npm run deploy:test; Ganesh sets CALL_SUPERVISED_DEMO_CODE to RG-T53DCT on refundgenie-test Production and sets CALL_MODE=live himself. Do not change CALL_REAL_ANY_HOUR or real-company hours. Fresh read-only checks must verify the selected demo, confirmed email, separate permissions, approved own mobile, unexpired case, current budget and remaining daily slots. Dial only after the separate go. Afterwards Ganesh removes CALL_SUPERVISED_DEMO_CODE and resets CALL_MODE=simulated. Leaving the code saved is not consent to another call.
+
+Default demo hours remain 09:00 to the saved demo cutoff. Real-company hours and the existing separate real-hours override are unchanged. Email confirmation, both permissions, approved destinations, live mode, 12-minute duration cap, per-call/daily budgets, two calls per case per IST day, closed/expired case guards and transfer settings remain in force. Midnight still starts the next normal daily bucket, with no counter reset. No env/key/allow-list/provider change was made while building this patch.
+
+Proof: test-first run 3 failed / 23 passed before source changes; final focused 55/55, full suite 625/625 across 79 files, type check and 16-page local export pass. Added 19 backend tests in the in-memory Convex test harness; no deployment, real reservation, queued job or provider call. Test suite includes both exact test deployments, wrong/unset code/project, real-company night/morning/evening/Sunday blocks, consent/confirmed email/phone checks, budget reservations and the third-call block, mode mismatch, closed/expired demos.

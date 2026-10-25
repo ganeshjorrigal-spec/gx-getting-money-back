@@ -1,5 +1,8 @@
 # Current: N4 HQ call review fixes
 
+- [x] Prepared case-specific supervised overnight option for refundgenie-test only; tests first, real-company hours/all other guards unchanged. Final 625/625, type check and local export pass. No publishing, calls or settings changes.
+- [ ] WAIT for explicit test publication approval. Owner then sets CALL_SUPERVISED_DEMO_CODE to the chosen demo; separate go and fresh checks required before any call.
+
 - [x] Ganesh restored agent access to refundgenie-test only; earlier no-access restriction superseded.
 - [x] N2/N3 remain DONE by Ganesh's phone approval.
 - [x] Report duration investigation before changes: already 12-minute/720-second limit; end tool, not timeout/budget; provider durations 131.60/118.78s, saved estimates 120/120.
@@ -10,7 +13,7 @@
 - [x] Owner approved test release; 71ea7b4 deployed, static 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0, six pages 200.
 - [x] RG-T53DCT: genuine email confirmed, demo field persisted, normal mail and separate call permissions saved; zero calls and simulated mode verified. Old limits unchanged.
 - [x] Resolved read-only Vapi 403 by adding descriptive User-Agent header to local verification request. Assistant and phone GET succeed: Prabhat 1.00, gpt-4.1. Case checks pass; zero calls, budget room, own-mobile only.
-- [ ] WAIT for go. Mode remains simulated and current time is outside saved 09:00 to 21:00 IST demo hours. Owner controls settings. Recheck at dial time; no call queued.
+- [ ] Overnight patch is not deployed. Last read still simulated despite owner reporting live; owner controls settings. Recheck mode, hours/selected-case exception, budget and slots at dial time; no call queued.
 - [ ] Audio/owner feedback still required on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
 - [ ] Provider daily Gemini quota remains owner-deferred; no inference from credits.
 

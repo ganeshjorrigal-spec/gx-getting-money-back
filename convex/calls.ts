@@ -4,7 +4,7 @@ import { internalMutation, internalQuery, mutation, query } from "./_generated/s
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { assertAccess } from "./lib/access";
-import { callGate, callMode, callLabel, safeTranscript, demoPhones, confirmingCallMail, careRequestsCallback, FAILED_TRANSFER_CUTOFF } from "../lib/calls";
+import { callGate, callMode, callLabel, safeTranscript, demoPhones, confirmingCallMail, careRequestsCallback, FAILED_TRANSFER_CUTOFF, supervisedDemoAnyHour } from "../lib/calls";
 import {callingCopy} from "../app/copy";
 import { safeCallResult } from "../lib/call-transport";
 import { todayIST } from "../lib/dates";
@@ -25,7 +25,7 @@ export const reserve=internalMutation({args:{caseId:v.id("cases"),fixture:v.unio
  const calls=await ctx.db.query("calls").withIndex("by_case_day",q=>q.eq("caseId",item._id).eq("day",day)).take(3);
  const budget=await ctx.db.query("callBudgets").withIndex("by_day",q=>q.eq("day",todayIST())).unique();
  const reserve=Number(process.env.CALL_MAX_COST_USD??0),limit=Number(process.env.CALL_DAILY_CAP_USD??0);
- const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care,demoEndHour:process.env.CALL_DEMO_END_HOUR,realAnyHour:process.env.CALL_REAL_ANY_HOUR==='true',transfer:process.env.CALL_TRANSFER_ENABLED==='true'});
+ const gate=callGate({active:item.chase.active,authorised:!!item.chase.callsAuthorisedAt,demo:!!item.demo,mode,number:number??"",mobile:passengerNumber??"",allowlist:process.env.CALL_ALLOWLIST,now,dayCount:calls.length,dailyReserved:budget?.reserved??0,budget:limit,reserve,official:!!care,demoEndHour:process.env.CALL_DEMO_END_HOUR,realAnyHour:process.env.CALL_REAL_ANY_HOUR==='true',transfer:process.env.CALL_TRANSFER_ENABLED==='true',supervisedDemoAnyHour:!!item.demo&&!item.demo.chaseStory&&supervisedDemoAnyHour(item.code,process.env)});
  if(gate)throw new Error(gate);
  if(item.demo?.chaseStory&&(item.demo.chasePhase!=='call'||calls.length))throw new Error('The demo call already ran or is not ready');
  // Real calls require the owner-enabled live mode plus checked, listed care number.
