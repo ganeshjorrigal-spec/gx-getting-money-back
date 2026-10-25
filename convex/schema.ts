@@ -65,7 +65,7 @@ export default defineSchema({
   feedback: defineTable({ caseId: v.id("cases"), worthIt: v.boolean(), comment: v.optional(v.string()), createdAt: v.number() }).index("by_case", ["caseId"]),
   googleOauthStates: defineTable({
     stateHash: v.string(), caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),
-    createdAt: v.number(), encryptedCaseToken: v.optional(v.string()),
+    createdAt: v.number(), encryptedCaseToken: v.optional(v.string()), responsesSetupProof: v.optional(v.string()),
   }).index("by_hash", ["stateHash"]).index("by_case", ["caseId"]),
   googleConnections: defineTable({
     caseId: v.optional(v.id("cases")), kind: v.union(v.literal("calendar"), v.literal("gmail"), v.literal("inbox"), v.literal("responses"), v.literal("demo")),

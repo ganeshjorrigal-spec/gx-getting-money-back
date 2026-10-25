@@ -8,6 +8,7 @@ import { encryptToken, decryptToken } from "../lib/token-crypto";
 import { CALENDAR_SCOPE, GMAIL_SCOPE, caseInboxAddress, caseInboxAllowed, checkinEvent, gmailTestAllowed, gmailTestConfigured, messageMatchesCase, replyAlertEvent } from "../lib/google-tracking";
 import { todayIST } from "../lib/dates";
 import { publicAppUrl, privateCaseUrl } from "../lib/app-url";
+import { requireResponsesSetupSecret, responsesSetupProof, requireResponsesSetupProof, requireResponsesOwner } from "../lib/responses-security";
 
 const siteUrl = () => {
   if (!process.env.CONVEX_SITE_URL) throw new Error("Convex site URL is missing");
@@ -42,13 +43,15 @@ export const begin = action({
   },
 });
 
-export const beginResponses = action({
-  args: {},
+export const beginResponses = internalAction({
+  args: { setupSecret: v.string() },
   returns: v.object({ url: v.string() }),
-  handler: async (ctx) => {
+  handler: async (ctx, { setupSecret }) => {
+    requireResponsesSetupSecret(setupSecret);
+    requireResponsesOwner(process.env.TICKBACK_INBOX_ADDRESS);
     if (!process.env.RESPONSES_SHEET_SHARE_EMAIL) throw new Error("Responses sheet sharing is not configured");
     const state = newState();
-    await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), kind: "responses" });
+    await ctx.runMutation(internal.googleConnect.createState, { stateHash: await sha(state), kind: "responses", responsesSetupProof: responsesSetupProof(state) });
     return { url: authUrl(state, scopesFor("responses")) };
   },
 });
@@ -81,14 +84,22 @@ export async function googleJson<T>(url: string, token: string, init?: RequestIn
 export const finishOauth = internalAction({
   args: { code: v.string(), state: v.string() }, returns: v.any(),
   handler: async (ctx, args): Promise<{ kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; sheetUrl?: string; caseUrl?: string }> => {
-    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; encryptedCaseToken: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
+    const state: { caseId: Id<"cases"> | null; kind: "calendar" | "gmail" | "inbox" | "responses" | "demo"; code: string | null; encryptedCaseToken: string | null; responsesSetupProof: string | null } | null = await ctx.runMutation(internal.googleConnect.takeState, { stateHash: await sha(args.state) });
     if (!state) throw new Error("Google connection expired. Try again from your case.");
+    if (state.kind === "responses") requireResponsesSetupProof(args.state, state.responsesSetupProof);
     const tokens = await exchangeCode(args.code);
     if (!tokens.refresh_token || !tokens.access_token) throw new Error("Google did not grant ongoing access. Try again.");
     const required = scopesFor(state.kind);
     const granted = new Set((tokens.scope || "").split(" "));
     if (required.some((scope) => !granted.has(scope))) throw new Error("Google did not grant the needed permission");
     let email: string | undefined;
+    if (state.kind === "responses") {
+      const profile = await googleJson<{ user?: { emailAddress?: string } }>("https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)", tokens.access_token);
+      requireResponsesOwner(profile.user?.emailAddress);
+      email = profile.user!.emailAddress!.trim().toLowerCase();
+      // Recheck after the network exchange in case setup authority was revoked.
+      requireResponsesSetupProof(args.state, state.responsesSetupProof);
+    }
     if (state.kind !== "calendar" && state.kind !== "responses") {
       const profile = await googleJson<{ emailAddress?: string }>("https://gmail.googleapis.com/gmail/v1/users/me/profile", tokens.access_token);
       email = profile.emailAddress?.toLowerCase();
@@ -103,7 +114,7 @@ export const finishOauth = internalAction({
     const connectionId = await ctx.runMutation(internal.googleConnect.store, { caseId: state.caseId ?? undefined, kind: state.kind, encryptedRefreshToken: await encryptToken(tokens.refresh_token), chaseSendGranted:state.kind==="inbox"&&granted.has("https://www.googleapis.com/auth/gmail.send"), encryptedCaseToken: state.encryptedCaseToken ?? undefined, email });
     if (state.kind === "inbox" && granted.has("https://www.googleapis.com/auth/gmail.send")) await ctx.runMutation(internal.chase.resume,{});
     if (state.kind === "responses") {
-      const sheetUrl = await ctx.runAction(internal.responsesActions.finishSetup, { connectionId });
+      const sheetUrl = await ctx.runAction(internal.responsesActions.finishSetup, { connectionId, setupSecret: process.env.RESPONSES_SETUP_SECRET! });
       return { kind: state.kind, code: null, sheetUrl };
     }
     if (state.caseId) { try { await ctx.runAction(internal.googleActions.syncCheckins, { caseId: state.caseId }); } catch { /* The next poll will retry calendar sync. */ } }

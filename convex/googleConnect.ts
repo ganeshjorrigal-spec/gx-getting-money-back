@@ -54,7 +54,7 @@ export const authorize = internalQuery({
 });
 
 export const createState = internalMutation({
-  args: { stateHash: v.string(), caseId: v.optional(v.id("cases")), kind, encryptedCaseToken: v.optional(v.string()) },
+  args: { stateHash: v.string(), caseId: v.optional(v.id("cases")), kind, encryptedCaseToken: v.optional(v.string()), responsesSetupProof: v.optional(v.string()) },
   returns: v.null(),
   handler: async (ctx, args) => {
     await ctx.db.insert("googleOauthStates", { ...args, createdAt: Date.now() });
@@ -85,7 +85,7 @@ export const takeState = internalMutation({
     await ctx.db.delete(state._id);
     const item = state.caseId ? await ctx.db.get(state.caseId) : null;
     if (state.caseId && (!item || item.stage.startsWith("CLOSED"))) return null;
-    return { caseId: state.caseId ?? null, kind: state.kind, code: item?.code ?? null, encryptedCaseToken: state.encryptedCaseToken ?? null };
+    return { caseId: state.caseId ?? null, kind: state.kind, code: item?.code ?? null, encryptedCaseToken: state.encryptedCaseToken ?? null, responsesSetupProof: state.responsesSetupProof ?? null };
   },
 });
 
@@ -97,6 +97,12 @@ export const store = internalMutation({
     const matches = args.kind === "inbox" || args.kind === "responses" || args.kind === "demo"
       ? await ctx.db.query("googleConnections").withIndex("by_kind", (q) => q.eq("kind", args.kind)).collect()
       : await ctx.db.query("googleConnections").withIndex("by_case", (q) => q.eq("caseId", args.caseId)).collect();
+    // Keep the existing Responses sheet and its row mapping attached on renewal.
+    // The responses OAuth callback verifies the Google owner before this write.
+    if (args.kind === "responses" && matches[0]) {
+      await ctx.db.patch(matches[0]._id, { ...args, connectedAt: Date.now() });
+      return matches[0]._id;
+    }
     for (const row of matches) if (row.kind === args.kind) await ctx.db.delete(row._id);
     const connectionId = await ctx.db.insert("googleConnections", { caseId: args.caseId, kind: args.kind, encryptedRefreshToken: args.encryptedRefreshToken, encryptedCaseToken: args.encryptedCaseToken, email: args.email, chaseSendGranted:args.chaseSendGranted, connectedAt: Date.now() });
     if (args.caseId) await ctx.db.patch(args.caseId, { trackingDismissed: false });

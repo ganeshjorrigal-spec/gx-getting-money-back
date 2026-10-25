@@ -25,6 +25,8 @@ export const checkOrganiser = internalAction({
     const connection = await ctx.runQuery(internal.googleConnect.connectionByKind, { kind: "demo" });
     const demoAddress = process.env.TICKBACK_DEMO_ADDRESS; const inboxAddress = process.env.TICKBACK_INBOX_ADDRESS;
     if (!connection || !demoAddress || !inboxAddress || connection.email !== demoAddress.toLowerCase()) { await ctx.runMutation(internal.demo.timeout, input); return null; }
+    const passenger = confirmedDemoCc(loaded.item);
+    if (loaded.item.demo.emailRequired && !passenger) return null;
     try {
       const token = await accessToken(connection.encryptedRefreshToken);
       const candidates = await listMessages(token, `in:inbox subject:"${loaded.item.code}" after:${Math.floor(loaded.item.createdAt / 1000)}`);
@@ -49,10 +51,8 @@ export const checkOrganiser = internalAction({
           } catch { /* The fixed ladder still replies if the greeting cannot be generated quickly. */ }
         }
         const reply = demoReplyBody({ round, chaseStory:loaded.item.demo.chaseStory, kind: loaded.item.demo.kind, cancellationDate: loaded.item.facts?.cancellationDate, platform: loaded.item.platform ?? "District", event: loaded.item.eventName ?? "Sample Concert", amount: (loaded.item.amountPaise ?? 240000) / 100, bookingId: loaded.item.facts?.bookingId, now: loaded.item.demo.now, code: loaded.item.code, opening });
-        const recipients = [...new Set([from, ...emailAddresses(header(message, "to")), ...emailAddresses(header(message, "cc"))])].filter(address => !sameDemoMailbox(address, demoAddress) && !sameDemoMailbox(address, inboxAddress));
-        const passenger=confirmedDemoCc(loaded.item);
-        if(loaded.item.demo.emailRequired&&!passenger)continue;
-        if(loaded.item.demo.emailRequired)recipients.splice(0,recipients.length);
+        // Incoming headers never authorise a recipient. Legacy demos continue
+        // through our case inbox; only a link-confirmed passenger can receive CC.
         const cc = [caseInboxAddress(inboxAddress, loaded.item.code),...(passenger?[passenger]:[])].join(", ");
         if(loaded.item.demo.emailRequired)reply.body=demoEmailBody(reply.body);
         const boundary = `tickback_${reservation}`;
@@ -60,7 +60,9 @@ export const checkOrganiser = internalAction({
         const subject = header(message, "subject").replace(/[\r\n]/g, "");
         const references = `${header(message, "references").replace(/[\r\n]/g, " ")} ${messageId}`.trim();
         const html = `<p>${reply.body.split("\n\n").slice(0, -1).map(escapeHtml).join("</p><p>")}</p><p><small>${escapeHtml(reply.footer)}</small></p>`;
-        const raw = [`From: ${encoded(name)} <${demoAddress}>`, `To: ${loaded.item.demo.emailRequired?caseInboxAddress(inboxAddress,loaded.item.code):recipients.join(", ")}`, `Cc: ${cc}`, `Subject: ${encoded(loaded.item.demo.emailRequired?demoEmailSubject(subject):/^Re:/i.test(subject) ? subject : `Re: ${subject}`)}`, `In-Reply-To: ${messageId}`, `References: ${references}`, `Message-ID: <${reservation}@tickback-demo.local>`, "Auto-Submitted: auto-replied", "MIME-Version: 1.0", `Content-Type: multipart/alternative; boundary="${boundary}"`, "", `--${boundary}`, "Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(reply.body).toString("base64"), `--${boundary}`, "Content-Type: text/html; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(html).toString("base64"), `--${boundary}--`].join("\r\n");
+        const raw = [`From: ${encoded(name)} <${demoAddress}>`, `To: ${caseInboxAddress(inboxAddress,loaded.item.code)}`, `Cc: ${cc}`, `Subject: ${encoded(loaded.item.demo.emailRequired?demoEmailSubject(subject):/^Re:/i.test(subject) ? subject : `Re: ${subject}`)}`, `In-Reply-To: ${messageId}`, `References: ${references}`, `Message-ID: <${reservation}@tickback-demo.local>`, "Auto-Submitted: auto-replied", "MIME-Version: 1.0", `Content-Type: multipart/alternative; boundary="${boundary}"`, "", `--${boundary}`, "Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(reply.body).toString("base64"), `--${boundary}`, "Content-Type: text/html; charset=utf-8", "Content-Transfer-Encoding: base64", "", Buffer.from(html).toString("base64"), `--${boundary}--`].join("\r\n");
+        const current = await ctx.runQuery(internal.demo.load, { caseId: input.caseId });
+        if (!current?.item.demo || current.item.demo.session !== input.session || current.item.demo.phase !== "waiting_organiser" || confirmedDemoCc(current.item) !== passenger) return null;
         const delivered = await googleJson<{ threadId?: string }>("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", token, { method: "POST", body: JSON.stringify({ threadId: message.threadId, raw: Buffer.from(raw).toString("base64url") }) });
         await ctx.runMutation(internal.demo.sent, { id: reservation, session: input.session, sameThread: delivered.threadId === message.threadId });
         return null;

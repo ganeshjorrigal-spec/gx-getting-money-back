@@ -5,6 +5,7 @@ import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { decryptToken } from "../lib/token-crypto";
 import { responseSheetSyncDelay } from "../lib/responses-sheet";
+import { requireResponsesSetupSecret, requireResponsesOwner } from "../lib/responses-security";
 
 const headers = ["case code", "created", "name", "contact", "platform", "amount", "route", "due date", "stage", "channel", "last reply date", "feedback"];
 
@@ -43,14 +44,19 @@ function indiaTimestamp(value: number | null): string {
 }
 
 export const finishSetup = internalAction({
-  args: { connectionId: v.id("googleConnections") }, returns: v.string(),
-  handler: async (ctx, { connectionId }) => {
+  args: { connectionId: v.id("googleConnections"), setupSecret: v.string() }, returns: v.string(),
+  handler: async (ctx, { connectionId, setupSecret }): Promise<string> => {
+    requireResponsesSetupSecret(setupSecret);
     const context = await ctx.runQuery(internal.responsesData.sheetContext, {});
     const connection = context?.connection?._id === connectionId ? context.connection : await ctx.runQuery(internal.googleConnect.connectionById, { connectionId });
     if (!connection || connection.kind !== "responses") throw new Error("Responses connection is unavailable");
     const shareEmail = process.env.RESPONSES_SHEET_SHARE_EMAIL;
     if (!shareEmail) throw new Error("Responses sheet sharing is not configured");
     const token = await accessToken(connection.encryptedRefreshToken);
+    const profile = await googleJson<{ user?: { emailAddress?: string } }>("https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)", token);
+    requireResponsesOwner(profile.user?.emailAddress);
+    requireResponsesSetupSecret(setupSecret);
+    if (context?.connection._id === connectionId) return context.config.sheetUrl;
     const created = await googleJson<{ spreadsheetId: string }>("https://sheets.googleapis.com/v4/spreadsheets", token, {
       method: "POST", body: JSON.stringify({ properties: { title: "Refund Genie Responses" }, sheets: [{ properties: { title: "Cases" } }] }),
     });
@@ -68,11 +74,12 @@ export const finishSetup = internalAction({
 });
 
 export const resumeSetup = internalAction({
-  args: {}, returns: v.string(),
-  handler: async (ctx): Promise<string> => {
+  args: { setupSecret: v.string() }, returns: v.string(),
+  handler: async (ctx, { setupSecret }): Promise<string> => {
+    requireResponsesSetupSecret(setupSecret);
     const connection: { _id: import("./_generated/dataModel").Id<"googleConnections"> } | null = await ctx.runQuery(internal.googleConnect.connectionByKind, { kind: "responses" });
     if (!connection) throw new Error("Responses Google connection is unavailable");
-    return await ctx.runAction(internal.responsesActions.finishSetup, { connectionId: connection._id });
+    return await ctx.runAction(internal.responsesActions.finishSetup, { connectionId: connection._id, setupSecret });
   },
 });
 
