@@ -53,3 +53,7 @@ Owner restored refundgenie-test access. One RG-L07KB7 live call completed (120 s
 
 ## N4 latest: second supervised call complete; owner reset pending
 RG-L07KB7 second authorised own-mobile live call completed: 120 seconds, USD 0.1476, assistant-ended-call, gpt-4.1 confirmed on actual Vapi call, no transfer. Automated transcript score 3/5, not a pass; owner feedback on the five adversarial scenarios pending. Both per-case daily slots used; no further call. Latest read still finds live mode and temporary demo-hours override; owner must restore simulated and remove override. No agent settings changes/deploy. Safe evidence in today's log; N4 remains in progress.
+
+
+## N4 reset verified
+Owner reset verified on test Production: simulated mode, demo cutoff restored to 21:00 IST via existing setting value 21. No further call. N4 supervised score remains 3/5 and awaits HQ review of flags and owner scenario coverage.
