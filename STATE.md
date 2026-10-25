@@ -45,3 +45,11 @@ RG-L07KB7 email genuinely confirmed; facts confirmed. Still no demo flag or acti
 Ganesh says he cannot grant Codex Convex access and will perform the actions himself. Stop all agent Convex CLI/API and dashboard access, including read-only queries and use of existing credentials. No attempt to work around sign-in or reuse CLI authority. Local repo reads/documentation are permitted; owner runs future Convex operations. Last verified state remains email-confirmed fictional RG-L07KB7 with no demo tag, active chase or calls.
 
 Give owner the first exact manual step: refundgenie-test Production abundant-marten-136 > Data > cases, filter code RG-L07KB7, edit ONLY demo cell to {kind:'flight',round:0,phase:'ready',now:'2026-10-25',expiresAt:1793547000000}. Expiry 1 November 2026 21:00 IST. Preserve every other field and mode simulated. This tag selects the existing own-mobile demo destination instead of a real company. Wait for owner report demo saved before further setup instructions. No call requested or placed; owner must later save ordinary hand-over/calling permissions and run read-only checks himself, and explicitly authorise dialling. N4 not READY/DONE. Official Convex Data docs checked for filter and double-click cell editor only, no account data accessed.
+
+
+## N4 superseding checkpoint: second supervised test preparation
+Owner restored refundgenie-test access. One RG-L07KB7 live call completed (120 seconds; USD 0.1624), automated transcript score 2/5. Safe details appended to today's log; no transcript retained in files. Exactly one additional own-mobile test authorised with HQ's five scenarios. Read-only safety checks pass; currently simulated, awaiting owner live-mode setting. No second request, settings change or deployment. N4 remains in progress.
+
+
+## N4 latest: second supervised call complete; owner reset pending
+RG-L07KB7 second authorised own-mobile live call completed: 120 seconds, USD 0.1476, assistant-ended-call, gpt-4.1 confirmed on actual Vapi call, no transfer. Automated transcript score 3/5, not a pass; owner feedback on the five adversarial scenarios pending. Both per-case daily slots used; no further call. Latest read still finds live mode and temporary demo-hours override; owner must restore simulated and remove override. No agent settings changes/deploy. Safe evidence in today's log; N4 remains in progress.
