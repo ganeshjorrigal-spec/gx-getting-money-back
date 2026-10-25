@@ -2,7 +2,8 @@
 
 - [x] Prepared case-specific supervised overnight option for refundgenie-test only; tests first, real-company hours/all other guards unchanged. Final 625/625, type check and local export pass. No publishing, calls or settings changes.
 - [x] Ganesh approved npm run deploy:test; 388f50f published, static 4e9ca264-deb2-42f2-8425-4cfdbb06e56c, six pages 200.
-- [ ] Owner saves CALL_SUPERVISED_DEMO_CODE=RG-T53DCT and CALL_MODE=live in refundgenie-test Production. Recheck read-only, WAIT for separate go; no call queued.
+- [x] Owner saved both settings; verified at 00:28 IST exact live mode and selected RG-T53DCT, consent/own-mobile/budget/Vapi checks pass, zero calls.
+- [ ] WAIT for separate go before exactly one own-mobile supervised call. No call queued.
 
 - [x] Ganesh restored agent access to refundgenie-test only; earlier no-access restriction superseded.
 - [x] N2/N3 remain DONE by Ganesh's phone approval.
@@ -14,7 +15,7 @@
 - [x] Owner approved test release; 71ea7b4 deployed, static 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0, six pages 200.
 - [x] RG-T53DCT: genuine email confirmed, demo field persisted, normal mail and separate call permissions saved; zero calls and simulated mode verified. Old limits unchanged.
 - [x] Resolved read-only Vapi 403 by adding descriptive User-Agent header to local verification request. Assistant and phone GET succeed: Prabhat 1.00, gpt-4.1. Case checks pass; zero calls, budget room, own-mobile only.
-- [ ] Overnight patch deployed; last read still simulated, selected code not enabled. Owner controls settings. Recheck mode, selected-case exception, budget and slots at dial time; no call queued.
+- [ ] Overnight patch deployed; owner live mode and selected case verified. Owner controls settings. Recheck if delayed; wait for go, no call queued.
 - [ ] Audio/owner feedback still required on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
 - [ ] Provider daily Gemini quota remains owner-deferred; no inference from credits.
 
