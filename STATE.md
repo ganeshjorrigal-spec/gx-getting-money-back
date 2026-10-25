@@ -21,7 +21,7 @@ Expanded checker has nine checks. Safe original-call re-scores 6/9 and 5/9, neit
 - docs/qa/n4-2026-10-25/hq-fix-gates.json; docs/handoff/n4-hq-review-fixes.md; superseding docs/calling.md section.
 
 ## Owner choices and next step
-- Two Azure Indian English auditions: current Neerja and Prabhat; sample URLs/exact switch clicks in docs/calling.md. Voice question pending. Speed already 1.00, left unchanged.
+- Owner chose Prabhat. Isolated test assistant now Azure en-IN-PrabhatNeural, speed 1.00, verified via Vapi GET; current v4, 100% traffic. Model/transcriber unchanged. Do not publish an older local Neerja draft over the saved current version. Sample URLs/clicks in docs/calling.md.
 - Soniox stt-rt-v5 Automatic, Deepgram nova-2 en-IN fallback. No transcriber/provider setting changed; recommend retaining for next comparison.
 - Ganesh restored agent access to refundgenie-test only. Earlier owner-only Convex restriction is superseded.
 - Last verified mode simulated; demo cutoff restored to 21:00 by owner. Owner controls modes/env/keys/allow-list/budgets, agent changed none.

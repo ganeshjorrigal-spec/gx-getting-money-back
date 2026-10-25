@@ -6,7 +6,7 @@
 - [x] Red tests before code; smallest prompt/endCallMessage fix, accurate future duration, expanded nine-rule checker.
 - [x] Re-score original saved calls in memory only, 6/9 and 5/9, neither passes. No personal call data saved.
 - [x] Supply two Azure Indian English listening samples; isolated assistant speed already 1.00. No voice/transcriber/model switch made.
-- [ ] Ganesh chooses voice by ear; audition question pending.
+- [x] Ganesh chose Prabhat; isolated test assistant saved/verified Azure en-IN-PrabhatNeural, speed 1.00, v4 current. Do not publish stale browser Neerja draft.
 - [ ] Test publication only after approval. No deployment in this fix session.
 - [ ] One more supervised mobile-only test only after Ganesh's separate yes and final guards. Existing case used both daily slots, never reset the limit.
 - [ ] Audio/owner feedback still required on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
