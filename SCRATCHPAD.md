@@ -15,7 +15,7 @@
 - [x] Owner approved test release; 71ea7b4 deployed, static 9adbfd07-9736-4ed8-a02f-e4b4fb7a54e0, six pages 200.
 - [x] RG-T53DCT: genuine email confirmed, demo field persisted, normal mail and separate call permissions saved; zero calls and simulated mode verified. Old limits unchanged.
 - [x] Resolved read-only Vapi 403 by adding descriptive User-Agent header to local verification request. Assistant and phone GET succeed: Prabhat 1.00, gpt-4.1. Case checks pass; zero calls, budget room, own-mobile only.
-- [ ] Owner reset requested: CALL_MODE=simulated, delete CALL_SUPERVISED_DEMO_CODE. Verify when Ganesh replies. No further call authorised.
+- [x] Owner reset verified: CALL_MODE=simulated and CALL_SUPERVISED_DEMO_CODE absent. No further call authorised.
 - [ ] Latest checker 6/9: repetition, ending before required details, bundled questions. HQ review and owner audio feedback needed on interruption, hold, audible ending and credit-shell response. N4 not READY/DONE.
 - [ ] Provider daily Gemini quota remains owner-deferred; no inference from credits.
 

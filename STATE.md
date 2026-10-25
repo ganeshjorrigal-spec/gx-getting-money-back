@@ -41,4 +41,4 @@ Ganesh explicitly approved exactly one own-mobile call on RG-T53DCT, no retry. F
 
 Expanded checker: 6/9, not passing. Flags repetition (turns 13/21 related to 11), incomplete job before ending (21), bundled questions (3/7). Complete final sentence, disclosure, known-fact questions, limited reasks, private-code safety and no spoken instructions pass textual heuristics. Audio interruption/hold/ending quality still requires owner feedback; textual pass is not audio proof. No transcript, contact data, provider IDs or private URL in repo. No retry, no code/deploy/settings change in call session.
 
-Asked Ganesh to reset CALL_MODE=simulated and remove CALL_SUPERVISED_DEMO_CODE; confirmation pending. No further calls authorised. N4 remains in progress, not READY/DONE. Next: verify owner reset, then HQ review of these remaining checker flags and owner audio feedback before any further change/call.
+Owner reset verified by read-only env listing: CALL_MODE=simulated and CALL_SUPERVISED_DEMO_CODE absent. No further calls authorised. N4 remains in progress, not READY/DONE. Next: HQ review of remaining checker flags and owner audio feedback before any further change/call.
