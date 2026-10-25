@@ -20,5 +20,7 @@ Root HQ prompt remains untracked/uncommitted. Frozen main/live/Cloudflare untouc
 - [x] Both test environments settings verified: isolated Neerja assistant, same own-mobile allow-list, budgets valid, mode simulated, transfer/company mail off. No values changed by Codex.
 - [ ] Then prepare one fictional case through existing authorised seed path without executing a call, preserve email-confirmation gate, run read-only precheck, and WAIT for explicit go-ahead before dialling.
 
-- [ ] Owner confirms new fictional RG-L07KB7 via emailed one-time link. Mail sent; no active chase/calls.
+- [x] Owner confirmed RG-L07KB7; server verifies normal per-case email ownership. No active chase/calls.
 - [ ] After genuine confirmation, finish owner-only demo targeting/permission preparation. Normal intake is NOT yet dial-ready; never use real airline destination. Legacy seed cannot pass new confirmation flow unchanged. No permission gate bypass.
+
+- [ ] Owner signs into kept Convex dashboard tab. Saved Google browser permission blocks agent sign-in; no workaround. Demo field remains absent after failed system function lookup. No data/code/settings changed.
