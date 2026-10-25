@@ -1,8 +1,6 @@
 # N3: published, waiting for owner phone proof
 
-- [ ] Ganesh checks exactly one new due-check email and It came closure on RG-ZSROFN.
-- [ ] Ganesh creates/confirms second fictional case; prepare via owner-only command and check Not yet opens hand-over without saving permission.
-- [ ] Wait for Ganesh result before N4.
+- [ ] N3 phone checks pass by owner report; wait for explicit Ganesh approval before N4.
 - [ ] Provider daily quota remains deferred by owner.
 
 ## Parked from the abuse review
