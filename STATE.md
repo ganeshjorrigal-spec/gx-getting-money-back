@@ -1,4 +1,4 @@
-# Refund Genie test build: N4 overnight patch published, waiting for owner
+# Refund Genie test build: N4 supervised call ended, review needed
 
 ## Scope and freeze
 - Folder gx-getting-money-back-next; branch next only.
@@ -35,3 +35,10 @@ Expanded checker has nine checks. Safe original-call re-scores 6/9 and 5/9, neit
 Ganesh approved npm run deploy:test for 388f50f. Backend type/schema push, static 16-page export and 135-file upload succeeded. Proof docs/qa/n4-2026-10-26/overnight-release-check.json. Frozen project untouched. Previous source gates 625/625 tests across 79 files and type check pass; deployment also type-checks.
 
 Read-only check at 00:24 IST: RG-T53DCT unexpired non-story demo, email confirmed, both permissions saved, zero calls total/today, only approved own mobile selected, budget available, max 12 minutes. Vapi assistant and phone accessible; Prabhat speed 1.00, gpt-4.1. Transfers and real-company sending off. Owner settings verified at 00:28 IST: CALL_MODE exactly live, CALL_SUPERVISED_DEMO_CODE exactly RG-T53DCT. All read-only case/consent/own-mobile/budget/Vapi checks still pass; zero calls total/today. No agent setting changes or calls. Next: WAIT for separate go before one call. Proof docs/qa/n4-2026-10-26/owner-settings-verified.json. Remove the selected-code setting and restore simulated after the supervised session. Nothing marked DONE.
+
+## Latest supervised call: completed, checker does not pass
+Ganesh explicitly approved exactly one own-mobile call on RG-T53DCT, no retry. Fresh checks passed; invoked callActions.run once on refundgenie-test Production. One case call saved, completed with assistant-ended-call. Provider and saved duration 165.096 seconds, cost USD 0.1979, actual provider call model gpt-4.1, no transfer. Safe evidence docs/qa/n4-2026-10-26/supervised-retest-result.json.
+
+Expanded checker: 6/9, not passing. Flags repetition (turns 13/21 related to 11), incomplete job before ending (21), bundled questions (3/7). Complete final sentence, disclosure, known-fact questions, limited reasks, private-code safety and no spoken instructions pass textual heuristics. Audio interruption/hold/ending quality still requires owner feedback; textual pass is not audio proof. No transcript, contact data, provider IDs or private URL in repo. No retry, no code/deploy/settings change in call session.
+
+Asked Ganesh to reset CALL_MODE=simulated and remove CALL_SUPERVISED_DEMO_CODE; confirmation pending. No further calls authorised. N4 remains in progress, not READY/DONE. Next: verify owner reset, then HQ review of these remaining checker flags and owner audio feedback before any further change/call.
